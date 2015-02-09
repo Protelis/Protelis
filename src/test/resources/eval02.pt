@@ -1,0 +1,15 @@
+let string = "def map(f, t){
+	if (t.isEmpty()) {
+		t
+	} else {
+		[f.apply(t.get(0))].mergeAfter(map(f, t.subTupleEnd(1)))
+	}
+}
+def inc(x) {
+	x + 1;
+}
+def square(x) {
+	x ^ 2;
+}
+map(square, map(inc, [ 5, 4, 3, 2, 1, 0 ]))";
+eval(string)

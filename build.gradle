@@ -1,0 +1,202 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: 'project-report'
+apply plugin: 'maven'
+apply plugin: 'build-dashboard'
+apply plugin: 'signing'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleVersionToUse
+}
+
+// General configuration
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': artifactId, 'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    doc {
+        transitive false
+    }
+    doclet
+}
+
+dependencies {
+    compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
+    compile "it.unibo.alchemist:alchemist-implementationbase:$implbaseVersion"
+    compile "it.unibo.alice.tuprolog:tuprolog:$tuprologVersion"
+    compile "org.eclipse.xtext:org.eclipse.xtext:$xtextVersion"
+    compile "org.eclipse.xtext:org.eclipse.xtext.common.types:$xtextVersion"
+    
+    testCompile "junit:junit:$junitVersion"
+    
+    doclet "org.jboss.apiviz:apiviz:$apivizVersion"
+    
+    pmd(
+        "net.sourceforge.pmd:pmd-core:$pmdVersion",
+        "net.sourceforge.pmd:pmd-vm:$pmdVersion",
+        "net.sourceforge.pmd:pmd-plsql:$pmdVersion",
+        "net.sourceforge.pmd:pmd-jsp:$pmdVersion",
+        "net.sourceforge.pmd:pmd-xml:$pmdVersion",
+        "net.sourceforge.pmd:pmd-java:$pmdVersion"
+    )
+}
+
+// Javadoc Configuration
+
+task aggregateJavadoc(type: Javadoc) {
+	source configurations.doc.collect { zipTree(it) }
+    source sourceSets.main.allJava
+    classpath = sourceSets.main.output + sourceSets.main.compileClasspath
+    include '**/*.java'
+    destinationDir file("$project.buildDir/docs/javadoc/")
+    failOnError = false
+    options.showAll()
+    options.addBooleanOption('nopackagediagram', true)
+	options.addStringOption('Xdoclint:none', '-quiet')
+    configure(options) {
+        windowTitle "$projectLongName version $project.version Javadoc API"
+        docTitle "$projectLongName $project.version reference API"
+        links 'http://docs.oracle.com/javase/8/docs/api/'
+        links 'http://trove4j.sourceforge.net/javadocs/'
+        doclet 'org.jboss.apiviz.APIviz'
+        docletpath file(configurations.doclet.asPath)
+    }
+}
+
+// Artifacts configuration
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: aggregateJavadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+// Eclipse configuration
+
+eclipse {
+	classpath {
+    	downloadJavadoc = true
+		downloadSources = true
+	}
+}
+
+// FindBugs configuration
+
+findbugs {
+	ignoreFailures = true
+	effort = "max"
+	reportLevel = "low"
+}
+
+tasks.withType(FindBugs) {
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}
+
+// PMD configuration
+
+pmd {
+	ignoreFailures = true
+	ruleSets = []
+	ruleSetFiles = files("pmd.xml")
+	targetJdk = pmdTargetJdk
+	toolVersion = pmdVersion
+}
+
+tasks.withType(Pmd) {
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}
+
+// Checkstyle configuration
+
+checkstyle {
+	ignoreFailures = true
+	configFile = new File("style.xml")
+}
+
+checkstyleMain << {
+    ant.xslt(in: reports.xml.destination,
+             style: new File("$project.projectDir/checkstyle-noframes-sorted.xsl"),
+             out: new File(reports.xml.destination.parent, 'main.html'))
+}
+
+checkstyleTest << {
+    ant.xslt(in: reports.xml.destination,
+             style: new File("$project.projectDir/checkstyle-noframes-sorted.xsl"),
+             out: new File(reports.xml.destination.parent, 'main.html'))
+}
+
+// Upload configuration
+
+signArchives.onlyIf { Boolean.parseBoolean(signArchivesIsEnabled) }
+
+uploadArchives {
+	repositories {
+    	mavenDeployer {
+      		beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      		repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        		authentication(userName: ossrhUsername, password: ossrhPassword)
+      		}
+      		snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        		authentication(userName: ossrhUsername, password: ossrhPassword)
+      		}
+		    pom.project {
+	            name artifactId
+	            description projectDescription
+	            packaging 'jar'
+	            url "$scmRootUrl/$artifactId"
+	            licenses {
+	                license {
+	                    name licenseName
+	                    url licenseUrl
+	                }
+	            }
+	            developers {
+	            	developer {
+	            		name 'Danilo Pianini'
+	            		email 'danilo.pianini@unibo.it'
+	            		url 'http://danilopianini.apice.unibo.it/'
+	            	}
+	            }
+	            scm {
+	            	url "$scmRootUrl/$artifactId"
+	            	connection "$scmType:$scmLogin/$scmRepoName"
+	            	developerConnection "$scmType:$scmLogin/$scmRepoName"
+	            }
+		    }
+    	}
+  	}
+}
+
+defaultTasks 'wrapper', 'clean', 'build', 'check', 'assemble', 'install', 'aggregateJavadoc', 'buildDashboard'
+
+

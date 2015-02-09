@@ -1,0 +1,2 @@
+import java.lang.Math.sin as sine
+#sine(0)

@@ -1,0 +1,9 @@
+def f(){
+	rep (x <- 0) {
+		x + 1
+	}
+}
+f.apply();
+f.apply();
+f.apply();
+f.apply()

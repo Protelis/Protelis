@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<environment name="environment" type="Continuous2DEnvironment">
+	<concentration type="Local"></concentration>
+	<position type="Continuous2DEuclidean"></position>
+	<linkingrule type="EuclideanDistance" p0="3.0"></linkingrule>
+	<random type="MersenneTwister" seed="RANDOM"></random>
+	<molecule name="source" type="Molecule" p0="source"></molecule>
+	<molecule name="y" type="Molecule" p0="y"></molecule>
+	<molecule name="y" type="Molecule" p0="y"></molecule>
+	<molecule name="source" type="Molecule" p0="source"></molecule>
+	<molecule name="y" type="Molecule" p0="y"></molecule>
+	<molecule name="y" type="Molecule" p0="y"></molecule>
+	<node name="group_0_node_0" type="ProtelisNode" position="1.0,1.0">
+		<content y="1.0" source="1.0"></content>
+		<timedistribution name="time_protelisprogram_p0" type="DiracComb" p0="0.07309677873766571" p1="1.0"></timedistribution>
+		<reaction name="protelisprogram_p0" type="Event" p0="NODE" p1="TIMEDIST">
+			<action name="act_p0r0c0" type="ProtelisProgram" p0="ENV" p1="NODE" p2="REACTION" p3="def gradient() {
+	rep ( d &lt;- Infinity ) {
+		mux ( source == 1 ) {
+			0
+		} else {
+			minHood (nbr (d) + nbrRange)
+		}
+	}
+}
+let x = if (y == 0) {
+	gradient
+} else {
+	gradient
+};
+x.apply()
+"></action>
+		</reaction>
+		<timedistribution name="time_protelisprogram_p0_send" type="ExponentialTime" p0="Infinity" p1="RANDOM"></timedistribution>
+		<reaction name="protelisprogram_p0_send" type="ChemicalReaction" p0="NODE" p1="TIMEDIST">
+			<condition name="cond_p0r1c0" type="ComputationalRoundComplete" p0="NODE" p1="act_p0r0c0"></condition>
+			<action name="act_p0r1c0" type="SendToNeighbor" p0="NODE" p1="act_p0r0c0"></action>
+		</reaction>
+	</node>
+	<node name="group_1_node_0" type="ProtelisNode" position="3.0,1.0">
+		<content y="0.0"></content>
+		<timedistribution name="time_protelisprogram_p0" type="DiracComb" p0="0.02405364156714859" p1="1.0"></timedistribution>
+		<reaction name="protelisprogram_p0" type="Event" p0="NODE" p1="TIMEDIST">
+			<action name="act_p0r0c0" type="ProtelisProgram" p0="ENV" p1="NODE" p2="REACTION" p3="def gradient() {
+	rep ( d &lt;- Infinity ) {
+		mux ( source == 1 ) {
+			0
+		} else {
+			minHood (nbr (d) + nbrRange)
+		}
+	}
+}
+let x = if (y == 0) {
+	gradient
+} else {
+	gradient
+};
+x.apply()
+"></action>
+		</reaction>
+		<timedistribution name="time_protelisprogram_p0_send" type="ExponentialTime" p0="Infinity" p1="RANDOM"></timedistribution>
+		<reaction name="protelisprogram_p0_send" type="ChemicalReaction" p0="NODE" p1="TIMEDIST">
+			<condition name="cond_p0r1c0" type="ComputationalRoundComplete" p0="NODE" p1="act_p0r0c0"></condition>
+			<action name="act_p0r1c0" type="SendToNeighbor" p0="NODE" p1="act_p0r0c0"></action>
+		</reaction>
+	</node>
+</environment>

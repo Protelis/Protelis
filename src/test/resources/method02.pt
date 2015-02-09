@@ -1,0 +1,9 @@
+package it.unibo.alchemist.test
+
+/*
+ * Test interaction with Objects, test 0-ary invocations
+ */
+
+import java.util.Collections.emptyList
+
+#emptyList()

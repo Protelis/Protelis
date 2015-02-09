@@ -1,0 +1,16 @@
+import java.lang.Math.cos as cos
+def cycle(start, step) {
+	#cos(rep(x <- start) {x + step})
+}
+def switch(v) {
+	if(cycle(-pi*2/3, pi/3) >= 0) {
+		rep(x <- 0) {
+			x + 1
+		}
+	} else {
+		rep(x <- 0) {
+			x - 1
+		}
+	}
+}
+switch(0)
