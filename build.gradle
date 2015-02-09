@@ -186,6 +186,11 @@ uploadArchives {
 	            		email 'danilo.pianini@unibo.it'
 	            		url 'http://danilopianini.apice.unibo.it/'
 	            	}
+	            	developer {
+	            		name 'Jacob Beal'
+	            		email 'jakebeal@bbn.com'
+	            		url 'http://web.mit.edu/jakebeal/www/'
+	            	}
 	            }
 	            scm {
 	            	url "$scmRootUrl/$artifactId"
