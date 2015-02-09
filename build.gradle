@@ -35,8 +35,6 @@ dependencies {
     compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
     compile "it.unibo.alchemist:alchemist-implementationbase:$implbaseVersion"
     compile "it.unibo.alice.tuprolog:tuprolog:$tuprologVersion"
-    compile "org.eclipse.xtext:org.eclipse.xtext:$xtextVersion"
-    compile "org.eclipse.xtext:org.eclipse.xtext.common.types:$xtextVersion"
     
     testCompile "junit:junit:$junitVersion"
     
