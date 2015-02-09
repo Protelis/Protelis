@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.danilopianini.lang.CollectionUtils;
 
@@ -111,6 +112,22 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	 */
 	protected List<AnnotatedTree<?>> getBranches() {
 		return branches;
+	}
+	
+	/**
+	 * @return returns a stream containing the branches' annotations
+	 */
+	protected Stream<?> getBranchesAnnotationStream() {
+		/*
+		 * TODO: as soon as Javac fixes its terrible bug, switch this to:
+		 * 
+		 * return branches.stream().map(AnnotatedTree::getAnnotation);
+		 */
+		final List<Object> res = new ArrayList<>(branches.size());
+		for (final AnnotatedTree<?> o : branches) {
+			res.add(o.getAnnotation());
+		}
+		return res.stream();
 	}
 
 	/**

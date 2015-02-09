@@ -49,7 +49,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 	private final AnnotatedTree<?> left;
 	@SuppressWarnings("unchecked")
 	private final Function<Object[], Object> unwrapper = (Function<Object[], Object> & Serializable) (a) -> {
-		evalOnTarget(a[0], (INode<Object>) a[1], (TIntObjectMap<Map<CodePath, Object>>) a[2], (Stack)a[3], (Map<CodePath, Object>)a[4], (Map<CodePath, Object>)a[5], (TByteList)a[6]);
+		evalOnTarget(a[0], (INode<Object>) a[1], (TIntObjectMap<Map<CodePath, Object>>) a[2], (Stack) a[3], (Map<CodePath, Object>) a[4], (Map<CodePath, Object>) a[5], (TByteList)a[6]);
 		return getAnnotation();
 	};
 
@@ -81,7 +81,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 		 * If it is a function pointer, then create a new function call
 		 */
 		final Object target = left.getAnnotation();
-		if(isApply && target instanceof FunctionDefinition) {
+		if (isApply && target instanceof FunctionDefinition) {
 			final FunctionDefinition fd = (FunctionDefinition) target;
 			/*
 			 * Currently, there is no change in the codepath when superscript is
@@ -90,7 +90,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			final FunctionCall fc;
 			final boolean hasCall = getSuperscript() instanceof FunctionCall;
 			final FunctionCall prevFC = hasCall ? (FunctionCall) getSuperscript() : null;
-			if(hasCall && fd.equals(prevFC.getFunctionDefinition())) {
+			if (hasCall && fd.equals(prevFC.getFunctionDefinition())) {
 				fc = prevFC;
 			} else {
 				fc = new FunctionCall(fd, deepCopyBranches());
@@ -104,7 +104,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			 */
 			evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 			// Check everything for fields
-			final Stream<?> argsstr = getBranches().stream().map(br -> br.getAnnotation());
+			final Stream<?> argsstr = getBranchesAnnotationStream();
 			final Object[] args = argsstr.toArray();
 			// collect any field indices
 			Stream<Object> str = Arrays.stream(args).parallel();
@@ -112,8 +112,8 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
 			// if there are any fields, do a field apply:
 			// TODO: figure out how to deal with field application of dot calls
-			final boolean fieldTarget = target==null ? false : Field.class.isAssignableFrom(target.getClass());
-			if (fieldTarget || fieldIndexes.length>0) {
+			final boolean fieldTarget = target == null ? false : Field.class.isAssignableFrom(target.getClass());
+			if (fieldTarget || fieldIndexes.length > 0) {
 				/*
 				 * Run on every element of the field, and at each iteration use the
 				 * current annotation as corresponding element for the field. Once
@@ -128,7 +128,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 	}
 	
 	private void evalOnTarget(final Object target, final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		final Object[] args = getBranches().stream().map(br -> br.getAnnotation()).toArray();
+		final Object[] args = getBranchesAnnotationStream().toArray();
 		final Method[] ms = target.getClass().getMethods();
 		Method bestMethod = null;
 		int score = Integer.MIN_VALUE;
@@ -136,16 +136,16 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 		 * Keep track of required downcast
 		 */
 		TIntList[] downCast = null;
-		for(final Method m: ms) {
-			if(m.getParameterCount() == args.length && methodName.equals(m.getName())) {
+		for (final Method m : ms) {
+			if (m.getParameterCount() == args.length && methodName.equals(m.getName())) {
 				final Class<?>[] params = m.getParameterTypes();
 				int p = 0;
 				boolean compatible = true;
 				TIntList[] dc = null;
-				for(int i=0; compatible && i < args.length; i++) {
+				for (int i = 0; compatible && i < args.length; i++) {
 					final Class<?> expected = params[i];
 					final Object actual = args[i];
-					if(expected.isAssignableFrom(actual.getClass())) {
+					if (expected.isAssignableFrom(actual.getClass())) {
 						p++;
 					} else if ((expected.equals(Integer.TYPE) || expected.equals(Integer.class)) && actual instanceof Double) {
 						dc = lazyInit(dc, DOWNCAST_INT, args.length, i);
@@ -160,7 +160,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 						compatible = false;
 					}
 				}
-				if(compatible && p > score) {
+				if (compatible && p > score) {
 					bestMethod = m;
 					score = p;
 					downCast = dc;
@@ -168,23 +168,23 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			}
 		}
 		if (bestMethod == null) {
-			throw new NoSuchMethodError("Method " + methodName +"/" + args.length + " does not exist in class " + target.getClass());
+			throw new NoSuchMethodError("Method " + methodName + "/" + args.length + " does not exist in class " + target.getClass());
 		}
-		if(downCast != null) {
-			for(int i=0; i< downCast.length; i++) {
+		if (downCast != null) {
+			for (int i = 0; i < downCast.length; i++) {
 				final TIntList cast = downCast[i];
-				if(cast != null) {
+				if (cast != null) {
 					final int type = i;
 					cast.forEach((j) -> {
 						switch (type) {
 						case DOWNCAST_INT:
-							args[j] = (int) FastMath.round((Double)args[j]);
+							args[j] = (int) FastMath.round((Double) args[j]);
 							break;
 						case DOWNCAST_LONG:
-							args[j] = FastMath.round((Double)args[j]);
+							args[j] = FastMath.round((Double) args[j]);
 							break;
 						case DOWNCAST_FLOAT:
-							args[j] = ((Double)args[j]).floatValue();
+							args[j] = ((Double) args[j]).floatValue();
 							break;
 						default:
 							throw new IllegalStateException();
@@ -198,13 +198,13 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			setAnnotation(bestMethod.invoke(target, args));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			L.error(e);
-			throw new IllegalStateException("Cannot invoke "+bestMethod+" with arguments "+Arrays.toString(args)+" on "+target, e);
+			throw new IllegalStateException("Cannot invoke " + bestMethod + " with arguments " + Arrays.toString(args) + " on " + target, e);
 		}
 	}
 	
 	private static TIntList[] lazyInit(final TIntList[] dc, final int type, final int max, final int cur) {
-		TIntList[] res = dc == null? new TIntList[3] : dc;
-		if(res[type] == null) {
+		TIntList[] res = dc == null ? new TIntList[3] : dc;
+		if (res[type] == null) {
 			res[type] = new TIntArrayList(max - cur);
 		}
 		res[type].add(cur);

@@ -53,7 +53,7 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 		// Obtain target and arguments
 		final Object target = ztatic ? null : getBranch(0).getAnnotation();
-		Stream<Object> s = getBranches().stream().map(br -> br.getAnnotation());
+		Stream<?> s = getBranchesAnnotationStream();
 		final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
 		/*
 		 * Check if any of the parameters is a field
