@@ -104,7 +104,8 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			 */
 			evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 			// Check everything for fields
-			final Object[] args = getBranches().stream().map(AnnotatedTree::getAnnotation).toArray();
+			final Stream<?> argsstr = getBranches().stream().map(br -> br.getAnnotation());
+			final Object[] args = argsstr.toArray();
 			// collect any field indices
 			Stream<Object> str = Arrays.stream(args).parallel();
 			str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
@@ -127,7 +128,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 	}
 	
 	private void evalOnTarget(final Object target, final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		final Object[] args = getBranches().stream().map(AnnotatedTree::getAnnotation).toArray();
+		final Object[] args = getBranches().stream().map(br -> br.getAnnotation()).toArray();
 		final Method[] ms = target.getClass().getMethods();
 		Method bestMethod = null;
 		int score = Integer.MIN_VALUE;
