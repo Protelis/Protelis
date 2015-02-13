@@ -61,7 +61,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		if (erased) {
 			return "|" + asString() + "|";
 		}
-		return asString() + "·" + annotation;
+		return asString() + ":" + annotation;
 	}
 
 	/**
