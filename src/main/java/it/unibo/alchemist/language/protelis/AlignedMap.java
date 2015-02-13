@@ -40,12 +40,18 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 	private static final String APPLY = "apply";
 	private static final byte FILTER_POS = -1;
 	private static final byte RUN_POS = -2;
-	private static final FasterString CURFIELD = new FasterString("§CURFIELD§");
+	private static final FasterString CURFIELD = new FasterString("^CURFIELD^");
 	private final AnnotatedTree<Field> fgen;
 	private final AnnotatedTree<FunctionDefinition> filterOp;
 	private final AnnotatedTree<FunctionDefinition> runOp;
 	private final AnnotatedTree<?> defVal;
 
+	/**
+	 * @param arg the field on which {@link AlignedMap} should be applied
+	 * @param filter filtering function
+	 * @param op function to run
+	 * @param def default value
+	 */
 	public AlignedMap(final AnnotatedTree<Field> arg, final AnnotatedTree<FunctionDefinition> filter, final AnnotatedTree<FunctionDefinition> op, final AnnotatedTree<?> def) {
 		super(arg, filter, op, def);
 		fgen = arg;
@@ -63,27 +69,28 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
 		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 		gamma.push();
-		final Field origin = fgen.getAnnotation();
-		if(!(origin instanceof Field)) {
-			throw new IllegalStateException("The argument must be a field of tuples of tuples. It is a " + origin.getClass() + " instead.");
+		final Object originObj = fgen.getAnnotation();
+		if (!(originObj instanceof Field)) {
+			throw new IllegalStateException("The argument must be a field of tuples of tuples. It is a " + originObj.getClass() + " instead.");
 		}
+		final Field origin = (Field) originObj;
 		/*
 		 * Extract one field for each key
 		 */
 		final Map<Object, Field> fieldKeys = new HashMap<>();
-		for(final Pair<INode<Object>, Object> pair: origin.coupleIterator()) {
+		for (final Pair<INode<Object>, Object> pair : origin.coupleIterator()) {
 			final INode<Object> node = pair.getFirst();
 			final Object mapo = pair.getSecond();
 			if (mapo instanceof Tuple) {
 				final Tuple map = (Tuple) mapo;
-				for(final Object mappingo: map) {
+				for (final Object mappingo : map) {
 					if (mappingo instanceof Tuple) {
 						final Tuple mapping = (Tuple) mappingo;
-						if(mapping.size() == 2) {
+						if (mapping.size() == 2) {
 							final Object key = mapping.get(0);
 							final Object value = mapping.get(1);
 							Field ref = fieldKeys.get(key);
-							if(ref == null) {
+							if (ref == null) {
 								ref = Field.create(map.size());
 								fieldKeys.put(key, ref);
 							}
@@ -103,13 +110,13 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 		 * Get or initialize the mapping between keys and functions
 		 */
 		Map<Object, Couple<DotOperator>> funmap = getSuperscript();
-		if(funmap == null) {
+		if (funmap == null) {
 			funmap = new HashMap<>();
 		}
 		final Map<Object, Couple<DotOperator>> newFunmap = new HashMap<>(funmap.size());
 		setSuperscript(newFunmap);
 		final List<Tuple> resl = new ArrayList<>(fieldKeys.size());
-		for(final Entry<Object, Field> kf: fieldKeys.entrySet()) {
+		for (final Entry<Object, Field> kf : fieldKeys.entrySet()) {
 			final Field value = kf.getValue();
 			final Object key = kf.getKey();
 			/*
@@ -117,12 +124,12 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			 * Create a new theta, fix codepaths, create a new lastexec.
 			 */
 			final TIntObjectMap<Map<CodePath, Object>> restrictedTheta = theta == null ? null : new TIntObjectHashMap<>();
-			if(restrictedTheta != null) {
+			if (restrictedTheta != null) {
 				/*
 				 * Restrict theta
 				 */
-				for(final INode<Object> n : value.nodeIterator()) {
-					if(!n.equals(sigma)) {
+				for (final INode<Object> n : value.nodeIterator()) {
+					if (!n.equals(sigma)) {
 						final int id = n.getId();
 						restrictedTheta.put(id, theta.get(id));
 					}
@@ -131,7 +138,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			/*
 			 * Make sure that self is present in each field
 			 */
-			if(!value.containsNode(sigma)) {
+			if (!value.containsNode(sigma)) {
 				value.addSample(sigma, defVal.getAnnotation());
 			}
 			/*
@@ -150,7 +157,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			 * Compute functions if needed
 			 */
 			Couple<DotOperator> funs = funmap.get(key);
-			if(funs == null) {
+			if (funs == null) {
 				funs = new Couple<>(new DotOperator(APPLY, filterOp, args), new DotOperator(APPLY, runOp, args));
 			}
 			/*
@@ -161,8 +168,8 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			fop.eval(sigma, restrictedTheta, gamma, lastExec, newMap, currentPosition);
 			removeLast(currentPosition);
 			final Object cond = fop.getAnnotation();
-			if(cond instanceof Boolean) {
-				if((Boolean) cond) {
+			if (cond instanceof Boolean) {
+				if ((Boolean) cond) {
 					/*
 					 * Filter passed, run operation.
 					 */

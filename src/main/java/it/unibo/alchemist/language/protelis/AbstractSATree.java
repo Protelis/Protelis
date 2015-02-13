@@ -13,16 +13,28 @@ import it.unibo.alchemist.language.protelis.interfaces.SuperscriptedAnnotatedTre
 
 import java.util.List;
 
+/**
+ * @author Danilo Pianini
+ *
+ * @param <S> Superscript type
+ * @param <T> Annotation type
+ */
 public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T> implements SuperscriptedAnnotatedTree<S, T> {
 
 	private static final long serialVersionUID = 457607604000217166L;
 	private S superscript;
 
-	protected AbstractSATree(AnnotatedTree<?>... branches) {
+	/**
+	 * @param branches branches of this {@link AbstractSATree}
+	 */
+	protected AbstractSATree(final AnnotatedTree<?>... branches) {
 		super(branches);
 	}
 
-	protected AbstractSATree(List<AnnotatedTree<?>> branches) {
+	/**
+	 * @param branches branches of this {@link AbstractSATree}
+	 */
+	protected AbstractSATree(final List<AnnotatedTree<?>> branches) {
 		super(branches);
 	}
 
@@ -37,17 +49,24 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T> impl
 		return superscript;
 	}
 
-	protected final void setSuperscript(S obj) {
+	/**
+	 * @param obj the new superscript
+	 */
+	protected final void setSuperscript(final S obj) {
 		superscript = obj;
 	}
 
+	@Override
 	protected String asString() {
 		if (isErased()) {
-			return "[" + innerAsString() + "]^º";
+			return "[" + innerAsString() + "]^~";
 		}
 		return "[" + innerAsString() + "]^[" + superscript + "]";
 	}
 
+	/**
+	 * @return a string representation of the node
+	 */
 	protected abstract String innerAsString();
 
 }
