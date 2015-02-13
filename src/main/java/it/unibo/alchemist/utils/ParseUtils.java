@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -80,29 +81,33 @@ import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
 
+/**
+ * @author Danilo Pianini
+ *
+ */
 public final class ParseUtils {
 
 	private static final AtomicInteger IDGEN = new AtomicInteger();
 	private static final XtextResourceSet XTEXT;
 	private static final String UNCHECKED = "unchecked";
-	public static final String ASSIGNMENT_NAME = "=";
-	public static final String DOT_NAME = ".";
-	public static final String METHOD_NAME = "#";
-	public static final String REP_NAME = "rep";
-	public static final String IF_NAME = "if";
-	public static final String PI_NAME = "pi";
-	public static final String E_NAME = "e";
-	public static final String LAMBDA_NAME = "->";
-	public static final String SELF_NAME = "self";
-	public static final String EVAL_NAME = "eval";
-	public static final String NBR_NAME = "nbr";
-	public static final String NBR_RANGE = "nbrRange";
-	public static final String ALIGNED_MAP = "alignedMap";
-	public static final String MUX_NAME = "mux";
-	public static final String HOOD_END = "Hood";
-	public static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values()).map(Op2::toString).collect(Collectors.toList());
-	public static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values()).map(Op1::toString).collect(Collectors.toList());
-	public static final List<String> HOOD_REDUCERS = Arrays.stream(HoodOp.values()).map(HoodOp::toString).map(String::toLowerCase).collect(Collectors.toList());
+	private static final String ASSIGNMENT_NAME = "=";
+	private static final String DOT_NAME = ".";
+	private static final String METHOD_NAME = "#";
+	private static final String REP_NAME = "rep";
+	private static final String IF_NAME = "if";
+	private static final String PI_NAME = "pi";
+	private static final String E_NAME = "e";
+	private static final String LAMBDA_NAME = "->";
+	private static final String SELF_NAME = "self";
+	private static final String EVAL_NAME = "eval";
+	private static final String NBR_NAME = "nbr";
+	private static final String NBR_RANGE = "nbrRange";
+	private static final String ALIGNED_MAP = "alignedMap";
+	private static final String MUX_NAME = "mux";
+	private static final String HOOD_END = "Hood";
+	private static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values()).map(Op2::toString).collect(Collectors.toList());
+	private static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values()).map(Op1::toString).collect(Collectors.toList());
+//	private static final List<String> HOOD_REDUCERS = Arrays.stream(HoodOp.values()).map(HoodOp::toString).map(String::toLowerCase).collect(Collectors.toList());
 	static {
 		final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
 		XTEXT = guiceInjector.getInstance(XtextResourceSet.class);
@@ -112,14 +117,20 @@ public final class ParseUtils {
 	private ParseUtils() {
 	}
 
+	/**
+	 * @param env environment
+	 * @param node node
+	 * @param reaction reaction
+	 * @param program Protelis program
+	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and {@link FunctionDefinition} (containing the available functions)
+	 */
 	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(
 			final IEnvironment<Object> env,
 			final ProtelisNode node,
 			final IReaction<Object> reaction,
-			final String program)
-			throws SecurityException, ClassNotFoundException {
+			final String program) {
 		final Resource r = XTEXT.createResource(URI.createURI("dummy:/" + IDGEN.getAndIncrement() + ".pt"));
-		final InputStream in = new ByteArrayInputStream(program.getBytes());
+		final InputStream in = new ByteArrayInputStream(program.getBytes(Charset.forName("UTF-8")));
 		try {
 			r.load(in, XTEXT.getLoadOptions());
 		} catch (IOException e) {
@@ -319,7 +330,7 @@ public final class ParseUtils {
 			return new AlignedMap(arg, cond, op, def);
 		}
 		if (name.equals(LAMBDA_NAME)) {
-			final FunctionDefinition lambda = new FunctionDefinition("λ" + id.getAndIncrement(), extractArgsFromLambda(e));
+			final FunctionDefinition lambda = new FunctionDefinition("l$" + id.getAndIncrement(), extractArgsFromLambda(e));
 			final AnnotatedTree<?> body = parseBlock(e.getBody(), imports, defs, env, node, reaction, id);
 			lambda.setBody(body);
 			return new Constant<>(lambda);

@@ -57,20 +57,15 @@ public class TestInSimulator {
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		try {
-			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, s);
-			AnnotatedTree<?> program = prog.getFirst();
-			Map<CodePath, Object> lastExec = new HashMap<>();
-			for(int i=0; i<runs; i++) {
-				program = program.copy();
-				final Map<CodePath, Object> newExec = new HashMap<>();
-				program.eval(null, new TIntObjectHashMap<>(), new StackImpl(new HashMap<>(prog.getSecond())), lastExec, newExec, new TByteArrayList());
-				lastExec = newExec;
-			}
-			return program;
-		} catch (SecurityException | ClassNotFoundException e) {
-			failExeption(e);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, s);
+		AnnotatedTree<?> program = prog.getFirst();
+		Map<CodePath, Object> lastExec = new HashMap<>();
+		for (int i = 0; i < runs; i++) {
+			program = program.copy();
+			final Map<CodePath, Object> newExec = new HashMap<>();
+			program.eval(null, new TIntObjectHashMap<>(), new StackImpl(new HashMap<>(prog.getSecond())), lastExec, newExec, new TByteArrayList());
+			lastExec = newExec;
 		}
-		return null;
+		return program;
 	}
 }

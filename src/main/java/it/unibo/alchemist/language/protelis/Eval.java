@@ -32,11 +32,17 @@ import it.unibo.alchemist.utils.ParseUtils;
 public class Eval extends AbstractAnnotatedTree<Object> {
 
 	private static final long serialVersionUID = 8811510896686579514L;
+	private static final byte DYN_CODE_INDEX = -1;
 	private final IEnvironment<Object> env;
 	private final ProtelisNode node;
 	private final IReaction<Object> reaction;
-	private final byte DYN_CODE_INDEX = -1;
 	
+	/**
+	 * @param arg argument whose annotation will be used as a string representing a program
+	 * @param e environment
+	 * @param n node
+	 * @param r reaction
+	 */
 	public Eval(final AnnotatedTree<?> arg, final IEnvironment<Object> e, final ProtelisNode n, final IReaction<Object> r) {
 		super(arg);
 		env = e;
@@ -63,7 +69,7 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 			setAnnotation(toRun.getAnnotation());
 			removeLast(currentPosition);
 			gamma.pop();
-		} catch (SecurityException | ClassNotFoundException e) {
+		} catch (IllegalArgumentException e) {
 			L.error(e);
 			throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
 		}
@@ -71,7 +77,7 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 
 	@Override
 	protected String asString() {
-		return "eval (" +getBranch(0) + ")" ;
+		return "eval (" + getBranch(0) + ")";
 	}
 
 }

@@ -185,7 +185,7 @@ public class TestLanguage {
 	
 	@Test
 	public void testRep01() {
-		for(int i=1; i<100000; i*=10) {
+		for (int i = 1; i < 100000; i *= 10) {
 			testFile("/rep01.pt", i, (double) i);
 		}
 	}
@@ -200,7 +200,7 @@ public class TestLanguage {
 	
 	@Test
 	public void testTuple01() {
-		testFile("/tuple01.pt", Tuple.create(new Object[]{5.0, 4.0, 3.0, 2.0, 1.0, 0.0}));
+		testFile("/tuple01.pt", Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 }));
 	}
 	
 	@Test
@@ -210,15 +210,15 @@ public class TestLanguage {
 	
 	@Test
 	public void testIf01() {
-		for(int i=1; i<100; i++) {
-			testFile("/if01.pt", i, ( (i-1) % 6 < 3 ) ? ( (i-1d) % 3 + 1) : ( -( (i - 1d) % 3 ) -1 ));
+		for (int i = 1; i < 100; i++) {
+			testFile("/if01.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
 		}
 	}
 	
 	@Test
 	public void testMux01() {
-		for(int i=1; i<100; i++) {
-			testFile("/mux01.pt", i, (double) ( ( (i-1) % 6 < 3 ) ? i : -i) );
+		for (int i = 1; i < 100; i++) {
+			testFile("/mux01.pt", i, (double) (((i - 1) % 6 < 3) ? i : -i));
 		}
 	}
 	
@@ -250,20 +250,15 @@ public class TestLanguage {
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		try {
-			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, s);
-			AnnotatedTree<?> program = prog.getFirst();
-			Map<CodePath, Object> lastExec = new HashMap<>();
-			for(int i=0; i<runs; i++) {
-				program = program.copy();
-				final Map<CodePath, Object> newExec = new HashMap<>();
-				program.eval(null, new TIntObjectHashMap<>(), new StackImpl(new HashMap<>(prog.getSecond())), lastExec, newExec, new TByteArrayList());
-				lastExec = newExec;
-			}
-			return program;
-		} catch (SecurityException | ClassNotFoundException e) {
-			failExeption(e);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, s);
+		AnnotatedTree<?> program = prog.getFirst();
+		Map<CodePath, Object> lastExec = new HashMap<>();
+		for (int i = 0; i < runs; i++) {
+			program = program.copy();
+			final Map<CodePath, Object> newExec = new HashMap<>();
+			program.eval(null, new TIntObjectHashMap<>(), new StackImpl(new HashMap<>(prog.getSecond())), lastExec, newExec, new TByteArrayList());
+			lastExec = newExec;
 		}
-		return null;
+		return program;
 	}
 }
