@@ -19,12 +19,21 @@ import it.unibo.alchemist.model.interfaces.IReaction;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Delta time.
+ * 
+ * @author Danilo Pianini
+ *
+ */
 public class Dt extends AbstractAnnotatedTree<Double> {
 
 	private static final long serialVersionUID = -583345937082081400L;
 	private double lastT;
 	private final IReaction<Object> r;
 	
+	/**
+	 * @param reaction the reaction that will be used to compute the current time
+	 */
 	public Dt(final IReaction<Object> reaction) {
 		super();
 		Objects.requireNonNull(reaction);
@@ -44,7 +53,7 @@ public class Dt extends AbstractAnnotatedTree<Double> {
 
 	@Override
 	protected String asString() {
-		return "ΔT";
+		return "dT";
 	}
 
 }
