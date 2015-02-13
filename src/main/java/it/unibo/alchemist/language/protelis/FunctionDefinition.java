@@ -8,6 +8,8 @@
  */
 package it.unibo.alchemist.language.protelis;
 
+import gnu.trove.list.TByteList;
+import gnu.trove.list.array.TByteArrayList;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
 import it.unibo.alchemist.utils.FasterString;
@@ -26,11 +28,14 @@ public class FunctionDefinition implements Serializable {
 	private final FasterString n;
 	private final int argNumber;
 	private final FasterString[] internalNames;
-	private final byte[] stackCode;
+	private final TByteList stackCode;
 	private AnnotatedTree<?> b;
 	
-	public FunctionDefinition(final FasterString name, final List<VAR
-			> args) {
+	/**
+	 * @param name function name
+	 * @param args arguments
+	 */
+	public FunctionDefinition(final FasterString name, final List<VAR> args) {
 		argNumber = args.size();
 		n = name;
 		internalNames = new FasterString[argNumber];
@@ -41,13 +46,20 @@ public class FunctionDefinition implements Serializable {
 		bb.putInt(n.hashCode());
 		bb.putLong(n.hash64());
 		bb.put((byte) argNumber);
-		stackCode = bb.array();
+		stackCode = new TByteArrayList(bb.array());
 	}
 	
+	/**
+	 * @param name function name
+	 * @param args arguments
+	 */
 	public FunctionDefinition(final String name, final List<VAR> args) {
 		this(new FasterString(name), args);
 	}
 
+	/**
+	 * @return number of arguments
+	 */
 	public final int getArgNumber() {
 		return argNumber;
 	}
@@ -60,10 +72,16 @@ public class FunctionDefinition implements Serializable {
 		return b.copy();
 	}
 
+	/**
+	 * @param body the body of this function
+	 */
 	public void setBody(final AnnotatedTree<?> body) {
 		b = body;
 	}
 	
+	/**
+	 * @return function name
+	 */
 	public FasterString getName() {
 		return n;
 	}
@@ -75,13 +93,17 @@ public class FunctionDefinition implements Serializable {
 	
 	@Override
 	public boolean equals(final Object o) {
-		if(o instanceof FunctionDefinition) {
-			final FunctionDefinition fd = (FunctionDefinition)o;
+		if (o instanceof FunctionDefinition) {
+			final FunctionDefinition fd = (FunctionDefinition) o;
 			return n.equals(fd.n) && argNumber == fd.argNumber;
 		}
 		return false;
 	}
 	
+	/**
+	 * @param i argument position
+	 * @return argument internal name
+	 */
 	public FasterString getInternalName(final int i) {
 		return internalNames[i];
 	}
@@ -91,8 +113,11 @@ public class FunctionDefinition implements Serializable {
 		return n.hashCode() + argNumber;
 	}
 	
+	/**
+	 * @return a special hash code to identify this function in the call stack
+	 */
 	public byte[] getStackCode() {
-		return stackCode;
+		return stackCode.toArray();
 	}
 
 }
