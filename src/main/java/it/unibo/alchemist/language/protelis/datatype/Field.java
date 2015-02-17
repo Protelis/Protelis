@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -9,11 +9,8 @@
 package it.unibo.alchemist.language.protelis.datatype;
 
 import it.unibo.alchemist.model.interfaces.INode;
-import it.unibo.alchemist.utils.L;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -29,21 +26,14 @@ import org.danilopianini.lang.TriFunction;
  */
 public interface Field extends Serializable {
 	
+	/**
+	 * @param defaultSize creates a new and empty {@link Field}, defaulting on the specified size
+	 * @return an empty {@link Field}
+	 */
 	static Field create(int defaultSize) {
 		return new FieldTroveMapImpl(defaultSize + 1, 1f);
 	}
 	
-	static Field apply(final Object target, final Method m, final boolean fieldTarget, final int[] fieldIndexes, final Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return apply((actualTarget,actualArgs) -> {
-			try {
-					return m.invoke(actualTarget, actualArgs);
-				} catch (Exception e) {
-					L.error(e);
-				}
-			return null;
-		}, fieldTarget, fieldIndexes, target, args);
-	}
-
 	static Field applyWithSingleParam(UnaryOperator<Object> fun, int[] fields, Object a) {
 		return apply((t,p) -> fun.apply(p[0]), false, fields, null, a);
 	}
@@ -56,25 +46,65 @@ public interface Field extends Serializable {
 		return apply((t,p) -> fun.apply(p[0], p[1], p[2]), false, fields, null, a, b, c);
 	}
 	
-	static Field apply(final Function<Object[], Object> fun, int[] fields, Object... args){
-	    return apply(fun, false, fields, null, args);
+	/**
+	 * @param fun
+	 *            the function to apply.
+	 * @param fieldIndexes
+	 *            the indexes of which among the arguments are fields
+	 * @param args
+	 *            the arguments
+	 * @return a new field resulting from the application of the
+	 *         {@link Function} to the target and the arguments
+	 */
+	static Field apply(final Function<Object[], Object> fun, int[] fieldIndexes, Object... args){
+	    return apply(fun, false, fieldIndexes, null, args);
 	}
 
-	static Field apply(final Function<Object[], Object> fun, final boolean fieldTarget, int[] fields, final Object target, Object... args){
-	    return apply((t,p) -> fun.apply(p), fieldTarget, fields, target, args);
+	/**
+	 * @param fun
+	 *            the function to apply.
+	 * @param fieldTarget
+	 *            true if the target is a field
+	 * @param fieldIndexes
+	 *            the indexes of which among the arguments are fields
+	 * @param target
+	 *            the object this method will be invoked on
+	 * @param args
+	 *            the arguments
+	 * @return a new field resulting from the application of the
+	 *         {@link Function} to the target and the arguments
+	 */
+	static Field apply(final Function<Object[], Object> fun, final boolean fieldTarget, int[] fieldIndexes, final Object target, Object... args){
+		return apply((t, p) -> fun.apply(p), fieldTarget, fieldIndexes, target, args);
 	}
 
+	/**
+	 * @param fun
+	 *            the function to apply. It must accept as a first argument the
+	 *            data type carried by the target, and an Object array as second
+	 *            argument (namely, it is a vararg)
+	 * @param fieldTarget
+	 *            true if the target is a field
+	 * @param fieldIndexes
+	 *            the indexes of which among the arguments are fields
+	 * @param target
+	 *            the object this method will be invoked on
+	 * @param args
+	 *            the arguments
+	 * @return a new field resulting from the application of the
+	 *         {@link BiFunction} to the target and the arguments
+	 */
 	static Field apply(final BiFunction<Object, Object[], Object> fun, final boolean fieldTarget, final int[] fieldIndexes, final Object target, final Object... args) {
-		if (fieldIndexes.length == 0) {
+		if (!fieldTarget && fieldIndexes.length == 0) {
 			throw new IllegalArgumentException("To use this field application at least one of the parameters must be a field.");
 		}
 		/*
 		 * A consistency check may make sense here.
 		 */
-		final Field refField = ((Field) args[fieldIndexes[0]]);
+		final Field refField = (Field) (fieldTarget ? target : args[fieldIndexes[0]]);
 		final Field result = create(refField.size());
-		for(final INode<Object> node : refField.nodeIterator()){
-			final Object actualTarget = fieldTarget ? (((Field)target).getSample(node)) : target;
+		for (final INode<Object> node : refField.nodeIterator()) {
+			final Object actualTarget = fieldTarget ? (((Field) target).getSample(node)) : target;
 			Object[] actualArgs = Arrays.copyOf(args, args.length);
 			for (final int i : fieldIndexes) {
 				final Object arg = ((Field) actualArgs[i]).getSample(node);
@@ -83,7 +113,7 @@ public interface Field extends Serializable {
 				}
 				actualArgs[i] = arg;
 			}
-			result.addSample(node, fun.apply(actualTarget,actualArgs));
+			result.addSample(node, fun.apply(actualTarget, actualArgs));
 		}
 		return result;
 	}
