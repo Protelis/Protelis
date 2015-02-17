@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -13,11 +13,10 @@ import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.ReflectionUtils;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.model.interfaces.INode;
-import it.unibo.alchemist.utils.L;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +25,11 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.danilopianini.lang.PrimitiveUtils;
 
+/**
+ * @author Danilo Pianini
+ *
+ */
 public class MethodCall extends AbstractAnnotatedTree<Object> {
 
 	private static final long serialVersionUID = -2299070628855971997L;
@@ -37,8 +39,13 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 
 	/**
 	 * @param m
+	 *            the method to call
 	 * @param branch
-	 * @param isStatic if true, the first branch must contain the AnnotatedTree whose annotation will contain the object on which the method will be invoked
+	 *            the Protelis sub-programs
+	 * @param isStatic
+	 *            if false, the first branch must contain the AnnotatedTree whose
+	 *            annotation will contain the object on which the method will be
+	 *            invoked
 	 */
 	public MethodCall(final Method m, final List<AnnotatedTree<?>> branch, final boolean isStatic) {
 		super(branch);
@@ -53,48 +60,35 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 		// Obtain target and arguments
 		final Object target = ztatic ? null : getBranch(0).getAnnotation();
-		Stream<?> s = getBranchesAnnotationStream();
+		final Stream<?> s = getBranchesAnnotationStream();
 		final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
 		/*
 		 * Check if any of the parameters is a field
 		 */
-		try {
-			if (fieldComposable) {
-				final boolean fieldTarget = target == null ? false : Field.class.isAssignableFrom(target.getClass());
-				Stream<Object> str = Arrays.stream(args).parallel();
-				/*
-				 * Filter the fields
-				 */
-				str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
-				/*
-				 * Store their indexes
-				 */
-				final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
-				if (fieldTarget || fieldIndexes.length > 0) {
-					setAnnotation(Field.apply(target, method, fieldTarget, fieldIndexes, args));
-					return;
-				}
-			}
+		if (fieldComposable) {
+			final boolean fieldTarget = target == null ? false : Field.class.isAssignableFrom(target.getClass());
+			Stream<Object> str = Arrays.stream(args).parallel();
 			/*
-			 * Handle down-casting
+			 * Filter the fields
 			 */
-			final Class<?>[] parTypes = method.getParameterTypes();
-			for (int i = 0; i < args.length; i++) {
-				final Class<?> wanted = parTypes[i];
-				final Class<?> actual = args[i].getClass();
-				if (!wanted.isAssignableFrom(actual) && PrimitiveUtils.classIsNumber(wanted) && PrimitiveUtils.classIsNumber(actual)) {
-					final Number wrapArg = (Number) args[i];
-					args[i] = PrimitiveUtils.castIfNeeded(wanted, wrapArg).orElse(wrapArg);
-				}
+			str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
+			/*
+			 * Store their indexes
+			 */
+			final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
+			if (fieldTarget || fieldIndexes.length > 0) {
+				setAnnotation(Field.apply(
+						(actualT, actualA) -> ReflectionUtils.invokeMethod(method, actualT, actualA),
+						fieldTarget, fieldIndexes, args));
+				return;
 			}
-			// TODO: NEED TO HANDLE DOWN-CASTING OF PRIMITIVES
-			setAnnotation(method.invoke(target, args));
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			L.error(e);
-			throw new IllegalStateException("Cannot execute " + method + " on " + Arrays.toString(args));
 		}
+		setAnnotation(ReflectionUtils.invokeMethod(method, target, args));
 	}
 
+	/**
+	 * @return the method return type
+	 */
 	public Class<?> getReturnType() {
 		return method.getReturnType();
 	}
