@@ -17,6 +17,9 @@ import it.unibo.alchemist.language.protelis.util.ReflectionUtils;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.model.interfaces.INode;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +36,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public class MethodCall extends AbstractAnnotatedTree<Object> {
 
 	private static final long serialVersionUID = -2299070628855971997L;
-	private final Method method;
+	private transient Method method;
 	private final boolean fieldComposable;
 	private final boolean ztatic;
 
@@ -101,6 +104,25 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 	@Override
 	protected String asString() {
 		return method.getName() + "/" + method.getParameterCount();
+	}
+	
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		out.writeObject(method.getDeclaringClass());
+		out.writeUTF(method.getName());
+		out.writeObject(method.getParameterTypes());
+	}
+
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		Class<?> declaringClass = (Class<?>) in.readObject();
+		String methodName = in.readUTF();
+		Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
+		try {
+			method = declaringClass.getMethod(methodName, parameterTypes);
+		} catch (Exception e) {
+			throw new IOException(String.format("Error occurred resolving deserialized method '%s.%s'", declaringClass.getSimpleName(), methodName), e);
+		}
 	}
 
 }
