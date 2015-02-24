@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -29,12 +29,15 @@ public class ArrayTupleImpl implements Tuple {
 	private int hash;
 	private String string;
 
+	/**
+	 * @param base the elements
+	 */
 	public ArrayTupleImpl(final Object... base) {
 		this(base, true);
 	}
 
 	private ArrayTupleImpl(final Object[] base, final boolean copy) {
-		a = copy? Arrays.copyOf(base, base.length) : base;
+		a = copy ? Arrays.copyOf(base, base.length) : base;
 	}
 	
 	@Override
@@ -44,7 +47,7 @@ public class ArrayTupleImpl implements Tuple {
 
 	@Override
 	public Object get(final int i) {
-		return a[(int)i];
+		return a[(int) i];
 	}
 
 	@Override
@@ -64,17 +67,20 @@ public class ArrayTupleImpl implements Tuple {
 
 	@Override
 	public int compareTo(final Tuple o) {
-		for(int i = 0; i < a.length; i++) {
+		for (int i = 0; i < a.length; i++) {
 			final Object o1 = a[i];
 			final Object o2 = o.get(i);
-			if(o1 instanceof Comparable && o2 instanceof Comparable) {
+			if (o1 instanceof Comparable && o2 instanceof Comparable) {
 				@SuppressWarnings("unchecked")
 				final int res = ((Comparable<Object>) o1).compareTo(((Comparable<?>) o2));
 				if (res != 0) {
 					return res;
 				}
 			} else {
-				throw new IllegalStateException(o1.getClass() + " and " + o2.getClass() + " can't be compared (" + o1 + " and " + o2 + ")");
+				/*
+				 * Fall back to lexicographic comparison
+				 */
+				return o1.toString().compareTo(o2.toString());
 			}
 		}
 		return 0;
@@ -96,23 +102,23 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Tuple set(final int i, final Object element) {
 		final Object[] copy = Arrays.copyOf(a, a.length);
-		copy[(int)i] = element;
+		copy[(int) i] = element;
 		return new ArrayTupleImpl(copy, false);
 	}
 
 	@Override
 	public ArrayTupleImpl subTuple(final int i, final int j) {
-		return new ArrayTupleImpl(ArrayUtils.subarray(a, (int) i, (int)j), false);
+		return new ArrayTupleImpl(ArrayUtils.subarray(a, (int) i, (int) j), false);
 	}
 
 	@Override
 	public Tuple mergeAfter(final Tuple tuple) {
-		if(tuple instanceof ArrayTupleImpl) {
-			return new ArrayTupleImpl(ArrayUtils.addAll(a, ((ArrayTupleImpl)tuple).a), false);
+		if (tuple instanceof ArrayTupleImpl) {
+			return new ArrayTupleImpl(ArrayUtils.addAll(a, ((ArrayTupleImpl) tuple).a), false);
 		}
-		final Object[] copy = new Object[a.length + (int)tuple.size()];
+		final Object[] copy = new Object[a.length + (int) tuple.size()];
 		System.arraycopy(a, 0, copy, 0, a.length);
-		for(int i = 0; i<copy.length; i++) {
+		for (int i = 0; i < copy.length; i++) {
 			copy[i] = tuple.get(i - a.length);
 		}
 		return new ArrayTupleImpl(copy, false);
@@ -124,18 +130,20 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
-	public boolean contains(Object element) {
-		for(int i = 0; i < a.length; i++) {
-			if(a[i].equals(element)) return true;
+	public boolean contains(final Object element) {
+		for (int i = 0; i < a.length; i++) {
+			if (a[i].equals(element)) {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public Field fcontains(Field element) {
+	public Field fcontains(final Field element) {
 		// TODO: this is a kludge, and must be removed:
 		Field result = new FieldTroveMapImpl();
-		((Field)element).coupleIterator().forEach(pair -> { 
+		((Field) element).coupleIterator().forEach(pair -> {
 			result.addSample(pair.getFirst(), contains(pair.getSecond()));
 		});
 		return result;
@@ -143,27 +151,27 @@ public class ArrayTupleImpl implements Tuple {
 	
 	@Override
 	public String toString() {
-		if(string == null) {
+		if (string == null) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append('[');
-			for(final Object o: a) {
-				final boolean notNumber = ! (o instanceof Number || o instanceof Tuple);
+			for (final Object o : a) {
+				final boolean notNumber = !(o instanceof Number || o instanceof Tuple);
 				final boolean isString = o instanceof String;
-				if(isString) {
+				if (isString) {
 					sb.append('"');
-				} else if(notNumber) {
+				} else if (notNumber) {
 					sb.append('\'');
 				}
 				sb.append(o.toString());
-				if(isString) {
+				if (isString) {
 					sb.append('"');
-				} else if(notNumber) {
+				} else if (notNumber) {
 					sb.append('\'');
 				}
 				sb.append(", ");
 			}
-			if(a.length > 0) {
-				sb.delete(sb.length()-2, sb.length());
+			if (a.length > 0) {
+				sb.delete(sb.length() - 2, sb.length());
 			}
 			sb.append(']');
 			string = sb.toString();
@@ -172,15 +180,15 @@ public class ArrayTupleImpl implements Tuple {
 	}
 	
 	@Override
-	public boolean equals(final Object o){
-		if(o instanceof ArrayTupleImpl) {
-			return Arrays.equals(a, ((ArrayTupleImpl)o).a);
+	public boolean equals(final Object o) {
+		if (o instanceof ArrayTupleImpl) {
+			return Arrays.equals(a, ((ArrayTupleImpl) o).a);
 		}
-		if(o instanceof Tuple) {
-			final Tuple t = (Tuple)o;
-			if((int)t.size() == a.length) {
-				for(int i=0; i<a.length; i++) {
-					if(!a[i].equals(t.get(i))){
+		if (o instanceof Tuple) {
+			final Tuple t = (Tuple) o;
+			if ((int) t.size() == a.length) {
+				for (int i = 0; i < a.length; i++) {
+					if (!a[i].equals(t.get(i))) {
 						return false;
 					}
 				}
@@ -192,7 +200,7 @@ public class ArrayTupleImpl implements Tuple {
 	
 	@Override
 	public int hashCode() {
-		if(hash == 0) {
+		if (hash == 0) {
 			hash = HashUtils.djb2int32obj(a);
 		}
 		return hash;
@@ -201,8 +209,8 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Tuple unwrap(final int i) {
 		return Tuple.create(Arrays.stream(a).map((o) -> {
-			if(o instanceof Tuple) {
-				return ((Tuple)o).get(i);
+			if (o instanceof Tuple) {
+				return ((Tuple) o).get(i);
 			}
 			return o;
 		}).toArray());
@@ -211,7 +219,7 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Tuple union(final Tuple t) {
 		final Set<Object> l = new HashSet<>(Arrays.asList(a));
-		for(final Object o: t) {
+		for (final Object o : t) {
 			l.add(o);
 		}
 		return Tuple.create(l.toArray());
@@ -220,17 +228,19 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Tuple intersection(final Tuple t) {
 		final Set<Object> l = new HashSet<>();
-		final Set<Object> l_in = new HashSet<>(Arrays.asList(a));
-		for(final Object o: t) {
-			if(l_in.contains(o)) { l.add(o); }
+		final Set<Object> lIn = new HashSet<>(Arrays.asList(a));
+		for (final Object o : t) {
+			if (lIn.contains(o)) {
+				l.add(o);
+			}
 		}
 		return Tuple.create(l.toArray());
 	}
-	
+
 	@Override
 	public Tuple subtract(final Tuple t) {
 		final Set<Object> l = new HashSet<>(Arrays.asList(a));
-		for(final Object o: t) {
+		for (final Object o : t) {
 			l.remove(o);
 		}
 		return Tuple.create(l.toArray());
