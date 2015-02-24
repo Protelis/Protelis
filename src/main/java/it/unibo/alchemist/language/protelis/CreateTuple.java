@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import gnu.trove.list.TByteList;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.TIntObjectMap;
+import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
@@ -23,33 +26,49 @@ import it.unibo.alchemist.model.interfaces.INode;
  * @author Danilo Pianini
  *
  */
-public class CreateTuple extends AbstractAnnotatedTree<Tuple> {
+public class CreateTuple extends AbstractAnnotatedTree<Object> {
 	
 	private static final long serialVersionUID = -5018807023306859866L;
 
-	public CreateTuple(AnnotatedTree<?>... args) {
+	/**
+	 * @param args tuple arguments
+	 */
+	public CreateTuple(final AnnotatedTree<?>... args) {
 		super(args);
 	}
 	
-	public CreateTuple(List<AnnotatedTree<?>> args) {
+	/**
+	 * @param args tuple arguments
+	 */
+	public CreateTuple(final List<AnnotatedTree<?>> args) {
 		super(args);
 	}
 	
 	@Override
-	public AnnotatedTree<Tuple> copy() {
+	public AnnotatedTree<Object> copy() {
 		return new CreateTuple(deepCopyBranches());
 	}
 
 	@Override
-	public void eval(INode<Object> sigma, TIntObjectMap<Map<CodePath, Object>> theta, Stack gamma, Map<CodePath, Object> lastExec, Map<CodePath, Object> newMap, TByteList currentPosition) {
-		Object[] a = new Object[getBranchesNumber()];
+	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
+		final Object[] a = new Object[getBranchesNumber()];
+		final TIntList fieldIndexes = new TIntArrayList();
 		forEachWithIndex((i, branch) -> {
 			currentPosition.add(i.byteValue());
 			branch.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
 			removeLast(currentPosition);
-			a[i] = branch.getAnnotation();
+			final Object elem = branch.getAnnotation();
+			a[i] = elem;
+			if (elem instanceof Field) {
+				fieldIndexes.add(i);
+			}
 		});
-		setAnnotation(Tuple.create(a));
+		if (fieldIndexes.isEmpty()) {
+			setAnnotation(Tuple.create(a));
+		} else {
+			final Field res = Field.apply(Tuple::create, fieldIndexes.toArray(), a);
+			setAnnotation(res);
+		}
 	}
 
 	@Override
