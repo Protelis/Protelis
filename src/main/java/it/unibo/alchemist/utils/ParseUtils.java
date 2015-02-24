@@ -32,7 +32,7 @@ import it.unibo.alchemist.language.protelis.Self;
 import it.unibo.alchemist.language.protelis.TernaryOp;
 import it.unibo.alchemist.language.protelis.UnaryOp;
 import it.unibo.alchemist.language.protelis.Variable;
-import it.unibo.alchemist.language.protelis.HoodCall.HoodOp;
+import it.unibo.alchemist.language.protelis.HoodOp;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.protelis.Assignment;
@@ -213,13 +213,13 @@ public final class ParseUtils {
 	private static void parseImport(final Import imp, final Map<Pair<String, Integer>, Method> imports) {
 		try {
 			final int initialsize = imports.size();
-			String classname = imp.getClass_();
+			final String classname = imp.getClass_();
 			Stream<Method> ms = Arrays.stream(Class.forName(classname).getMethods());
 			/*
 			 * TODO: Check for return type and params: if param is Field and
 			 * return type is not then L.warn()
 			 */
-			String methodName = (imp.getMethod() == null) ? imp.getName() : imp.getMethod();
+			final String methodName = (imp.getMethod() == null) ? imp.getName() : imp.getMethod();
 			if (imp.getMethod() == null && methodName.equals("*")) {
 				//ms = ms.filter(m -> Modifier.isStatic(m.getModifiers()));
 				ms.forEach(m -> imports.put(new Pair<>(m.getName(), m.getParameterCount() + (Modifier.isStatic(m.getModifiers()) ? 0 : 1)), m));
