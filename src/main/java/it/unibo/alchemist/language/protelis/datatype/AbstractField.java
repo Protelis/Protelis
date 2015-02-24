@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -9,6 +9,7 @@
 package it.unibo.alchemist.language.protelis.datatype;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 
 import it.unibo.alchemist.model.interfaces.INode;
@@ -36,15 +37,19 @@ public abstract class AbstractField implements Field {
 		Objects.requireNonNull(c);
 		Objects.requireNonNull(op);
 		boolean filter = exclude != null;
-		T result = defaultVal;
-		for(final T el: c) {
+		Optional<T> result = Optional.empty();
+		for (final T el: c) {
 			if (filter && el.equals(exclude)) {
 				filter = false;
 			} else {
-				result = op.apply(result, el);
+				if (result.isPresent()) {
+					result = Optional.of(op.apply(result.get(), el));
+				} else {
+					result = Optional.of(el);
+				}
 			}
 		}
-		return result;
+		return result.orElse(defaultVal);
 	}
 
 	@Override
