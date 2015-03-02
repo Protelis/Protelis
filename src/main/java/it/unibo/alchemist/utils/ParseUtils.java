@@ -15,6 +15,7 @@ import it.unibo.alchemist.language.protelis.Constant;
 import it.unibo.alchemist.language.protelis.CreateTuple;
 import it.unibo.alchemist.language.protelis.CreateVar;
 import it.unibo.alchemist.language.protelis.DotOperator;
+import it.unibo.alchemist.language.protelis.Dt;
 import it.unibo.alchemist.language.protelis.Eval;
 import it.unibo.alchemist.language.protelis.FunctionCall;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
@@ -95,6 +96,7 @@ public final class ParseUtils {
 	private static final String METHOD_NAME = "#";
 	private static final String REP_NAME = "rep";
 	private static final String IF_NAME = "if";
+	private static final String DT_NAME = "dt";
 	private static final String PI_NAME = "pi";
 	private static final String E_NAME = "e";
 	private static final String LAMBDA_NAME = "->";
@@ -168,10 +170,11 @@ public final class ParseUtils {
 			return new FunctionDefinition(fd.getName(), extractArgs(fd));
 		}));
 		/*
-		 * Create function bodies
+		 * Create function bodies.
+		 * Bodies may contain lambdas, lambdas are named using processing order, as a consequence function bodies must be evaluated sequentially.
 		 */
 		final AtomicInteger id = new AtomicInteger();
-		fds = root.getDefinitions().parallelStream();
+		fds = root.getDefinitions().stream();
 		fds.forEach(fd -> {
 			final FunctionDefinition def = functions.get(new FasterString(fd.getName()));
 			def.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), imports, functions, env, node, reaction, id));
@@ -315,6 +318,9 @@ public final class ParseUtils {
 		}
 		if (name.equals(E_NAME)) {
 			return new Constant<>(Math.E);
+		}
+		if (name.equals(DT_NAME)) {
+			return new Dt(reaction);
 		}
 		if (name.equals(SELF_NAME)) {
 			return new Self();
