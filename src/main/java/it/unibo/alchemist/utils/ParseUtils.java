@@ -274,7 +274,7 @@ public final class ParseUtils {
 			return new Variable(((VAR) e).getName(), node, env);
 		}
 		if (e == null) {
-			throw new IllegalArgumentException(e + " expression, this is a bug.");
+			throw new IllegalArgumentException("null expression, this is a bug.");
 		}
 		final String name = e.getName();
 		if (name == null) {
