@@ -65,16 +65,21 @@ public class ArrayTupleImpl implements Tuple {
 		return subTuple(0, i);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(final Tuple o) {
-		for (int i = 0; i < a.length; i++) {
+		int res = 0;
+		for (int i = 0; res == 0 && i < a.length; i++) {
 			final Object o1 = a[i];
 			final Object o2 = o.get(i);
 			if (o1 instanceof Comparable && o2 instanceof Comparable) {
-				@SuppressWarnings("unchecked")
-				final int res = ((Comparable<Object>) o1).compareTo(((Comparable<?>) o2));
-				if (res != 0) {
-					return res;
+				try {
+					res = ((Comparable<Object>) o1).compareTo(((Comparable<?>) o2));
+				} catch (ClassCastException ex) {
+					/*
+					 * Uncomparable, go lexicographically
+					 */
+					res = o1.toString().compareTo(o2.toString());
 				}
 			} else {
 				/*
@@ -83,7 +88,7 @@ public class ArrayTupleImpl implements Tuple {
 				return o1.toString().compareTo(o2.toString());
 			}
 		}
-		return 0;
+		return res;
 	}
 
 	@Override
