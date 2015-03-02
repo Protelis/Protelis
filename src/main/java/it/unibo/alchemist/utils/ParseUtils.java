@@ -366,7 +366,7 @@ public final class ParseUtils {
 			final AnnotatedTree<Field> arg = (AnnotatedTree<Field>) parseExpression(e.getArg(), imports, defs, env, node, reaction, id);
 			return new HoodCall(arg, hop, e.getInclusive() != null);
 		}
-		throw new UnsupportedOperationException("Unsupported operation: " + (e != null && e.getName() != null ? e.getName() : "Unknown"));
+		throw new UnsupportedOperationException("Unsupported operation: " + (e.getName() != null ? e.getName() : "Unknown"));
 	}
 
 	private static List<Expression> extractArgs(final Expression e) {
@@ -385,6 +385,11 @@ public final class ParseUtils {
 		return e.getLambdaArgs() != null && e.getLambdaArgs().getArgs() != null ? e.getLambdaArgs().getArgs() : Collections.emptyList();
 	}
 	
+	/**
+	 * @param s
+	 *            the string to filter
+	 * @return the same string without spaces
+	 */
 	public static String filterSpaces(final String s) {
 		return s.replaceAll("\\s+", "");
 	}
