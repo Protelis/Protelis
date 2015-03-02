@@ -38,8 +38,8 @@ public class CodePath implements Serializable {
 		safe = size < 4;
 		if (safe) {
 			path = null;
-			for(int i = 0; i < stack.size(); i++) {
-				hash |= (-1 & stack.get(i)) << 8*i;
+			for (int i = 0; i < stack.size(); i++) {
+				hash |= (-1 & stack.get(i)) << 8 * i;
 			}
 		} else {
 			path = new long[(stack.size() +7) / 8];
