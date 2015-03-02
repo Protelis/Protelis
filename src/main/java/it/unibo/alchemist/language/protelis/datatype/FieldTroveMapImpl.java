@@ -91,7 +91,7 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 	public Object getSample(final INode<Object> n) {
 		Objects.requireNonNull(n);
 		final Pair<INode<Object>, Object> res = fld.get(n.getId());
-		if(res == null) {
+		if (res == null) {
 			throw new NoSuchElementException(n.toString());
 		}
 		return res.getSecond();
