@@ -107,7 +107,7 @@ public final class ParseUtils {
 	private static final String HOOD_END = "Hood";
 	private static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values()).map(Op2::toString).collect(Collectors.toList());
 	private static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values()).map(Op1::toString).collect(Collectors.toList());
-//	private static final List<String> HOOD_REDUCERS = Arrays.stream(HoodOp.values()).map(HoodOp::toString).map(String::toLowerCase).collect(Collectors.toList());
+
 	static {
 		final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
 		XTEXT = guiceInjector.getInstance(XtextResourceSet.class);
@@ -272,6 +272,9 @@ public final class ParseUtils {
 		}
 		if (e instanceof VAR) {
 			return new Variable(((VAR) e).getName(), node, env);
+		}
+		if (e == null) {
+			throw new IllegalArgumentException(e + " expression, this is a bug.");
 		}
 		final String name = e.getName();
 		if (name == null) {
