@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -189,11 +189,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	protected final void evalEveryBranchWithProjection(final INode<Object> sigma,
 			final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec,
 			final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		forEachWithIndex((i, branch) -> {
-			currentPosition.add(i.byteValue());
+		for (int i = 0; i < branches.size(); i++) {
+			final AnnotatedTree<?> branch = branches.get(i);
+			currentPosition.add((byte) i);
 			branch.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
 			removeLast(currentPosition);
-		});
+		}
 	}
 
 	/**
