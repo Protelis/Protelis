@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.danilopianini.lang.CollectionUtils;
@@ -273,6 +272,17 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		}
 	}
 	
+	/**
+	 * Print utility to be used by subclasses. Prints all branches with the
+	 * desired separator.
+	 * 
+	 * @param sb
+	 *            the {@link StringBuilder} to use
+	 * @param i
+	 *            indentation
+	 * @param separator
+	 *            separator
+	 */
 	protected void fillBranches(final StringBuilder sb, final int i, final char separator) {
 		forEach(b -> {
 			sb.append('\n');
