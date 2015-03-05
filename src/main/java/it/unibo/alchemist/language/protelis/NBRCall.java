@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -30,6 +30,12 @@ public class NBRCall extends AbstractAnnotatedTree<Field> {
 	private static final byte BRANCH = 1;
 	private final IEnvironment<Object> env;
 
+	/**
+	 * @param body
+	 *            body of nbr
+	 * @param environment
+	 *            the environment
+	 */
 	public NBRCall(final AnnotatedTree<?> body, final IEnvironment<Object> environment) {
 		super(body);
 		env = environment;
@@ -52,14 +58,14 @@ public class NBRCall extends AbstractAnnotatedTree<Field> {
 		final Object childVal = branch.getAnnotation();
 		newMap.put(childPath, childVal);
 		final Field res;
-		if(theta == null) {
+		if (theta == null) {
 			final Field tmp = lastExec == null ? null : (Field) lastExec.get(currentPath);
-			res = tmp == null? Field.create(1) : tmp;
+			res = tmp == null ? Field.create(1) : tmp;
 		} else {
 			res = Field.create(theta.size() + 1);
 			theta.forEachEntry((n, pathsMap) -> {
 				final Object val = pathsMap.get(childPath);
-				if(val != null) {
+				if (val != null) {
 					res.addSample(env.getNodeByID(n), val);
 				} else {
 					theta.remove(n);
