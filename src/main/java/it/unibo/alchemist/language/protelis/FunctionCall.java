@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -33,12 +33,18 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 	 * @param functionDefinition
 	 *            the definition of the function
 	 * @param args
-	 *            the arguments
+	 *            the arguments. Must be in the same number of the
+	 *            {@link FunctionDefinition}'s expected arguments
 	 */
 	public FunctionCall(final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
 		super(args);
 		Objects.requireNonNull(functionDefinition);
 		fd = functionDefinition;
+		if (fd.getArgNumber() != args.size()) {
+			throw new IllegalArgumentException(fd + " must be invoked with " + fd.getArgNumber()
+					+ " arguments. You have tried with " + args + ", which are " + args.size()
+					+ ". You know " + args.size() + " is not equal to " + fd.getArgNumber() + ", don't you?");
+		}
 		stackCode = fd.getStackCode();
 	}
 
