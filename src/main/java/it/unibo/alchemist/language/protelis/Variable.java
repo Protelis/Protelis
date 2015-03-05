@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -29,6 +29,14 @@ public class Variable extends AbstractAnnotatedTree<Object> {
 	private final INode<Object> node;
 	private final IEnvironment<Object> env;
 	
+	/**
+	 * @param varName
+	 *            variable name
+	 * @param host
+	 *            the node
+	 * @param environment
+	 *            the environment
+	 */
 	public Variable(final FasterString varName, final INode<Object> host, final IEnvironment<Object> environment) {
 		super();
 		name = varName;
@@ -36,6 +44,14 @@ public class Variable extends AbstractAnnotatedTree<Object> {
 		env = environment;
 	}
 	
+	/**
+	 * @param varName
+	 *            variable name
+	 * @param host
+	 *            the node
+	 * @param environment
+	 *            the environment
+	 */
 	public Variable(final String varName, final INode<Object> host, final IEnvironment<Object> environment) {
 		this(new FasterString(varName), host, environment);
 	}
@@ -48,7 +64,7 @@ public class Variable extends AbstractAnnotatedTree<Object> {
 	@Override
 	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
 		Object val = gamma.get(name);
-		if(val == null) {
+		if (val == null) {
 			/*
 			 * The variable cannot be read. Most probably, it is some node variable that is not set here. Defaults to false.
 			 */
