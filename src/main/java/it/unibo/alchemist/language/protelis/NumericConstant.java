@@ -16,11 +16,19 @@ public class NumericConstant extends Constant<Double> {
 
 	private static final long serialVersionUID = 7005881609489257450L;
 	
-	public NumericConstant(String number) {
+	/**
+	 * @param number
+	 *            the number
+	 */
+	public NumericConstant(final String number) {
 		this(Double.parseDouble(number));
 	}
 	
-	public NumericConstant(double number) {
+	/**
+	 * @param number
+	 *            the number
+	 */
+	public NumericConstant(final double number) {
 		super(number);
 	}
 	
