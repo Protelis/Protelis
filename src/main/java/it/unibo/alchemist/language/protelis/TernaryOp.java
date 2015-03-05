@@ -53,8 +53,11 @@ public class TernaryOp extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return op.toString() + "( " + getBranch(0) + ", " + getBranch(1) + ", " + getBranch(2) + ")";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(op.toString());
+		sb.append(')');
+		fillBranches(sb, i, ',');
+		sb.append(')');
 	}
 
 }

@@ -34,8 +34,8 @@ public class Self extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return "self";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append("self");
 	}
 
 }

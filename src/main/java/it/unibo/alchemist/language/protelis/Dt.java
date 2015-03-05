@@ -52,8 +52,8 @@ public class Dt extends AbstractAnnotatedTree<Double> {
 	}
 
 	@Override
-	protected String asString() {
-		return "dT";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(sb);
 	}
 
 }

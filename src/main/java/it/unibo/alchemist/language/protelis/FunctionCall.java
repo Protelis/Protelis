@@ -84,10 +84,15 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 	}
 
 	@Override
-	protected String innerAsString() {
-		return fd.getName() + "/" + fd.getArgNumber();
+	protected void innerAsString(final StringBuilder sb, final int indent) {
+		sb.append(fd.getName());
+		sb.append('/');
+		sb.append(fd.getArgNumber());
+		sb.append("(");
+		fillBranches(sb, indent, ',');
+		sb.append(')');
 	}
-	
+
 	public FunctionDefinition getFunctionDefinition() {
 		return fd;
 	}

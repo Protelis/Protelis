@@ -43,4 +43,6 @@ public interface AnnotatedTree<T> extends Serializable {
 
 	AnnotatedTree<?> getBranch(int i);
 	
+	public void toString(StringBuilder sb, int i);
+	
 }

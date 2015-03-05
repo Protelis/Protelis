@@ -52,8 +52,13 @@ public class BinaryOp extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return getBranch(0) + op.toString() + getBranch(1);
+	protected void asString(final StringBuilder sb, final int i) {
+		getBranch(0).toString(sb, i);
+		sb.append('\n');
+		indent(sb, i);
+		sb.append(op.toString());
+		sb.append('\n');
+		getBranch(1).toString(sb, i);
 	}
 
 }

@@ -84,21 +84,40 @@ public enum HoodOp {
 	 */
 	UNION(HoodOp::union,
 		Tuple::create,
-		of(create(Tuple.class, Tuple::create)),
+		of(create(Object.class, Tuple::create)),
 		of()
 	);
 	private final BiFunction<Field, INode<Object>, Object> f;
 	private final Function<Field, Object> defs;
 	
+	/**
+	 * @param fun
+	 * @param empty
+	 *            function that generates a default in case of empty field
+	 * @param suppliers
+	 *            list of pairs mapping classes to 0-ary functions that provide
+	 *            a default
+	 * @param cloners
+	 *            list of pairs mapping classes to 1-ary functions that, given
+	 *            an element of the field as input, provide a comparison. Such
+	 *            functions are used in case there is no supplier that can
+	 *            provide a specific value-agnostic default
+	 */
 	private HoodOp(final BiFunction<Field, INode<Object>, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
 		f = fun;
 		defs = (field) -> {
+			/*
+			 * Field empty: generate a default.
+			 */
 			if (field.isEmpty()) {
 				return empty.get();
 			}
 			final Class<?> type = field.getExpectedType();
 			for (Pair<Class<?>, Supplier<Object>> sup : suppliers) {
 				if (sup.getFirst().isAssignableFrom(type)) {
+					/*
+					 * Field has compatible type
+					 */
 					return sup.getSecond().get();
 				}
 			}
@@ -175,7 +194,13 @@ public enum HoodOp {
 		return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size());
 	}
 	private static Object union(final Field f, final INode<Object> n) {
-		return f.reduceVals((a, b) -> Tuple.union((Tuple) a, (Tuple) b), n, UNION.defs.apply(f));
+		return f.reduceVals(
+				(a, b) -> {
+			final Tuple at = a instanceof Tuple ? (Tuple) a : Tuple.create(a);
+			final Tuple bt = b instanceof Tuple ? (Tuple) b : Tuple.create(b);
+			return Tuple.union(at, bt);
+		},
+		n, UNION.defs.apply(f));
 	}
 	
 }

@@ -45,8 +45,8 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
 	}
 
 	@Override
-	protected String asString() {
-		return o.toString();
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(o);
 	}
 
 }

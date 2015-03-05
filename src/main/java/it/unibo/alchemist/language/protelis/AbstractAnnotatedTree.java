@@ -14,7 +14,9 @@ import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.utils.L;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.danilopianini.lang.CollectionUtils;
@@ -57,17 +60,46 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	}
 
 	@Override
-	public String toString() {
+	public final String toString() {
+		final StringBuilder sb = new StringBuilder();
+		toString(sb, 0);
+		return sb.toString();
+	}
+	
+	/**
+	 * @param sb
+	 *            {@link StringBuilder} to fill
+	 * @param i
+	 *            level of indentation
+	 */
+	@Override
+	public final void toString(final StringBuilder sb, final int i) {
+		indent(sb, i);
 		if (erased) {
-			return "|" + asString() + "|";
+			sb.append('|');
+			asString(sb, i);
+			sb.append('|');
+		} else {
+			asString(sb, i);
+			sb.append('\n');
+			indent(sb, i);
+			sb.append(':');
+			if (annotation instanceof AnnotatedTree<?>) {
+				sb.append('\n');
+				((AnnotatedTree<?>) annotation).toString(sb, i + 1);
+			} else {
+				sb.append(annotation);
+			}
 		}
-		return asString() + ":" + annotation;
 	}
 
 	/**
-	 * @return a {@link String} representation of this tree node
+	 * @param sb
+	 *            {@link StringBuilder} to fill
+	 * @param indent
+	 *            level of indentation
 	 */
-	protected abstract String asString();
+	protected abstract void asString(StringBuilder sb, int indent);
 
 	@Override
 	public final T getAnnotation() {
@@ -221,6 +253,35 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	 */
 	protected static final void removeLast(final TByteList currentPosition) {
 		currentPosition.removeAt(currentPosition.size() - 1);
+	}
+	
+	/**
+	 * Utility for indenting lines.
+	 * 
+	 * @param target
+	 *            the {@link StringBuilder} containing
+	 * @param i
+	 *            the level of indentation
+	 */
+	protected static void indent(final Appendable target, final int i) {
+		for (int j = 0; j < i; j++) {
+			try {
+				target.append('\t');
+			} catch (IOException e) {
+				L.error(e);
+			}
+		}
+	}
+	
+	protected void fillBranches(final StringBuilder sb, final int i, final char separator) {
+		forEach(b -> {
+			sb.append('\n');
+			b.toString(sb, i + 1);
+			sb.append(separator);
+		});
+		if (getBranchesNumber() > 0) {
+			sb.deleteCharAt(sb.length() - 1);
+		}
 	}
 
 }

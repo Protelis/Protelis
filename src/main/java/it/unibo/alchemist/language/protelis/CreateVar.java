@@ -52,8 +52,10 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return var + " = " + getBranch(0);
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(var);
+		sb.append(" = \n");
+		getBranch(0).toString(sb, i + 1);
 	}
 	
 	public boolean isDefinition() {

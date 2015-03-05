@@ -59,8 +59,19 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	}
 
 	@Override
-	protected String asString() {
-		return "if ( " + c + " ) {\n\t" + t + "\n} else {\n\t" + e + "}";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append("if (\n");
+		c.toString(sb, i + 1);
+		sb.append(") {");
+		sb.append('\n');
+		t.toString(sb, i + 1);
+		sb.append('\n');
+		indent(sb, i);
+		sb.append("} else {\n");
+		e.toString(sb, i + 1);
+		sb.append('\n');
+		indent(sb, i);
+		sb.append('}');
 	}
 
 }

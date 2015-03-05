@@ -74,8 +74,17 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 	}
 
 	@Override
-	protected String innerAsString() {
-		return "rep(" + xName + "<- (" + getBranch(W_BRANCH) + ") ) {\n\t" + getBranch(A_BRANCH)+ " }";
+	protected void innerAsString(final StringBuilder sb, final int indent) {
+		sb.append("rep (");
+		sb.append(xName);
+		sb.append(" <- \n");
+		getBranch(W_BRANCH).toString(sb, indent + 1);
+		sb.append(") {\n");
+		getBranch(A_BRANCH).toString(sb, indent + 1);
+		sb.append('\n');
+		indent(sb, indent);
+		sb.append('}');
 	}
+
 
 }

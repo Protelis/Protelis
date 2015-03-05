@@ -88,8 +88,8 @@ public class NBRRange extends AbstractAnnotatedTree<Field> {
 	}
 
 	@Override
-	protected String asString() {
-		return "nbrRange";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append("nbrRange");
 	}
 
 }

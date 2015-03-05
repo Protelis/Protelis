@@ -76,8 +76,10 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return "eval (" + getBranch(0) + ")";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append("eval(\n");
+		getBranch(0).toString(sb, i + 1);
+		sb.append(')');
 	}
 
 }

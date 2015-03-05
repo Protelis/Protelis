@@ -194,8 +194,17 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 	}
 
 	@Override
-	protected String innerAsString() {
-		return "alignedMap(" + fgen + "," + filterOp + "," + runOp + "," + defVal + ")";
+	protected void innerAsString(final StringBuilder sb, final int indent) {
+		sb.append("alignedMap(");
+		sb.append('\n');
+		fgen.toString(sb, indent + 1);
+		sb.append(",\n");
+		filterOp.toString(sb, indent + 1);
+		sb.append(",\n");
+		runOp.toString(sb, indent + 1);
+		sb.append(",\n");
+		defVal.toString(sb, indent + 1);
+		sb.append(')');
 	}
 
 }

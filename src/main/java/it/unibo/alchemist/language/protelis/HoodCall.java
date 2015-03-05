@@ -54,8 +54,11 @@ public class HoodCall extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return f.toString().toLowerCase(Locale.US) + "Hood( " + body.toString() + " )";
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(f.toString().toLowerCase(Locale.US));
+		sb.append("Hood (");
+		fillBranches(sb, i, ',');
+		sb.append(')');
 	}
 	
 }

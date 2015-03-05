@@ -90,8 +90,8 @@ public class Variable extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return name.toString();
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(name);
 	}
 
 }

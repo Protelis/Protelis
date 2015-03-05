@@ -72,8 +72,10 @@ public class CreateTuple extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return getBranches().toString();
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append('[');
+		fillBranches(sb, i, ',');
+		sb.append(']');
 	}
 
 }

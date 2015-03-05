@@ -23,13 +23,13 @@ public final class OpUtil {
 		final StringBuilder msg = new StringBuilder(INITIAL_SIZE);
 		msg.append("Nobody told me how to run ");
 		msg.append(op);
-		if(a.length > 0) {
+		if (a.length > 0) {
 			msg.append(" with parameters of class: ");
-			for(final Object o: a) {
-				msg.append(o == null? "null" : o.getClass().getSimpleName());
+			for (final Object o : a) {
+				msg.append(o == null ? "null" : o.getClass().getSimpleName());
 				msg.append(", ");
 			}
-			msg.delete(msg.length()-2, msg.length());
+			msg.delete(msg.length() - 2, msg.length());
 			msg.append('.');
 		}
 		throw new UnsupportedOperationException(msg.toString());

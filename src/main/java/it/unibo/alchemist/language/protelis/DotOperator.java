@@ -125,8 +125,16 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 	}
 	
 	@Override
-	protected String innerAsString() {
-		return left + "." + methodName + "(" + getBranches() + ")";
+	protected void innerAsString(final StringBuilder sb, final int indent) {
+		sb.append('\n');
+		left.toString(sb, indent);
+		sb.append('\n');
+		indent(sb, indent);
+		sb.append('.');
+		sb.append(methodName);
+		sb.append(" (");
+		fillBranches(sb, indent, ',');
+		sb.append(')');
 	}
 
 }

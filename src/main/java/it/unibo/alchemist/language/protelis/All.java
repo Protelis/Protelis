@@ -46,13 +46,12 @@ public class All extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		final StringBuilder sb = new StringBuilder();
-		forEach((b) -> {
-			sb.append(b);
-			sb.append('\n');
-		});
-		return sb.toString();
+	protected void asString(final StringBuilder sb, final int i) {
+		if (getBranchesNumber() == 1) {
+			getBranch(0).toString(sb, i);
+		} else if (getBranchesNumber() > 1) {
+			fillBranches(sb, i, ';');
+		}
 	}
 
 }

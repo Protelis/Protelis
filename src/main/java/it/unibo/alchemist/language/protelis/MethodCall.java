@@ -102,8 +102,13 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return method.getName() + "/" + method.getParameterCount();
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(method.getName());
+		sb.append('/');
+		sb.append(method.getParameterCount());
+		sb.append(" (");
+		fillBranches(sb, i, ',');
+		sb.append(')');
 	}
 	
 	private void writeObject(final ObjectOutputStream out) throws IOException {

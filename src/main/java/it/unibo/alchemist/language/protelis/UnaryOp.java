@@ -49,8 +49,9 @@ public class UnaryOp extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	protected String asString() {
-		return op.toString() + getBranch(0);
+	protected void asString(final StringBuilder sb, final int i) {
+		sb.append(op);
+		getBranch(0).toString(sb, i);
 	}
 
 }
