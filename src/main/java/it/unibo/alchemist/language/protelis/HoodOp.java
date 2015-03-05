@@ -17,6 +17,7 @@ import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.model.interfaces.INode;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -104,7 +105,7 @@ public enum HoodOp {
 	 *            provide a specific value-agnostic default
 	 */
 	private HoodOp(final BiFunction<Field, INode<Object>, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
-		f = fun;
+		f = (Serializable & BiFunction<Field, INode<Object>, Object>) fun;
 		defs = (field) -> {
 			/*
 			 * Field empty: generate a default.
