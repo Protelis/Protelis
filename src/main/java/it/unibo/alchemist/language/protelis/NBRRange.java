@@ -30,6 +30,10 @@ public class NBRRange extends AbstractAnnotatedTree<Field> {
 	private static final byte POSID = -1;
 	private final IEnvironment<Object> env;
 	
+	/**
+	 * @param environment
+	 *            the environment
+	 */
 	public NBRRange(final IEnvironment<Object> environment) {
 		super();
 		env = environment;
@@ -54,26 +58,26 @@ public class NBRRange extends AbstractAnnotatedTree<Field> {
 		newMap.put(posCP, curPos);
 		removeLast(currentPosition);
 		final IPosition lastPos = lastExec == null ? null : (IPosition) lastExec.get(posCP);
-		final boolean hasMoved = ! curPos.equals(lastPos);
+		final boolean hasMoved = !curPos.equals(lastPos);
 		final CodePath currentPath = new CodePath(currentPosition);
 		final Field res;
-		if(theta == null) {
+		if (theta == null) {
 			Field tmp = lastExec == null ? Field.create(1) : (Field) lastExec.get(currentPath);
-			if(hasMoved) {
+			if (hasMoved) {
 				/*
 				 * reload all the old keys
 				 */
 				res = Field.create(Math.max(tmp.size(), 1));
-				for(INode<Object> node: tmp.nodeIterator()) {
+				for (INode<Object> node : tmp.nodeIterator()) {
 					res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
 				}
 			} else {
 				res = tmp;
 			}
 		} else {
-			res = Field.create(theta.size()+1);
+			res = Field.create(theta.size() + 1);
 			theta.forEachEntry((nodeId, pathMap) -> {
-				if(pathMap.containsKey(currentPath)) {
+				if (pathMap.containsKey(currentPath)) {
 					final INode<Object> node = env.getNodeByID(nodeId);
 					res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
 				} else {
