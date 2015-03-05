@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -28,6 +28,16 @@ public class TernaryOp extends AbstractAnnotatedTree<Object> {
 	private static final long serialVersionUID = 2803028109250981637L;
 	private final Op3 op;
 
+	/**
+	 * @param name
+	 *            Operator name
+	 * @param branch1
+	 *            first argument
+	 * @param branch2
+	 *            second argument
+	 * @param branch3
+	 *            third argument
+	 */
 	public TernaryOp(final String name, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2, final AnnotatedTree<?> branch3) {
 		this(Op3.getOp(name), branch1, branch2, branch3);
 	}
