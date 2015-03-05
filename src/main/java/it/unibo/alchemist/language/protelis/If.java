@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -20,6 +20,7 @@ import java.util.Map;
 /**
  * @author Danilo Pianini
  *
+ * @param <T>
  */
 public class If<T> extends AbstractAnnotatedTree<T> {
 
@@ -28,6 +29,14 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	private final AnnotatedTree<Boolean> c;
 	private final AnnotatedTree<T> t, e;
 
+	/**
+	 * @param cond
+	 *            condition
+	 * @param then
+	 *            branch to execute if condition is true (erase otherwise)
+	 * @param otherwise
+	 *            branch to execute if condition is false (erase otherwise)
+	 */
 	public If(final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
 		super(cond, then, otherwise);
 		c = cond;
@@ -62,8 +71,7 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	protected void asString(final StringBuilder sb, final int i) {
 		sb.append("if (\n");
 		c.toString(sb, i + 1);
-		sb.append(") {");
-		sb.append('\n');
+		sb.append(") {\n");
 		t.toString(sb, i + 1);
 		sb.append('\n');
 		indent(sb, i);
