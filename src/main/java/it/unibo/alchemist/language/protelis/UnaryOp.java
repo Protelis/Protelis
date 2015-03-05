@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -27,6 +27,12 @@ public class UnaryOp extends AbstractAnnotatedTree<Object> {
 	private static final long serialVersionUID = 2803028109250981637L;
 	private final Op1 op;
 	
+	/**
+	 * @param name
+	 *            operator name
+	 * @param branch
+	 *            the operand
+	 */
 	public UnaryOp(final String name, final AnnotatedTree<?> branch) {
 		this(Op1.getOp(name), branch);
 	}
