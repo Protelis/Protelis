@@ -23,6 +23,7 @@ import java.util.Map;
  * 
  * @author Danilo Pianini
  *
+ * @param <T>
  */
 public class RepCall<T> extends AbstractSATree<T, T> {
 
@@ -31,6 +32,14 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 	private static final byte A_BRANCH = 1;
 	private final FasterString xName;
 	
+	/**
+	 * @param varName
+	 *            variable name
+	 * @param w
+	 *            initial value
+	 * @param body
+	 *            body
+	 */
 	public RepCall(final FasterString varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
 		super(w, body);
 		xName = varName;
@@ -40,7 +49,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 	public AnnotatedTree<T> copy() {
 		final List<AnnotatedTree<?>> branches = deepCopyBranches();
 		final RepCall<T> res = new RepCall<>(xName, branches.get(W_BRANCH), branches.get(A_BRANCH));
-		if(!isErased()) {
+		if (!isErased()) {
 			res.setSuperscript(getSuperscript());
 			res.setAnnotation(null);
 		}
@@ -50,7 +59,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 	@Override
 	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
 		gamma.push();
-		if(isErased()) {
+		if (isErased()) {
 			/*
 			 * Evaluate the initial value for the field. This is either a variable or a constant, so no projection is required.
 			 */
@@ -68,7 +77,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 		removeLast(currentPosition);
 		gamma.pop();
 		@SuppressWarnings("unchecked")
-		final T result = (T)body.getAnnotation();
+		final T result = (T) body.getAnnotation();
 		setAnnotation(result);
 		setSuperscript(result);
 	}
