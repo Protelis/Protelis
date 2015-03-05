@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -28,6 +28,14 @@ public class BinaryOp extends AbstractAnnotatedTree<Object> {
 	private static final long serialVersionUID = 2803028109250981637L;
 	private final Op2 op;
 	
+	/**
+	 * @param name
+	 *            operation name
+	 * @param branch1
+	 *            left operand
+	 * @param branch2
+	 *            right operand
+	 */
 	public BinaryOp(final String name, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
 		this(Op2.getOp(name), branch1, branch2);
 	}
