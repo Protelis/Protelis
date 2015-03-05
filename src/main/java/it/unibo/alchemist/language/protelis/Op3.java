@@ -13,7 +13,6 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public enum Op3 {
 	private final String n;
 	
 	Op3(final String name, final TriFunction<Object, Object, Object, Object> function) {
-		fun = (Serializable & TriFunction<Object, Object, Object, Object>) function;
+		fun = function;
 		n = name;
 	}
 	

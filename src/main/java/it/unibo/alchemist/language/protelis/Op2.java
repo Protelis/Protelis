@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -43,7 +43,7 @@ public enum Op2 {
 	SMALLER_EQUALS("<=", Op2::smallerEquals),
 	TIMES("*", Op2::times);
 	
-	private static final int[] BOTH = new int[]{0,1};
+	private static final int[] BOTH = new int[]{0, 1};
 	private static final int[] LEFT = new int[]{0};
 	private static final int[] RIGHT = new int[]{1};
 	private static final int[] NONE = new int[]{};
@@ -51,8 +51,8 @@ public enum Op2 {
 	private final BinaryOperator<Object> fun;
 	private final String n;
 
-	Op2(final String name, final BinaryOperator<Object> function) {
-		fun = (Serializable & BinaryOperator<Object>) function;
+	private Op2(final String name, final BinaryOperator<Object> function) {
+		fun = function;
 		n = name;
 	}
 
