@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -19,12 +19,16 @@ import java.util.Map;
 /**
  * @author Danilo Pianini
  *
+ * @param <T>
  */
 public class Constant<T> extends AbstractAnnotatedTree<T> {
 	
 	private static final long serialVersionUID = 2101316473738120102L;
 	private final T o;
 	
+	/**
+	 * @param obj the constant to be associated
+	 */
 	public Constant(final T obj) {
 		super();
 		o = obj;
@@ -40,7 +44,10 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
 		setAnnotation(o);
 	}
 	
-	protected T getInternalObject(){
+	/**
+	 * @return the constant value
+	 */
+	protected T getInternalObject() {
 		return o;
 	}
 
