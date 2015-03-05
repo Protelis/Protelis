@@ -11,6 +11,7 @@ package it.unibo.alchemist.language.protelis;
 import static it.unibo.alchemist.language.protelis.util.OpUtil.unsupported;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +52,7 @@ public enum Op2 {
 	private final String n;
 
 	Op2(final String name, final BinaryOperator<Object> function) {
-		fun = function;
+		fun = (Serializable & BinaryOperator<Object>) function;
 		n = name;
 	}
 
@@ -69,10 +70,17 @@ public enum Op2 {
 		return fun.apply(a, b);
 	}
 
+	@Override
 	public String toString() {
 		return n;
 	}
 
+	/**
+	 * Translates a name into an operator.
+	 * 
+	 * @param name operator name
+	 * @return an {@link Op2}
+	 */
 	public static Op2 getOp(final String name) {
 		Op2 op = MAP.get(name);
 		if (op == null) {
@@ -120,8 +128,8 @@ public enum Op2 {
 	}
 
 	private static <T> boolean logical(final String op, final T a, final T b, final BiFunction<Boolean, Boolean, Boolean> f) {
-		if(a instanceof Boolean && b instanceof Boolean) {
-			return f.apply(((Boolean)a).booleanValue(), ((Boolean)b).booleanValue());
+		if (a instanceof Boolean && b instanceof Boolean) {
+			return f.apply(((Boolean) a).booleanValue(), ((Boolean) b).booleanValue());
 		}
 		return unsupported(op, a, b);
 	}
