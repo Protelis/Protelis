@@ -27,6 +27,11 @@ public class All extends AbstractAnnotatedTree<Object> {
 	private static final long serialVersionUID = -210610136469863525L;
 	private final int last;
 
+	/**
+	 * Block of statements.
+	 * 
+	 * @param statements the statements
+	 */
 	public All(final List<AnnotatedTree<?>> statements) {
 		super(statements);
 		last = statements.size() - 1;
