@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -28,10 +28,26 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
 	private final FasterString var;
 	private final boolean definition;
 	
+	/**
+	 * @param name
+	 *            variable name
+	 * @param value
+	 *            program to evaluate to compute the value
+	 * @param isDefinition
+	 *            true if it is a let
+	 */
 	public CreateVar(final String name, final AnnotatedTree<?> value, final boolean isDefinition) {
 		this(new FasterString(name), value, isDefinition);
 	}
 
+	/**
+	 * @param name
+	 *            variable name
+	 * @param value
+	 *            program to evaluate to compute the value
+	 * @param isDefinition
+	 *            true if it is a let
+	 */
 	public CreateVar(final FasterString name, final AnnotatedTree<?> value, final boolean isDefinition) {
 		super(value);
 		var = name;
@@ -58,10 +74,16 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
 		getBranch(0).toString(sb, i + 1);
 	}
 	
+	/**
+	 * @return true if it is a let
+	 */
 	public boolean isDefinition() {
 		return definition;
 	}
 	
+	/**
+	 * @return the variable name
+	 */
 	public FasterString getVarName() {
 		return var;
 	}
