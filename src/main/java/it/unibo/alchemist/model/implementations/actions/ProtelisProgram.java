@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -36,6 +36,9 @@ import org.danilopianini.lang.Pair;
 public class ProtelisProgram extends AbstractLocalAction<Object> implements IMolecule {
 
 	private static final long serialVersionUID = 2207914086772704332L;
+	/**
+	 * Prefix for building Protelis molecules.
+	 */
 	public static final String PROGRAM_ID_PREFIX = "protelis-";
 	private static final Map<FasterString, ProtelisProgram> DB = new ConcurrentHashMap<>();
 	private final FasterString programString, pidString;
@@ -91,8 +94,8 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	}
 
 	@Override
-	public boolean equals(final Object o){
-		if(o instanceof ProtelisProgram) {
+	public boolean equals(final Object o) {
+		if (o instanceof ProtelisProgram) {
 			return programString.equals(((ProtelisProgram) o).programString);
 		}
 		return false;
@@ -100,11 +103,11 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 
 	@Override
 	public void execute() {
-		final Map<CodePath, Object> newExec = lastExec == null? new HashMap<>(): new HashMap<>(lastExec.size() *3/2, 1f);
+		final Map<CodePath, Object> newExec = lastExec == null ? new HashMap<>() : new HashMap<>(lastExec.size() * 3 / 2, 1f);
 		final Map<FasterString, Object> gamma = node.getGamma();
 		gamma.putAll(fundefs);
 		// Note: TByteArrayList must start with non-zero byte to ensure different length "zero" extensions are distinguishable
-		TByteList initialPosition = new TByteArrayList(); initialPosition.add((byte) 1);
+		final TByteList initialPosition = new TByteArrayList(); initialPosition.add((byte) 1);
 		program.eval(node, node.getTheta(this), new StackImpl(gamma), lastExec, newExec, initialPosition);
 		lastExec = newExec;
 		node.setConcentration(this, program.getAnnotation());
@@ -152,7 +155,7 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	
 	@Override
 	public String toString() {
-		if(string == null) {
+		if (string == null) {
 			string = getClass().getSimpleName() + " id: " + programString.hashToString();
 		}
 		return string;
