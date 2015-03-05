@@ -29,6 +29,12 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 	private final FunctionDefinition fd;
 	private final byte[] stackCode;
 
+	/**
+	 * @param functionDefinition
+	 *            the definition of the function
+	 * @param args
+	 *            the arguments
+	 */
 	public FunctionCall(final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
 		super(args);
 		Objects.requireNonNull(functionDefinition);
@@ -42,13 +48,16 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 		 * Deep copy the arguments
 		 */
 		final FunctionCall res = new FunctionCall(fd, deepCopyBranches());
-		if(!isErased()) {
+		if (!isErased()) {
 			res.setAnnotation(null);
 			res.setSuperscript(getSuperscript().copy());
 		}
 		return res;
 	}
 
+	/**
+	 * @return the function body
+	 */
 	protected final AnnotatedTree<?> getBody() {
 		return fd.getBody();
 	}
@@ -88,11 +97,14 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 		sb.append(fd.getName());
 		sb.append('/');
 		sb.append(fd.getArgNumber());
-		sb.append("(");
+		sb.append('(');
 		fillBranches(sb, indent, ',');
 		sb.append(')');
 	}
 
+	/**
+	 * @return the {@link FunctionDefinition}
+	 */
 	public FunctionDefinition getFunctionDefinition() {
 		return fd;
 	}
