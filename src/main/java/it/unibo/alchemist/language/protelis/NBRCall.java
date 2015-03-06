@@ -54,25 +54,18 @@ public class NBRCall extends AbstractAnnotatedTree<Field> {
 		branch.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
 		final CodePath childPath = new CodePath(currentPosition);
 		removeLast(currentPosition);
-		final CodePath currentPath = new CodePath(currentPosition);
 		final Object childVal = branch.getAnnotation();
 		newMap.put(childPath, childVal);
 		final Field res;
-		if (theta == null) {
-			final Field tmp = lastExec == null ? null : (Field) lastExec.get(currentPath);
-			res = tmp == null ? Field.create(1) : tmp;
-		} else {
-			res = Field.create(theta.size() + 1);
-			theta.forEachEntry((n, pathsMap) -> {
-				final Object val = pathsMap.get(childPath);
-				if (val != null) {
-					res.addSample(env.getNodeByID(n), val);
-				}
-				return true;
-			});
-		}
+		res = Field.create(theta.size() + 1);
+		theta.forEachEntry((n, pathsMap) -> {
+			final Object val = pathsMap.get(childPath);
+			if (val != null) {
+				res.addSample(env.getNodeByID(n), val);
+			}
+			return true;
+		});
 		res.addSample(sigma, childVal);
-		//newMap.put(currentPath, res);
 		setAnnotation(res);
 	}
 
