@@ -27,7 +27,6 @@ import it.unibo.alchemist.utils.ParseUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.danilopianini.lang.Pair;
@@ -121,6 +120,9 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 		hasComputed = true;
 	}
 
+	/**
+	 * @return the environment
+	 */
 	protected IEnvironment<Object> getEnvironment() {
 		return environment;
 	}
@@ -143,6 +145,9 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 		return program;
 	}
 	
+	/**
+	 * @return the hosting reaction
+	 */
 	protected IReaction<Object> getReaction() {
 		return reaction;
 	}
