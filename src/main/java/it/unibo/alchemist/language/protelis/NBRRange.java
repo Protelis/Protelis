@@ -80,8 +80,6 @@ public class NBRRange extends AbstractAnnotatedTree<Field> {
 				if (pathMap.containsKey(currentPath)) {
 					final INode<Object> node = env.getNodeByID(nodeId);
 					res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
-				} else {
-					theta.remove(nodeId);
 				}
 				return true;
 			});

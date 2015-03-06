@@ -67,8 +67,6 @@ public class NBRCall extends AbstractAnnotatedTree<Field> {
 				final Object val = pathsMap.get(childPath);
 				if (val != null) {
 					res.addSample(env.getNodeByID(n), val);
-				} else {
-					theta.remove(n);
 				}
 				return true;
 			});
