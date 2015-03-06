@@ -105,7 +105,7 @@ public enum HoodOp {
 	 *            provide a specific value-agnostic default
 	 */
 	private HoodOp(final BiFunction<Field, INode<Object>, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
-		f = (Serializable & BiFunction<Field, INode<Object>, Object>) fun;
+		f = fun;
 		defs = (field) -> {
 			/*
 			 * Field empty: generate a default.
