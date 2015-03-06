@@ -16,7 +16,6 @@ import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
 import it.unibo.alchemist.model.interfaces.INode;
-import it.unibo.alchemist.model.interfaces.IPosition;
 
 import java.util.Map;
 
@@ -27,7 +26,6 @@ import java.util.Map;
 public class NBRRange extends AbstractAnnotatedTree<Field> {
 
 	private static final long serialVersionUID = -4289267098921035028L;
-	private static final byte POSID = -1;
 	private final IEnvironment<Object> env;
 	
 	/**
@@ -52,40 +50,22 @@ public class NBRRange extends AbstractAnnotatedTree<Field> {
 		 * the previous execution, and I must have received acks (namely theta
 		 * is null)
 		 */
-		currentPosition.add(POSID);
-		final CodePath posCP = new CodePath(currentPosition);
-		final IPosition curPos = env.getPosition(sigma);
-		newMap.put(posCP, curPos);
-		removeLast(currentPosition);
-		final IPosition lastPos = lastExec == null ? null : (IPosition) lastExec.get(posCP);
-		final boolean hasMoved = !curPos.equals(lastPos);
 		final CodePath currentPath = new CodePath(currentPosition);
 		final Field res;
-		if (theta == null) {
-			Field tmp = lastExec == null ? Field.create(1) : (Field) lastExec.get(currentPath);
-			if (hasMoved) {
-				/*
-				 * reload all the old keys
-				 */
-				res = Field.create(Math.max(tmp.size(), 1));
-				for (INode<Object> node : tmp.nodeIterator()) {
-					res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
-				}
-			} else {
-				res = tmp;
+		res = Field.create(theta.size() + 1);
+		theta.forEachEntry((nodeId, pathMap) -> {
+			if (pathMap.containsKey(currentPath)) {
+				final INode<Object> node = env.getNodeByID(nodeId);
+				res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
 			}
-		} else {
-			res = Field.create(theta.size() + 1);
-			theta.forEachEntry((nodeId, pathMap) -> {
-				if (pathMap.containsKey(currentPath)) {
-					final INode<Object> node = env.getNodeByID(nodeId);
-					res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
-				}
-				return true;
-			});
-		}
+			return true;
+		});
 		res.addSample(sigma, 0d);
-		newMap.put(currentPath, res);
+		/*
+		 * It is only relevant to put a placeholder signaling that this node
+		 * visited this code path. No need to store anything.
+		 */
+		newMap.put(currentPath, 0);
 		setAnnotation(res);
 	}
 
