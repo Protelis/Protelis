@@ -8,8 +8,6 @@
  */
 package it.unibo.alchemist.model.implementations.nodes;
 
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -37,41 +35,21 @@ public class ProtelisNode extends GenericNode<Object> {
 	 */
 	private final Map<FasterString, Object> gamma = new HashMap<>();
 	private final TLongObjectMap<TIntObjectMap<Map<CodePath, Object>>> trees = new TLongObjectHashMap<>(2, 1f);
-	private final TLongObjectMap<TIntObjectMap<Map<CodePath, Object>>> treesCache = new TLongObjectHashMap<>(2, 1f);
-	private final TLongObjectMap<TIntList> acks = new TLongObjectHashMap<>();
-	private final TLongObjectMap<TIntList> acksCache = new TLongObjectHashMap<>();
 	private int prevSize = 16;
-	private boolean gotUpdate;
 
 	public ProtelisNode() {
 		super(true);
 	}
 
 	public void updateAST(final ProtelisProgram prog, final ProtelisNode source, final Map<CodePath, Object> ast) {
-		/*
-		 * If ast is null, this is just a notification and the previous value
-		 * should be considered valid.
-		 */
+		Objects.requireNonNull(ast);
 		final long pid = prog.getId();
-		if(ast == null) {
-			/*
-			 * Alive ack: the node has computed the same value it did before
-			 */
-			TIntList progAcks = acks.get(pid);
-			if(progAcks == null) {
-				progAcks = new TIntArrayList(prevSize);
-				acks.put(pid, progAcks);
-			}
-			progAcks.add(source.getId());
-		} else {
-			gotUpdate = true;
-			TIntObjectMap<Map<CodePath, Object>> cur = trees.get(pid);
-			if(cur == null) {
-				cur = new TIntObjectHashMap<>(prevSize, 1f);
-				trees.put(pid, cur);
-			}
-			cur.put(source.getId(), ast);
+		TIntObjectMap<Map<CodePath, Object>> cur = trees.get(pid);
+		if (cur == null) {
+			cur = new TIntObjectHashMap<>(prevSize, 1f);
+			trees.put(pid, cur);
 		}
+		cur.put(source.getId(), ast);
 	}
 	
 	public Map<FasterString, Object> getGamma() {
@@ -86,55 +64,13 @@ public class ProtelisNode extends GenericNode<Object> {
 	 *         retrieved.
 	 */
 	public TIntObjectMap<Map<CodePath, Object>> getTheta(final ProtelisProgram prog) {
-		/*
-		 * If !gotUpdate && everybody notified -> null
-		 */
 		final long pid = prog.getId();
-		final TIntList receivedAcks = acks.get(pid);
-		if(!gotUpdate) {
-			if (receivedAcks == null) {
-				return null;
-			} else {
-				final TIntList expectedAcks = acksCache.get(pid);
-				if(expectedAcks.size() == receivedAcks.size()) {
-					receivedAcks.sort();
-					if(receivedAcks.equals(expectedAcks)) {
-						/*
-						 * Cache hit!
-						 */
-						receivedAcks.clear();
-						return null;
-					}
-				}
-			}
-		}
-		/*
-		 * The value of the previous computation for every node that has
-		 * notified must be added to the returned ast
-		 */
 		final TIntObjectMap<Map<CodePath, Object>> temp = trees.remove(pid);
-		final TIntObjectMap<Map<CodePath, Object>> res = temp == null? new TIntObjectHashMap<>(prevSize, 1f) : temp;
-		final TIntObjectMap<Map<CodePath, Object>> previous = treesCache.get(pid);
-		if(receivedAcks != null) {
-			receivedAcks.forEach( (id) -> {
-				/*
-				 * I must have had at least one update to enter here, so no null-check is needed.
-				 */
-				res.put(id, previous.get(id));
-				return true;
-			});
-			receivedAcks.clear();
-		}
-		final TIntList expectedAcks = new TIntArrayList(res.keys());
-		expectedAcks.sort();
-		acksCache.put(pid, expectedAcks);
-//		updateCache(pid, receivedAcks);
-		treesCache.put(pid, res);
+		final TIntObjectMap<Map<CodePath, Object>> res = temp == null ? new TIntObjectHashMap<>(prevSize, 1f) : temp;
 		/*
 		 * Compute optimal map size for the next round
 		 */
 		prevSize = res.size() * 3 / 2;
-		gotUpdate = false;
 		return res;
 	}
 	
@@ -147,13 +83,21 @@ public class ProtelisNode extends GenericNode<Object> {
 	public void setConcentration(final IMolecule m, final Object v) {
 		Objects.requireNonNull(m);
 		super.setConcentration(m, v);
-		if( v == null ) {
-			gamma.remove(m);
-		} else if(m instanceof Molecule) {
-			final Molecule mol = (Molecule)m;
+		if (v == null) {
+			final FasterString mfs;
+			if (m instanceof Molecule) {
+				mfs = ((Molecule) m).toFasterString();
+			} else if (m instanceof ProtelisProgram) {
+				mfs = ((ProtelisProgram) m).getProgramIDAsFasterString();
+			} else {
+				mfs = new FasterString(m.toString());
+			}
+			gamma.remove(mfs);
+		} else if (m instanceof Molecule) {
+			final Molecule mol = (Molecule) m;
 			gamma.put(mol.toFasterString(), v);
-		} else if(m instanceof ProtelisProgram) {
-			final ProtelisProgram mol = (ProtelisProgram)m;
+		} else if (m instanceof ProtelisProgram) {
+			final ProtelisProgram mol = (ProtelisProgram) m;
 			gamma.put(mol.getProgramIDAsFasterString(), v);
 		}
 	}
@@ -162,5 +106,5 @@ public class ProtelisNode extends GenericNode<Object> {
 	public String toString() {
 		return Long.toString(getId());
 	}
-
+	
 }
