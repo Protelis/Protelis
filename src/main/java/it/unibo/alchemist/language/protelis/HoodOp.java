@@ -17,7 +17,6 @@ import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.model.interfaces.INode;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
