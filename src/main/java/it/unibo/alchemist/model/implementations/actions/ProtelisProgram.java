@@ -8,8 +8,10 @@
  */
 package it.unibo.alchemist.model.implementations.actions;
 
+import gnu.trove.TCollections;
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
+import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
@@ -25,6 +27,7 @@ import it.unibo.alchemist.utils.ParseUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.danilopianini.lang.Pair;
@@ -108,7 +111,14 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 		gamma.putAll(fundefs);
 		// Note: TByteArrayList must start with non-zero byte to ensure different length "zero" extensions are distinguishable
 		final TByteList initialPosition = new TByteArrayList(); initialPosition.add((byte) 1);
-		program.eval(node, node.getTheta(this), new StackImpl(gamma), lastExec, newExec, initialPosition);
+		/*
+		 * Make sure nobody destroyes theta while computing.
+		 */
+		TIntObjectMap<Map<CodePath, Object>> theta = node.getTheta(this);
+		if (theta != null) {
+			theta = TCollections.unmodifiableMap(theta);
+		}
+		program.eval(node, theta, new StackImpl(gamma), lastExec, newExec, initialPosition);
 		lastExec = newExec;
 		node.setConcentration(this, program.getAnnotation());
 		hasComputed = true;
