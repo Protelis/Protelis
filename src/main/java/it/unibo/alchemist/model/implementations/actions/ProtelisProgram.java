@@ -114,10 +114,7 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 		/*
 		 * Make sure nobody destroyes theta while computing.
 		 */
-		TIntObjectMap<Map<CodePath, Object>> theta = node.getTheta(this);
-		if (theta != null) {
-			theta = TCollections.unmodifiableMap(theta);
-		}
+		final TIntObjectMap<Map<CodePath, Object>> theta = TCollections.unmodifiableMap(node.getTheta(this));
 		program.eval(node, theta, new StackImpl(gamma), lastExec, newExec, initialPosition);
 		lastExec = newExec;
 		node.setConcentration(this, program.getAnnotation());
