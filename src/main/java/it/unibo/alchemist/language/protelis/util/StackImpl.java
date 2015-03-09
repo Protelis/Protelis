@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -25,6 +25,9 @@ public class StackImpl implements Stack {
 	private static final long serialVersionUID = -7123279550264674313L;
 	private final Deque<Map<FasterString, Object>> stack = new LinkedList<>();
 
+	/**
+	 * @param gamma Initial set of variables
+	 */
 	public StackImpl(final Map<FasterString, Object> gamma) {
 		stack.push(gamma);
 	}
