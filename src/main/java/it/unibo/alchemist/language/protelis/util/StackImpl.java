@@ -41,7 +41,7 @@ public class StackImpl implements Stack {
 
 	@Override
 	public Object put(final FasterString var, final Object val, final boolean canCreateNew) {
-		if(canCreateNew) {
+		if (canCreateNew) {
 			/*
 			 * Overrides the previous value only if it is at this depth in the stack
 			 * 
@@ -55,7 +55,7 @@ public class StackImpl implements Stack {
 			 * 
 			 */
 			Map<FasterString, Object> cur = stack.pop();
-			if(cur == null) {
+			if (cur == null) {
 				cur = new HashMap<>();
 			}
 			final Object res = cur.put(var, val);
@@ -79,10 +79,10 @@ public class StackImpl implements Stack {
 	}
 
 	private Object stackOperation(final Function<Map<FasterString, Object>, Object> op) {
-		for(final Map<FasterString, Object> varMap: stack) {
-			if(varMap != null) {
+		for (final Map<FasterString, Object> varMap : stack) {
+			if (varMap != null) {
 				final Object res = op.apply(varMap);
-				if(res != null) {
+				if (res != null) {
 					return res;
 				}
 			}
@@ -103,7 +103,7 @@ public class StackImpl implements Stack {
 	@Override
 	public void putAll(final Map<FasterString, ? extends Object> map) {
 		Map<FasterString, Object> cur = stack.pop();
-		if(cur == null) {
+		if (cur == null) {
 			cur = new HashMap<>();
 		}
 		cur.putAll(map);
