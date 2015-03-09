@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.danilopianini.lang.Pair;
+import org.apache.commons.math3.util.Pair;
 
 /**
  * @author Danilo Pianini

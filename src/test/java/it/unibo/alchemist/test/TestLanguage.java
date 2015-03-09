@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
-import org.danilopianini.lang.Pair;
 import org.junit.Test;
 
 

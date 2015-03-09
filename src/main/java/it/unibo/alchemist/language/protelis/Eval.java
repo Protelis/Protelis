@@ -10,7 +10,7 @@ package it.unibo.alchemist.language.protelis;
 
 import java.util.Map;
 
-import org.danilopianini.lang.Pair;
+import org.apache.commons.math3.util.Pair;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.map.TIntObjectMap;

@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
-import org.danilopianini.lang.Pair;
 
 
 public class TestInSimulator {

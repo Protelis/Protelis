@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.danilopianini.lang.Pair;
+import org.apache.commons.math3.util.Pair;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
