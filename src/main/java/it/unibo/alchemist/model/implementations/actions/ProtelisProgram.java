@@ -17,6 +17,7 @@ import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
+import it.unibo.alchemist.model.implementations.nodes.ProtelisNode.Self;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
@@ -54,18 +55,18 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	private Map<CodePath, Object> lastExec;
 	private String string;
 	
-	/**
-	 * Builds a new {@link ProtelisProgram}. The original program passed is deep copied internally.
-	 * 
-	 * @param env
-	 * @param n
-	 * @param r
-	 * @param prog
-	 */
-	private ProtelisProgram(final IEnvironment<Object> env,  final INode<Object> n, final IReaction<Object> r, final AnnotatedTree<?> prog, final Map<FasterString, FunctionDefinition> fundefs, final FasterString pString) {
-		this(n, env, r, new Pair<>(prog, fundefs), pString);
+	private ProtelisProgram(final IEnvironment<Object> env,  final INode<Object> n, final IReaction<Object> r, final AnnotatedTree<?> prog, final Map<FasterString, FunctionDefinition> funs, final FasterString pString) {
+		this(n, env, r, new Pair<>(prog, funs), pString);
 	}
 	
+	/**
+	 * @param env the environment
+	 * @param n the node
+	 * @param r the reaction
+	 * @param prog the Protelis program
+	 * @throws SecurityException if you are not authorized to load required classes
+	 * @throws ClassNotFoundException if required classes can not be found
+	 */
 	public ProtelisProgram(final IEnvironment<Object> env,  final ProtelisNode n, final IReaction<Object> r, final String prog) throws SecurityException, ClassNotFoundException {
 		this(n, env, r, ParseUtils.parse(env, n, r, prog), new FasterString(ParseUtils.filterSpaces(prog)));
 	}
@@ -106,15 +107,17 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	@Override
 	public void execute() {
 		final Map<CodePath, Object> newExec = lastExec == null ? new HashMap<>() : new HashMap<>(lastExec.size() * 3 / 2, 1f);
-		final Map<FasterString, Object> gamma = node.getGamma();
+		final Self safeView = node.getSelf();
+		final Map<FasterString, Object> gamma = safeView.getGamma();
 		gamma.putAll(fundefs);
 		// Note: TByteArrayList must start with non-zero byte to ensure different length "zero" extensions are distinguishable
 		final TByteList initialPosition = new TByteArrayList(); initialPosition.add((byte) 1);
 		/*
-		 * Make sure nobody destroyes theta while computing.
+		 * Make sure nobody destroys theta while computing.
 		 */
 		final TIntObjectMap<Map<CodePath, Object>> theta = TCollections.unmodifiableMap(node.getTheta(this));
-		program.eval(node, theta, new StackImpl(gamma), lastExec, newExec, initialPosition);
+		program.eval(safeView, theta, new StackImpl(gamma), lastExec, newExec, initialPosition);
+		safeView.commit();
 		lastExec = newExec;
 		node.setConcentration(this, program.getAnnotation());
 		hasComputed = true;
