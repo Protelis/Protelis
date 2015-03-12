@@ -10,6 +10,7 @@ package it.unibo.alchemist.language.protelis;
 
 import static it.unibo.alchemist.language.protelis.util.OpUtil.unsupported;
 import it.unibo.alchemist.language.protelis.datatype.Field;
+import it.unibo.alchemist.utils.L;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -146,14 +147,27 @@ public enum Op2 {
 			return selector.apply(b, a);
 		}
 		if (a instanceof Comparable && b instanceof Comparable) {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			final int v = ((Comparable) a).compareTo(b);
-			if (v > 0) {
-				return selector.apply(a, b);
+			try {
+				@SuppressWarnings({ "rawtypes", "unchecked" })
+				final int v = ((Comparable) a).compareTo(b);
+				if (v > 0) {
+					return selector.apply(a, b);
+				}
+				return selector.apply(b, a);
+			} catch (RuntimeException e) {
+				/*
+				 * Comparison of different types, fallback to Strings
+				 */
 			}
-			return selector.apply(b, a);
 		}
-		return unsupported(op, a, b);
+		/*
+		 * Fall back to String comparison
+		 */
+		final int v = a.toString().compareTo(b.toString());
+		if (v > 0) {
+			return selector.apply(a, b);
+		}
+		return selector.apply(b, a);
 	}
 
 	private static Object min(final Object a, final Object b) {
