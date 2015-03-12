@@ -93,9 +93,8 @@ public class ArrayTupleImpl implements Tuple {
 
 	@Override
 	public Tuple append(final Object element) {
-		final int index = a.length + 1;
-		Object[] copy = Arrays.copyOf(a, index);
-		copy[index] = element;
+		final Object[] copy = Arrays.copyOf(a, a.length + 1);
+		copy[a.length] = element;
 		return new ArrayTupleImpl(copy, false);
 	}
 
