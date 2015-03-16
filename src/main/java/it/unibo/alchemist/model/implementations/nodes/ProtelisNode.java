@@ -255,6 +255,10 @@ public class ProtelisNode extends GenericNode<Object> {
 			return new HashMap<>(gamma);
 		}
 		
+		@Override
+		public String toString() {
+			return parent.toString() + "[Safe View]";
+		}
 
 		
 	}
