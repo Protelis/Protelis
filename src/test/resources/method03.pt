@@ -1,6 +1,6 @@
-import java.lang.Math.*
+from java.lang.Math import pow, atan2;
 
 def chaos(x, y, z, k) {
-	#pow(#pow(#atan2(x + y +z + k, k + x), k), k+x)
+	pow(pow(atan2(x + y +z + k, k + x), k), k+x)
 }
 chaos(1,2,3,4)

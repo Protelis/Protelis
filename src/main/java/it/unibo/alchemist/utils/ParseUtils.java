@@ -44,6 +44,7 @@ import it.unibo.alchemist.language.protelis.protelis.DoubleVal;
 import it.unibo.alchemist.language.protelis.protelis.Expression;
 import it.unibo.alchemist.language.protelis.protelis.FunctionDef;
 import it.unibo.alchemist.language.protelis.protelis.Import;
+import it.unibo.alchemist.language.protelis.protelis.ImportedMethod;
 import it.unibo.alchemist.language.protelis.protelis.Program;
 import it.unibo.alchemist.language.protelis.protelis.RepInitialize;
 import it.unibo.alchemist.language.protelis.protelis.Statement;
@@ -65,6 +66,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -93,7 +95,6 @@ public final class ParseUtils {
 	private static final String UNCHECKED = "unchecked";
 	private static final String ASSIGNMENT_NAME = "=";
 	private static final String DOT_NAME = ".";
-	private static final String METHOD_NAME = "#";
 	private static final String REP_NAME = "rep";
 	private static final String IF_NAME = "if";
 	private static final String DT_NAME = "dt";
@@ -214,28 +215,33 @@ public final class ParseUtils {
 	}
 	
 	private static void parseImport(final Import imp, final Map<Pair<String, Integer>, Method> imports) {
+		final String classname = imp.getClass_();
 		try {
-			final int initialsize = imports.size();
-			final String classname = imp.getClass_();
-			Stream<Method> ms = Arrays.stream(Class.forName(classname).getMethods());
+			final Class<?> clazz = Class.forName(classname);
+			final Method[] ml = clazz.getMethods();
 			/*
 			 * TODO: Check for return type and params: if param is Field and
 			 * return type is not then L.warn()
 			 */
-			final String methodName = (imp.getMethod() == null) ? imp.getName() : imp.getMethod();
-			if (imp.getMethod() == null && methodName.equals("*")) {
-				//ms = ms.filter(m -> Modifier.isStatic(m.getModifiers()));
-				ms.forEach(m -> imports.put(new Pair<>(m.getName(), m.getParameterCount() + (Modifier.isStatic(m.getModifiers()) ? 0 : 1)), m));
-			} else {
-				//ms = ms.filter(m -> Modifier.isStatic(m.getModifiers());
-				ms = ms.filter(m -> m.getName().equals(methodName));
-				ms.forEach(m -> imports.put(new Pair<>(imp.getName(), m.getParameterCount() + (Modifier.isStatic(m.getModifiers()) ? 0 : 1)), m));
+			for (final ImportedMethod im: imp.getMethods()) {
+				final int initialsize = imports.size();
+				final String methodName = im.getMethod();
+				final String methodAlias = Optional.ofNullable(im.getName()).orElse(methodName);
+				Arrays.stream(ml).filter(m -> m.getName().equals(methodName))
+					.forEach(m -> imports.put(new Pair<>(methodAlias, m.getParameterCount() + (Modifier.isStatic(m.getModifiers()) ? 0 : 1)), m));
+				if (imports.size() == initialsize) {
+					L.warn("No method found for " + imp.getClass_() + "." + methodName);
+				}
 			}
-			if (imports.size() == initialsize) {
-				L.warn("No method found for " + imp.getClass_() + "." + imp.getName());
-			}
-		} catch (SecurityException | ClassNotFoundException e) {
-			L.error(e);
+		} catch (ClassNotFoundException e) {
+			L.warn("Class " + classname + " could not be found in classpath.");
+			L.warn(e);
+		} catch (SecurityException e) {
+			L.warn("Class " + classname + " could not be loaded due to security permissions.");
+			L.warn(e);
+		} catch (Error e) {
+			L.warn("An error occured while loading class " + classname + ".");
+			L.warn(e);
 		}
 	}
 
@@ -279,19 +285,29 @@ public final class ParseUtils {
 		if (e == null) {
 			throw new IllegalArgumentException("null expression, this is a bug.");
 		}
+		final Optional<EObject> ref = Optional.ofNullable(e.getReference());
+		if (ref.isPresent()) {
+			/*
+			 * Function or method call
+			 */
+			final EObject eRef = ref.get();
+			if (eRef instanceof ImportedMethod) {
+				final ImportedMethod m = (ImportedMethod) eRef;
+				return parseMethod(m.getName(), extractArgs(e), imports, defs, env, node, reaction, id);
+			} else if (eRef instanceof FunctionDef) {
+				final FunctionDef fun = (FunctionDef) eRef;
+				return parseFunction(fun.getName(), extractArgs(e), imports, defs, env, node, reaction, id);
+			} else {
+				throw new IllegalStateException("I do not know how I should interpret a call to a " + eRef.getClass().getSimpleName() + " object.");
+			}
+		}
 		final String name = e.getName();
 		if (name == null) {
-			if (e.getFunction() != null) {
-				return parseFunction(e.getFunction().getName(), extractArgs(e), imports, defs, env, node, reaction, id);
-			}
 			/*
 			 * Envelope: recurse in
 			 */
 			final EObject val = e.getV();
 			return parseExpression((Expression) val, imports, defs, env, node, reaction, id);
-		}
-		if (name.equals(METHOD_NAME)) {
-			return parseMethod(e.getMethod(), extractArgs(e), imports, defs, env, node, reaction, id);
 		}
 		if (BINARY_OPERATORS.contains(name) && e.getLeft() != null && e.getRight() != null) {
 			return new BinaryOp(name, parseExpression(e.getLeft(), imports, defs, env, node, reaction, id), parseExpression(e.getRight(), imports, defs, env, node, reaction, id));
