@@ -1,6 +1,6 @@
-import java.lang.Math.cos as cos
+from java.lang.Math import cos as fun;
 def cycle(start, step) {
-	#cos(rep(x <- start) {x + step})
+	fun(rep(x <- start) {x + step})
 }
 def switch(v) {
 	if(cycle(-pi*2/3, pi/3) >= 0) {
