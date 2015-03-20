@@ -10,6 +10,8 @@ package it.unibo.alchemist.model;
 
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
+import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
@@ -71,6 +73,7 @@ public class ProtelisIncarnation implements Incarnation {
 	private static final String GOALP3 = ").";
 	private static final String[] ANS_NAMES = {"ans", "res", "result", "answer", "val", "value"};
 	private static final Set<FasterString> NAMES;
+	private static final RandomEngine RAND = new MersenneTwister();
 	
 	private final Cache<String, Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>>> cache = CacheBuilder.newBuilder()
 		.maximumSize(100)
@@ -103,7 +106,7 @@ public class ProtelisIncarnation implements Incarnation {
 		Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog = cache.getIfPresent(prop);
 		if (prog == null) {
 			try {
-				prog = Optional.of(ParseUtils.parse(null, node instanceof ProtelisNode ? (ProtelisNode) node : null, null, prop));
+				prog = Optional.of(ParseUtils.parse(null, node instanceof ProtelisNode ? (ProtelisNode) node : null, null, RAND, prop));
 				cache.put(prop, prog);
 			} catch (final RuntimeException e) {
 				/*

@@ -57,7 +57,7 @@ public class TestInSimulator {
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, s);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, null, s);
 		AnnotatedTree<?> program = prog.getFirst();
 		Map<CodePath, Object> lastExec = new HashMap<>();
 		for (int i = 0; i < runs; i++) {

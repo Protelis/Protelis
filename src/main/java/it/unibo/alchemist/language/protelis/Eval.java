@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -14,6 +14,7 @@ import org.apache.commons.math3.util.Pair;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.map.TIntObjectMap;
+import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Stack;
@@ -36,23 +37,26 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 	private final IEnvironment<Object> env;
 	private final ProtelisNode node;
 	private final IReaction<Object> reaction;
+	private final RandomEngine random;
 	
 	/**
 	 * @param arg argument whose annotation will be used as a string representing a program
 	 * @param e environment
 	 * @param n node
 	 * @param r reaction
+	 * @param rand random engine
 	 */
-	public Eval(final AnnotatedTree<?> arg, final IEnvironment<Object> e, final ProtelisNode n, final IReaction<Object> r) {
+	public Eval(final AnnotatedTree<?> arg, final IEnvironment<Object> e, final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand) {
 		super(arg);
 		env = e;
 		node = n;
 		reaction = r;
+		random = rand;
 	}
 	
 	@Override
 	public Eval copy() {
-		return new Eval(deepCopyBranches().get(0), env, node, reaction);
+		return new Eval(deepCopyBranches().get(0), env, node, reaction, random);
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 		final String program = getBranch(0).getAnnotation().toString();
 		try {
-			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ParseUtils.parse(env, node, reaction, program);
+			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ParseUtils.parse(env, node, reaction, random, program);
 			gamma.push();
 			gamma.putAll(result.getSecond());
 			final AnnotatedTree<?> toRun = result.getFirst();

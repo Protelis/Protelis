@@ -12,6 +12,7 @@ import gnu.trove.TCollections;
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.map.TIntObjectMap;
+import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
@@ -63,12 +64,13 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	 * @param env the environment
 	 * @param n the node
 	 * @param r the reaction
+	 * @param rand the random engine
 	 * @param prog the Protelis program
 	 * @throws SecurityException if you are not authorized to load required classes
 	 * @throws ClassNotFoundException if required classes can not be found
 	 */
-	public ProtelisProgram(final IEnvironment<Object> env,  final ProtelisNode n, final IReaction<Object> r, final String prog) throws SecurityException, ClassNotFoundException {
-		this(n, env, r, ParseUtils.parse(env, n, r, prog), new FasterString(ParseUtils.filterSpaces(prog)));
+	public ProtelisProgram(final IEnvironment<Object> env,  final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand, final String prog) throws SecurityException, ClassNotFoundException {
+		this(n, env, r, ParseUtils.parse(env, n, r, rand, prog), new FasterString(ParseUtils.filterSpaces(prog)));
 	}
 
 	private ProtelisProgram(final INode<Object> n, final IEnvironment<Object> env, final IReaction<Object> r, final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog, final FasterString pString) {

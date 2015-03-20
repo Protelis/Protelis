@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
@@ -56,6 +57,11 @@ public class TestLanguage {
 	@Test
 	public void testEval01() {
 		testFile("/eval01.pt", 1d);
+	}
+	
+	@Test
+	public void testRandom01() {
+		testFile("/random01.pt", 10, true);
 	}
 	
 	@Test
@@ -250,7 +256,7 @@ public class TestLanguage {
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, s);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, new MersenneTwister(0), s);
 		AnnotatedTree<?> program = prog.getFirst();
 		Map<CodePath, Object> lastExec = new HashMap<>();
 		for (int i = 0; i < runs; i++) {

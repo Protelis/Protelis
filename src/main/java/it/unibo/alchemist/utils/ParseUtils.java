@@ -8,6 +8,7 @@
  */
 package it.unibo.alchemist.utils;
 
+import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.AlignedMap;
 import it.unibo.alchemist.language.protelis.All;
 import it.unibo.alchemist.language.protelis.BinaryOp;
@@ -28,6 +29,7 @@ import it.unibo.alchemist.language.protelis.NumericConstant;
 import it.unibo.alchemist.language.protelis.Op1;
 import it.unibo.alchemist.language.protelis.Op2;
 import it.unibo.alchemist.language.protelis.ProtelisStandaloneSetup;
+import it.unibo.alchemist.language.protelis.Random;
 import it.unibo.alchemist.language.protelis.RepCall;
 import it.unibo.alchemist.language.protelis.Self;
 import it.unibo.alchemist.language.protelis.TernaryOp;
@@ -100,6 +102,7 @@ public final class ParseUtils {
 	private static final String DT_NAME = "dt";
 	private static final String PI_NAME = "pi";
 	private static final String E_NAME = "e";
+	private static final String RAND_NAME = "random";
 	private static final String LAMBDA_NAME = "->";
 	private static final String SELF_NAME = "self";
 	private static final String EVAL_NAME = "eval";
@@ -124,6 +127,7 @@ public final class ParseUtils {
 	 * @param env environment
 	 * @param node node
 	 * @param reaction reaction
+	 * @param rand random engine
 	 * @param program Protelis program
 	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and {@link FunctionDefinition} (containing the available functions)
 	 */
@@ -131,6 +135,7 @@ public final class ParseUtils {
 			final IEnvironment<Object> env,
 			final ProtelisNode node,
 			final IReaction<Object> reaction,
+			final RandomEngine rand,
 			final String program) {
 		final Resource r = XTEXT.createResource(URI.createURI("dummy:/" + IDGEN.getAndIncrement() + ".pt"));
 		final InputStream in = new ByteArrayInputStream(program.getBytes(Charset.forName("UTF-8")));
@@ -178,28 +183,28 @@ public final class ParseUtils {
 		fds = root.getDefinitions().stream();
 		fds.forEach(fd -> {
 			final FunctionDefinition def = functions.get(new FasterString(fd.getName()));
-			def.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), imports, functions, env, node, reaction, id));
+			def.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), imports, functions, env, node, reaction, rand, id));
 		});
 		/*
 		 * Create the main program
 		 */
-		return new Pair<>(parseBlock(root.getProgram(), imports, functions, env, node, reaction, id), functions);
+		return new Pair<>(parseBlock(root.getProgram(), imports, functions, env, node, reaction, rand, id), functions);
 	}
 
-	private static <T> AnnotatedTree<?> parseBlock(final Block e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> functions, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final AtomicInteger id) {
-		final AnnotatedTree<?> first = parseStatement(e.getFirst(), imports, functions, env, node, reaction, id);
+	private static <T> AnnotatedTree<?> parseBlock(final Block e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> functions, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
+		final AnnotatedTree<?> first = parseStatement(e.getFirst(), imports, functions, env, node, reaction, rand, id);
 		Block next = e.getOthers();
 		final List<AnnotatedTree<?>> statements = new LinkedList<>();
 		statements.add(first);
 		for (; next != null; next = next.getOthers()) {
-			statements.add(parseStatement(next.getFirst(), imports, functions, env, node, reaction, id));
+			statements.add(parseStatement(next.getFirst(), imports, functions, env, node, reaction, rand, id));
 		}
 		return new All(statements);
 	}
 
-	private static <T> AnnotatedTree<?> parseStatement(final Statement e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final AtomicInteger id) {
+	private static <T> AnnotatedTree<?> parseStatement(final Statement e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
 		if (e instanceof Expression) {
-			return parseExpression((Expression) e, imports, defs, env, node, reaction, id);
+			return parseExpression((Expression) e, imports, defs, env, node, reaction, rand, id);
 		}
 		if (e instanceof Declaration || e instanceof Assignment) {
 			String name;
@@ -209,7 +214,7 @@ public final class ParseUtils {
 			} else {
 				name = e.getName();
 			}
-			return new CreateVar(name, parseExpression(e.getRight(), imports, defs, env, node, reaction, id), !isAssignment);
+			return new CreateVar(name, parseExpression(e.getRight(), imports, defs, env, node, reaction, rand, id), !isAssignment);
 		}
 		throw new NotImplementedException("Implement support for nodes of type: " + e.getClass());
 	}
@@ -245,24 +250,24 @@ public final class ParseUtils {
 		}
 	}
 
-	private static MethodCall parseMethod(final String i, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final AtomicInteger id) {
+	private static MethodCall parseMethod(final String i, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
 		final Method mi = imports.get(new Pair<>(i, args.size()));
 		final boolean ztatic = Modifier.isStatic(mi.getModifiers());
-		final List<AnnotatedTree<?>> arguments = parseArgs(args, imports, defs, env, node, reaction, id);
+		final List<AnnotatedTree<?>> arguments = parseArgs(args, imports, defs, env, node, reaction, rand, id);
 		return new MethodCall(mi, arguments, ztatic);
 	}
 
-	private static FunctionCall parseFunction(final String f, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final AtomicInteger id) {
+	private static FunctionCall parseFunction(final String f, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
 		final FunctionDefinition fdef = defs.get(new FasterString(f));
-		final List<AnnotatedTree<?>> arguments = parseArgs(args, imports, defs, env, node, reaction, id);
+		final List<AnnotatedTree<?>> arguments = parseArgs(args, imports, defs, env, node, reaction, rand, id);
 		return new FunctionCall(fdef, arguments);
 	}
 
-	private static List<AnnotatedTree<?>> parseArgs(final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final AtomicInteger id) {
-		return args.stream().map(e -> parseExpression(e, imports, defs, env, node, reaction, id)).collect(Collectors.toList());
+	private static List<AnnotatedTree<?>> parseArgs(final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
+		return args.stream().map(e -> parseExpression(e, imports, defs, env, node, reaction, rand, id)).collect(Collectors.toList());
 	}
 
-	private static <T> AnnotatedTree<?> parseExpression(final Expression e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final AtomicInteger id) {
+	private static <T> AnnotatedTree<?> parseExpression(final Expression e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
 		if (e instanceof DoubleVal) {
 			return new NumericConstant(((DoubleVal) e).getVal());
 		}
@@ -273,7 +278,7 @@ public final class ParseUtils {
 			return new Constant<>(((BooleanVal) e).isVal());
 		}
 		if (e instanceof TupleVal) {
-			final Function<Expression, AnnotatedTree<?>> f = (exp) -> parseExpression(exp, imports, defs, env, node, reaction, id);
+			final Function<Expression, AnnotatedTree<?>> f = (exp) -> parseExpression(exp, imports, defs, env, node, reaction, rand, id);
 			final List<Expression> expr = extractArgs((TupleVal) e);
 			final Stream<AnnotatedTree<?>> treestr = expr.stream().map(f);
 			final AnnotatedTree<?>[] args = treestr.toArray((i) -> new AnnotatedTree[i]);
@@ -293,10 +298,10 @@ public final class ParseUtils {
 			final EObject eRef = ref.get();
 			if (eRef instanceof ImportedMethod) {
 				final ImportedMethod m = (ImportedMethod) eRef;
-				return parseMethod(m.getName(), extractArgs(e), imports, defs, env, node, reaction, id);
+				return parseMethod(m.getName(), extractArgs(e), imports, defs, env, node, reaction, rand, id);
 			} else if (eRef instanceof FunctionDef) {
 				final FunctionDef fun = (FunctionDef) eRef;
-				return parseFunction(fun.getName(), extractArgs(e), imports, defs, env, node, reaction, id);
+				return parseFunction(fun.getName(), extractArgs(e), imports, defs, env, node, reaction, rand, id);
 			} else {
 				throw new IllegalStateException("I do not know how I should interpret a call to a " + eRef.getClass().getSimpleName() + " object.");
 			}
@@ -307,26 +312,26 @@ public final class ParseUtils {
 			 * Envelope: recurse in
 			 */
 			final EObject val = e.getV();
-			return parseExpression((Expression) val, imports, defs, env, node, reaction, id);
+			return parseExpression((Expression) val, imports, defs, env, node, reaction, rand, id);
 		}
 		if (BINARY_OPERATORS.contains(name) && e.getLeft() != null && e.getRight() != null) {
-			return new BinaryOp(name, parseExpression(e.getLeft(), imports, defs, env, node, reaction, id), parseExpression(e.getRight(), imports, defs, env, node, reaction, id));
+			return new BinaryOp(name, parseExpression(e.getLeft(), imports, defs, env, node, reaction, rand, id), parseExpression(e.getRight(), imports, defs, env, node, reaction, rand, id));
 		}
 		if (UNARY_OPERATORS.contains(name) && e.getLeft() == null && e.getRight() != null) {
-			return new UnaryOp(name, parseExpression(e.getRight(), imports, defs, env, node, reaction, id));
+			return new UnaryOp(name, parseExpression(e.getRight(), imports, defs, env, node, reaction, rand, id));
 		}
 		if (name.equals(REP_NAME)) {
 			final RepInitialize ri = e.getInit().getArgs().get(0);
 			final String x = ri.getX().getName();
-			return new RepCall<>(new FasterString(x), parseExpression(ri.getW(), imports, defs, env, node, reaction, id), parseBlock(e.getBody(), imports, defs, env, node, reaction, id));
+			return new RepCall<>(new FasterString(x), parseExpression(ri.getW(), imports, defs, env, node, reaction, rand, id), parseBlock(e.getBody(), imports, defs, env, node, reaction, rand, id));
 		}
 		if (name.equals(IF_NAME)) {
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<Boolean> cond = (AnnotatedTree<Boolean>) parseExpression(e.getCond(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<Boolean> cond = (AnnotatedTree<Boolean>) parseExpression(e.getCond(), imports, defs, env, node, reaction, rand, id);
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<T> then = (AnnotatedTree<T>) parseBlock(e.getThen(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<T> then = (AnnotatedTree<T>) parseBlock(e.getThen(), imports, defs, env, node, reaction, rand, id);
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<T> elze = (AnnotatedTree<T>) parseBlock(e.getElse(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<T> elze = (AnnotatedTree<T>) parseBlock(e.getElse(), imports, defs, env, node, reaction, rand, id);
 			return new If<>(cond, then, elze);
 		}
 		if (name.equals(PI_NAME)) {
@@ -335,6 +340,9 @@ public final class ParseUtils {
 		if (name.equals(E_NAME)) {
 			return new Constant<>(Math.E);
 		}
+		if (name.equals(RAND_NAME)) {
+			return new Random(rand);
+		}
 		if (name.equals(DT_NAME)) {
 			return new Dt(reaction);
 		}
@@ -342,21 +350,21 @@ public final class ParseUtils {
 			return new Self();
 		}
 		if (name.equals(NBR_NAME)) {
-			return new NBRCall(parseExpression(e.getArg(), imports, defs, env, node, reaction, id), env);
+			return new NBRCall(parseExpression(e.getArg(), imports, defs, env, node, reaction, rand, id), env);
 		}
 		if (name.equals(ALIGNED_MAP)) {
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<Field> arg = (AnnotatedTree<Field>) parseExpression(e.getArg(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<Field> arg = (AnnotatedTree<Field>) parseExpression(e.getArg(), imports, defs, env, node, reaction, rand, id);
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<FunctionDefinition> cond = (AnnotatedTree<FunctionDefinition>) parseExpression(e.getCond(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<FunctionDefinition> cond = (AnnotatedTree<FunctionDefinition>) parseExpression(e.getCond(), imports, defs, env, node, reaction, rand, id);
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<FunctionDefinition> op = (AnnotatedTree<FunctionDefinition>) parseExpression(e.getOp(), imports, defs, env, node, reaction, id);
-			final AnnotatedTree<?> def = parseExpression(e.getDefault(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<FunctionDefinition> op = (AnnotatedTree<FunctionDefinition>) parseExpression(e.getOp(), imports, defs, env, node, reaction, rand, id);
+			final AnnotatedTree<?> def = parseExpression(e.getDefault(), imports, defs, env, node, reaction, rand, id);
 			return new AlignedMap(arg, cond, op, def);
 		}
 		if (name.equals(LAMBDA_NAME)) {
 			final FunctionDefinition lambda = new FunctionDefinition("l$" + id.getAndIncrement(), extractArgsFromLambda(e));
-			final AnnotatedTree<?> body = parseBlock(e.getBody(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<?> body = parseBlock(e.getBody(), imports, defs, env, node, reaction, rand, id);
 			lambda.setBody(body);
 			return new Constant<>(lambda);
 		}
@@ -364,18 +372,18 @@ public final class ParseUtils {
 			return new NBRRange(env);
 		}
 		if (name.equals(EVAL_NAME)) {
-			final AnnotatedTree<?> arg = parseExpression(e.getArg(), imports, defs, env, node, reaction, id);
-			return new Eval(arg, env, node, reaction);
+			final AnnotatedTree<?> arg = parseExpression(e.getArg(), imports, defs, env, node, reaction, rand, id);
+			return new Eval(arg, env, node, reaction, rand);
 		}
 		if (name.equals(DOT_NAME)) {
-			final AnnotatedTree<?> target = parseExpression(e.getLeft(), imports, defs, env, node, reaction, id);
-			final List<AnnotatedTree<?>> args = parseArgs(extractArgs(e), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<?> target = parseExpression(e.getLeft(), imports, defs, env, node, reaction, rand, id);
+			final List<AnnotatedTree<?>> args = parseArgs(extractArgs(e), imports, defs, env, node, reaction, rand, id);
 			return new DotOperator(e.getMethodName(), target, args);
 		}
 		if (name.equals(MUX_NAME)) {
-			final AnnotatedTree<?> cond = parseExpression(e.getCond(), imports, defs, env, node, reaction, id);
-			final AnnotatedTree<?> then = parseBlock(e.getThen(), imports, defs, env, node, reaction, id);
-			final AnnotatedTree<?> elze = parseBlock(e.getElse(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<?> cond = parseExpression(e.getCond(), imports, defs, env, node, reaction, rand, id);
+			final AnnotatedTree<?> then = parseBlock(e.getThen(), imports, defs, env, node, reaction, rand, id);
+			final AnnotatedTree<?> elze = parseBlock(e.getElse(), imports, defs, env, node, reaction, rand, id);
 			return new TernaryOp(MUX_NAME, cond, then, elze);
 		}
 		if (name.endsWith(HOOD_END)) {
@@ -385,7 +393,7 @@ public final class ParseUtils {
 				throw new UnsupportedOperationException("Unsupported hood operation: " + op);
 			}
 			@SuppressWarnings(UNCHECKED)
-			final AnnotatedTree<Field> arg = (AnnotatedTree<Field>) parseExpression(e.getArg(), imports, defs, env, node, reaction, id);
+			final AnnotatedTree<Field> arg = (AnnotatedTree<Field>) parseExpression(e.getArg(), imports, defs, env, node, reaction, rand, id);
 			return new HoodCall(arg, hop, e.getInclusive() != null);
 		}
 		throw new UnsupportedOperationException("Unsupported operation: " + (e.getName() != null ? e.getName() : "Unknown"));
