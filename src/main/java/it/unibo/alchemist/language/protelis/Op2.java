@@ -12,7 +12,6 @@ import static it.unibo.alchemist.language.protelis.util.OpUtil.unsupported;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.utils.L;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -122,15 +121,24 @@ public enum Op2 {
 		if (a instanceof Number && b instanceof Number) {
 			return f.apply(((Number) a).doubleValue(), ((Number) b).doubleValue());
 		}
-		if (a instanceof Comparable && b instanceof Comparable) {
-			return f.apply((double) ((Comparable) a).compareTo(b), 0d);
+		try {
+			if (a instanceof Comparable && b instanceof Comparable) {
+				return f.apply((double) ((Comparable) a).compareTo(b), 0d);
+			}
+		} catch (RuntimeException e) {
+			/*
+			 * Comparison of different types
+			 */
 		}
-		return unsupported(op, a, b);
+		/*
+		 * Fall back to lexicographic comparison
+		 */
+		return f.apply((double) a.toString().compareTo(b.toString()), 0d);
 	}
 
 	private static <T> boolean logical(final String op, final T a, final T b, final BiFunction<Boolean, Boolean, Boolean> f) {
 		if (a instanceof Boolean && b instanceof Boolean) {
-			return f.apply(((Boolean) a).booleanValue(), ((Boolean) b).booleanValue());
+			return f.apply((Boolean) a, (Boolean) b);
 		}
 		return unsupported(op, a, b);
 	}
@@ -156,12 +164,13 @@ public enum Op2 {
 				return selector.apply(b, a);
 			} catch (RuntimeException e) {
 				/*
-				 * Comparison of different types, fallback to Strings
+				 * Comparison of different types, fallback to lexicographic comparison
 				 */
+				L.debug("Comparison of different types.");
 			}
 		}
 		/*
-		 * Fall back to String comparison
+		 * Fall back to lexicographic comparison
 		 */
 		final int v = a.toString().compareTo(b.toString());
 		if (v > 0) {
