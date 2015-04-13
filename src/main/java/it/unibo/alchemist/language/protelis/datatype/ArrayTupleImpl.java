@@ -69,7 +69,8 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public int compareTo(final Tuple o) {
 		int res = 0;
-		for (int i = 0; res == 0 && i < a.length; i++) {
+		final int otherSize = o.size();
+		for (int i = 0; res == 0 && i < a.length && i < otherSize; i++) {
 			final Object o1 = a[i];
 			final Object o2 = o.get(i);
 			if (o1 instanceof Comparable && o2 instanceof Comparable) {
@@ -87,6 +88,15 @@ public class ArrayTupleImpl implements Tuple {
 				 */
 				return o1.toString().compareTo(o2.toString());
 			}
+		}
+		if(res == 0 && a.length != otherSize) {
+			/*
+			 * Same content but different size: shortest is smaller
+			 */
+			if(a.length > otherSize) {
+				return 1;
+			}
+			return -1;
 		}
 		return res;
 	}
