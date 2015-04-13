@@ -29,9 +29,11 @@ import it.unibo.alchemist.utils.ParseUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.math3.util.Pair;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * @author Danilo Pianini
@@ -44,7 +46,7 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	 * Prefix for building Protelis molecules.
 	 */
 	public static final String PROGRAM_ID_PREFIX = "protelis-";
-	private static final Map<FasterString, ProtelisProgram> DB = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<FasterString, ProtelisProgram> DB = new MapMaker().weakValues().makeMap();
 	private final FasterString programString, pidString;
 	private final int hash;
 	private final IEnvironment<Object> environment;
