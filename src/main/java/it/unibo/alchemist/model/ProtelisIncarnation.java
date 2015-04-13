@@ -163,7 +163,7 @@ public class ProtelisIncarnation implements Incarnation {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object preprocess(final Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog, final INode<?> node, final Object val) {
+	private static Object preprocess(final Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog, final INode<?> node, final Object val) {
 		try {
 			if (prog.isPresent()) {
 				final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> curProg = prog.get();
