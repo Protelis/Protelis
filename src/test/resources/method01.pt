@@ -1,2 +1,2 @@
-from java.lang.Math import sin as sine;
-sine(0)
+import java.lang.Math.sin
+java::lang::Math::sin(0)

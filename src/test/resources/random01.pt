@@ -1,4 +1,4 @@
-from java.lang.Math import sqrt;
+import java.lang.Math.sqrt
 
 def reduce(default, t, fun) {
 	if(t.isEmpty()) {

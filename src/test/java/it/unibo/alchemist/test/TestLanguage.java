@@ -43,14 +43,14 @@ public class TestLanguage {
 	@Test
 	public void testInteger() {
 		final double val = 1;
-		final AnnotatedTree<?> program = runProgram(Integer.toString((int)val));
+		final AnnotatedTree<?> program = runProgram(Integer.toString((int) val));
 		assertEquals(val, program.getAnnotation());
 	}
 
 	@Test
 	public void testString() {
 		final String val = "test";
-		final AnnotatedTree<?> program = runProgram("\""+val+"\"");
+		final AnnotatedTree<?> program = runProgram("\"" + val + "\"");
 		assertEquals(val, program.getAnnotation());
 	}
 	
@@ -60,50 +60,10 @@ public class TestLanguage {
 	}
 	
 	@Test
-	public void testRandom01() {
-		testFile("/random01.pt", 10, true);
-	}
-	
-	@Test
 	public void testEval02() {
 		testFile("/eval02.pt", Tuple.create(new Object[]{36.0, 25.0, 16.0, 9.0, 4.0, 1.0}));
 	}
 	
-	@Test
-	public void testMethod01() {
-		testFile("/method01.pt", 0d);
-	}
-	
-	@Test
-	public void testSum() {
-		testFile("/sum.pt", 8d);
-	}
-	
-	@Test
-	public void testUnary01() {
-		testFile("/unary01.pt", true);
-	}
-	
-	@Test
-	public void testUnary02() {
-		testFile("/unary02.pt", -Math.PI);
-	}
-	
-	@Test
-	public void testMethod02() {
-		testFile("/method02.pt", Collections.EMPTY_LIST);
-	}
-	
-	@Test
-	public void testMethod03() {
-		testFile("/method03.pt", 7.658068177120837);
-	}
-
-	@Test
-	public void testMethod04() {
-		testFile("/method04.pt", Tuple.create(new Object[]{9.0, 2.0, 7.0, 4.0}));
-	}
-
 	@Test
 	public void testFunction01() {
 		testFile("/function01.pt", 1.0);
@@ -135,7 +95,7 @@ public class TestLanguage {
 	
 	@Test
 	public void testHof03() {
-		for(int i=1; i<=100; i++) {
+		for (int i = 1; i <= 100; i++) {
 			testFile("/hof03.pt", i, (double) i);
 		}
 	}
@@ -157,8 +117,8 @@ public class TestLanguage {
 	
 	@Test
 	public void testLambda02() {
-		for(int i=1; i<100; i++) {
-			testFile("/lambda02.pt", i, ( (i-1) % 6 < 3 ) ? ( (i-1d) % 3 + 1) : ( -( (i - 1d) % 3 ) -1 ));
+		for (int i = 1; i < 100; i++) {
+			testFile("/lambda02.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
 		}
 	}
 	
@@ -166,6 +126,50 @@ public class TestLanguage {
 	public void testLambda03() {
 		for(int i=1; i<100; i++) {
 			testFile("/lambda03.pt", i, ( (i-1) % 6 < 3 ) ? ( (i-1d) % 3 + 1) : ( -( (i - 1d) % 3 ) -1 ));
+		}
+	}
+	
+	@Test
+	public void testIf01() {
+		for (int i = 1; i < 100; i++) {
+			testFile("/if01.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
+		}
+	}
+	
+	@Test
+	public void testMethod01() {
+		testFile("/method01.pt", 0d);
+	}
+	
+	@Test
+	public void testMethod02() {
+		testFile("/method02.pt", Collections.EMPTY_LIST);
+	}
+	
+	@Test
+	public void testMethod03() {
+		testFile("/method03.pt", 7.658068177120837);
+	}
+
+	@Test
+	public void testMethod04() {
+		testFile("/method04.pt", Tuple.create(new Object[]{9.0, 2.0, 7.0, 4.0}));
+	}
+
+	@Test
+	public void testMethod05() {
+		testFile("/method05.pt", true);
+	}
+
+	@Test
+	public void testModules01() {
+		testFile("/modules01.pt", -1d);
+	}
+
+	@Test
+	public void testMux01() {
+		for (int i = 1; i < 100; i++) {
+			testFile("/mux01.pt", i, (double) (((i - 1) % 6 < 3) ? i : -i));
 		}
 	}
 	
@@ -190,6 +194,11 @@ public class TestLanguage {
 	}
 	
 	@Test
+	public void testRandom01() {
+		testFile("/random01.pt", 10, true);
+	}
+	
+	@Test
 	public void testRep01() {
 		for (int i = 1; i < 100000; i *= 10) {
 			testFile("/rep01.pt", i, (double) i);
@@ -205,6 +214,11 @@ public class TestLanguage {
 	}
 	
 	@Test
+	public void testSum() {
+		testFile("/sum.pt", 8d);
+	}
+	
+	@Test
 	public void testTuple01() {
 		testFile("/tuple01.pt", Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 }));
 	}
@@ -215,17 +229,13 @@ public class TestLanguage {
 	}
 	
 	@Test
-	public void testIf01() {
-		for (int i = 1; i < 100; i++) {
-			testFile("/if01.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
-		}
+	public void testUnary01() {
+		testFile("/unary01.pt", true);
 	}
 	
 	@Test
-	public void testMux01() {
-		for (int i = 1; i < 100; i++) {
-			testFile("/mux01.pt", i, (double) (((i - 1) % 6 < 3) ? i : -i));
-		}
+	public void testUnary02() {
+		testFile("/unary02.pt", -Math.PI);
 	}
 	
 	private static void testFile(final String file, final Object expectedResult) {

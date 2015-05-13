@@ -1,4 +1,4 @@
-from java.lang.Math import cos;
+import java.lang.Math.cos
 def cycle(start, step) {
 	cos(rep(x <- start) {x + step})
 }

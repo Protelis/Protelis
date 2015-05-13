@@ -46,7 +46,7 @@ import it.unibo.alchemist.language.protelis.protelis.DoubleVal;
 import it.unibo.alchemist.language.protelis.protelis.Expression;
 import it.unibo.alchemist.language.protelis.protelis.FunctionDef;
 import it.unibo.alchemist.language.protelis.protelis.Import;
-import it.unibo.alchemist.language.protelis.protelis.ImportedMethod;
+import it.unibo.alchemist.language.protelis.protelis.ImportDeclaration;
 import it.unibo.alchemist.language.protelis.protelis.Program;
 import it.unibo.alchemist.language.protelis.protelis.RepInitialize;
 import it.unibo.alchemist.language.protelis.protelis.Statement;
@@ -74,6 +74,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.math3.util.Pair;
@@ -81,6 +82,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
+import org.eclipse.xtext.common.types.JvmDeclaredType;
+import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
@@ -162,9 +165,9 @@ public final class ParseUtils {
 		/*
 		 * Import the referenced methods
 		 */
-		final Stream<Import> istr = root.getImports().parallelStream();
+//		final Stream<ImportDeclaration> istr = root.getJavaimports().getImportDeclarations().parallelStream();
 		final Map<Pair<String, Integer>, Method> imports = new ConcurrentHashMap<>();
-		istr.forEach(imp -> parseImport(imp, imports));
+//		istr.forEach(imp -> parseImport(imp, imports));
 		/*
 		 * Create the function headers
 		 */
@@ -181,7 +184,7 @@ public final class ParseUtils {
 		 */
 		final AtomicInteger id = new AtomicInteger();
 		fds = root.getDefinitions().stream();
-		fds.forEach(fd -> {
+		fds.forEachOrdered(fd -> {
 			final FunctionDefinition def = functions.get(new FasterString(fd.getName()));
 			def.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), imports, functions, env, node, reaction, rand, id));
 		});
@@ -219,42 +222,64 @@ public final class ParseUtils {
 		throw new NotImplementedException("Implement support for nodes of type: " + e.getClass());
 	}
 	
-	private static void parseImport(final Import imp, final Map<Pair<String, Integer>, Method> imports) {
-		final String classname = imp.getClass_();
+	private static MethodCall parseMethod(final JvmOperation jvmOp, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
+		final boolean ztatic = jvmOp.isStatic();
+		final List<AnnotatedTree<?>> arguments = parseArgs(args, imports, defs, env, node, reaction, rand, id);
+		final String classname = jvmOp.getDeclaringType().getQualifiedName();
 		try {
 			final Class<?> clazz = Class.forName(classname);
-			final Method[] ml = clazz.getMethods();
 			/*
 			 * TODO: Check for return type and params: if param is Field and
 			 * return type is not then L.warn()
 			 */
-			for (final ImportedMethod im: imp.getMethods()) {
-				final int initialsize = imports.size();
-				final String methodName = im.getMethod();
-				final String methodAlias = Optional.ofNullable(im.getName()).orElse(methodName);
-				Arrays.stream(ml).filter(m -> m.getName().equals(methodName))
-					.forEach(m -> imports.put(new Pair<>(methodAlias, m.getParameterCount() + (Modifier.isStatic(m.getModifiers()) ? 0 : 1)), m));
-				if (imports.size() == initialsize) {
-					L.warn("No method found for " + imp.getClass_() + "." + methodName);
-				}
+			Stream<Method> methods = Arrays.stream(clazz.getMethods());
+			if (ztatic) {
+				methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
 			}
+			/*
+			 * Same number of arguments
+			 */
+			final int parameterCount = jvmOp.getParameters().size();
+			methods = methods.filter(m -> m.getParameterCount() == parameterCount);
+			/*
+			 * Same name
+			 */
+			final String methodName = jvmOp.getSimpleName();
+			methods = methods.filter(m -> m.getName().equals(methodName));
+			/*
+			 * There should be only one left - otherwise we have overloading,
+			 * and to properly deal with that we need type checking. The
+			 * following collection operation is for debug and warning purposes,
+			 * and should be removed as soon as we have a proper way to deal
+			 * with overloading in place. TODO
+			 */
+			final List<Method> res = methods.collect(Collectors.toList());
+			if (res.size() > 1) {
+				final StringBuilder sb = new StringBuilder(64);
+				sb.append("Method ");
+				sb.append(jvmOp.getQualifiedName());
+				sb.append('/');
+				sb.append(parameterCount);
+				sb.append(" is overloaded by:\n");
+				res.stream().forEach(m -> {
+					sb.append(m.toString());
+					sb.append('\n');
+				});
+				sb.append("Protelis can not (yet) properly deal with that.");
+				L.warn(sb.toString());
+			}
+			if (res.isEmpty()) {
+				throw new IllegalStateException("Can not bind any method that satisfies the name " + jvmOp.getQualifiedName()  + "/" + parameterCount + ".");
+			}
+			return new MethodCall(res.get(0), arguments, ztatic);
 		} catch (ClassNotFoundException e) {
-			L.warn("Class " + classname + " could not be found in classpath.");
-			L.warn(e);
+			throw new IllegalStateException("Class " + classname + " could not be found in classpath.");
 		} catch (SecurityException e) {
-			L.warn("Class " + classname + " could not be loaded due to security permissions.");
-			L.warn(e);
+			throw new IllegalStateException("Class " + classname + " could not be loaded due to security permissions.");
 		} catch (Error e) {
-			L.warn("An error occured while loading class " + classname + ".");
-			L.warn(e);
+			throw new IllegalStateException("An error occured while loading class " + classname + ".");
 		}
-	}
-
-	private static MethodCall parseMethod(final String i, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
-		final Method mi = imports.get(new Pair<>(i, args.size()));
-		final boolean ztatic = Modifier.isStatic(mi.getModifiers());
-		final List<AnnotatedTree<?>> arguments = parseArgs(args, imports, defs, env, node, reaction, rand, id);
-		return new MethodCall(mi, arguments, ztatic);
+		
 	}
 
 	private static FunctionCall parseFunction(final String f, final List<Expression> args, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> defs, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
@@ -296,9 +321,9 @@ public final class ParseUtils {
 			 * Function or method call
 			 */
 			final EObject eRef = ref.get();
-			if (eRef instanceof ImportedMethod) {
-				final ImportedMethod m = (ImportedMethod) eRef;
-				return parseMethod(m.getName(), extractArgs(e), imports, defs, env, node, reaction, rand, id);
+			if (eRef instanceof JvmOperation) {
+				final JvmOperation m = (JvmOperation) eRef;
+				return parseMethod(m, extractArgs(e), imports, defs, env, node, reaction, rand, id);
 			} else if (eRef instanceof FunctionDef) {
 				final FunctionDef fun = (FunctionDef) eRef;
 				return parseFunction(fun.getName(), extractArgs(e), imports, defs, env, node, reaction, rand, id);
@@ -394,7 +419,7 @@ public final class ParseUtils {
 			}
 			@SuppressWarnings(UNCHECKED)
 			final AnnotatedTree<Field> arg = (AnnotatedTree<Field>) parseExpression(e.getArg(), imports, defs, env, node, reaction, rand, id);
-			return new HoodCall(arg, hop, e.getInclusive() != null);
+			return new HoodCall(arg, hop, e.isInclusive());
 		}
 		throw new UnsupportedOperationException("Unsupported operation: " + (e.getName() != null ? e.getName() : "Unknown"));
 	}
