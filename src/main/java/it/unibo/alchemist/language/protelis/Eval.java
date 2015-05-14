@@ -11,6 +11,7 @@ package it.unibo.alchemist.language.protelis;
 import java.util.Map;
 
 import org.apache.commons.math3.util.Pair;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.map.TIntObjectMap;
@@ -63,8 +64,9 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
 		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
 		final String program = getBranch(0).getAnnotation().toString();
+		final Resource progResource = ParseUtils.resourceFromString(program);
 		try {
-			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ParseUtils.parse(env, node, reaction, random, program);
+			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ParseUtils.parse(env, node, reaction, random, progResource);
 			gamma.push();
 			gamma.putAll(result.getSecond());
 			final AnnotatedTree<?> toRun = result.getFirst();

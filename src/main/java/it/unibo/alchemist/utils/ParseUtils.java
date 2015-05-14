@@ -70,14 +70,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.math3.util.Pair;
+import org.danilopianini.concurrency.FastReadWriteLock;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -86,6 +89,9 @@ import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.inject.Injector;
 
@@ -96,7 +102,10 @@ import com.google.inject.Injector;
 public final class ParseUtils {
 
 	private static final AtomicInteger IDGEN = new AtomicInteger();
+	private static final Semaphore CLASSPATH_SCAN_MUTEX = new Semaphore(1);
+	private static final long CLASSPATH_RESCAN_IDLE = 60000;
 	private static final XtextResourceSet XTEXT;
+	private static final String PROTELIS_FILE_EXTENSION = "pt";
 	private static final String UNCHECKED = "unchecked";
 	private static final String ASSIGNMENT_NAME = "=";
 	private static final String DOT_NAME = ".";
@@ -118,37 +127,113 @@ public final class ParseUtils {
 	private static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values()).map(Op1::toString).collect(Collectors.toList());
 
 	static {
+		new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri("../");
 		final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
 		XTEXT = guiceInjector.getInstance(XtextResourceSet.class);
-		XTEXT.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, true);
+		XTEXT.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+		populateXtextResolver();
+		new Thread(() -> {
+			try {
+				Thread.sleep(CLASSPATH_RESCAN_IDLE);
+			} catch (Exception e) {
+				/*
+				 * No big deal.
+				 */
+			}
+			populateXtextResolver();
+		}).start();
 	}
 
 	private ParseUtils() {
 	}
 
 	/**
-	 * @param env environment
-	 * @param node node
-	 * @param reaction reaction
-	 * @param rand random engine
-	 * @param program Protelis program
-	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and {@link FunctionDefinition} (containing the available functions)
+	 * @param env
+	 *            environment
+	 * @param node
+	 *            node
+	 * @param reaction
+	 *            reaction
+	 * @param rand
+	 *            random engine
+	 * @param programURI
+	 *            Protelis program file to execute. It must be a either a valid
+	 *            {@link URI} string, for instance
+	 *            "file:///home/user/protelis/myProgram" or a location relative
+	 *            to the classpath. In case, for instance,
+	 *            "/my/package/myProgram.pt" is passed, it will be automatically
+	 *            get converted to "classpath:/my/package/myProgram.pt". All the
+	 *            Protelis modules your program relies upon must be included in
+	 *            your Java classpath. The Java classpath scanning is done
+	 *            automatically by this constructor, linking is performed by
+	 *            Xtext transparently. {@link URI}s of type "platform:/" are
+	 *            supported, for those who work within an Eclipse environment.
+	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
+	 *         {@link FunctionDefinition} (containing the available functions)
 	 */
 	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(
 			final IEnvironment<Object> env,
 			final ProtelisNode node,
 			final IReaction<Object> reaction,
 			final RandomEngine rand,
-			final String program) {
-		final Resource r = XTEXT.createResource(URI.createURI("dummy:/" + IDGEN.getAndIncrement() + ".pt"));
+			final String programURI) {
+		return parse(env, node, reaction, rand, resourceFromURIString(programURI));
+	}
+	
+	public static Resource resourceFromURIString(final String programURI) {
+		final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
+		return XTEXT.getResource(URI.createURI(realURI), true);
+	}
+	
+	public static Resource resourceFromString(final String program) {
+		final Resource r = XTEXT.createResource(URI.createURI("dummy:/protelis-generated-program-" + IDGEN.getAndIncrement() + ".pt"));
 		final InputStream in = new ByteArrayInputStream(program.getBytes(Charset.forName("UTF-8")));
 		try {
 			r.load(in, XTEXT.getLoadOptions());
 		} catch (IOException e) {
 			L.error("I/O error while reading in RAM: this must be tough.");
 		}
-		if (!r.getErrors().isEmpty()) {
-			for (final Diagnostic d : r.getErrors()) {
+		return r;
+	}
+	
+	private static void populateXtextResolver() {
+		/*
+		 * Rescan the classpath and load all Protelis files, only one thread can
+		 * do so at a time.
+		 */
+		if (CLASSPATH_SCAN_MUTEX.tryAcquire()) {
+			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+			try {
+				for (org.springframework.core.io.Resource protelisFile: resolver.getResources("classpath*:/**/**." + PROTELIS_FILE_EXTENSION)) {
+					XTEXT.getResource(URI.createURI(protelisFile.getURI().toString()), true);
+				}
+			} catch (IOException | Error | RuntimeException e) {
+				L.warn(e);
+			}
+		}
+	}
+		
+	/**
+	 * @param env
+	 *            environment
+	 * @param node
+	 *            node
+	 * @param reaction
+	 *            reaction
+	 * @param rand
+	 *            random engine
+	 * @param resource
+	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
+	 *         {@link FunctionDefinition} (containing the available functions)
+	 */
+	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(
+			final IEnvironment<Object> env,
+			final ProtelisNode node,
+			final IReaction<Object> reaction,
+			final RandomEngine rand,
+			final Resource resource) {
+		if (!resource.getErrors().isEmpty()) {
+			for (final Diagnostic d : resource.getErrors()) {
 				final StringBuilder b = new StringBuilder("Error at line ");
 				b.append(d.getLine());
 				b.append(": ");
@@ -157,17 +242,7 @@ public final class ParseUtils {
 			}
 			throw new IllegalArgumentException("Your program has syntax errors. Feed me something usable, please.");
 		}
-		final Program root = (Program) r.getContents().get(0);
-		/*
-		 * Set the package
-		 */
-		
-		/*
-		 * Import the referenced methods
-		 */
-//		final Stream<ImportDeclaration> istr = root.getJavaimports().getImportDeclarations().parallelStream();
-		final Map<Pair<String, Integer>, Method> imports = new ConcurrentHashMap<>();
-//		istr.forEach(imp -> parseImport(imp, imports));
+		final Program root = (Program) resource.getContents().get(0);
 		/*
 		 * Create the function headers
 		 */
@@ -186,13 +261,15 @@ public final class ParseUtils {
 		fds = root.getDefinitions().stream();
 		fds.forEachOrdered(fd -> {
 			final FunctionDefinition def = functions.get(new FasterString(fd.getName()));
-			def.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), imports, functions, env, node, reaction, rand, id));
+			def.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), null, functions, env, node, reaction, rand, id));
 		});
 		/*
 		 * Create the main program
 		 */
-		return new Pair<>(parseBlock(root.getProgram(), imports, functions, env, node, reaction, rand, id), functions);
+		return new Pair<>(parseBlock(root.getProgram(), null, functions, env, node, reaction, rand, id), functions);
 	}
+	
+	
 
 	private static <T> AnnotatedTree<?> parseBlock(final Block e, final Map<Pair<String, Integer>, Method> imports, final Map<FasterString, FunctionDefinition> functions, final IEnvironment<Object> env, final ProtelisNode node, final IReaction<Object> reaction, final RandomEngine rand, final AtomicInteger id) {
 		final AnnotatedTree<?> first = parseStatement(e.getFirst(), imports, functions, env, node, reaction, rand, id);

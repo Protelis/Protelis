@@ -34,27 +34,6 @@ import org.junit.Test;
 public class TestLanguage {
 
 	@Test
-	public void testDouble() {
-		final double val = 1;
-		final AnnotatedTree<?> program = runProgram(Double.toString(val));
-		assertEquals(val, program.getAnnotation());
-	}
-
-	@Test
-	public void testInteger() {
-		final double val = 1;
-		final AnnotatedTree<?> program = runProgram(Integer.toString((int) val));
-		assertEquals(val, program.getAnnotation());
-	}
-
-	@Test
-	public void testString() {
-		final String val = "test";
-		final AnnotatedTree<?> program = runProgram("\"" + val + "\"");
-		assertEquals(val, program.getAnnotation());
-	}
-	
-	@Test
 	public void testEval01() {
 		testFile("/eval01.pt", 1d);
 	}
@@ -243,22 +222,8 @@ public class TestLanguage {
 	}
 	
 	private static void testFile(final String file, final int runs, final Object expectedResult) {
-		final AnnotatedTree<?> program = runProgram(resourceToString(file), runs);
+		final AnnotatedTree<?> program = runProgram(file, runs);
 		assertEquals(expectedResult, program.getAnnotation());
-	}
-	
-	private static void failExeption(final Throwable e) {
-		fail(stackTraceToString(e));
-	}
-	
-	private static String resourceToString(final String uri) {
-		final String path = TestLanguage.class.getResource(uri).getFile();
-		try {
-			return FileUtilities.fileToString(path);
-		} catch (IOException e) {
-			failExeption(e);
-		}
-		return null;
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s) {
