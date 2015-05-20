@@ -6,8 +6,12 @@ package it.unibo.alchemist.language.protelis.vm;
 import gnu.trove.TCollections;
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
+import gnu.trove.list.linked.TIntLinkedList;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.stack.TByteStack;
+import gnu.trove.stack.TIntStack;
+import gnu.trove.stack.array.TIntArrayStack;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Stack;
@@ -29,6 +33,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private static final MapMaker MAPMAKER = new MapMaker();
 	
 	private final TByteList callStack = new TByteArrayList();
+	private final TIntStack callFrameSizes = new TIntArrayStack();
 	private final Stack gamma;
 	private final TIntObjectMap<Map<CodePath, Object>> theta;
 	private final Map<CodePath, Object> toSend = MAPMAKER.makeMap();
@@ -39,33 +44,20 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		theta = TCollections.unmodifiableMap(receivedMessages);
 	}
 
-//	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-	
 	@Override
 	public void newCallStackFrame(final byte... id) {
+		callFrameSizes.push(id.length);
 		callStack.add(id);
-	}
-
-	@Override
-	public void returnFromCallFrame(final int frameSize) {
-		callStack.remove(callStack.size() - frameSize, frameSize);
+		gamma.push();
 	}
 
 	@Override
 	public void returnFromCallFrame() {
-		returnFromCallFrame(1);
-	}
-
-	@Override
-	public void pushOnVariablesStack() {
-		gamma.push();
-	}
-	
-	@Override
-	public void popOnVariableStack() {
+		int size = callFrameSizes.pop();
+		callStack.remove(callStack.size() - size, size);
 		gamma.pop();
 	}
-	
+
 	@Override
 	public void putVariable(final FasterString name, final Object value, final boolean canShadow) {
 		gamma.put(name, value, canShadow);

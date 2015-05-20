@@ -55,7 +55,7 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		evalEveryBranchWithProjection(context);
+		projectAndEval(context);
 		final Object res = getBranch(0).getAnnotation();
 		context.putVariable(var, res, isDefinition());
 		setAnnotation(res);

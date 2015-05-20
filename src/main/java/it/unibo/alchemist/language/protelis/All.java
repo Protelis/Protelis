@@ -39,9 +39,7 @@ public class All extends AbstractAnnotatedTree<Object> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		context.pushOnVariablesStack();
-		evalEveryBranchWithProjection(context);
-		context.popOnVariableStack();
+		forEach(b -> b.eval(context));
 		setAnnotation(getBranch(last).getAnnotation());
 	}
 

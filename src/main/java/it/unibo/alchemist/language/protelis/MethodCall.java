@@ -56,7 +56,7 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		evalEveryBranchWithProjection(context);
+		projectAndEval(context);
 		// Obtain target and arguments
 		final Object target = ztatic ? null : getBranch(0).getAnnotation();
 		final Stream<?> s = getBranchesAnnotationStream();

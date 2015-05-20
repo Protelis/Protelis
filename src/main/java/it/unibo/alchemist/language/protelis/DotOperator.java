@@ -86,7 +86,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			/*
 			 * Otherwise, evaluate branches and proceed to evaluation
 			 */
-			evalEveryBranchWithProjection(context);
+			projectAndEval(context);
 			/*
 			 *  Check everything for fields
 			 */

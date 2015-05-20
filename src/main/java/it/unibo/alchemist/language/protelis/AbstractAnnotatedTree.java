@@ -19,9 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import org.danilopianini.lang.CollectionUtils;
 
 /**
  * @author Danilo Pianini
@@ -159,7 +158,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	/**
 	 * @return the number of branches
 	 */
-	protected int getBranchesNumber() {
+	protected final int getBranchesNumber() {
 		return branches.size();
 	}
 
@@ -180,7 +179,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	 *            the Consumer to execute
 	 */
 	protected final void forEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
-		CollectionUtils.forEach(branches, action);
+		indexStream().forEachOrdered(i -> action.accept(i, getBranch(i)));
 	}
 
 	/**
@@ -196,29 +195,50 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	}
 
 	/**
-	 * Runs eval() on every branch, passing sigma and gamma as they are and
-	 * projecting theta.
+	 * Facility to run lambdas across all the branches in a PARALELL fashion. Be
+	 * EXTREMELY careful with this. If you are not sure whether or not you
+	 * should use this, you should not.
 	 * 
-	 * @param sigma
-	 *            local node
-	 * @param theta
-	 *            AST of aligned nodes
-	 * @param gamma
-	 *            variables
-	 * @param lastExec
-	 *            last AST received (to be used in static-case optimization)
-	 * @param newMap
-	 *            the AST that will be sent at the end of this computation
-	 * @param currentPosition
-	 *            current position in the stack
+	 * @param action
+	 *            the Consumer to execute
 	 */
-	protected final void evalEveryBranchWithProjection(final ExecutionContext context) {
-		for (int i = 0; i < branches.size(); i++) {
-			final AnnotatedTree<?> branch = branches.get(i);
-			context.newCallStackFrame((byte) i);
+	protected final void parallelForEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
+		indexStream().parallel().forEach(i -> action.accept(i, getBranch(i)));
+	}
+	
+	private IntStream indexStream() {
+		return IntStream.range(0, getBranchesNumber());
+	}
+
+	/**
+	 * Runs eval() sequentially on every branch, creating a new stack frame for each one.
+	 * 
+	 * @param context the execution context
+	 */
+	protected final void projectAndEval(final ExecutionContext context) {
+		forEachWithIndex(evalOp(context));
+	}
+
+	/*
+	 * This is dangerous and has been disabled
+	 */
+//	/**
+//	 * Runs eval() in parallel on every branch, creating a new stack frame for
+//	 * each one. HANDLE WITH CARE.
+//	 * 
+//	 * @param context
+//	 *            the execution context
+//	 */
+//	protected final void parallelProjectAndEval(final ExecutionContext context) {
+//		parallelForEachWithIndex(evalOp(context));
+//	}
+	
+	private static BiConsumer<Integer, ? super AnnotatedTree<?>> evalOp(final ExecutionContext context) {
+		return (i, branch) -> {
+			context.newCallStackFrame(i.byteValue());
 			branch.eval(context);
 			context.returnFromCallFrame();
-		}
+		};
 	}
 
 	/**
@@ -239,14 +259,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		return branches.get(i);
 	}
 
-//	/**
-//	 * @param currentPosition
-//	 *            go back one position in the passed call stack
-//	 */
-//	protected static final void removeLast(final TByteList currentPosition) {
-//		currentPosition.removeAt(currentPosition.size() - 1);
-//	}
-	
 	/**
 	 * Utility for indenting lines.
 	 * 

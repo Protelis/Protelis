@@ -19,22 +19,34 @@ import it.unibo.alchemist.utils.FasterString;
  */
 public interface ExecutionContext {
 
+	/**
+	 * @param id
+	 *            stack frame type
+	 */
 	void newCallStackFrame(byte... id);
 	
+	/**
+	 * returns from the last frame.
+	 */
 	void returnFromCallFrame();
 	
-	void returnFromCallFrame(int frameSize);
-	
-	void pushOnVariablesStack();
-	
-	void popOnVariableStack();
-	
-	void putMultipleVariables(Map<FasterString, ? extends Object> map);
+	/**
+	 * Pushes multiple variables.
+	 * 
+	 * @param map the variables to push
+	 */
+	void putMultipleVariables(Map<FasterString, ?> map);
 	
 	/**
 	 * @param name
+	 *            variable name
 	 * @param value
-	 * @param canShadow if no other variable with the same name exists, this parameter is irrelevant. Otherwise, if true, the previous variable will be shadowed. If false, the variable will be overridden (with possible side effects upon return) instead.
+	 *            variable value
+	 * @param canShadow
+	 *            if no other variable with the same name exists, this parameter
+	 *            is irrelevant. Otherwise, if true, the previous variable will
+	 *            be shadowed. If false, the variable will be overridden (with
+	 *            possible side effects upon return) instead.
 	 */
 	void putVariable(FasterString name, Object value, boolean canShadow);
 

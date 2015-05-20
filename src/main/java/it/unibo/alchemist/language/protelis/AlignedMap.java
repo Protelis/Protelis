@@ -63,8 +63,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		evalEveryBranchWithProjection(context);
-		context.pushOnVariablesStack();
+		projectAndEval(context);
 		final Object originObj = fgen.getAnnotation();
 		if (!(originObj instanceof Field)) {
 			throw new IllegalStateException("The argument must be a field of tuples of tuples. It is a " + originObj.getClass() + " instead.");
@@ -184,11 +183,10 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			} else {
 				throw new IllegalStateException("Filter must return a Boolean, got " + cond.getClass());
 			}
-			context.returnFromCallFrame(hash.length);
+			context.returnFromCallFrame();
 		}
 		// return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
 		setAnnotation(Tuple.create(resl));
-		context.popOnVariableStack();
 	}
 
 	@Override

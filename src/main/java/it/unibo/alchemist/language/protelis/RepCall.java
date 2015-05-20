@@ -53,7 +53,6 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		context.pushOnVariablesStack();
 		if (isErased()) {
 			/*
 			 * Evaluate the initial value for the field. This is either a variable or a constant, so no projection is required.
@@ -70,7 +69,6 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 		context.newCallStackFrame(A_BRANCH);
 		body.eval(context);
 		context.returnFromCallFrame();
-		context.popOnVariableStack();
 		@SuppressWarnings("unchecked")
 		final T result = (T) body.getAnnotation();
 		setAnnotation(result);

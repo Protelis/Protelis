@@ -42,19 +42,17 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		evalEveryBranchWithProjection(context);
+		projectAndEval(context);
 		final String program = getBranch(0).getAnnotation().toString();
 		final Resource progResource = ProtelisLoader.resourceFromString(program);
 		try {
 			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ProtelisLoader.parse(progResource);
-			context.pushOnVariablesStack();
+			context.newCallStackFrame(DYN_CODE_INDEX);
 			context.putMultipleVariables(result.getSecond());
 			final AnnotatedTree<?> toRun = result.getFirst();
-			context.newCallStackFrame(DYN_CODE_INDEX);
 			toRun.eval(context);
 			setAnnotation(toRun.getAnnotation());
 			context.returnFromCallFrame();
-			context.popOnVariableStack();
 		} catch (IllegalArgumentException e) {
 			L.error(e);
 			throw new IllegalStateException("The following program can't be parsed:\n" + program, e);

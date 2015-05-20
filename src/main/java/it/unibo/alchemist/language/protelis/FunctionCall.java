@@ -68,11 +68,11 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 		/*
 		 * 1. Evaluate all the arguments
 		 */
-		evalEveryBranchWithProjection(context);
+		projectAndEval(context);
 		/*
 		 * Inner gamma must hold param values
 		 */
-		context.pushOnVariablesStack();
+		context.newCallStackFrame(stackCode);
 		forEachWithIndex((i, b) -> {
 			context.putVariable(fd.getInternalName(i), b.getAnnotation(), true);
 		});
@@ -85,10 +85,8 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 		/*
 		 * Evaluate the body and copy its result in the annotation
 		 */
-		context.newCallStackFrame(stackCode);
 		getSuperscript().eval(context);
-		context.returnFromCallFrame(stackCode.length);
-		context.popOnVariableStack();
+		context.returnFromCallFrame();
 		setAnnotation(getSuperscript().getAnnotation());
 	}
 
