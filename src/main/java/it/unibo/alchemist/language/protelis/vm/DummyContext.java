@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * A dummy Protelis VM to be used for testing.
+ * 
  * @author Danilo Pianini
  *
  */
-public class LocalDummyContext extends AbstractExecutionContext {
+public class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
 	
@@ -90,7 +92,11 @@ public class LocalDummyContext extends AbstractExecutionContext {
 	
 	private INode<Object> dummy = new DummyDevice();
 	
-	public LocalDummyContext(final Map<FasterString, ?> availableFunctions) {
+	/**
+	 * @param availableFunctions
+	 *            the functions available for this program
+	 */
+	public DummyContext(final Map<FasterString, ?> availableFunctions) {
 		super(availableFunctions, new TIntObjectHashMap<>());
 	}
 

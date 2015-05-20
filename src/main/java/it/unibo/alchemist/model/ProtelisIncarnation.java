@@ -12,7 +12,7 @@ import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
-import it.unibo.alchemist.language.protelis.vm.LocalDummyContext;
+import it.unibo.alchemist.language.protelis.vm.DummyContext;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.interfaces.IMolecule;
@@ -160,7 +160,7 @@ public class ProtelisIncarnation implements Incarnation {
 				final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> curProg = prog.get();
 				final Map<FasterString, Object> vars = new HashMap<>(curProg.getSecond());
 				NAMES.stream().forEach(n -> vars.put(n, val));
-				curProg.getFirst().eval(new LocalDummyContext(vars));
+				curProg.getFirst().eval(new DummyContext(vars));
 				return curProg.getFirst().getAnnotation();
 			}
 		} catch (final RuntimeException | Error e) {

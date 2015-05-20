@@ -20,7 +20,7 @@ import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.language.protelis.vm.LocalDummyContext;
+import it.unibo.alchemist.language.protelis.vm.DummyContext;
 import it.unibo.alchemist.utils.FasterString;
 
 import java.io.IOException;
@@ -248,7 +248,7 @@ public class TestLanguage {
 		AnnotatedTree<?> program = prog.getFirst();
 		for (int i = 0; i < runs; i++) {
 			program = program.copy();
-			final ExecutionContext ctx = new LocalDummyContext(new HashMap<>(prog.getSecond()));
+			final ExecutionContext ctx = new DummyContext(new HashMap<>(prog.getSecond()));
 			program.eval(ctx);
 		}
 		return program;
