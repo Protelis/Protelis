@@ -8,18 +8,13 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.ReflectionUtils;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -59,13 +54,13 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
+	public void eval(final ExecutionContext context) {
 		/*
 		 * Eval left
 		 */
-		currentPosition.add(LEFT_POS);
-		left.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		removeLast(currentPosition);
+		context.newCallStackFrame(LEFT_POS);
+		left.eval(context);
+		context.returnFromCallFrame();
 		/*
 		 * If it is a function pointer, then create a new function call
 		 */
@@ -85,13 +80,13 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 				fc = new FunctionCall(fd, deepCopyBranches());
 			}
 			setSuperscript(fc);
-			fc.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
+			fc.eval(context);
 			setAnnotation(fc.getAnnotation());
 		} else {
 			/*
 			 * Otherwise, evaluate branches and proceed to evaluation
 			 */
-			evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
+			evalEveryBranchWithProjection(context);
 			/*
 			 *  Check everything for fields
 			 */
@@ -102,7 +97,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 			 */
 			Stream<Object> str = Arrays.stream(args).parallel();
 			str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
-			int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
+			final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
 			/*
 			 *  if there are any fields, do a field apply:
 			 */
@@ -118,7 +113,7 @@ public class DotOperator extends AbstractSATree<Object, Object> {
 						fieldTarget, fieldIndexes, target, args);
 				setAnnotation(res);
 			} else {
-				Object annotation = ReflectionUtils.invokeBestNotStatic(target, methodName, args);
+				final Object annotation = ReflectionUtils.invokeBestNotStatic(target, methodName, args);
 				setAnnotation(annotation);
 			}
 		}

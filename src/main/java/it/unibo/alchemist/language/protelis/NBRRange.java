@@ -8,16 +8,9 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.datatype.Field;
-import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.IEnvironment;
-import it.unibo.alchemist.model.interfaces.INode;
-
-import java.util.Map;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
+import it.unibo.alchemist.model.interfaces.IPosition;
 
 /**
  * @author Danilo Pianini
@@ -26,46 +19,16 @@ import java.util.Map;
 public class NBRRange extends AbstractAnnotatedTree<Field> {
 
 	private static final long serialVersionUID = -4289267098921035028L;
-	private final IEnvironment<Object> env;
-	
-	/**
-	 * @param environment
-	 *            the environment
-	 */
-	public NBRRange(final IEnvironment<Object> environment) {
-		super();
-		env = environment;
-	}
 	
 	@Override
-	public AnnotatedTree<Field> copy() {
-		final NBRRange res = new NBRRange(env);
-		return res;
+	public NBRRange copy() {
+		return new NBRRange();
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		/*
-		 * For the cache hit to happen, my position should remain the same of
-		 * the previous execution, and I must have received acks (namely theta
-		 * is null)
-		 */
-		final CodePath currentPath = new CodePath(currentPosition);
-		final Field res;
-		res = Field.create(theta.size() + 1);
-		theta.forEachEntry((nodeId, pathMap) -> {
-			if (pathMap.containsKey(currentPath)) {
-				final INode<Object> node = env.getNodeByID(nodeId);
-				res.addSample(node, env.getDistanceBetweenNodes(sigma, node));
-			}
-			return true;
-		});
-		res.addSample(sigma, 0d);
-		/*
-		 * It is only relevant to put a placeholder signaling that this node
-		 * visited this code path. No need to store anything.
-		 */
-		newMap.put(currentPath, 0);
+	public void eval(final ExecutionContext context) {
+		final IPosition myPosition = context.getDevicePosition();
+		final Field res = context.buildField(pos -> myPosition.getDistanceTo(pos), myPosition);
 		setAnnotation(res);
 	}
 

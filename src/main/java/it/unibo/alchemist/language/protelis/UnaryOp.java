@@ -8,14 +8,9 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -44,13 +39,13 @@ public class UnaryOp extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	public AnnotatedTree<Object> copy() {
+	public UnaryOp copy() {
 		return new UnaryOp(op, getBranch(0).copy());
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
+	public void eval(final ExecutionContext context) {
+		evalEveryBranchWithProjection(context);
 		setAnnotation(op.run(getBranch(0).getAnnotation()));
 	}
 

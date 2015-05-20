@@ -18,6 +18,8 @@ import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
+import it.unibo.alchemist.language.protelis.vm.LocalDummyContext;
 import it.unibo.alchemist.utils.FasterString;
 import it.unibo.alchemist.utils.ParseUtils;
 
@@ -142,7 +144,22 @@ public class TestLanguage {
 
 	@Test
 	public void testModules01() {
-		testFile("/modules01.pt", -1d);
+		testFile("/modules01.pt", 1d);
+	}
+
+	@Test
+	public void testModules02() {
+		testFile("/modules02.pt", true);
+	}
+
+	@Test
+	public void testModules03() {
+		testFile("/modules03.pt", true);
+	}
+
+	@Test
+	public void testModules04() {
+		testFile("/modules04.pt", 1d);
 	}
 
 	@Test
@@ -226,19 +243,13 @@ public class TestLanguage {
 		assertEquals(expectedResult, program.getAnnotation());
 	}
 	
-	private static AnnotatedTree<?> runProgram(final String s) {
-		return runProgram(s, 1);
-	}
-	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, new MersenneTwister(0), s);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(s);
 		AnnotatedTree<?> program = prog.getFirst();
-		Map<CodePath, Object> lastExec = new HashMap<>();
 		for (int i = 0; i < runs; i++) {
 			program = program.copy();
-			final Map<CodePath, Object> newExec = new HashMap<>();
-			program.eval(null, new TIntObjectHashMap<>(), new StackImpl(new HashMap<>(prog.getSecond())), lastExec, newExec, new TByteArrayList());
-			lastExec = newExec;
+			final ExecutionContext ctx = new LocalDummyContext(new HashMap<>(prog.getSecond()));
+			program.eval(ctx);
 		}
 		return program;
 	}

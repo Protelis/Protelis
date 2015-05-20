@@ -8,15 +8,10 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Danilo Pianini
@@ -43,10 +38,10 @@ public class All extends AbstractAnnotatedTree<Object> {
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		gamma.push();
-		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		gamma.pop();
+	public void eval(final ExecutionContext context) {
+		context.pushOnVariablesStack();
+		evalEveryBranchWithProjection(context);
+		context.popOnVariableStack();
 		setAnnotation(getBranch(last).getAnnotation());
 	}
 

@@ -106,7 +106,7 @@ public class ProtelisIncarnation implements Incarnation {
 		Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog = cache.getIfPresent(prop);
 		if (prog == null) {
 			try {
-				prog = Optional.of(ParseUtils.parse(null, node instanceof ProtelisNode ? (ProtelisNode) node : null, null, RAND, prop));
+				prog = Optional.of(ParseUtils.parse(prop));
 				cache.put(prop, prog);
 			} catch (final RuntimeException e) {
 				/*

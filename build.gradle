@@ -36,6 +36,7 @@ dependencies {
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
     compile "commons-logging:commons-logging:$commonsloggingVersion"
     compile "org.springframework:spring-core:$springVersion"
+    compile "commons-io:commons-io:$commonsIO"
 
     compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
     compile "it.unibo.alchemist:alchemist-implementationbase:$implbaseVersion"

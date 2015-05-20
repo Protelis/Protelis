@@ -35,15 +35,15 @@ public interface Field extends Serializable {
 	}
 	
 	static Field applyWithSingleParam(UnaryOperator<Object> fun, int[] fields, Object a) {
-		return apply((t,p) -> fun.apply(p[0]), false, fields, null, a);
+		return apply((t, p) -> fun.apply(p[0]), false, fields, null, a);
 	}
 
 	static Field apply(BinaryOperator<Object> fun, int[] fields, Object a, Object b) {
-		return apply((t,p) -> fun.apply(p[0], p[1]), false, fields, null, a, b);
+		return apply((t, p) -> fun.apply(p[0], p[1]), false, fields, null, a, b);
 	}
 
 	static Field apply(final TriFunction<Object, Object, Object, Object> fun, int[] fields, Object a, Object b, Object c){
-		return apply((t,p) -> fun.apply(p[0], p[1], p[2]), false, fields, null, a, b, c);
+		return apply((t, p) -> fun.apply(p[0], p[1], p[2]), false, fields, null, a, b, c);
 	}
 	
 	/**

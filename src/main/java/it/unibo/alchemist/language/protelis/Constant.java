@@ -8,13 +8,8 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
-import java.util.Map;
 
 /**
  * @author Danilo Pianini
@@ -40,8 +35,10 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		setAnnotation(o);
+	public void eval(final ExecutionContext context) {
+		if (isErased()) {
+			setAnnotation(o);
+		}
 	}
 	
 	/**

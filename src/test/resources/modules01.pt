@@ -1,0 +1,4 @@
+import protelis:test:truefunctions
+import protelis:test:wrongfunctions
+
+one()

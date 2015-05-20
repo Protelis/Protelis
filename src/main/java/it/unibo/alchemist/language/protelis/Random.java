@@ -8,14 +8,8 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
-import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
-import java.util.Map;
 
 /**
  * @author Danilo Pianini
@@ -25,35 +19,19 @@ public class Random extends AbstractAnnotatedTree<Double> {
 
 	private static final long serialVersionUID = -5050040892058340950L;
 	
-	private final RandomEngine rand;
-	
-	/**
-	 * @param e the random engine
-	 */
-	public Random(final RandomEngine e) {
-		super();
-		rand = e;
-	}
-
 	@Override
-	public Random copy() {
-		return new Random(rand);
-	}
-
-	@Override
-	public void eval(
-			final INode<Object> sigma,
-			final TIntObjectMap<Map<CodePath, Object>> theta,
-			final Stack gamma,
-			final Map<CodePath, Object> lastExec,
-			final Map<CodePath, Object> newMap,
-			final TByteList currentPosition) {
-		setAnnotation(rand.nextDouble());
+	public void eval(final ExecutionContext context) {
+		setAnnotation(context.nextRandomDouble());
 	}
 
 	@Override
 	protected void asString(final StringBuilder sb, final int i) {
 		sb.append("random");
+	}
+
+	@Override
+	public Random copy() {
+		return new Random();
 	}
 
 }

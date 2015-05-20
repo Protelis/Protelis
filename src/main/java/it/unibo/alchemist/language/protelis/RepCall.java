@@ -8,16 +8,11 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.utils.FasterString;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -46,7 +41,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 	}
 
 	@Override
-	public AnnotatedTree<T> copy() {
+	public RepCall<T> copy() {
 		final List<AnnotatedTree<?>> branches = deepCopyBranches();
 		final RepCall<T> res = new RepCall<>(xName, branches.get(W_BRANCH), branches.get(A_BRANCH));
 		if (!isErased()) {
@@ -57,25 +52,25 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		gamma.push();
+	public void eval(final ExecutionContext context) {
+		context.pushOnVariablesStack();
 		if (isErased()) {
 			/*
 			 * Evaluate the initial value for the field. This is either a variable or a constant, so no projection is required.
 			 */
 			final AnnotatedTree<?> w = getBranch(W_BRANCH);
-			currentPosition.add(W_BRANCH);
-			w.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-			removeLast(currentPosition);
-			gamma.put(xName, w.getAnnotation(), true);
+			context.newCallStackFrame(W_BRANCH);
+			w.eval(context);
+			context.returnFromCallFrame();
+			context.putVariable(xName, w.getAnnotation(), true);
 		} else {
-			gamma.put(xName, getSuperscript(), true);
+			context.putVariable(xName, getSuperscript(), true);
 		}
 		final AnnotatedTree<?> body = getBranch(A_BRANCH);
-		currentPosition.add(A_BRANCH);
-		body.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		removeLast(currentPosition);
-		gamma.pop();
+		context.newCallStackFrame(A_BRANCH);
+		body.eval(context);
+		context.returnFromCallFrame();
+		context.popOnVariableStack();
 		@SuppressWarnings("unchecked")
 		final T result = (T) body.getAnnotation();
 		setAnnotation(result);

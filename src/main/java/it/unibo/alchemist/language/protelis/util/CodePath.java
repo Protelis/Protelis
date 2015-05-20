@@ -42,27 +42,27 @@ public class CodePath implements Serializable {
 				hash |= (-1 & stack.get(i)) << 8 * i;
 			}
 		} else {
-			path = new long[(stack.size() +7) / 8];
+			path = new long[(stack.size() + 7) / 8];
 			hash = Constants.DJB2_START;
-			for(int i = 0; i < stack.size(); i++) {
+			for (int i = 0; i < stack.size(); i++) {
 				final byte b = stack.get(i);
 				hash = hash * DJB2_MAGIC ^ b;
-				path[i/8] |= ((0L | b) << 56 >>> 56) << 8 * (i % 8);
+				path[i / 8] |= ((0L | b) << 56 >>> 56) << 8 * (i % 8);
 			}
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return hash;
 	}
-	
+
 	@Override
 	public boolean equals(final Object o) {
-		if(o instanceof CodePath) {
+		if (o instanceof CodePath) {
 			final CodePath pc = (CodePath) o;
-			if(safe) {
-				if(pc.safe) {
+			if (safe) {
+				if (pc.safe) {
 					return hash == pc.hash;
 				}
 				return false;
@@ -71,14 +71,14 @@ public class CodePath implements Serializable {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
-		if(string == null){
+		if (string == null) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append(Integer.toString(hash, Global.ENCODING_BASE));
-			if(!safe) {
-				for(final long l: path) {
+			if (!safe) {
+				for (final long l : path) {
 					sb.append(Long.toString(l, Global.ENCODING_BASE));
 				}
 			}

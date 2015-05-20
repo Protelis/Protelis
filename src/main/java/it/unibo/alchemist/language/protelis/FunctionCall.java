@@ -8,15 +8,10 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -69,17 +64,17 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
+	public void eval(final ExecutionContext context) {
 		/*
 		 * 1. Evaluate all the arguments
 		 */
-		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
+		evalEveryBranchWithProjection(context);
 		/*
 		 * Inner gamma must hold param values
 		 */
-		gamma.push();
+		context.pushOnVariablesStack();
 		forEachWithIndex((i, b) -> {
-			gamma.put(fd.getInternalName(i), b.getAnnotation(), true);
+			context.putVariable(fd.getInternalName(i), b.getAnnotation(), true);
 		});
 		/*
 		 * 2. Load a fresh body as superscript
@@ -90,11 +85,10 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 		/*
 		 * Evaluate the body and copy its result in the annotation
 		 */
-		final int depth = currentPosition.size();
-		currentPosition.addAll(stackCode);
-		getSuperscript().eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		currentPosition.remove(depth, stackCode.length);
-		gamma.pop();
+		context.newCallStackFrame(stackCode);
+		getSuperscript().eval(context);
+		context.returnFromCallFrame(stackCode.length);
+		context.popOnVariableStack();
 		setAnnotation(getSuperscript().getAnnotation());
 	}
 

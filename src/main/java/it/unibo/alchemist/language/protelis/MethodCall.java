@@ -8,14 +8,10 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.ReflectionUtils;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,7 +19,6 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -55,12 +50,13 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 		Objects.requireNonNull(m, "No compatible method found.");
 		method = m;
 		ztatic = isStatic;
-		fieldComposable = !Arrays.stream(method.getParameterTypes()).parallel().anyMatch(clazz -> Field.class.isAssignableFrom(clazz));
+		fieldComposable = !Arrays.stream(method.getParameterTypes()).parallel() // NOPMD by Danilo Pianini
+				.anyMatch(clazz -> Field.class.isAssignableFrom(clazz)); 
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
+	public void eval(final ExecutionContext context) {
+		evalEveryBranchWithProjection(context);
 		// Obtain target and arguments
 		final Object target = ztatic ? null : getBranch(0).getAnnotation();
 		final Stream<?> s = getBranchesAnnotationStream();
@@ -120,9 +116,9 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 
 	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
-		Class<?> declaringClass = (Class<?>) in.readObject();
-		String methodName = in.readUTF();
-		Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
+		final Class<?> declaringClass = (Class<?>) in.readObject();
+		final String methodName = in.readUTF();
+		final Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
 		try {
 			method = declaringClass.getMethod(methodName, parameterTypes);
 		} catch (Exception e) {

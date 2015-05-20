@@ -1,0 +1,7 @@
+import protelis:test:truefunctions
+import protelis:test:wrongfunctions
+
+-one() == protelis:test:wrongfunctions:one() && 
+-two() == protelis:test:wrongfunctions:two() && 
+-three() == protelis:test:wrongfunctions:three()
+

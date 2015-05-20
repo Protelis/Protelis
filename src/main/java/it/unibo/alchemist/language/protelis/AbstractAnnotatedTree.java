@@ -8,19 +8,14 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.utils.L;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -217,14 +212,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	 * @param currentPosition
 	 *            current position in the stack
 	 */
-	protected final void evalEveryBranchWithProjection(final INode<Object> sigma,
-			final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec,
-			final Map<CodePath, Object> newMap, final TByteList currentPosition) {
+	protected final void evalEveryBranchWithProjection(final ExecutionContext context) {
 		for (int i = 0; i < branches.size(); i++) {
 			final AnnotatedTree<?> branch = branches.get(i);
-			currentPosition.add((byte) i);
-			branch.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-			removeLast(currentPosition);
+			context.newCallStackFrame((byte) i);
+			branch.eval(context);
+			context.returnFromCallFrame();
 		}
 	}
 
@@ -246,13 +239,13 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		return branches.get(i);
 	}
 
-	/**
-	 * @param currentPosition
-	 *            go back one position in the passed call stack
-	 */
-	protected static final void removeLast(final TByteList currentPosition) {
-		currentPosition.removeAt(currentPosition.size() - 1);
-	}
+//	/**
+//	 * @param currentPosition
+//	 *            go back one position in the passed call stack
+//	 */
+//	protected static final void removeLast(final TByteList currentPosition) {
+//		currentPosition.removeAt(currentPosition.size() - 1);
+//	}
 	
 	/**
 	 * Utility for indenting lines.

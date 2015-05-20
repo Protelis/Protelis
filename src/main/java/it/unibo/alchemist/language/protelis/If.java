@@ -8,14 +8,8 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.INode;
-
-import java.util.Map;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 /**
  * @author Danilo Pianini
@@ -50,19 +44,19 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		currentPosition.add(COND);
-		c.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		removeLast(currentPosition);
+	public void eval(final ExecutionContext context) {
+		context.newCallStackFrame(COND);
+		c.eval(context);
+		context.returnFromCallFrame();
 		final Object actualResult = c.getAnnotation();
 		final boolean bool = actualResult instanceof Boolean ? c.getAnnotation() : actualResult != null;
-		setAnnotation(bool ? choice(THEN, t, e, sigma, theta, gamma, lastExec, newMap, currentPosition) : choice(ELSE, e, t, sigma, theta, gamma, lastExec, newMap, currentPosition));
+		setAnnotation(bool ? choice(THEN, t, e, context) : choice(ELSE, e, t, context));
 	}
 
-	private static <T> T choice(final byte branch, final AnnotatedTree<T> selected, final AnnotatedTree<T> erased, final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		currentPosition.add(branch);
-		selected.eval(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		removeLast(currentPosition);
+	private static <T> T choice(final byte branch, final AnnotatedTree<T> selected, final AnnotatedTree<T> erased, final ExecutionContext context) {
+		context.newCallStackFrame(branch);
+		selected.eval(context);
+		context.returnFromCallFrame();
 		erased.erase();
 		return selected.getAnnotation();
 	}

@@ -8,14 +8,10 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.utils.FasterString;
 
@@ -66,9 +62,9 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		evalEveryBranchWithProjection(sigma, theta, gamma, lastExec, newMap, currentPosition);
-		gamma.push();
+	public void eval(final ExecutionContext context) {
+		evalEveryBranchWithProjection(context);
+		context.pushOnVariablesStack();
 		final Object originObj = fgen.getAnnotation();
 		if (!(originObj instanceof Field)) {
 			throw new IllegalStateException("The argument must be a field of tuples of tuples. It is a " + originObj.getClass() + " instead.");
@@ -118,26 +114,28 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 		final List<Tuple> resl = new ArrayList<>(fieldKeys.size());
 		for (final Entry<Object, Field> kf : fieldKeys.entrySet()) {
 			final Field value = kf.getValue();
+			final ExecutionContext restricted = context.restrictDomain(value);
 			final Object key = kf.getKey();
-			/*
-			 * Restrict the domain to the field domain
-			 * Create a new theta, fix codepaths, create a new lastexec.
-			 */
-			final TIntObjectMap<Map<CodePath, Object>> restrictedTheta = theta == null ? null : new TIntObjectHashMap<>();
-			if (restrictedTheta != null) {
-				/*
-				 * Restrict theta
-				 */
-				for (final INode<Object> n : value.nodeIterator()) {
-					if (!n.equals(sigma)) {
-						final int id = n.getId();
-						restrictedTheta.put(id, theta.get(id));
-					}
-				}
-			}
+//			/*
+//			 * Restrict the domain to the field domain
+//			 * Create a new theta, fix codepaths, create a new lastexec.
+//			 */
+//			final TIntObjectMap<Map<CodePath, Object>> restrictedTheta = theta == null ? null : new TIntObjectHashMap<>();
+//			if (restrictedTheta != null) {
+//				/*
+//				 * Restrict theta
+//				 */
+//				for (final INode<Object> n : value.nodeIterator()) {
+//					if (!n.equals(sigma)) {
+//						final int id = n.getId();
+//						restrictedTheta.put(id, theta.get(id));
+//					}
+//				}
+//			}
 			/*
 			 * Make sure that self is present in each field
 			 */
+			final INode<Object> sigma = context.getLocalDevice();
 			if (!value.containsNode(sigma)) {
 				value.addSample(sigma, defVal.getAnnotation());
 			}
@@ -146,13 +144,13 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			 */
 			final List<AnnotatedTree<?>> args = new ArrayList<>(2);
 			args.add(new Constant<>(key));
-			args.add(new Variable(CURFIELD, null, null));
-			gamma.put(CURFIELD, value, true);
+			args.add(new Variable(CURFIELD));
+			context.putVariable(CURFIELD, value, true);
 			/*
 			 * Compute the code path
 			 */
 			final byte[] hash = FileUtilities.serializeObject((Serializable) key);
-			currentPosition.add(hash);
+			context.newCallStackFrame(hash);
 			/*
 			 * Compute functions if needed
 			 */
@@ -164,19 +162,19 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			 * Run the actual filtering and operation
 			 */
 			final DotOperator fop = funs.getFirst();
-			currentPosition.add(FILTER_POS);
-			fop.eval(sigma, restrictedTheta, gamma, lastExec, newMap, currentPosition);
-			removeLast(currentPosition);
+			context.newCallStackFrame(FILTER_POS);
+			fop.eval(restricted);
+			context.returnFromCallFrame();
 			final Object cond = fop.getAnnotation();
 			if (cond instanceof Boolean) {
 				if ((Boolean) cond) {
 					/*
 					 * Filter passed, run operation.
 					 */
-					currentPosition.add(RUN_POS);
+					context.newCallStackFrame(RUN_POS);
 					final DotOperator rop = funs.getSecond();
-					rop.eval(sigma, restrictedTheta, gamma, lastExec, newMap, currentPosition);
-					removeLast(currentPosition);
+					rop.eval(restricted);
+					context.returnFromCallFrame();
 					resl.add(Tuple.create(key, rop.getAnnotation()));
 					/*
 					 * If both the key exists and the filter passes, save the state.
@@ -186,17 +184,16 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			} else {
 				throw new IllegalStateException("Filter must return a Boolean, got " + cond.getClass());
 			}
-			currentPosition.remove(currentPosition.size() - hash.length, hash.length);
+			context.returnFromCallFrame(hash.length);
 		}
 		// return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
 		setAnnotation(Tuple.create(resl));
-		gamma.pop();
+		context.popOnVariableStack();
 	}
 
 	@Override
 	protected void innerAsString(final StringBuilder sb, final int indent) {
-		sb.append("alignedMap(");
-		sb.append('\n');
+		sb.append("alignedMap(\n");
 		fgen.toString(sb, indent + 1);
 		sb.append(",\n");
 		filterOp.toString(sb, indent + 1);

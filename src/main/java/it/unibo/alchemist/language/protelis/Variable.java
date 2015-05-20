@@ -8,15 +8,8 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.model.interfaces.IEnvironment;
-import it.unibo.alchemist.model.interfaces.INode;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.utils.FasterString;
-
-import java.util.Map;
 
 /**
  * @author Danilo Pianini
@@ -26,44 +19,32 @@ public class Variable extends AbstractAnnotatedTree<Object> {
 
 	private static final long serialVersionUID = -3739014755916345132L;
 	private final FasterString name;
-	private final INode<Object> node;
-	private final IEnvironment<Object> env;
 	
 	/**
 	 * @param varName
 	 *            variable name
-	 * @param host
-	 *            the node
-	 * @param environment
-	 *            the environment
 	 */
-	public Variable(final FasterString varName, final INode<Object> host, final IEnvironment<Object> environment) {
+	public Variable(final FasterString varName) {
 		super();
 		name = varName;
-		node = host;
-		env = environment;
 	}
 	
 	/**
 	 * @param varName
 	 *            variable name
-	 * @param host
-	 *            the node
-	 * @param environment
-	 *            the environment
 	 */
-	public Variable(final String varName, final INode<Object> host, final IEnvironment<Object> environment) {
-		this(new FasterString(varName), host, environment);
+	public Variable(final String varName) {
+		this(new FasterString(varName));
 	}
 	
 	@Override
 	public Variable copy() {
-		return new Variable(name, node, env);
+		return new Variable(name);
 	}
 
 	@Override
-	public void eval(final INode<Object> sigma, final TIntObjectMap<Map<CodePath, Object>> theta, final Stack gamma, final Map<CodePath, Object> lastExec, final Map<CodePath, Object> newMap, final TByteList currentPosition) {
-		Object val = gamma.get(name);
+	public void eval(final ExecutionContext context) {
+		Object val = context.getVariable(name);
 		if (val == null) {
 			/*
 			 * The variable cannot be read. Most probably, it is some node variable that is not set here. Defaults to false.

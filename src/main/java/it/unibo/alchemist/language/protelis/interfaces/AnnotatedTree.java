@@ -12,6 +12,7 @@ import gnu.trove.list.TByteList;
 import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Stack;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import java.io.Serializable;
@@ -39,7 +40,7 @@ public interface AnnotatedTree<T> extends Serializable {
 	
 	AnnotatedTree<T> copy();
 	
-	void eval(INode<Object> sigma, TIntObjectMap<Map<CodePath, Object>> theta, Stack gamma, Map<CodePath, Object> lastExec, Map<CodePath, Object> newMap, TByteList currentPosition);
+	void eval(ExecutionContext context);
 
 	AnnotatedTree<?> getBranch(int i);
 	
