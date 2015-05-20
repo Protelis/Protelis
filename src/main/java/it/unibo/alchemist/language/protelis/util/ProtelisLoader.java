@@ -143,13 +143,14 @@ public final class ProtelisLoader {
 		return parse(resourceFromURIString(programURI));
 	}
 	
-	public static Resource resourceFromURIString(final String programURI) {
+	private static Resource resourceFromURIString(final String programURI) {
 		loadResourcesRecursively(XTEXT, programURI);
 		final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
 		final URI uri = URI.createURI(realURI);
 		return XTEXT.getResource(uri, true);
 	}
-	public static void loadResourcesRecursively(final XtextResourceSet target, final String programURI) {
+	
+	private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI) {
 		loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
 	}
 	
@@ -158,12 +159,12 @@ public final class ProtelisLoader {
 		if (!alreadyInQueue.contains(realURI)) {
 			alreadyInQueue.add(realURI);
 			final URI uri = URI.createURI(realURI);
-			org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
+			final org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
 			try {
 				final InputStream is = protelisFile.getInputStream();
-				String ss = IOUtils.toString(is, "UTF-8");
+				final String ss = IOUtils.toString(is, "UTF-8");
 				final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
-				while(matcher.find()) {
+				while (matcher.find()) {
 					final int start = matcher.start(1);
 					final int end = matcher.end(1);
 					final String imp = ss.substring(start, end);
@@ -174,11 +175,15 @@ public final class ProtelisLoader {
 				L.warn("Cannot load " + protelisFile);
 				L.warn(e);
 			}
-			System.out.println("Loaded: " + uri);
 			target.getResource(uri, true);
 		}
 	}
 	
+	/**
+	 * @param program
+	 *            the program in String format
+	 * @return a dummy:/ resource that can be used to interpret the program
+	 */
 	public static Resource resourceFromString(final String program) {
 		final XtextResourceSet xrs = createResourceSet();
 		final Resource r = xrs.createResource(URI.createURI("dummy:/protelis-generated-program-" + IDGEN.getAndIncrement() + ".pt"));
@@ -238,9 +243,6 @@ public final class ProtelisLoader {
 		 */
 		final AtomicInteger id = new AtomicInteger();
 		funToFun.forEach((fd, fun) -> fun.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), nameToFun, funToFun, id)));
-//		for(FunctionDefinition fun: funToFun.values()) {
-//			fun.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), null, functions, id));
-//		}
 		/*
 		 * Create the main program
 		 */
@@ -273,7 +275,7 @@ public final class ProtelisLoader {
 			/*
 			 * Init local functions
 			 */
-			Stream<FunctionDef> fds = module.getDefinitions().parallelStream();
+			final Stream<FunctionDef> fds = module.getDefinitions().parallelStream();
 			fds.filter(fd -> initPrivate || fd.isPublic()).forEachOrdered(fd -> {
 				final String fname = fd.getName();
 				final String fullName = module.getName() + ":" + fname;
@@ -364,9 +366,9 @@ public final class ProtelisLoader {
 				sb.append('/');
 				sb.append(parameterCount);
 				sb.append(" is overloaded by:\n");
-				res.stream().forEach(m -> {
+				res.forEach(m -> {
 					sb.append(m.toString());
-					sb.append('\n');
+					sb.append('\n'); // NOPMD
 				});
 				sb.append("Protelis can not (yet) properly deal with that.");
 				L.warn(sb.toString());
