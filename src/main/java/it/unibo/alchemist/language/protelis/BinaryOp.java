@@ -9,7 +9,6 @@
 package it.unibo.alchemist.language.protelis;
 
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.Op2;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.util.List;

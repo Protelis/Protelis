@@ -8,21 +8,13 @@
  */
 package it.unibo.alchemist.model;
 
-import gnu.trove.list.array.TByteArrayList;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
-import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
-import it.unibo.alchemist.language.protelis.util.Stack;
-import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.language.protelis.vm.LocalDummyContext;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
-import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.Incarnation;
@@ -74,7 +66,6 @@ public class ProtelisIncarnation implements Incarnation {
 	private static final String GOALP3 = ").";
 	private static final String[] ANS_NAMES = {"ans", "res", "result", "answer", "val", "value"};
 	private static final Set<FasterString> NAMES;
-	private static final RandomEngine RAND = new MersenneTwister();
 	
 	private final Cache<String, Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>>> cache = CacheBuilder.newBuilder()
 		.maximumSize(100)
@@ -117,7 +108,7 @@ public class ProtelisIncarnation implements Incarnation {
 				cache.put(prop, prog);
 			}
 		}
-		val = preprocess(prog, node, val);
+		val = preprocess(prog, val);
 		if (val instanceof Number) {
 			return ((Number) val).doubleValue();
 		} else if (val instanceof String) {
@@ -163,19 +154,16 @@ public class ProtelisIncarnation implements Incarnation {
 		return Double.NaN;
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Object preprocess(final Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog, final INode<?> node, final Object val) {
+	private static Object preprocess(final Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog, final Object val) {
 		try {
 			if (prog.isPresent()) {
 				final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> curProg = prog.get();
-				final Map<CodePath, Object> newMap = new HashMap<>();
-				final Map<CodePath, Object> lastExec = new HashMap<>();
-				final Stack stack = new StackImpl(new HashMap<>(curProg.getSecond()));
-				NAMES.stream().forEach(n -> stack.put(n, val, true));
-				curProg.getFirst().eval(new LocalDummyContext(new HashMap<>(curProg.getFirst())));
+				final Map<FasterString, Object> vars = new HashMap<>(curProg.getSecond());
+				NAMES.stream().forEach(n -> vars.put(n, val));
+				curProg.getFirst().eval(new LocalDummyContext(vars));
 				return curProg.getFirst().getAnnotation();
 			}
-		} catch (final RuntimeException e) {
+		} catch (final RuntimeException | Error e) {
 			/*
 			 * Something went wrong, fallback.
 			 */
