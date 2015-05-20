@@ -16,8 +16,10 @@ import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
+import it.unibo.alchemist.language.protelis.vm.LocalDummyContext;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
@@ -26,7 +28,6 @@ import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.Incarnation;
 import it.unibo.alchemist.utils.FasterString;
 import it.unibo.alchemist.utils.L;
-import it.unibo.alchemist.utils.ParseUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -106,7 +107,7 @@ public class ProtelisIncarnation implements Incarnation {
 		Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog = cache.getIfPresent(prop);
 		if (prog == null) {
 			try {
-				prog = Optional.of(ParseUtils.parse(prop));
+				prog = Optional.of(ProtelisLoader.parse(prop));
 				cache.put(prop, prog);
 			} catch (final RuntimeException e) {
 				/*
@@ -171,7 +172,7 @@ public class ProtelisIncarnation implements Incarnation {
 				final Map<CodePath, Object> lastExec = new HashMap<>();
 				final Stack stack = new StackImpl(new HashMap<>(curProg.getSecond()));
 				NAMES.stream().forEach(n -> stack.put(n, val, true));
-				curProg.getFirst().eval((INode<Object>) node, new TIntObjectHashMap<>(), stack, lastExec, newMap, new TByteArrayList());
+				curProg.getFirst().eval(new LocalDummyContext(new HashMap<>(curProg.getFirst())));
 				return curProg.getFirst().getAnnotation();
 			}
 		} catch (final RuntimeException e) {

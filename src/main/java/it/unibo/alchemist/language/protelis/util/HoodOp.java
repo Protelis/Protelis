@@ -6,7 +6,7 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE in the Alchemist distribution's top directory.
  */
-package it.unibo.alchemist.language.protelis;
+package it.unibo.alchemist.language.protelis.util;
 
 import static com.google.common.collect.ImmutableList.of;
 import static java.lang.Double.NEGATIVE_INFINITY;

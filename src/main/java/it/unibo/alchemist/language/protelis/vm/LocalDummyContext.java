@@ -90,7 +90,7 @@ public class LocalDummyContext extends AbstractExecutionContext {
 	
 	private INode<Object> dummy = new DummyDevice();
 	
-	public LocalDummyContext(final Map<FasterString, Object> availableFunctions) {
+	public LocalDummyContext(final Map<FasterString, ? extends Object> availableFunctions) {
 		super(availableFunctions, new TIntObjectHashMap<>());
 	}
 

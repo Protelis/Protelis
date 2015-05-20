@@ -15,9 +15,9 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.utils.FasterString;
-import it.unibo.alchemist.utils.ParseUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class TestInSimulator {
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(null, null, null, null, s);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ProtelisLoader.parse(null, null, null, null, s);
 		AnnotatedTree<?> program = prog.getFirst();
 		Map<CodePath, Object> lastExec = new HashMap<>();
 		for (int i = 0; i < runs; i++) {

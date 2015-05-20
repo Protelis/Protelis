@@ -9,10 +9,10 @@
 package it.unibo.alchemist.language.protelis;
 
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
+import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.utils.FasterString;
 import it.unibo.alchemist.utils.L;
-import it.unibo.alchemist.utils.ParseUtils;
 
 import java.util.Map;
 
@@ -44,9 +44,9 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 	public void eval(final ExecutionContext context) {
 		evalEveryBranchWithProjection(context);
 		final String program = getBranch(0).getAnnotation().toString();
-		final Resource progResource = ParseUtils.resourceFromString(program);
+		final Resource progResource = ProtelisLoader.resourceFromString(program);
 		try {
-			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ParseUtils.parse(progResource);
+			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ProtelisLoader.parse(progResource);
 			context.pushOnVariablesStack();
 			context.putMultipleVariables(result.getSecond());
 			final AnnotatedTree<?> toRun = result.getFirst();

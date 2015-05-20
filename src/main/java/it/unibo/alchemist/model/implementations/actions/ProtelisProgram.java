@@ -16,6 +16,7 @@ import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode.Self;
@@ -24,7 +25,6 @@ import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.IReaction;
 import it.unibo.alchemist.utils.FasterString;
-import it.unibo.alchemist.utils.ParseUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +72,7 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	 * @throws ClassNotFoundException if required classes can not be found
 	 */
 	public ProtelisProgram(final IEnvironment<Object> env,  final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand, final String prog) throws SecurityException, ClassNotFoundException {
-		this(n, env, r, ParseUtils.parse(env, n, r, rand, prog), new FasterString(ParseUtils.filterSpaces(prog)));
+		this(n, env, r, ProtelisLoader.parse(env, n, r, rand, prog), new FasterString(ProtelisLoader.filterSpaces(prog)));
 	}
 
 	private ProtelisProgram(final INode<Object> n, final IEnvironment<Object> env, final IReaction<Object> r, final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog, final FasterString pString) {

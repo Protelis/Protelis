@@ -6,9 +6,8 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE in the Alchemist distribution's top directory.
  */
-package it.unibo.alchemist.utils;
+package it.unibo.alchemist.language.protelis.util;
 
-import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.AlignedMap;
 import it.unibo.alchemist.language.protelis.All;
 import it.unibo.alchemist.language.protelis.BinaryOp;
@@ -21,14 +20,11 @@ import it.unibo.alchemist.language.protelis.Eval;
 import it.unibo.alchemist.language.protelis.FunctionCall;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.HoodCall;
-import it.unibo.alchemist.language.protelis.HoodOp;
 import it.unibo.alchemist.language.protelis.If;
 import it.unibo.alchemist.language.protelis.MethodCall;
 import it.unibo.alchemist.language.protelis.NBRCall;
 import it.unibo.alchemist.language.protelis.NBRRange;
 import it.unibo.alchemist.language.protelis.NumericConstant;
-import it.unibo.alchemist.language.protelis.Op1;
-import it.unibo.alchemist.language.protelis.Op2;
 import it.unibo.alchemist.language.protelis.ProtelisStandaloneSetup;
 import it.unibo.alchemist.language.protelis.Random;
 import it.unibo.alchemist.language.protelis.RepCall;
@@ -52,16 +48,13 @@ import it.unibo.alchemist.language.protelis.protelis.Statement;
 import it.unibo.alchemist.language.protelis.protelis.StringVal;
 import it.unibo.alchemist.language.protelis.protelis.TupleVal;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
-import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
-import it.unibo.alchemist.model.interfaces.IEnvironment;
-import it.unibo.alchemist.model.interfaces.IReaction;
+import it.unibo.alchemist.utils.FasterString;
+import it.unibo.alchemist.utils.L;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -70,11 +63,9 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -102,12 +93,10 @@ import com.google.inject.Injector;
  * @author Danilo Pianini
  *
  */
-public final class ParseUtils {
+public final class ProtelisLoader {
 
 	private static final AtomicInteger IDGEN = new AtomicInteger();
-//	private static final Semaphore CLASSPATH_SCAN_MUTEX = new Semaphore(1);
-//	private static final long CLASSPATH_RESCAN_IDLE = 100000;
-	private static XtextResourceSet XTEXT = createResourceSet();
+	private static final XtextResourceSet XTEXT = createResourceSet();
 	private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.DOTALL);
 	private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
 	private static final String PROTELIS_FILE_EXTENSION = "pt";
@@ -131,36 +120,10 @@ public final class ParseUtils {
 	private static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values()).map(Op2::toString).collect(Collectors.toList());
 	private static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values()).map(Op1::toString).collect(Collectors.toList());
 
-//	static {
-//		new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri("../");
-//		final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
-//		XTEXT = guiceInjector.getInstance(XtextResourceSet.class);
-//		XTEXT.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-//		populateXtextResolver();
-//		new Thread(() -> {
-//			try {
-//				Thread.sleep(CLASSPATH_RESCAN_IDLE);
-//			} catch (Exception e) {
-//				/*
-//				 * No big deal.
-//				 */
-//			}
-//			populateXtextResolver();
-//		}, "Protelis Classpath Scanner").start();
-//	}
-
-	private ParseUtils() {
+	private ProtelisLoader() {
 	}
 
 	/**
-	 * @param env
-	 *            environment
-	 * @param node
-	 *            node
-	 * @param reaction
-	 *            reaction
-	 * @param rand
-	 *            random engine
 	 * @param programURI
 	 *            Protelis program file to execute. It must be a either a valid
 	 *            {@link URI} string, for instance
@@ -176,12 +139,7 @@ public final class ParseUtils {
 	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
 	 *         {@link FunctionDefinition} (containing the available functions)
 	 */
-	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(
-//			final IEnvironment<Object> env,
-//			final ProtelisNode node,
-//			final IReaction<Object> reaction,
-//			final RandomEngine rand,
-			final String programURI) {
+	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(final String programURI) {
 		return parse(resourceFromURIString(programURI));
 	}
 	
@@ -189,19 +147,6 @@ public final class ParseUtils {
 		loadResourcesRecursively(XTEXT, programURI);
 		final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
 		final URI uri = URI.createURI(realURI);
-//		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-//		org.springframework.core.io.Resource protelisFile = resolver.getResource(realURI);
-//		try {
-//			final InputStream is = protelisFile.getInputStream();
-//			String ss = IOUtils.toString(is, "UTF-8");
-//			final Matcher match = REGEX_PROTELIS_IMPORT.matcher(ss);
-////			match.st
-////			for(int idx = 0; String imp = match.group(idx); )
-//		} catch (final IOException e) {
-//			L.warn("Cannot load " + protelisFile);
-//			L.warn(e);
-//		}
-//		System.out.println(protelisFile);
 		return XTEXT.getResource(uri, true);
 	}
 	public static void loadResourcesRecursively(final XtextResourceSet target, final String programURI) {
@@ -251,44 +196,9 @@ public final class ParseUtils {
 		final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
 		final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
 		xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-//		xtext.
-//		resolver.
-//		try {
-//			for (org.springframework.core.io.Resource protelisFile: resolver.getResources("classpath*:/**/**." + PROTELIS_FILE_EXTENSION)) {
-//				System.out.println(protelisFile);
-//				xtext.getResource(URI.createURI(protelisFile.getURI().toString()), true);
-//			}
-//		} catch (IOException | Error | RuntimeException e) {
-//			L.warn(e);
-//		}
-//		xtext.getResource(URI.createURI("classpath:/protelis/test/circular02.pt"), true);
-//		xtext.getResource(URI.createURI("classpath:/protelis/test/circular01.pt"), true);
 		return xtext;
 	}
 	
-	private static void populateXtextResolver() {
-		/*
-		 * Rescan the classpath and load all Protelis files, only one thread can
-		 * do so at a time.
-		 */
-//		if (CLASSPATH_SCAN_MUTEX.tryAcquire()) {
-//			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-//			try {
-//				for (org.springframework.core.io.Resource protelisFile: resolver.getResources("classpath*:/**/**." + PROTELIS_FILE_EXTENSION)) {
-//					System.out.println(protelisFile);
-//					XTEXT.getResource(URI.createURI(protelisFile.getURI().toString()), true);
-//					XTEXT.getResource(URI.createURI("file:///home/danysk/Dropbox/Workspaces/Alchemist-Gradle/alchemist-incarnation-protelis/bin/protelis/test/wrongfunctions.pt"), true);
-//					XTEXT.getResource(URI.createURI("file:///home/danysk/Dropbox/Workspaces/Alchemist-Gradle/alchemist-incarnation-protelis/bin/protelis/test/truefunctions.pt"), true);
-					
-//				}
-//			} catch (IOException | Error | RuntimeException e) {
-//				L.warn(e);
-//			} finally {
-//				CLASSPATH_SCAN_MUTEX.release();
-//			}
-//		}
-	}
-		
 	/**
 	 * @param resource
 	 *            the {@link Resource} containing the program to execute

@@ -17,11 +17,11 @@ import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.language.protelis.vm.LocalDummyContext;
 import it.unibo.alchemist.utils.FasterString;
-import it.unibo.alchemist.utils.ParseUtils;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -244,7 +244,7 @@ public class TestLanguage {
 	}
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ParseUtils.parse(s);
+		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ProtelisLoader.parse(s);
 		AnnotatedTree<?> program = prog.getFirst();
 		for (int i = 0; i < runs; i++) {
 			program = program.copy();

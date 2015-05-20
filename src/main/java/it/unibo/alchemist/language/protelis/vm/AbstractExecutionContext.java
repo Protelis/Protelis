@@ -33,7 +33,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private final TIntObjectMap<Map<CodePath, Object>> theta;
 	private final Map<CodePath, Object> toSend = MAPMAKER.makeMap();
 	
-	protected AbstractExecutionContext(final Map<FasterString, Object> environmentVariables, final TIntObjectMap<Map<CodePath, Object>> receivedMessages) {
+	protected AbstractExecutionContext(final Map<FasterString, ?> environmentVariables, final TIntObjectMap<Map<CodePath, Object>> receivedMessages) {
 		callStack.add((byte) 1);
 		gamma = new StackImpl(environmentVariables);
 		theta = TCollections.unmodifiableMap(receivedMessages);
