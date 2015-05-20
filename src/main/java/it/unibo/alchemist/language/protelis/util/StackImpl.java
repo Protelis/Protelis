@@ -28,8 +28,9 @@ public class StackImpl implements Stack {
 	/**
 	 * @param gamma Initial set of variables
 	 */
-	public StackImpl(final Map<FasterString, Object> gamma) {
-		stack.push(gamma);
+	@SuppressWarnings("unchecked")
+	public StackImpl(final Map<FasterString, ?> gamma) {
+		stack.push((Map<FasterString, Object>) gamma);
 	}
 
 	@Override
@@ -43,8 +44,8 @@ public class StackImpl implements Stack {
 	}
 
 	@Override
-	public Object put(final FasterString var, final Object val, final boolean canCreateNew) {
-		if (canCreateNew) {
+	public Object put(final FasterString var, final Object val, final boolean canShadow) {
+		if (canShadow) {
 			/*
 			 * Overrides the previous value only if it is at this depth in the stack
 			 * 
@@ -104,7 +105,7 @@ public class StackImpl implements Stack {
 	}
 
 	@Override
-	public void putAll(final Map<FasterString, ? extends Object> map) {
+	public void putAll(final Map<FasterString, ?> map) {
 		Map<FasterString, Object> cur = stack.pop();
 		if (cur == null) {
 			cur = new HashMap<>();
