@@ -3,23 +3,17 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.TLongObjectMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
 import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
+import it.unibo.alchemist.language.protelis.util.Device;
 import it.unibo.alchemist.model.implementations.positions.Continuous2DEuclidean;
-import it.unibo.alchemist.model.interfaces.IMolecule;
-import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.IPosition;
-import it.unibo.alchemist.model.interfaces.IReaction;
 import it.unibo.alchemist.utils.FasterString;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,77 +26,29 @@ public class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
 	
-	private static class DummyDevice implements INode<Object> {
+	private final Map<FasterString, Object> environment = new LinkedHashMap<>();
+	
+	private static class DummyDevice implements Device {
 		private static final long serialVersionUID = -4804905144759361059L;
-		private static final List<IReaction<Object>> EMPTY = Collections.emptyList();
-		private final Map<IMolecule, Object> environment = new LinkedHashMap<>();
 		@Override
-		public Iterator<IReaction<Object>> iterator() {
-			return EMPTY.iterator();
-		}
-		@Override
-		public int compareTo(final INode<Object> o) {
-			return 0;
-		}
-		@Override
-		public void addReaction(final IReaction<Object> r) {
-			throw new UnsupportedOperationException();
-		}
-		@Override
-		public boolean contains(final IMolecule mol) {
-			return false;
-		}
-		@Override
-		public int getChemicalSpecies() {
-			return 0;
-		}
-		@Override
-		public Object getConcentration(final IMolecule mol) {
-			return environment.get(mol);
-		}
-		@Override
-		public int getId() {
-			return 0;
-		}
-		@Override
-		public List<? extends IReaction<Object>> getReactions() {
-			return EMPTY;
-		}
-		@Override
-		public void removeReaction(final IReaction<Object> r) {
-			throw new UnsupportedOperationException();
-		}
-		@Override
-		public void setConcentration(final IMolecule mol, final Object c) {
-			environment.put(mol, c);
-		}
-		@Override
-		public Map<IMolecule, Object> getContents() {
-			return new LinkedHashMap<>(environment);
-		}
-		@Override
-		public boolean equals(final Object o) {
-			return o instanceof DummyDevice;
-		}
-		@Override
-		public int hashCode() {
+		public long getId() {
 			return 0;
 		}
 	}
 	
-	private INode<Object> dummy = new DummyDevice();
+	private final Device dummy = new DummyDevice();
 	
 	/**
 	 * @param availableFunctions
 	 *            the functions available for this program
 	 */
 	public DummyContext(final Map<FasterString, ?> availableFunctions) {
-		super(availableFunctions, new TIntObjectHashMap<>());
+		super(availableFunctions, new TLongObjectHashMap<>());
 	}
 
 	@Override
-	public INode<Object> getLocalDevice() {
-		return new ProtelisNode();
+	public Device getLocalDevice() {
+		return dummy;
 	}
 
 	@Override
@@ -111,7 +57,7 @@ public class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public double distanceTo(final INode<Object> target) {
+	public double distanceTo(final Device target) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -126,13 +72,14 @@ public class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	protected AbstractExecutionContext restrictedInstance(final TIntObjectMap<Map<CodePath, Object>> restrictedTheta) {
+	protected AbstractExecutionContext restrictedInstance(final TLongObjectMap<Map<CodePath, Object>> restrictedTheta) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected INode<Object> deviceFromId(final int id) {
+	protected Device deviceFromId(final long id) {
 		return dummy;
 	}
+
 
 }

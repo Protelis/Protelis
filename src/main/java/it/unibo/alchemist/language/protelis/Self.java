@@ -15,7 +15,7 @@ import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
  * @author Danilo Pianini
  *
  */
-public class Self extends AbstractAnnotatedTree<Object> {
+public class Self extends AbstractAnnotatedTree<ExecutionContext> {
 
 	private static final long serialVersionUID = -5050040892058340950L;
 
@@ -27,7 +27,7 @@ public class Self extends AbstractAnnotatedTree<Object> {
 	@Override
 	public void eval(final ExecutionContext context) {
 		if (isErased()) {
-			setAnnotation(context.getLocalDevice());
+			setAnnotation(context);
 		}
 	}
 

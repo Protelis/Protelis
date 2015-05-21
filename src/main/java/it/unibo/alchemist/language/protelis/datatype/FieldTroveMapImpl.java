@@ -9,7 +9,10 @@
 package it.unibo.alchemist.language.protelis.datatype;
 
 import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
+import it.unibo.alchemist.language.protelis.util.Device;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import java.io.IOException;
@@ -29,51 +32,44 @@ import org.danilopianini.lang.Pair;
 public class FieldTroveMapImpl extends AbstractField implements Serializable {
 
 	private static final long serialVersionUID = -2947000086262191216L;
-	// Marked transient to prevent fields being shared across devices
-	private transient TIntObjectMap<Pair<INode<Object>, Object>> fld;
+	private final TLongObjectMap<Pair<Device, Object>> fld;
 
 	public FieldTroveMapImpl() {
 		super();
-		fld = new TIntObjectHashMap<>();
+		fld = new TLongObjectHashMap<>();
 	}
 	
 	public FieldTroveMapImpl(final int size, final float loadFactor) {
 		super();
-		fld = new TIntObjectHashMap<>(size, loadFactor);
+		fld = new TLongObjectHashMap<>(size, loadFactor);
 	}
 	
-	// Allows restoration of a blank field at another device
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        fld = new TIntObjectHashMap<>();
-    }  
-	
 	@Override
-	public void addSample(final INode<Object> n, final Object v) {
+	public void addSample(final Device n, final Object v) {
 		fld.put(n.getId(), new Pair<>(n, v));
 	}
 
 	@Override
-	public boolean containsNode(final INode<Object> n) {
+	public boolean containsNode(final Device n) {
 		return containsNode(n.getId());
 	}
 
 	@Override
-	public boolean containsNode(final int n) {
+	public boolean containsNode(final long n) {
 		return fld.containsKey(n);
 	}
 
 	@Override
-	public Iterable<Pair<INode<Object>, Object>> coupleIterator() {
+	public Iterable<Pair<Device, Object>> coupleIterator() {
 		return fld.valueCollection();
 	}
 
 	@Override
 	public boolean equals(final Object o) {
-		if(HashUtils.pointerEquals(this, o)) {
+		if (HashUtils.pointerEquals(this, o)) {
 			return true;
 		}
-		if(o instanceof FieldTroveMapImpl) {
+		if (o instanceof FieldTroveMapImpl) {
 			return fld.equals(((FieldTroveMapImpl) o).fld);
 		}
 		return super.equals(o);
@@ -81,16 +77,16 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 
 	@Override
 	public Class<?> getExpectedType() {
-		if(fld.isEmpty()) {
+		if (fld.isEmpty()) {
 			return null;
 		}
 		return fld.valueCollection().iterator().next().getSecond().getClass();
 	}
 
 	@Override
-	public Object getSample(final INode<Object> n) {
+	public Object getSample(final Device n) {
 		Objects.requireNonNull(n);
-		final Pair<INode<Object>, Object> res = fld.get(n.getId());
+		final Pair<Device, Object> res = fld.get(n.getId());
 		if (res == null) {
 			throw new NoSuchElementException(n.toString());
 		}
@@ -108,17 +104,17 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 	}
 	
 	@Override
-	public Iterable<INode<Object>> nodeIterator() {
-		return new Iterable<INode<Object>>() {
+	public Iterable<Device> nodeIterator() {
+		return new Iterable<Device>() {
 			@Override
-			public Iterator<INode<Object>> iterator() {
+			public Iterator<Device> iterator() {
 				return fld.valueCollection().stream().map(e -> e.getFirst()).iterator();
 			}
 		};
 	}
 	
 	@Override
-	public Object removeSample(final INode<Object> n) {
+	public Object removeSample(final Device n) {
 		return fld.remove(n.getId());
 	}
 

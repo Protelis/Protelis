@@ -8,6 +8,7 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
+import it.unibo.alchemist.language.protelis.util.Device;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import java.io.Serializable;
@@ -103,7 +104,7 @@ public interface Field extends Serializable {
 		 */
 		final Field refField = (Field) (fieldTarget ? target : args[fieldIndexes[0]]);
 		final Field result = create(refField.size());
-		for (final INode<Object> node : refField.nodeIterator()) {
+		for (final Device node : refField.nodeIterator()) {
 			final Object actualTarget = fieldTarget ? (((Field) target).getSample(node)) : target;
 			Object[] actualArgs = Arrays.copyOf(args, args.length);
 			for (final int i : fieldIndexes) {
@@ -118,31 +119,31 @@ public interface Field extends Serializable {
 		return result;
 	}
 	
-	void addSample(INode<Object> n, Object v);
+	void addSample(Device n, Object v);
 	
-	Object removeSample(INode<Object> n);
+	Object removeSample(Device n);
 	
-	Object getSample(INode<Object> n);
+	Object getSample(Device n);
 	
-	INode<Object> reduceKeys(final BinaryOperator<INode<Object>> op, final INode<Object> exclude);
+	Device reduceKeys(final BinaryOperator<Device> op, final Device exclude);
 	
-	Object reduceVals(final BinaryOperator<Object> op, final INode<Object> exclude, final Object defaultVal);
+	Object reduceVals(final BinaryOperator<Object> op, final Device exclude, final Object defaultVal);
 	
-	Pair<INode<Object>, Object> reducePairs(final BinaryOperator<Pair<INode<Object>, Object>> accumulator, final INode<Object> exclude);
+	Pair<Device, Object> reducePairs(final BinaryOperator<Pair<Device, Object>> accumulator, final Device exclude);
 
-	Iterable<INode<Object>> nodeIterator();
+	Iterable<Device> nodeIterator();
 
 	Iterable<Object> valIterator();
 	
-	Iterable<Pair<INode<Object>, Object>> coupleIterator();
+	Iterable<Pair<Device, Object>> coupleIterator();
 
 	int size();
 
 	boolean isEmpty();
 	
-	boolean containsNode(INode<Object> n);
+	boolean containsNode(Device n);
 	
-	boolean containsNode(int n);
+	boolean containsNode(long n);
 	
 	Class<?> getExpectedType();
 

@@ -3,15 +3,16 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
+import gnu.trove.map.TLongObjectMap;
+import it.unibo.alchemist.language.protelis.datatype.Field;
+import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.model.interfaces.IPosition;
+import it.unibo.alchemist.utils.FasterString;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import it.unibo.alchemist.language.protelis.datatype.Field;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.model.interfaces.INode;
-import it.unibo.alchemist.model.interfaces.IPosition;
-import it.unibo.alchemist.utils.FasterString;
 
 /**
  * @author Danilo Pianini
@@ -52,7 +53,7 @@ public interface ExecutionContext {
 
 	ExecutionContext restrictDomain(Field f);
 	
-	INode<Object> getLocalDevice();
+	Device getLocalDevice();
 
 	/**
 	 * @return the current time, absolute
@@ -64,7 +65,7 @@ public interface ExecutionContext {
 	 *            the device to compute the distance to
 	 * @return the distance to the device
 	 */
-	double distanceTo(INode<Object> target);
+	double distanceTo(Device target);
 	
 	IPosition getDevicePosition();
 
@@ -85,5 +86,40 @@ public interface ExecutionContext {
 	double nextRandomDouble();
 
 	Object getVariable(FasterString name);
+	
+	/**
+	 * @param id
+	 *            the variable name
+	 * @return true if the variable is present
+	 */
+	boolean hasEnvironmentVariable(final String id);
+	
+	/**
+	 * @param id
+	 *            the variable name
+	 * @return the value of the variable if present, false otherwise
+	 */
+	Object getEnvironmentVariable(final String id);
+
+	/**
+	 * @param id
+	 *            the variable name
+	 * @param v
+	 *            the value that should be associated
+	 * @return
+	 */
+	boolean putEnvironmentVariable(final String id, final Object v);
+	
+	/**
+	 * @param id
+	 *            the variable name
+	 * @return
+	 */
+	Object removeEnvironmentVariable(final String id);
+	
+	/**
+	 * @return a safe view of the internal environment
+	 */
+	Map<FasterString, Object> getCurrentEnvironment();
 	
 }
