@@ -9,14 +9,11 @@
 package it.unibo.alchemist.language.protelis;
 
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
+import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.utils.FasterString;
 import it.unibo.alchemist.utils.L;
 
-import java.util.Map;
-
-import org.apache.commons.math3.util.Pair;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
@@ -46,12 +43,11 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 		final String program = getBranch(0).getAnnotation().toString();
 		final Resource progResource = ProtelisLoader.resourceFromString(program);
 		try {
-			final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> result = ProtelisLoader.parse(progResource);
+			final IProgram result = ProtelisLoader.parse(progResource);
 			context.newCallStackFrame(DYN_CODE_INDEX);
-			context.putMultipleVariables(result.getSecond());
-			final AnnotatedTree<?> toRun = result.getFirst();
-			toRun.eval(context);
-			setAnnotation(toRun.getAnnotation());
+			context.putMultipleVariables(result.getKnownFunctions());
+			result.compute(context);
+			setAnnotation(result.getCurrentValue());
 			context.returnFromCallFrame();
 		} catch (IllegalArgumentException e) {
 			L.error(e);

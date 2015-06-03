@@ -7,29 +7,16 @@
  * in the file LICENSE in the Alchemist distribution's top directory.
  */
 package it.unibo.alchemist.test;
-import static org.danilopianini.lang.LangUtils.stackTraceToString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import gnu.trove.list.array.TByteArrayList;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
-import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
-import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
-import it.unibo.alchemist.language.protelis.util.StackImpl;
-import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.language.protelis.vm.DummyContext;
-import it.unibo.alchemist.utils.FasterString;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.commons.math3.util.Pair;
-import org.danilopianini.io.FileUtilities;
 import org.junit.Test;
 
 
@@ -239,20 +226,17 @@ public class TestLanguage {
 	}
 	
 	private static void testFile(final String file, final int runs, final Object expectedResult) {
-		final AnnotatedTree<?> program = runProgram(file, runs);
-		assertEquals(expectedResult, program.getAnnotation());
+		assertEquals(expectedResult, runProgram(file, runs));
 	}
 	
-	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
-		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ProtelisLoader.parse(s);
-		final AnnotatedTree<?> program = prog.getFirst();
-		final ExecutionContext ctx = new DummyContext(new HashMap<>(prog.getSecond()));
+	private static Object runProgram(final String s, final int runs) {
+		final IProgram program = ProtelisLoader.parse(s);
+		final ExecutionContext ctx = new DummyContext(new HashMap<>(program.getKnownFunctions()));
 		for (int i = 0; i < runs; i++) {
 			ctx.setup();
-//			program = program.copy();
-			program.eval(ctx);
+			program.compute(ctx);
 			ctx.commit();
 		}
-		return program;
+		return program.getCurrentValue();
 	}
 }

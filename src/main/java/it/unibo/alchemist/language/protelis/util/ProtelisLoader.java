@@ -139,7 +139,7 @@ public final class ProtelisLoader {
 	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
 	 *         {@link FunctionDefinition} (containing the available functions)
 	 */
-	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(final String programURI) {
+	public static IProgram parse(final String programURI) {
 		return parse(resourceFromURIString(programURI));
 	}
 	
@@ -210,7 +210,7 @@ public final class ProtelisLoader {
 	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
 	 *         {@link FunctionDefinition} (containing the available functions)
 	 */
-	public static Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> parse(final Resource resource) {
+	public static IProgram parse(final Resource resource) {
 		if (!resource.getErrors().isEmpty()) {
 			for (final Diagnostic d : resource.getErrors()) {
 				final StringBuilder b = new StringBuilder("Error at line ");
@@ -246,7 +246,7 @@ public final class ProtelisLoader {
 		/*
 		 * Create the main program
 		 */
-		return new Pair<>(parseBlock(root.getProgram(), nameToFun, funToFun, id), nameToFun);
+		return new SimpleProgramImpl(root, parseBlock(root.getProgram(), nameToFun, funToFun, id), nameToFun);
 	}
 	
 	private static void recursivelyInitFunctions(

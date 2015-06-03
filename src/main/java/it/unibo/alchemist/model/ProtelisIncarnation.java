@@ -8,12 +8,10 @@
  */
 package it.unibo.alchemist.model;
 
-import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
-import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
+import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.DummyContext;
-import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
@@ -31,8 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.math3.util.Pair;
 
 import alice.tuprolog.InvalidTheoryException;
 import alice.tuprolog.MalformedGoalException;
@@ -67,7 +63,7 @@ public class ProtelisIncarnation implements Incarnation {
 	private static final String[] ANS_NAMES = {"ans", "res", "result", "answer", "val", "value"};
 	private static final Set<FasterString> NAMES;
 	
-	private final Cache<String, Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>>> cache = CacheBuilder.newBuilder()
+	private final Cache<String, Optional<IProgram>> cache = CacheBuilder.newBuilder()
 		.maximumSize(100)
 		.expireAfterAccess(1, TimeUnit.HOURS)
 		.expireAfterWrite(1, TimeUnit.HOURS)
@@ -95,7 +91,7 @@ public class ProtelisIncarnation implements Incarnation {
 	@Override
 	public double getProperty(final INode<?> node, final IMolecule mol, final String prop) {
 		Object val = node.getConcentration(mol);
-		Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog = cache.getIfPresent(prop);
+		Optional<IProgram> prog = cache.getIfPresent(prop);
 		if (prog == null) {
 			try {
 				prog = Optional.of(ProtelisLoader.parse(prop));
@@ -154,14 +150,14 @@ public class ProtelisIncarnation implements Incarnation {
 		return Double.NaN;
 	}
 
-	private static Object preprocess(final Optional<Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>>> prog, final Object val) {
+	private static Object preprocess(final Optional<IProgram> prog, final Object val) {
 		try {
 			if (prog.isPresent()) {
-				final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> curProg = prog.get();
-				final Map<FasterString, Object> vars = new HashMap<>(curProg.getSecond());
+				final IProgram curProg = prog.get();
+				final Map<FasterString, Object> vars = new HashMap<>(curProg.getKnownFunctions());
 				NAMES.stream().forEach(n -> vars.put(n, val));
-				curProg.getFirst().eval(new DummyContext(vars));
-				return curProg.getFirst().getAnnotation();
+				curProg.compute(new DummyContext(vars));
+				return curProg.getCurrentValue();
 			}
 		} catch (final RuntimeException | Error e) {
 			/*
@@ -174,9 +170,6 @@ public class ProtelisIncarnation implements Incarnation {
 	
 	@Override
 	public IMolecule createMolecule(final String s) {
-		if (s.startsWith(ProtelisProgram.PROGRAM_ID_PREFIX)) {
-			return ProtelisProgram.getProgramByID(new FasterString(s));
-		}
 		return new Molecule(s);
 	}
 
