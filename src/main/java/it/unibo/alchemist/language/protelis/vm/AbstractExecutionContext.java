@@ -10,6 +10,7 @@ import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
+import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Device;
@@ -38,15 +39,18 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private final TByteList callStack = new TByteArrayList();
 	private final TIntStack callFrameSizes = new TIntArrayStack();
 	private final NetworkManager nm;
-	private final Map<FasterString, ?> functions;
+	private Map<FasterString, ?> functions;
 	private Stack gamma;
 	private TLongObjectMap<Map<CodePath, Object>> theta;
 	private Map<FasterString, Object> env;
 	private Map<CodePath, Object> toSend;
 	
-	protected AbstractExecutionContext(final NetworkManager netmgr, final Map<FasterString, ?> funs) {
+	protected AbstractExecutionContext(final NetworkManager netmgr) {
 		nm = netmgr;
-		functions = Collections.unmodifiableMap(funs);
+	}
+	
+	public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions){
+		functions = Collections.unmodifiableMap(knownFunctions);
 	}
 	
 	protected abstract Map<FasterString, Object> currentEnvironment();
@@ -59,6 +63,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		Objects.requireNonNull(gamma);
 		Objects.requireNonNull(theta);
 		Objects.requireNonNull(toSend);
+		Objects.requireNonNull(functions);
 		setEnvironment(env);
 		nm.sendMessage(toSend);
 		env = null;

@@ -22,6 +22,8 @@ import java.util.Map;
 public class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
+	private final Device dummy = new DummyDevice();
+	
 	
 	private static class DummyDevice implements Device {
 		private static final long serialVersionUID = -4804905144759361059L;
@@ -31,14 +33,11 @@ public class DummyContext extends AbstractExecutionContext {
 		}
 	}
 	
-	private final Device dummy = new DummyDevice();
-	
 	/**
-	 * @param availableFunctions
-	 *            the functions available for this program
+	 * 
 	 */
-	public DummyContext(final Map<FasterString, ?> availableFunctions) {
-		super(new DummyNetworkManager(), availableFunctions);
+	public DummyContext() {
+		super(new DummyNetworkManager());
 	}
 
 	@Override

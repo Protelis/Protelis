@@ -3,11 +3,7 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
-import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-
-import java.io.Serializable;
-import java.util.Map;
+import it.unibo.alchemist.language.protelis.util.IProgram;
 
 /**
  * @author Danilo Pianini
@@ -15,12 +11,13 @@ import java.util.Map;
  */
 public class ProtelisVM {
 
-	private final AnnotatedTree<?> prog;
+	private final IProgram prog;
 	private final ExecutionContext ctx;
 	
-	public ProtelisVM(final AnnotatedTree<?> program, final ExecutionContext context) {
+	public ProtelisVM(final IProgram program, final ExecutionContext context) {
 		prog = program;
 		ctx = context;
+		ctx.setAvailableFunctions(program.getKnownFunctions());
 	}
 	
 	public void runCycle(){
@@ -31,11 +28,15 @@ public class ProtelisVM {
 		/*
  		 * 2. Compute
 		 */
-		prog.eval(ctx);
+		prog.compute(ctx);
 		/*
 		 * 3. Finalize the new environment and send Messages away
 		 */
 		ctx.commit();
+	}
+	
+	public Object getCurrentValue() {
+		return prog.getCurrentValue();
 	}
 
 }

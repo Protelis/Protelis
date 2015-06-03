@@ -3,6 +3,7 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
+import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Device;
@@ -124,5 +125,7 @@ public interface ExecutionContext {
 	void setup();
 
 	void commit();
+
+	void setAvailableFunctions(Map<FasterString, FunctionDefinition> knownFunctions);
 	
 }

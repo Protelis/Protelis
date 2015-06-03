@@ -13,6 +13,7 @@ import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.DummyContext;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
+import it.unibo.alchemist.language.protelis.vm.ProtelisVM;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -230,13 +231,10 @@ public class TestLanguage {
 	}
 	
 	private static Object runProgram(final String s, final int runs) {
-		final IProgram program = ProtelisLoader.parse(s);
-		final ExecutionContext ctx = new DummyContext(new HashMap<>(program.getKnownFunctions()));
+		final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(s), new DummyContext());
 		for (int i = 0; i < runs; i++) {
-			ctx.setup();
-			program.compute(ctx);
-			ctx.commit();
+			vm.runCycle();
 		}
-		return program.getCurrentValue();
+		return vm.getCurrentValue();
 	}
 }

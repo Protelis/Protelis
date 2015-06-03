@@ -12,6 +12,7 @@ import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.DummyContext;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
@@ -21,10 +22,8 @@ import it.unibo.alchemist.utils.L;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -153,11 +152,13 @@ public class ProtelisIncarnation implements Incarnation {
 	private static Object preprocess(final Optional<IProgram> prog, final Object val) {
 		try {
 			if (prog.isPresent()) {
-				final IProgram curProg = prog.get();
-				final Map<FasterString, Object> vars = new HashMap<>(curProg.getKnownFunctions());
-				NAMES.stream().forEach(n -> vars.put(n, val));
-				curProg.compute(new DummyContext(vars));
-				return curProg.getCurrentValue();
+				final ExecutionContext ctx = new DummyContext();
+				final IProgram program = prog.get();
+				ctx.setup();
+				NAMES.stream().forEach(n -> ctx.putEnvironmentVariable(n.toString(), val));
+				program.compute(ctx);
+				ctx.commit();
+				return program.getCurrentValue();
 			}
 		} catch (final RuntimeException | Error e) {
 			/*
