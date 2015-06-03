@@ -3,17 +3,14 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
-import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TLongObjectHashMap;
 import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
-import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Device;
 import it.unibo.alchemist.model.implementations.positions.Continuous2DEuclidean;
 import it.unibo.alchemist.model.interfaces.IPosition;
 import it.unibo.alchemist.utils.FasterString;
 
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -25,8 +22,6 @@ import java.util.Map;
 public class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
-	
-	private final Map<FasterString, Object> environment = new LinkedHashMap<>();
 	
 	private static class DummyDevice implements Device {
 		private static final long serialVersionUID = -4804905144759361059L;
@@ -43,7 +38,7 @@ public class DummyContext extends AbstractExecutionContext {
 	 *            the functions available for this program
 	 */
 	public DummyContext(final Map<FasterString, ?> availableFunctions) {
-		super(availableFunctions, new TLongObjectHashMap<>());
+		super(new DummyNetworkManager(), availableFunctions);
 	}
 
 	@Override
@@ -72,13 +67,22 @@ public class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	protected AbstractExecutionContext restrictedInstance(final TLongObjectMap<Map<CodePath, Object>> restrictedTheta) {
+	protected AbstractExecutionContext instance() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	protected Device deviceFromId(final long id) {
 		return dummy;
+	}
+
+	@Override
+	protected Map<FasterString, Object> currentEnvironment() {
+		return Collections.emptyMap();
+	}
+
+	@Override
+	protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
 	}
 
 

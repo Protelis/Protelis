@@ -28,7 +28,7 @@ public class SendToNeighbor extends AbstractLocalAction<Object> {
 	private final ProtelisNode myNode;
 	private final ProtelisProgram prog;
 	private final IEnvironment<Object> env;
-	private INeighborhood<Object> neighCache;// = new TIntArrayList();
+//	private INeighborhood<Object> neighCache;// = new TIntArrayList();
 	private Map<CodePath, Object> astCache;
 
 	public SendToNeighbor(final ProtelisNode node, final ProtelisProgram program) {
@@ -72,7 +72,7 @@ public class SendToNeighbor extends AbstractLocalAction<Object> {
 		/*
 		 * Update cache system
 		 */
-		neighCache = neigh;
+//		neighCache = neigh;
 		astCache = ast;
 		/*
 		 * Reset internal program

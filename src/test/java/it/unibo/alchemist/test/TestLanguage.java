@@ -245,11 +245,13 @@ public class TestLanguage {
 	
 	private static AnnotatedTree<?> runProgram(final String s, final int runs) {
 		final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog = ProtelisLoader.parse(s);
-		AnnotatedTree<?> program = prog.getFirst();
+		final AnnotatedTree<?> program = prog.getFirst();
+		final ExecutionContext ctx = new DummyContext(new HashMap<>(prog.getSecond()));
 		for (int i = 0; i < runs; i++) {
-			program = program.copy();
-			final ExecutionContext ctx = new DummyContext(new HashMap<>(prog.getSecond()));
+			ctx.setup();
+//			program = program.copy();
 			program.eval(ctx);
+			ctx.commit();
 		}
 		return program;
 	}

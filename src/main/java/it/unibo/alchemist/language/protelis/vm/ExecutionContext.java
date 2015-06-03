@@ -3,7 +3,6 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
-import gnu.trove.map.TLongObjectMap;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Device;
@@ -117,9 +116,13 @@ public interface ExecutionContext {
 	 */
 	Object removeEnvironmentVariable(final String id);
 	
-	/**
-	 * @return a safe view of the internal environment
-	 */
-	Map<FasterString, Object> getCurrentEnvironment();
+//	/**
+//	 * @return a safe view of the internal environment
+//	 */
+//	Map<FasterString, Object> getCurrentEnvironment();
+
+	void setup();
+
+	void commit();
 	
 }

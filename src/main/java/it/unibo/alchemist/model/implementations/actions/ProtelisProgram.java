@@ -20,6 +20,8 @@ import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode.Self;
+import it.unibo.alchemist.model.interfaces.Context;
+import it.unibo.alchemist.model.interfaces.IAction;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
@@ -27,6 +29,7 @@ import it.unibo.alchemist.model.interfaces.IReaction;
 import it.unibo.alchemist.utils.FasterString;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
@@ -39,7 +42,7 @@ import com.google.common.collect.MapMaker;
  * @author Danilo Pianini
  *
  */
-public class ProtelisProgram extends AbstractLocalAction<Object> implements IMolecule {
+public class ProtelisProgram implements IAction<Object> {
 
 	private static final long serialVersionUID = 2207914086772704332L;
 	/**
@@ -53,14 +56,9 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	private final IReaction<Object> reaction;
 	private final ProtelisNode node;
 	private final Map<FasterString, FunctionDefinition> fundefs;
-	private boolean hasComputed;
 	private final AnnotatedTree<?> program;
 	private Map<CodePath, Object> lastExec;
 	private String string;
-	
-	private ProtelisProgram(final IEnvironment<Object> env,  final INode<Object> n, final IReaction<Object> r, final AnnotatedTree<?> prog, final Map<FasterString, FunctionDefinition> funs, final FasterString pString) {
-		this(n, env, r, new Pair<>(prog, funs), pString);
-	}
 	
 	/**
 	 * @param env the environment
@@ -72,21 +70,24 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	 * @throws ClassNotFoundException if required classes can not be found
 	 */
 	public ProtelisProgram(final IEnvironment<Object> env,  final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand, final String prog) throws SecurityException, ClassNotFoundException {
-		this(n, env, r, ProtelisLoader.parse(env, n, r, rand, prog), new FasterString(ProtelisLoader.filterSpaces(prog)));
+		this(n, env, r, ProtelisLoader.parse(prog));
 	}
 
-	private ProtelisProgram(final INode<Object> n, final IEnvironment<Object> env, final IReaction<Object> r, final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog, final FasterString pString) {
-		super(n);
+	private ProtelisProgram(final INode<Object> n, final IEnvironment<Object> env, final IReaction<Object> r, final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog) {
+		Objects.requireNonNull(env);
+		Objects.requireNonNull(r);
 		Objects.requireNonNull(n);
+		Objects.requireNonNull(prog);
 		environment = env;
 		reaction = r;
 		program = prog.getFirst();
+		Objects.requireNonNull(program);
 		fundefs = prog.getSecond();
+		Objects.requireNonNull(fundefs);
 		programString = pString;
 		hash = programString.hashCode();
 		pidString = new FasterString(PROGRAM_ID_PREFIX + programString.hashToString());
 		node = getNode();
-		addModifiedMolecule(this);
 		DB.put(new FasterString(getProgramIDAsString()), this);
 	}
 
@@ -95,11 +96,6 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 		return new ProtelisProgram(environment, n, r, program, fundefs, programString);
 	}
 	
-	@Override
-	public boolean dependsOn(final IMolecule mol) {
-		return getId() == mol.getId();
-	}
-
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof ProtelisProgram) {
@@ -110,21 +106,6 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 
 	@Override
 	public void execute() {
-		final Map<CodePath, Object> newExec = lastExec == null ? new HashMap<>() : new HashMap<>(lastExec.size() * 3 / 2, 1f);
-		final Self safeView = node.getSelf();
-		final Map<FasterString, Object> gamma = safeView.getGamma();
-		gamma.putAll(fundefs);
-		// Note: TByteArrayList must start with non-zero byte to ensure different length "zero" extensions are distinguishable
-		final TByteList initialPosition = new TByteArrayList(); initialPosition.add((byte) 1);
-		/*
-		 * Make sure nobody destroys theta while computing.
-		 */
-		final TIntObjectMap<Map<CodePath, Object>> theta = TCollections.unmodifiableMap(node.getTheta(this));
-		program.eval(safeView, theta, new StackImpl(gamma), lastExec, newExec, initialPosition);
-		safeView.commit();
-		lastExec = newExec;
-		node.setConcentration(this, program.getAnnotation());
-		hasComputed = true;
 	}
 
 	/**
@@ -139,9 +120,8 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 		return programString.hash64();
 	}
 
-	@Override
-	public ProtelisNode getNode() {
-		return (ProtelisNode) super.getNode();
+	protected ProtelisNode getNode() {
+		return node;
 	}
 
 	public Map<CodePath, Object> getLastProgramExecution() {
@@ -162,14 +142,6 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	@Override
 	public int hashCode() {
 		return hash;
-	}
-	
-	public boolean isComputationCycleComplete() {
-		return hasComputed;
-	}
-	
-	public void setCycleComplete() {
-		hasComputed = false;
 	}
 	
 	@Override
@@ -195,5 +167,22 @@ public class ProtelisProgram extends AbstractLocalAction<Object> implements IMol
 	public static ProtelisProgram getProgramByID(final String id) {
 		return getProgramByID(new FasterString(id));
 	}
+	
+	@Override
+	public List<? extends IMolecule> getModifiedMolecules() {
+		/*
+		 * A Protelis program may modify any molecule (global variable)
+		 */
+		return null;
+	}
+
+	@Override
+	public Context getContext() {
+		/*
+		 * A Protelis program never writes in other nodes
+		 */
+		return Context.LOCAL;
+	}
+
 	
 }

@@ -6,12 +6,8 @@ package it.unibo.alchemist.language.protelis.vm;
 import gnu.trove.TCollections;
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
-import gnu.trove.list.linked.TIntLinkedList;
-import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import gnu.trove.stack.TByteStack;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import it.unibo.alchemist.language.protelis.datatype.Field;
@@ -19,14 +15,17 @@ import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.Device;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
-import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.utils.FasterString;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.MapMaker;
+import com.google.common.collect.Maps;
 
 /**
  * @author Danilo Pianini
@@ -38,46 +37,74 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	
 	private final TByteList callStack = new TByteArrayList();
 	private final TIntStack callFrameSizes = new TIntArrayStack();
-	private final Stack gamma;
-	private final TLongObjectMap<Map<CodePath, Object>> theta;
-	private final Map<CodePath, Object> toSend = MAPMAKER.makeMap();
-	private final Map<FasterString, Object> env;
+	private final NetworkManager nm;
+	private final Map<FasterString, ?> functions;
+	private Stack gamma;
+	private TLongObjectMap<Map<CodePath, Object>> theta;
+	private Map<FasterString, Object> env;
+	private Map<CodePath, Object> toSend;
 	
-	protected AbstractExecutionContext(final Map<FasterString, ?> environmentVariables, final TLongObjectMap<Map<CodePath, Object>> receivedMessages) {
-		callStack.add((byte) 1);
-		env = new HashMap<>(environmentVariables);
-		gamma = new StackImpl(env);
-		theta = TCollections.unmodifiableMap(receivedMessages);
+	protected AbstractExecutionContext(final NetworkManager netmgr, final Map<FasterString, ?> funs) {
+		nm = netmgr;
+		functions = Collections.unmodifiableMap(funs);
 	}
-
+	
+	protected abstract Map<FasterString, Object> currentEnvironment();
+	
+	protected abstract void setEnvironment(Map<FasterString, Object> newEnvironment);
+	
 	@Override
-	public void newCallStackFrame(final byte... id) {
+	public final void commit() {
+		Objects.requireNonNull(env);
+		Objects.requireNonNull(gamma);
+		Objects.requireNonNull(theta);
+		Objects.requireNonNull(toSend);
+		setEnvironment(env);
+		nm.sendMessage(toSend);
+		env = null;
+		gamma = null;
+		theta = null;
+		toSend = null;
+	}
+	
+	@Override
+	public final void setup() {
+		callStack.clear();
+		callStack.add((byte) 1);
+		env = currentEnvironment();
+		toSend = MAPMAKER.makeMap();
+		gamma = new StackImpl(new HashMap<>(functions));
+		theta = TCollections.unmodifiableMap(nm.takeMessages());
+	}
+	
+	@Override
+	public final void newCallStackFrame(final byte... id) {
 		callFrameSizes.push(id.length);
 		callStack.add(id);
 		gamma.push();
 	}
 
 	@Override
-	public void returnFromCallFrame() {
+	public final void returnFromCallFrame() {
 		int size = callFrameSizes.pop();
 		callStack.remove(callStack.size() - size, size);
 		gamma.pop();
 	}
 
 	@Override
-	public void putVariable(final FasterString name, final Object value, final boolean canShadow) {
+	public final void putVariable(final FasterString name, final Object value, final boolean canShadow) {
 		gamma.put(name, value, canShadow);
 	}
 	
 	@Override
-	public void putMultipleVariables(final Map<FasterString, ?> map) {
+	public final void putMultipleVariables(final Map<FasterString, ?> map) {
 		gamma.putAll(map);
 	}
 	
-	protected abstract AbstractExecutionContext restrictedInstance(TLongObjectMap<Map<CodePath, Object>> restrictedTheta);
+	protected abstract AbstractExecutionContext instance();
 	
 	@Override
-	public AbstractExecutionContext restrictDomain(final Field f) {
+	public final AbstractExecutionContext restrictDomain(final Field f) {
 		final TLongObjectMap<Map<CodePath, Object>> restricted = new TLongObjectHashMap<>(theta.size());
 		final Device localDevice = getLocalDevice();
 		for (final Device n : f.nodeIterator()) {
@@ -86,7 +113,12 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 				restricted.put(id, theta.get(id));
 			}
 		}
-		return restrictedInstance(restricted);
+		AbstractExecutionContext restrictedInstance = instance();
+		restrictedInstance.theta = restricted;
+		restrictedInstance.gamma = gamma;
+		restrictedInstance.env = env;
+		restrictedInstance.toSend = toSend;
+		return restrictedInstance;
 	}
 	
 	/**
@@ -97,7 +129,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Field buildField(final Function<T, ?> computeValue, final T localValue) {
+	public final <T> Field buildField(final Function<T, ?> computeValue, final T localValue) {
 		/*
 		 * Compute where we stand
 		 */
@@ -125,34 +157,36 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	}
 	
 	@Override
-	public Object getVariable(final FasterString name) {
+	public final Object getVariable(final FasterString name) {
 		return gamma.get(name);
 	}
 	
 	@Override
-	public boolean hasEnvironmentVariable(final String id) {
+	public final boolean hasEnvironmentVariable(final String id) {
 		return env.containsKey(new FasterString(id));
 	}
 
 	@Override
-	public Object getEnvironmentVariable(final String id) {
+	public final Object getEnvironmentVariable(final String id) {
 		return env.get(new FasterString(id));
 	}
 
 	@Override
-	public boolean putEnvironmentVariable(final String id, final Object v) {
+	public final boolean putEnvironmentVariable(final String id, final Object v) {
 		return env.put(new FasterString(id), v) != null;
 	}
 
 	@Override
-	public Object removeEnvironmentVariable(final String id) {
+	public final Object removeEnvironmentVariable(final String id) {
 		return env.remove(new FasterString(id));
 	}
-
-	@Override
-	public Map<FasterString, Object> getCurrentEnvironment() {
-		return new HashMap<>(env);
+	
+	protected final NetworkManager getNetworkManager() {
+		return nm;
 	}
 
-	
+	protected final Map<FasterString, ?> getFunctions() {
+		return functions;
+	}
+
 }

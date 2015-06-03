@@ -555,13 +555,4 @@ public final class ProtelisLoader {
 		return e.getLambdaArgs() != null && e.getLambdaArgs().getArgs() != null ? e.getLambdaArgs().getArgs() : Collections.emptyList();
 	}
 	
-	/**
-	 * @param s
-	 *            the string to filter
-	 * @return the same string without spaces
-	 */
-	public static String filterSpaces(final String s) {
-		return s.replaceAll("\\s+", "");
-	}
-
 }
