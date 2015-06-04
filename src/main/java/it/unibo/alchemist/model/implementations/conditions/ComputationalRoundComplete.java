@@ -30,7 +30,7 @@ public class ComputationalRoundComplete extends AbstractCondition<Object> {
 
 	@Override
 	public ComputationalRoundComplete cloneOnNewNode(final INode<Object> n) {
-		return new ComputationalRoundComplete((ProtelisNode)n, program);
+		return new ComputationalRoundComplete((ProtelisNode) n, program);
 	}
 
 	@Override
@@ -40,12 +40,12 @@ public class ComputationalRoundComplete extends AbstractCondition<Object> {
 
 	@Override
 	public double getPropensityConditioning() {
-		return isValid()? 1 : 0;
+		return isValid() ? 1 : 0;
 	}
 
 	@Override
 	public boolean isValid() {
-		return program.isComputationCycleComplete();
+		return program.isComputationalCycleComplete();
 	}
 	
 	@Override

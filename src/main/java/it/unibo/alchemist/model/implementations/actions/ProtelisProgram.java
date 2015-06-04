@@ -8,57 +8,40 @@
  */
 package it.unibo.alchemist.model.implementations.actions;
 
-import gnu.trove.TCollections;
-import gnu.trove.list.TByteList;
-import gnu.trove.list.array.TByteArrayList;
-import gnu.trove.map.TIntObjectMap;
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
-import it.unibo.alchemist.language.protelis.FunctionDefinition;
-import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
-import it.unibo.alchemist.language.protelis.util.StackImpl;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
+import it.unibo.alchemist.language.protelis.vm.ProtelisVM;
+import it.unibo.alchemist.language.protelis.vm.simulatorvm.AlchemistExecutionContext;
+import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
-import it.unibo.alchemist.model.implementations.nodes.ProtelisNode.Self;
 import it.unibo.alchemist.model.interfaces.Context;
 import it.unibo.alchemist.model.interfaces.IAction;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.IReaction;
-import it.unibo.alchemist.utils.FasterString;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
-
-import org.apache.commons.math3.util.Pair;
-
-import com.google.common.collect.MapMaker;
 
 /**
  * @author Danilo Pianini
  *
  */
-public class ProtelisProgram implements IAction<Object> {
+public class ProtelisProgram extends Molecule implements IAction<Object> {
 
 	private static final long serialVersionUID = 2207914086772704332L;
-	/**
-	 * Prefix for building Protelis molecules.
-	 */
-	public static final String PROGRAM_ID_PREFIX = "protelis-";
-	private static final ConcurrentMap<FasterString, ProtelisProgram> DB = new MapMaker().weakValues().makeMap();
-	private final FasterString programString, pidString;
-	private final int hash;
 	private final IEnvironment<Object> environment;
-	private final IReaction<Object> reaction;
 	private final ProtelisNode node;
-	private final Map<FasterString, FunctionDefinition> fundefs;
-	private final AnnotatedTree<?> program;
-	private Map<CodePath, Object> lastExec;
-	private String string;
+	private final IReaction<Object> reaction;
+	private final IProgram program;
+	private final RandomEngine random;
+	private transient ProtelisVM vm;
+	private boolean computationalCycleComplete;
 	
 	/**
 	 * @param env the environment
@@ -69,105 +52,55 @@ public class ProtelisProgram implements IAction<Object> {
 	 * @throws SecurityException if you are not authorized to load required classes
 	 * @throws ClassNotFoundException if required classes can not be found
 	 */
-	public ProtelisProgram(final IEnvironment<Object> env,  final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand, final String prog) throws SecurityException, ClassNotFoundException {
-		this(n, env, r, ProtelisLoader.parse(prog));
+	public ProtelisProgram(final IEnvironment<Object> env, final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand, final String prog) throws SecurityException, ClassNotFoundException {
+		this(n, env, r, rand, ProtelisLoader.parse(prog));
 	}
 
-	private ProtelisProgram(final INode<Object> n, final IEnvironment<Object> env, final IReaction<Object> r, final Pair<AnnotatedTree<?>, Map<FasterString, FunctionDefinition>> prog) {
+	private ProtelisProgram(final ProtelisNode n, final IEnvironment<Object> env, final IReaction<Object> r, final RandomEngine rand, final IProgram prog) {
+		super(prog.getName());
 		Objects.requireNonNull(env);
 		Objects.requireNonNull(r);
 		Objects.requireNonNull(n);
 		Objects.requireNonNull(prog);
+		Objects.requireNonNull(rand);
+		program = prog;
 		environment = env;
+		random = rand;
 		reaction = r;
-		program = prog.getFirst();
-		Objects.requireNonNull(program);
-		fundefs = prog.getSecond();
-		Objects.requireNonNull(fundefs);
-		programString = pString;
-		hash = programString.hashCode();
-		pidString = new FasterString(PROGRAM_ID_PREFIX + programString.hashToString());
-		node = getNode();
-		DB.put(new FasterString(getProgramIDAsString()), this);
-	}
-
-	@Override
-	public ProtelisProgram cloneOnNewNode(final INode<Object> n, final IReaction<Object> r) {
-		return new ProtelisProgram(environment, n, r, program, fundefs, programString);
+		final ExecutionContext ctx = new AlchemistExecutionContext(env, n, r, rand);
+		vm = new ProtelisVM(prog, ctx);
+		node = n;
 	}
 	
 	@Override
-	public boolean equals(final Object o) {
-		if (o instanceof ProtelisProgram) {
-			return programString.equals(((ProtelisProgram) o).programString);
+	public ProtelisProgram cloneOnNewNode(final INode<Object> n, final IReaction<Object> r) {
+		if (n instanceof ProtelisNode) {
+			return new ProtelisProgram((ProtelisNode) n, environment, r, random, program);
 		}
-		return false;
+		throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass() +
+				". A " + ProtelisNode.class + " is required.");
 	}
-
+	
 	@Override
 	public void execute() {
+		vm.runCycle();
+		computationalCycleComplete = true;
 	}
 
 	/**
 	 * @return the environment
 	 */
-	protected IEnvironment<Object> getEnvironment() {
+	protected final IEnvironment<Object> getEnvironment() {
 		return environment;
 	}
 
-	@Override
-	public long getId() {
-		return programString.hash64();
-	}
-
-	protected ProtelisNode getNode() {
+	/**
+	 * @return the node
+	 */
+	protected final ProtelisNode getNode() {
 		return node;
 	}
 
-	public Map<CodePath, Object> getLastProgramExecution() {
-		return lastExec;
-	}
-	
-	protected AnnotatedTree<?> getProgram() {
-		return program;
-	}
-	
-	/**
-	 * @return the hosting reaction
-	 */
-	protected IReaction<Object> getReaction() {
-		return reaction;
-	}
-	
-	@Override
-	public int hashCode() {
-		return hash;
-	}
-	
-	@Override
-	public String toString() {
-		if (string == null) {
-			string = getClass().getSimpleName() + " id: " + programString.hashToString();
-		}
-		return string;
-	}
-	
-	public String getProgramIDAsString() {
-		return pidString.toString();
-	}
-	
-	public FasterString getProgramIDAsFasterString() {
-		return pidString;
-	}
-	
-	public static ProtelisProgram getProgramByID(final FasterString id) {
-		return DB.get(id);
-	}
-	
-	public static ProtelisProgram getProgramByID(final String id) {
-		return getProgramByID(new FasterString(id));
-	}
-	
 	@Override
 	public List<? extends IMolecule> getModifiedMolecules() {
 		/*
@@ -184,5 +117,23 @@ public class ProtelisProgram implements IAction<Object> {
 		return Context.LOCAL;
 	}
 
+	/**
+	 * @return true if the Program has finished its last computation, and is ready to send a new message (used for dependency management)
+	 */
+	public boolean isComputationalCycleComplete() {
+		return computationalCycleComplete;
+	}
+
+	/**
+	 * Resets the computation status (used for dependency management).
+	 */
+	public void prepareForComputationalCycle() {
+		this.computationalCycleComplete = false;
+	}
+
+	private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+		stream.defaultReadObject();
+		vm = new ProtelisVM(program, new AlchemistExecutionContext(environment, node, reaction, random));
+	}
 	
 }
