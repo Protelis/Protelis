@@ -105,6 +105,19 @@ eclipse {
 	classpath {
     	downloadJavadoc = true
 		downloadSources = true
+        // Following block of code is to remove .pom classpath entries in .classpath files 
+        file {
+            whenMerged { classpath ->
+                Iterator i = classpath.entries.iterator()
+                while (i.hasNext()) {
+                    org.gradle.plugins.ide.eclipse.model.ClasspathEntry classpathEntry = i.next()
+                    if(classpathEntry.kind.equals('lib') && classpathEntry.path.endsWith(".pom")) {
+                        println('Removing ' + classpathEntry + ' from classpath entry')
+                        i.remove()
+                    }
+                }
+            }
+        }
 	}
 }
 
