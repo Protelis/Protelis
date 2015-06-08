@@ -203,6 +203,31 @@ public class TestLanguage {
 	}
 	
 	@Test
+	public void testLoadFile() {
+		testFile("/sum.pt", 8d);
+	}
+	
+	@Test
+	public void testLoadFromClasspath() {
+		testFile("classpath:/sum.pt", 8d);
+	}
+	
+	@Test
+	public void testLoadModule() {
+		testFile("5+3", 8d);
+	}
+	
+	@Test
+	public void testLoadFromModuleName01() {
+		testFile("modules04", 1d);
+	}
+	
+	@Test
+	public void testLoadFromModuleName02() {
+		testFile("protelis:test:circular02", 1d);
+	}
+	
+	@Test
 	public void testTuple01() {
 		testFile("/tuple01.pt", Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 }));
 	}

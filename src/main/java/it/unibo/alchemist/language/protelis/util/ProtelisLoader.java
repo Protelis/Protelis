@@ -97,6 +97,7 @@ public final class ProtelisLoader {
 
 	private static final AtomicInteger IDGEN = new AtomicInteger();
 	private static final XtextResourceSet XTEXT = createResourceSet();
+	private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 	private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.DOTALL);
 	private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
 	private static final String PROTELIS_FILE_EXTENSION = "pt";
@@ -124,9 +125,20 @@ public final class ProtelisLoader {
 	}
 
 	/**
-	 * @param programURI
-	 *            Protelis program file to execute. It must be a either a valid
-	 *            {@link URI} string, for instance
+	 * @param program
+	 *            Protelis module, program file or program to execute. It must
+	 *            be one of:
+	 * 
+	 *            i) a valid Protelis qualifier name (Java like name, colon
+	 *            separated);
+	 * 
+	 *            ii) a valid {@link URI} string;
+	 * 
+	 *            iii) a valid Protelis program.
+	 * 
+	 *            Those possibilities are checked in order.
+	 * 
+	 *            The URI String can be in the form of a URL like
 	 *            "file:///home/user/protelis/myProgram" or a location relative
 	 *            to the classpath. In case, for instance,
 	 *            "/my/package/myProgram.pt" is passed, it will be automatically
@@ -139,45 +151,67 @@ public final class ProtelisLoader {
 	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
 	 *         {@link FunctionDefinition} (containing the available functions)
 	 */
-	public static IProgram parse(final String programURI) {
-		return parse(resourceFromURIString(programURI));
+	public static IProgram parse(final String program) {
+		try {
+			if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
+				return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
+			}
+			return parseURI(program);
+		} catch (Exception e) {
+			return parseAnonymousModule(program);
+		}
 	}
 	
 	public static IProgram parseAnonymousModule(final String program) {
 		return parse(resourceFromString(program));
 	}
 	
-	private static Resource resourceFromURIString(final String programURI) {
+	/**
+	 * @param programURI
+	 *            Protelis program file to execute. It must be a either a valid
+	 *            {@link URI} string, for instance
+	 *            "file:///home/user/protelis/myProgram" or a location relative
+	 *            to the classpath. In case, for instance,
+	 *            "/my/package/myProgram.pt" is passed, it will be automatically
+	 *            get converted to "classpath:/my/package/myProgram.pt". All the
+	 *            Protelis modules your program relies upon must be included in
+	 *            your Java classpath. The Java classpath scanning is done
+	 *            automatically by this constructor, linking is performed by
+	 *            Xtext transparently. {@link URI}s of type "platform:/" are
+	 *            supported, for those who work within an Eclipse environment.
+	 * @return a new {@link IProgram}
+	 * @throws IOException 
+	 */
+	public static IProgram parseURI(final String programURI) throws IOException {
+			return parse(resourceFromURIString(programURI));
+	}
+	
+	private static Resource resourceFromURIString(final String programURI) throws IOException {
 		loadResourcesRecursively(XTEXT, programURI);
 		final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
 		final URI uri = URI.createURI(realURI);
 		return XTEXT.getResource(uri, true);
 	}
 	
-	private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI) {
+	private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI) throws IOException {
 		loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
 	}
 	
-	private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI, final Set<String> alreadyInQueue) {
+	private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI, final Set<String> alreadyInQueue) throws IOException {
 		final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
 		if (!alreadyInQueue.contains(realURI)) {
 			alreadyInQueue.add(realURI);
 			final URI uri = URI.createURI(realURI);
 			final org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
-			try {
-				final InputStream is = protelisFile.getInputStream();
-				final String ss = IOUtils.toString(is, "UTF-8");
-				final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
-				while (matcher.find()) {
-					final int start = matcher.start(1);
-					final int end = matcher.end(1);
-					final String imp = ss.substring(start, end);
-					final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
-					loadResourcesRecursively(target, classpathResource, alreadyInQueue);
-				}
-			} catch (final IOException e) {
-				L.warn("Cannot load " + protelisFile);
-				L.warn(e);
+			final InputStream is = protelisFile.getInputStream();
+			final String ss = IOUtils.toString(is, "UTF-8");
+			final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
+			while (matcher.find()) {
+				final int start = matcher.start(1);
+				final int end = matcher.end(1);
+				final String imp = ss.substring(start, end);
+				final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
+				loadResourcesRecursively(target, classpathResource, alreadyInQueue);
 			}
 			target.getResource(uri, true);
 		}
