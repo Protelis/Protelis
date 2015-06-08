@@ -14,8 +14,6 @@ import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.utils.L;
 
-import org.eclipse.emf.ecore.resource.Resource;
-
 /**
  * @author Danilo Pianini
  *
@@ -41,9 +39,8 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 	public void eval(final ExecutionContext context) {
 		projectAndEval(context);
 		final String program = getBranch(0).getAnnotation().toString();
-		final Resource progResource = ProtelisLoader.resourceFromString(program);
 		try {
-			final IProgram result = ProtelisLoader.parse(progResource);
+			final IProgram result = ProtelisLoader.parseAnonymousModule(program);
 			context.newCallStackFrame(DYN_CODE_INDEX);
 			context.putMultipleVariables(result.getKnownFunctions());
 			result.compute(context);

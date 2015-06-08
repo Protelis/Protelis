@@ -143,6 +143,10 @@ public final class ProtelisLoader {
 		return parse(resourceFromURIString(programURI));
 	}
 	
+	public static IProgram parseAnonymousModule(final String program) {
+		return parse(resourceFromString(program));
+	}
+	
 	private static Resource resourceFromURIString(final String programURI) {
 		loadResourcesRecursively(XTEXT, programURI);
 		final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
