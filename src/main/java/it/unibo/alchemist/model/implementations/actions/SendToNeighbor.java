@@ -8,6 +8,7 @@
  */
 package it.unibo.alchemist.model.implementations.actions;
 
+import it.unibo.alchemist.language.protelis.vm.simulatorvm.AlchemistNetworkManager;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.IReaction;
@@ -38,7 +39,9 @@ public class SendToNeighbor extends AbstractLocalAction<Object> {
 
 	@Override
 	public void execute() {
-		myNode.getNetworkManger().simulateMessageArrival();
+		final AlchemistNetworkManager mgr = myNode.getNetworkManager(prog);
+		Objects.requireNonNull(mgr);
+		mgr.simulateMessageArrival();
 		prog.prepareForComputationalCycle();
 	}
 	

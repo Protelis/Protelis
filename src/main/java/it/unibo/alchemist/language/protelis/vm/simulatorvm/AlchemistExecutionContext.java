@@ -37,15 +37,16 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 			final IEnvironment<Object> environment,
 			final ProtelisNode localNode,
 			final IReaction<Object> reaction,
-			final RandomEngine random) {
-		super(localNode.getNetworkManger());
+			final RandomEngine random,
+			final AlchemistNetworkManager netmgr) {
+		super(netmgr);
 		env = environment;
 		node = localNode;
 		device = new SimpleDeviceImpl(node.getId());
 		react = reaction;
 		rand = random;
 	}
-
+	
 	@Override
 	public Device getLocalDevice() {
 		return device;
@@ -96,7 +97,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 
 	@Override
 	protected AbstractExecutionContext instance() {
-		return new AlchemistExecutionContext(env, node, react, rand);
+		return new AlchemistExecutionContext(env, node, react, rand, (AlchemistNetworkManager) getNetworkManager());
 	}
 
 	@Override

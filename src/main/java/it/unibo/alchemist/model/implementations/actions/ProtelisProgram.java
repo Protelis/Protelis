@@ -14,6 +14,7 @@ import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.language.protelis.vm.ProtelisVM;
 import it.unibo.alchemist.language.protelis.vm.simulatorvm.AlchemistExecutionContext;
+import it.unibo.alchemist.language.protelis.vm.simulatorvm.AlchemistNetworkManager;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.interfaces.Context;
@@ -25,6 +26,8 @@ import it.unibo.alchemist.model.interfaces.IReaction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,9 +56,25 @@ public class ProtelisProgram extends Molecule implements IAction<Object> {
 	 * @throws ClassNotFoundException if required classes can not be found
 	 */
 	public ProtelisProgram(final IEnvironment<Object> env, final ProtelisNode n, final IReaction<Object> r, final RandomEngine rand, final String prog) throws SecurityException, ClassNotFoundException {
-		this(n, env, r, rand, ProtelisLoader.parse(prog));
+		this(n, env, r, rand, programFromString(prog));
 	}
 
+	private static IProgram programFromString(final String s) {
+		try {
+			new URI(s);
+			/*
+			 * Valid URI: directly parse it.
+			 */
+			return ProtelisLoader.parse(s);
+		} catch (URISyntaxException e) {
+			/*
+			 * URI is not valid: convert the string into a dummy:/ resource,
+			 * then interpret it as a program.
+			 */
+			return ProtelisLoader.parse(ProtelisLoader.resourceFromString(s));
+		}
+	}
+	
 	private ProtelisProgram(final ProtelisNode n, final IEnvironment<Object> env, final IReaction<Object> r, final RandomEngine rand, final IProgram prog) {
 		super(prog.getName());
 		Objects.requireNonNull(env);
@@ -65,11 +84,13 @@ public class ProtelisProgram extends Molecule implements IAction<Object> {
 		Objects.requireNonNull(rand);
 		program = prog;
 		environment = env;
+		node = n;
 		random = rand;
 		reaction = r;
-		final ExecutionContext ctx = new AlchemistExecutionContext(env, n, r, rand);
+		final AlchemistNetworkManager netmgr = new AlchemistNetworkManager(environment, node, this);
+		node.addNetworkManger(this, netmgr);
+		final ExecutionContext ctx = new AlchemistExecutionContext(env, n, r, rand, netmgr);
 		vm = new ProtelisVM(prog, ctx);
-		node = n;
 	}
 	
 	@Override
@@ -133,7 +154,9 @@ public class ProtelisProgram extends Molecule implements IAction<Object> {
 
 	private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
 		stream.defaultReadObject();
-		vm = new ProtelisVM(program, new AlchemistExecutionContext(environment, node, reaction, random));
+		final AlchemistNetworkManager netmgr = new AlchemistNetworkManager(environment, node, this);
+		node.addNetworkManger(this, netmgr);
+		vm = new ProtelisVM(program, new AlchemistExecutionContext(environment, node, reaction, random, netmgr));
 	}
 	
 }

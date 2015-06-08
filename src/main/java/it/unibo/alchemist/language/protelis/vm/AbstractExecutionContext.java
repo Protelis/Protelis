@@ -24,9 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.MapMaker;
-import com.google.common.collect.Maps;
 
 /**
  * @author Danilo Pianini
@@ -46,6 +44,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private Map<CodePath, Object> toSend;
 	
 	protected AbstractExecutionContext(final NetworkManager netmgr) {
+		Objects.requireNonNull(netmgr);
 		nm = netmgr;
 	}
 	

@@ -3,13 +3,17 @@
  */
 package it.unibo.alchemist.language.protelis.vm.simulatorvm;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
+import it.unibo.alchemist.language.protelis.protelis.Program;
 import it.unibo.alchemist.language.protelis.util.CodePath;
+import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.vm.NetworkManager;
+import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
 
@@ -22,16 +26,19 @@ import it.unibo.alchemist.model.interfaces.IEnvironment;
  * @author Danilo Pianini
  *
  */
-public final class AlchemistNetworkManager implements NetworkManager {
+public final class AlchemistNetworkManager implements NetworkManager, Serializable {
 	
+	private static final long serialVersionUID = -7028533174885876642L;
 	private final IEnvironment<Object> env;
 	private final ProtelisNode node;
+	private final ProtelisProgram prog;
 	private TLongObjectMap<Map<CodePath, Object>> msgs = new TLongObjectHashMap<>();
 	private Map<CodePath, Object> toBeSent;
 
-	public AlchemistNetworkManager(final IEnvironment<Object> environment, final ProtelisNode local) {
+	public AlchemistNetworkManager(final IEnvironment<Object> environment, final ProtelisNode local, final ProtelisProgram program) {
 		env = environment;
 		node = local;
+		prog = program;
 	}
 	
 	@Override
@@ -53,7 +60,9 @@ public final class AlchemistNetworkManager implements NetworkManager {
 		Objects.requireNonNull(toBeSent);
 		env.getNeighborhood(node).forEach(n -> {
 			if (n instanceof ProtelisNode) {
-				((ProtelisNode) n).getNetworkManger().msgs.put(node.getId(), toBeSent);
+				final AlchemistNetworkManager destination = ((ProtelisNode) n).getNetworkManager(prog);
+				Objects.requireNonNull(destination);
+				destination.msgs.put(node.getId(), toBeSent);
 			}
 		});
 		toBeSent = null;
