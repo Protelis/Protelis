@@ -64,10 +64,6 @@
             <ruleset>Basic</ruleset>
         </rule>
         <rule>
-            <name>CollapsibleIfStatements</name>
-            <ruleset>Basic Velocity</ruleset>
-        </rule>
-        <rule>
             <name>DontCallThreadRun</name>
             <ruleset>Basic</ruleset>
         </rule>
@@ -164,10 +160,6 @@
             <ruleset>Basic Velocity</ruleset>
         </rule>
         <rule>
-            <name>EmptyIfStmt</name>
-            <ruleset>Empty Code</ruleset>
-        </rule>
-        <rule>
             <name>ExcessiveTemplateLength</name>
             <ruleset>Basic Velocity</ruleset>
         </rule>
@@ -213,10 +205,6 @@
         </rule>
         <rule>
             <name>NcssConstructorCount</name>
-            <ruleset>Code Size</ruleset>
-        </rule>
-        <rule>
-            <name>NcssMethodCount</name>
             <ruleset>Code Size</ruleset>
         </rule>
         <rule>
@@ -322,10 +310,6 @@
         <rule>
             <name>AvoidProtectedMethodInFinalClassNotExtending</name>
             <ruleset>Design</ruleset>
-        </rule>
-        <rule>
-            <name>AvoidReassigningParameters</name>
-            <ruleset>Basic Velocity</ruleset>
         </rule>
         <rule>
             <name>BadComparison</name>
