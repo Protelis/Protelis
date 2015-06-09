@@ -98,13 +98,14 @@ public class ProtelisProgram extends Molecule implements IAction<Object> {
 		if (n instanceof ProtelisNode) {
 			return new ProtelisProgram((ProtelisNode) n, environment, r, random, program);
 		}
-		throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass() +
-				". A " + ProtelisNode.class + " is required.");
+		throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass()
+				+ ". A " + ProtelisNode.class + " is required.");
 	}
 	
 	@Override
 	public void execute() {
 		vm.runCycle();
+		node.setConcentration(this, vm.getCurrentValue());
 		computationalCycleComplete = true;
 	}
 
