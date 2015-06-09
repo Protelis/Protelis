@@ -5,7 +5,7 @@ package it.unibo.alchemist.language.protelis.vm;
 
 import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.implementations.positions.Continuous2DEuclidean;
 import it.unibo.alchemist.model.interfaces.IPosition;
 import it.unibo.alchemist.utils.FasterString;
@@ -22,10 +22,10 @@ import java.util.Map;
 public class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
-	private final Device dummy = new DummyDevice();
+	private final DeviceUID dummy = new DummyDevice();
 	
 	
-	private static class DummyDevice implements Device {
+	private static class DummyDevice implements DeviceUID {
 		private static final long serialVersionUID = -4804905144759361059L;
 		@Override
 		public long getId() {
@@ -41,7 +41,7 @@ public class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public Device getLocalDevice() {
+	public DeviceUID getLocalDevice() {
 		return dummy;
 	}
 
@@ -51,7 +51,7 @@ public class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public double distanceTo(final Device target) {
+	public double distanceTo(final DeviceUID target) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -71,7 +71,7 @@ public class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	protected Device deviceFromId(final long id) {
+	protected DeviceUID deviceFromId(final long id) {
 		return dummy;
 	}
 

@@ -86,7 +86,7 @@ public enum HoodOp {
 		of(create(Object.class, Tuple::create)),
 		of()
 	);
-	private final BiFunction<Field, Device, Object> f;
+	private final BiFunction<Field, DeviceUID, Object> f;
 	private final Function<Field, Object> defs;
 	
 	/**
@@ -102,7 +102,7 @@ public enum HoodOp {
 	 *            functions are used in case there is no supplier that can
 	 *            provide a specific value-agnostic default
 	 */
-	private HoodOp(final BiFunction<Field, Device, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
+	private HoodOp(final BiFunction<Field, DeviceUID, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
 		f = fun;
 		defs = (field) -> {
 			/*
@@ -162,37 +162,37 @@ public enum HoodOp {
 	 *            the node on which the field is sampled
 	 * @return the Object resulting in the hood application
 	 */
-	public Object run(final Field o, final Device n) {
+	public Object run(final Field o, final DeviceUID n) {
 		return f.apply(o, n);
 	}
 	
-	private static Object min(final Field f, final Device n) {
+	private static Object min(final Field f, final DeviceUID n) {
 		return f.reduceVals(Op2.MIN.getFunction(), n, MIN.defs.apply(f));
 	}
 	
-	private static Object max(final Field f, final Device n) {
+	private static Object max(final Field f, final DeviceUID n) {
 		return f.reduceVals(Op2.MAX.getFunction(), n, MAX.defs.apply(f));
 	}
 	
-	private static Object any(final Field f, final Device n) {
+	private static Object any(final Field f, final DeviceUID n) {
 		return f.reduceVals(Op2.OR.getFunction(), n, ANY.defs.apply(f));
 	}
 	
-	private static Object all(final Field f, final Device n) {
+	private static Object all(final Field f, final DeviceUID n) {
 		return f.reduceVals(Op2.AND.getFunction(), n, ALL.defs.apply(f));
 	}
 	
-	private static Object sum(final Field f, final Device n) {
+	private static Object sum(final Field f, final DeviceUID n) {
 		return f.reduceVals(Op2.PLUS.getFunction(), n, SUM.defs.apply(f));
 	}
 	
-	private static Object mean(final Field f, final Device n) {
+	private static Object mean(final Field f, final DeviceUID n) {
 		if (f.isEmpty()) {
 			return Double.NaN;
 		}
 		return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size());
 	}
-	private static Object union(final Field f, final Device n) {
+	private static Object union(final Field f, final DeviceUID n) {
 		return f.reduceVals(
 				(a, b) -> {
 			final Tuple at = a instanceof Tuple ? (Tuple) a : Tuple.create(a);

@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import org.danilopianini.lang.HashUtils;
@@ -27,17 +27,17 @@ public abstract class AbstractField implements Field {
 	private static final long serialVersionUID = 7507440716878809781L;
 
 	@Override
-	public Device reduceKeys(final BinaryOperator<Device> op, final Device exclude) {
+	public DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude) {
 		return reduce(nodeIterator(), op, exclude, null);
 	}
 	
 	@Override
-	public Object reduceVals(final BinaryOperator<Object> op, final Device exclude, final Object defaultVal) {
+	public Object reduceVals(final BinaryOperator<Object> op, final DeviceUID exclude, final Object defaultVal) {
 		return reduce(valIterator(), op, exclude == null ? null : getSample(exclude), defaultVal);
 	}
 	
 	@Override
-	public Pair<Device, Object> reducePairs(final BinaryOperator<Pair<Device, Object>> accumulator, final Device exclude) {
+	public Pair<DeviceUID, Object> reducePairs(final BinaryOperator<Pair<DeviceUID, Object>> accumulator, final DeviceUID exclude) {
 		return reduce(coupleIterator(), accumulator, exclude == null ? null : new Pair<>(exclude, getSample(exclude)), null);
 	}
 	
@@ -85,7 +85,7 @@ public abstract class AbstractField implements Field {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("[ ");
-		for (final Pair<Device, Object> entry : coupleIterator()) {
+		for (final Pair<DeviceUID, Object> entry : coupleIterator()) {
 			sb.append(entry);
 			sb.append(' ');
 		}
@@ -101,7 +101,7 @@ public abstract class AbstractField implements Field {
 		if (o instanceof Field) {
 			final Field cmp = (Field) o;
 			if (cmp.size() == size()) {
-				for (final Pair<Device, Object> pv : coupleIterator()) {
+				for (final Pair<DeviceUID, Object> pv : coupleIterator()) {
 					if (!pv.getSecond().equals(cmp.getSample(pv.getFirst()))) {
 						return false;
 					}
@@ -116,7 +116,7 @@ public abstract class AbstractField implements Field {
 	public int hashCode() {
 		int[] hash = new int[size()];
 		int i = 0;
-		for (final Pair<Device, Object> pv : coupleIterator()) {
+		for (final Pair<DeviceUID, Object> pv : coupleIterator()) {
 			hash[i++] = pv.hashCode();
 		}
 		return HashUtils.djb2int32(hash);

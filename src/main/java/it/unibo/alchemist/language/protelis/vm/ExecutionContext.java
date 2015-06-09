@@ -6,7 +6,7 @@ package it.unibo.alchemist.language.protelis.vm;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.interfaces.IPosition;
 import it.unibo.alchemist.utils.FasterString;
 
@@ -53,7 +53,7 @@ public interface ExecutionContext {
 
 	ExecutionContext restrictDomain(Field f);
 	
-	Device getLocalDevice();
+	DeviceUID getLocalDevice();
 
 	/**
 	 * @return the current time, absolute
@@ -65,7 +65,7 @@ public interface ExecutionContext {
 	 *            the device to compute the distance to
 	 * @return the distance to the device
 	 */
-	double distanceTo(Device target);
+	double distanceTo(DeviceUID target);
 	
 	IPosition getDevicePosition();
 

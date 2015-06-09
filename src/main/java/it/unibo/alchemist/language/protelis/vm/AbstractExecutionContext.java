@@ -13,7 +13,7 @@ import gnu.trove.stack.array.TIntArrayStack;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
 import it.unibo.alchemist.utils.FasterString;
@@ -110,8 +110,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	@Override
 	public final AbstractExecutionContext restrictDomain(final Field f) {
 		final TLongObjectMap<Map<CodePath, Object>> restricted = new TLongObjectHashMap<>(theta.size());
-		final Device localDevice = getLocalDevice();
-		for (final Device n : f.nodeIterator()) {
+		final DeviceUID localDevice = getLocalDevice();
+		for (final DeviceUID n : f.nodeIterator()) {
 			if (!n.equals(localDevice)) {
 				final long id = n.getId();
 				restricted.put(id, theta.get(id));
@@ -129,7 +129,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	 * @param id
 	 * @return
 	 */
-	protected abstract Device deviceFromId(long id);
+	protected abstract DeviceUID deviceFromId(long id);
 	
 	@SuppressWarnings("unchecked")
 	@Override

@@ -12,7 +12,7 @@ import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import org.danilopianini.lang.Pair;
 public class FieldTroveMapImpl extends AbstractField implements Serializable {
 
 	private static final long serialVersionUID = -2947000086262191216L;
-	private final TLongObjectMap<Pair<Device, Object>> fld;
+	private final TLongObjectMap<Pair<DeviceUID, Object>> fld;
 
 	public FieldTroveMapImpl() {
 		super();
@@ -45,12 +45,12 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 	}
 	
 	@Override
-	public void addSample(final Device n, final Object v) {
+	public void addSample(final DeviceUID n, final Object v) {
 		fld.put(n.getId(), new Pair<>(n, v));
 	}
 
 	@Override
-	public boolean containsNode(final Device n) {
+	public boolean containsNode(final DeviceUID n) {
 		return containsNode(n.getId());
 	}
 
@@ -60,7 +60,7 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 	}
 
 	@Override
-	public Iterable<Pair<Device, Object>> coupleIterator() {
+	public Iterable<Pair<DeviceUID, Object>> coupleIterator() {
 		return fld.valueCollection();
 	}
 
@@ -84,9 +84,9 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 	}
 
 	@Override
-	public Object getSample(final Device n) {
+	public Object getSample(final DeviceUID n) {
 		Objects.requireNonNull(n);
-		final Pair<Device, Object> res = fld.get(n.getId());
+		final Pair<DeviceUID, Object> res = fld.get(n.getId());
 		if (res == null) {
 			throw new NoSuchElementException(n.toString());
 		}
@@ -104,17 +104,17 @@ public class FieldTroveMapImpl extends AbstractField implements Serializable {
 	}
 	
 	@Override
-	public Iterable<Device> nodeIterator() {
-		return new Iterable<Device>() {
+	public Iterable<DeviceUID> nodeIterator() {
+		return new Iterable<DeviceUID>() {
 			@Override
-			public Iterator<Device> iterator() {
+			public Iterator<DeviceUID> iterator() {
 				return fld.valueCollection().stream().map(e -> e.getFirst()).iterator();
 			}
 		};
 	}
 	
 	@Override
-	public Object removeSample(final Device n) {
+	public Object removeSample(final DeviceUID n) {
 		return fld.remove(n.getId());
 	}
 

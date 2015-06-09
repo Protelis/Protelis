@@ -8,7 +8,7 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import org.danilopianini.lang.Pair;
 public class FieldMapImpl extends AbstractField {
 
 	private static final long serialVersionUID = -2947000086262191216L;
-	private final Map<Device, Object> fld;
+	private final Map<DeviceUID, Object> fld;
 
 	public FieldMapImpl() {
 		super();
@@ -37,12 +37,12 @@ public class FieldMapImpl extends AbstractField {
 	}
 	
 	@Override
-	public void addSample(final Device n, final Object v) {
+	public void addSample(final DeviceUID n, final Object v) {
 		fld.put(n, v);
 	}
 
 	@Override
-	public boolean containsNode(final Device n) {
+	public boolean containsNode(final DeviceUID n) {
 		return fld.containsKey(n);
 	}
 
@@ -52,7 +52,7 @@ public class FieldMapImpl extends AbstractField {
 	}
 
 	@Override
-	public Iterable<Pair<Device, Object>> coupleIterator() {
+	public Iterable<Pair<DeviceUID, Object>> coupleIterator() {
 		return fld.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue())).collect(Collectors.toList());
 	}
 
@@ -65,7 +65,7 @@ public class FieldMapImpl extends AbstractField {
 	}
 
 	@Override
-	public Object getSample(final Device n) {
+	public Object getSample(final DeviceUID n) {
 		return fld.get(n);
 	}
 
@@ -75,12 +75,12 @@ public class FieldMapImpl extends AbstractField {
 	}
 
 	@Override
-	public Iterable<Device> nodeIterator() {
+	public Iterable<DeviceUID> nodeIterator() {
 		return fld.keySet();
 	}
 
 	@Override
-	public Object removeSample(final Device n) {
+	public Object removeSample(final DeviceUID n) {
 		return fld.remove(n);
 	}
 

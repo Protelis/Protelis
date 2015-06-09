@@ -8,7 +8,7 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.interfaces.INode;
 
 import java.io.Serializable;
@@ -104,7 +104,7 @@ public interface Field extends Serializable {
 		 */
 		final Field refField = (Field) (fieldTarget ? target : args[fieldIndexes[0]]);
 		final Field result = create(refField.size());
-		for (final Device node : refField.nodeIterator()) {
+		for (final DeviceUID node : refField.nodeIterator()) {
 			final Object actualTarget = fieldTarget ? (((Field) target).getSample(node)) : target;
 			Object[] actualArgs = Arrays.copyOf(args, args.length);
 			for (final int i : fieldIndexes) {
@@ -119,29 +119,29 @@ public interface Field extends Serializable {
 		return result;
 	}
 	
-	void addSample(Device n, Object v);
+	void addSample(DeviceUID n, Object v);
 	
-	Object removeSample(Device n);
+	Object removeSample(DeviceUID n);
 	
-	Object getSample(Device n);
+	Object getSample(DeviceUID n);
 	
-	Device reduceKeys(final BinaryOperator<Device> op, final Device exclude);
+	DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude);
 	
-	Object reduceVals(final BinaryOperator<Object> op, final Device exclude, final Object defaultVal);
+	Object reduceVals(final BinaryOperator<Object> op, final DeviceUID exclude, final Object defaultVal);
 	
-	Pair<Device, Object> reducePairs(final BinaryOperator<Pair<Device, Object>> accumulator, final Device exclude);
+	Pair<DeviceUID, Object> reducePairs(final BinaryOperator<Pair<DeviceUID, Object>> accumulator, final DeviceUID exclude);
 
-	Iterable<Device> nodeIterator();
+	Iterable<DeviceUID> nodeIterator();
 
 	Iterable<Object> valIterator();
 	
-	Iterable<Pair<Device, Object>> coupleIterator();
+	Iterable<Pair<DeviceUID, Object>> coupleIterator();
 
 	int size();
 
 	boolean isEmpty();
 	
-	boolean containsNode(Device n);
+	boolean containsNode(DeviceUID n);
 	
 	boolean containsNode(long n);
 	

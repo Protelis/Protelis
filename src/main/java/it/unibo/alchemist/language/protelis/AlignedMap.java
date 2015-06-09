@@ -11,7 +11,7 @@ package it.unibo.alchemist.language.protelis;
 import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.utils.FasterString;
 
@@ -73,8 +73,8 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 		 * Extract one field for each key
 		 */
 		final Map<Object, Field> fieldKeys = new HashMap<>();
-		for (final Pair<Device, Object> pair : origin.coupleIterator()) {
-			final Device node = pair.getFirst();
+		for (final Pair<DeviceUID, Object> pair : origin.coupleIterator()) {
+			final DeviceUID node = pair.getFirst();
 			final Object mapo = pair.getSecond();
 			if (mapo instanceof Tuple) {
 				final Tuple map = (Tuple) mapo;
@@ -134,7 +134,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			/*
 			 * Make sure that self is present in each field
 			 */
-			final Device sigma = context.getLocalDevice();
+			final DeviceUID sigma = context.getLocalDevice();
 			if (!value.containsNode(sigma)) {
 				value.addSample(sigma, defVal.getAnnotation());
 			}

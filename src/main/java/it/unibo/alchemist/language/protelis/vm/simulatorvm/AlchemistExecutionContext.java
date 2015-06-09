@@ -4,7 +4,7 @@
 package it.unibo.alchemist.language.protelis.vm.simulatorvm;
 
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
-import it.unibo.alchemist.language.protelis.util.Device;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.util.SimpleDeviceImpl;
 import it.unibo.alchemist.language.protelis.vm.AbstractExecutionContext;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
@@ -30,7 +30,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 	private final ProtelisNode node;
 	private final IEnvironment<Object> env;
 	private final IReaction<Object> react;
-	private final Device device;
+	private final DeviceUID device;
 	private final RandomEngine rand;
 	
 	public AlchemistExecutionContext(
@@ -48,7 +48,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 	}
 	
 	@Override
-	public Device getLocalDevice() {
+	public DeviceUID getLocalDevice() {
 		return device;
 	}
 
@@ -58,7 +58,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public double distanceTo(final Device target) {
+	public double distanceTo(final DeviceUID target) {
 		final INode<Object> dest = env.getNodeByID((int) target.getId());
 		if (dest != null) {
 			return env.getDistanceBetweenNodes(node, dest);
@@ -101,7 +101,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	protected Device deviceFromId(final long id) {
+	protected DeviceUID deviceFromId(final long id) {
 		return new SimpleDeviceImpl(id);
 	}
 	
