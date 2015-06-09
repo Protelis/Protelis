@@ -5,7 +5,7 @@ package it.unibo.alchemist.language.protelis.vm.simulatorvm;
 
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
-import it.unibo.alchemist.language.protelis.util.SimpleDeviceImpl;
+import it.unibo.alchemist.language.protelis.util.DeviceUIDImpl;
 import it.unibo.alchemist.language.protelis.vm.AbstractExecutionContext;
 import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
@@ -42,7 +42,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 		super(netmgr);
 		env = environment;
 		node = localNode;
-		device = new SimpleDeviceImpl(node.getId());
+		device = new DeviceUIDImpl(node.getId());
 		react = reaction;
 		rand = random;
 	}
@@ -102,7 +102,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 
 	@Override
 	protected DeviceUID deviceFromId(final long id) {
-		return new SimpleDeviceImpl(id);
+		return new DeviceUIDImpl(id);
 	}
 	
 }
