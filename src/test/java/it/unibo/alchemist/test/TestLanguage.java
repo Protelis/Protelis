@@ -57,6 +57,16 @@ public class TestLanguage {
 	}
 	
 	@Test
+	public void testFieldMethod02() {
+		testFile("/fieldMethod02.pt", 2.0);
+	}
+	
+	@Test
+	public void testFieldMethod03() {
+		testFile("/fieldMethod03.pt", 2.0);
+	}
+	
+	@Test
 	public void testFunction01() {
 		testFile("/function01.pt", 1.0);
 	}

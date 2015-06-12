@@ -1,0 +1,3 @@
+maxHood PlusSelf(nbr([1, 2, 3]).get(1));
+// Exercise method-calls on field targets
+// Should return 2
