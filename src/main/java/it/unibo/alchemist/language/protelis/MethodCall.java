@@ -76,9 +76,7 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
 			 */
 			final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
 			if (fieldTarget || fieldIndexes.length > 0) {
-				setAnnotation(Field.apply(
-						(actualT, actualA) -> ReflectionUtils.invokeMethod(method, actualT, actualA),
-						fieldTarget, fieldIndexes, args));
+				setAnnotation(Field.apply((actualT, actualA) -> ReflectionUtils.invokeMethod(method, actualT, actualA), fieldTarget, fieldIndexes, target, args));
 				return;
 			}
 		}
