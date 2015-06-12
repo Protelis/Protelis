@@ -6,6 +6,7 @@ package it.unibo.alchemist.language.protelis.vm;
 import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
 import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
+import it.unibo.alchemist.language.protelis.util.DeviceUIDImpl;
 import it.unibo.alchemist.model.implementations.positions.Continuous2DEuclidean;
 import it.unibo.alchemist.model.interfaces.IPosition;
 import it.unibo.alchemist.utils.FasterString;
@@ -22,17 +23,9 @@ import java.util.Map;
 public final class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
-	private final DeviceUID dummy = new DummyDevice();
+	private final DeviceUID dummy = new DeviceUIDImpl(0);
 	private Map<FasterString, Object> environment = new HashMap<>();
 	
-	
-	private static class DummyDevice implements DeviceUID {
-		private static final long serialVersionUID = -4804905144759361059L;
-		@Override
-		public long getId() {
-			return 0;
-		}
-	}
 	
 	/**
 	 * 
