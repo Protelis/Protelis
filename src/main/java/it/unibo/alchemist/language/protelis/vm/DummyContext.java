@@ -10,7 +10,7 @@ import it.unibo.alchemist.model.implementations.positions.Continuous2DEuclidean;
 import it.unibo.alchemist.model.interfaces.IPosition;
 import it.unibo.alchemist.utils.FasterString;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,10 +19,11 @@ import java.util.Map;
  * @author Danilo Pianini
  *
  */
-public class DummyContext extends AbstractExecutionContext {
+public final class DummyContext extends AbstractExecutionContext {
 	
 	private final RandomEngine rng = new MersenneTwister();
 	private final DeviceUID dummy = new DummyDevice();
+	private Map<FasterString, Object> environment = new HashMap<>();
 	
 	
 	private static class DummyDevice implements DeviceUID {
@@ -67,7 +68,7 @@ public class DummyContext extends AbstractExecutionContext {
 
 	@Override
 	protected AbstractExecutionContext instance() {
-		throw new UnsupportedOperationException();
+		return new DummyContext();
 	}
 
 	@Override
@@ -77,11 +78,12 @@ public class DummyContext extends AbstractExecutionContext {
 
 	@Override
 	protected Map<FasterString, Object> currentEnvironment() {
-		return Collections.emptyMap();
+		return environment;
 	}
 
 	@Override
 	protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
+		environment = newEnvironment;
 	}
 
 
