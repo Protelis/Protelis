@@ -17,12 +17,30 @@ import it.unibo.alchemist.language.protelis.vm.ProtelisVM;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
 
 public class TestLanguage {
 
+	@Test
+	public void testAlignedMap() {
+		IntStream.range(1, 100).parallel().forEach(i -> {
+			testFile("/alignedMap.pt", i, Tuple.create(Tuple.create(1.0, i + 2.0)));
+		});
+	}
+	
+	@Test
+	public void testBinary01() {
+		testFile("/binary01.pt", true);
+	}
+	
+	@Test
+	public void testEnvironment01() {
+		testFile("/environment01.pt", 7.0);
+	}
+	
 	@Test
 	public void testEval01() {
 		testFile("/eval01.pt", 1d);

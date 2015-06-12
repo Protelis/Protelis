@@ -1,0 +1,13 @@
+let x = true;
+let y = false;
+let z = true;
+
+y != (z==(x && !(y || !z)))
+/*
+ * Resolves to:
+ * false != (true==(true && !(false || !true)))
+ * false != (true==(true && !(false)))
+ * false != (true==(true))
+ * false != true
+ * true
+ */

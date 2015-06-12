@@ -1,0 +1,8 @@
+let arg = [[1,2]];
+let cond = (key,field)->{true};
+let op = (key,field)->{minHood PlusSelf(field+1)};
+let default = 0;
+
+rep(m <- arg) {
+	alignedMap(nbr(m),cond,op,default);
+}

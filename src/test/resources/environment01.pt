@@ -1,0 +1,7 @@
+self.putEnvironmentVariable("foobar",3);
+self.putEnvironmentVariable("baz",4);
+
+/*
+ * 7 expected.
+ */
+self.getEnvironmentVariable("baz")+self.getEnvironmentVariable("foobar");
