@@ -48,7 +48,7 @@ public class TestLanguage {
 	
 	@Test
 	public void testEval02() {
-		testFile("/eval02.pt", Tuple.create(new Object[]{36.0, 25.0, 16.0, 9.0, 4.0, 1.0}));
+		testFile("/eval02.pt", Tuple.create(36.0, 25.0, 16.0, 9.0, 4.0, 1.0));
 	}
 	
 	@Test
