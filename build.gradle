@@ -49,6 +49,7 @@ dependencies {
     
     testCompile "junit:junit:$junitVersion"
     testCompile "it.unibo.alchemist:alchemist.protelisdsl:$protelisdslVersion"
+    testCompile "it.unibo.alchemist:alchemist-engine:$engineVersion"
     testRuntime "it.unibo.alchemist:alchemist-enginedependentmodel:$engineDepVersion"
     
     doclet "org.jboss.apiviz:apiviz:$apivizVersion"
