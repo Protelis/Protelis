@@ -54,12 +54,12 @@ public class TestLanguage {
 
 	@Test
 	public void testEval01() {
-		testFileWithExplicitResult("/eval01.pt", 1d);
+		testFile("/eval01.pt");
 	}
 
 	@Test
 	public void testEval02() {
-		testFileWithExplicitResult("/eval02.pt", Tuple.create(36.0, 25.0, 16.0, 9.0, 4.0, 1.0));
+		testFile("/eval02.pt");
 	}
 
 	@Test
@@ -314,9 +314,7 @@ public class TestLanguage {
 				if (result == null) {
 					result = extractor.group(SL_NAME);
 				}
-				System.out.println(result);
 				final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
-				System.out.println(toCheck);
 				final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
 				vm.runCycle();
 				assertEquals(vm.getCurrentValue(), runProgram(file, runs));
