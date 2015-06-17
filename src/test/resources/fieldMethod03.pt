@@ -1,3 +1,5 @@
+/*
+ * Exercise method-calls on field arguments
+ * EXPECTED_RESULT: 2
+ */
 maxHood PlusSelf([1, 2, 3].get(nbr(1)));
-// Exercise method-calls on field arguments
-// Should return 2

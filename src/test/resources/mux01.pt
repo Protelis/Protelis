@@ -1,3 +1,4 @@
+// EXPECTED_RESULT: if (($CYCLE - 1) % 6 < 3) { $CYCLE } else { -$CYCLE }
 import java.lang.Math.cos
 
 def cycle(start, step) {

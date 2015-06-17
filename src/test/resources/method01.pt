@@ -1,2 +1,3 @@
+// EXPECTED_RESULT: 0
 import java.lang.Math.sin
 java::lang::Math::sin(0)

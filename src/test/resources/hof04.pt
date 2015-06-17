@@ -1,3 +1,6 @@
+/*
+ * EXPECTED_RESULT: [6, 5, 4, 3, 2, 1]
+ */
 def map(f, t){
 	if (t.isEmpty()) {
 		t

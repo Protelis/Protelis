@@ -1,7 +1,7 @@
-import java.lang.Math.cos
-
-maxHood PlusSelf(cos(nbr(0)))
 /*
  * Exercise method-calls on fields
- * Should return 1
+ * EXPECTED_RESULT: 1
  */ 
+import java.lang.Math.cos
+
+ maxHood PlusSelf(cos(nbr(0)))

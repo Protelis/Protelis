@@ -1,3 +1,4 @@
+// EXPECTED_RESULT: 10
 def f(x){
 	x
 }

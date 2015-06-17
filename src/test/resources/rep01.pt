@@ -1,3 +1,4 @@
+// EXPECTED_RESULT: $CYCLE
 def counter(start){
 	rep(val <- start) {
 		val + 1

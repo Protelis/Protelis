@@ -34,12 +34,12 @@ public class TestLanguage {
 	private static final String EXPECTED = "EXPECTED_RESULT:";
 	private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*(?<" + ML_NAME + ">.*?)\\s*\\*\\/|\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
 	private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
+	private static final int MIN_CYCLE_NUM = 1;
+	private static final int MAX_CYCLE_NUM = 100;
 
 	@Test
 	public void testAlignedMap() {
-		IntStream.range(1, 100).parallel().forEach(i -> {
-			testFile("/alignedMap.pt", i);
-		});
+		testFileWithMultipleRuns("/alignedMap.pt");
 	}
 
 	@Test
@@ -64,99 +64,87 @@ public class TestLanguage {
 
 	@Test
 	public void testFieldMethod01() {
-		testFileWithExplicitResult("/fieldMethod01.pt", 1.0);
+		testFile("/fieldMethod01.pt");
 	}
 
 	@Test
 	public void testFieldMethod02() {
-		testFileWithExplicitResult("/fieldMethod02.pt", 2.0);
+		testFile("/fieldMethod02.pt");
 	}
 
 	@Test
 	public void testFieldMethod03() {
-		testFileWithExplicitResult("/fieldMethod03.pt", 2.0);
+		testFile("/fieldMethod03.pt");
 	}
 
 	@Test
 	public void testFunction01() {
-		testFileWithExplicitResult("/function01.pt", 1.0);
+		testFile("/function01.pt");
 	}
 
 	@Test
 	public void testFunction02() {
-		testFileWithExplicitResult("/function02.pt", 10d);
+		testFile("/function02.pt");
 	}
 
 	@Test
 	public void testFunction03() {
-		testFileWithExplicitResult("/function03.pt", 15.2);
+		testFile("/function03.pt");
 	}
 
 	@Test
 	public void testFunction04() {
-		testFileWithExplicitResult("/function04.pt", 6.0);
+		testFile("/function04.pt");
 	}
 
 	@Test
 	public void testHof01() {
-		for (int i = 1; i <= 100; i++) {
-			testFileWithExplicitResult("/hof01.pt", 1.0);
-		}
+		testFileWithMultipleRuns("/hof01.pt");
 	}
 
 	@Test
 	public void testHof02() {
-		for (int i = 1; i <= 100; i++) {
-			testFile("/hof02.pt", i, (double) i);
-		}
+		testFileWithMultipleRuns("/hof02.pt");
 	}
 
 	@Test
 	public void testHof03() {
-		for (int i = 1; i <= 100; i++) {
-			testFile("/hof03.pt", i, (double) i);
-		}
+		testFileWithMultipleRuns("/hof03.pt");
 	}
 
 	@Test
 	public void testHof04() {
-		testFileWithExplicitResult("/hof04.pt", Tuple.create(new Object[] { 6.0, 5.0, 4.0, 3.0, 2.0, 1.0 }));
+		testFile("/hof04.pt");
 	}
 
 	@Test
 	public void testHof05() {
-		testFileWithExplicitResult("/hof05.pt", Tuple.create(new Object[] { 36.0, 25.0, 16.0, 9.0, 4.0, 1.0 }));
-	}
-
-	@Test
-	public void testLambda01() {
-		testFileWithExplicitResult("/lambda01.pt", 2.0);
-	}
-
-	@Test
-	public void testLambda02() {
-		for (int i = 1; i < 100; i++) {
-			testFile("/lambda02.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
-		}
-	}
-
-	@Test
-	public void testLambda03() {
-		for (int i = 1; i < 100; i++) {
-			testFile("/lambda03.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
-		}
+		testFile("/hof05.pt");
 	}
 
 	@Test
 	public void testIf01() {
-		for (int i = 1; i < 100; i++) {
-			testFile("/if01.pt", i, ((i - 1) % 6 < 3) ? ((i - 1d) % 3 + 1) : (-((i - 1d) % 3) - 1));
-		}
+		testFileWithMultipleRuns("/if01.pt");
+	}
+
+	@Test
+	public void testLambda01() {
+		testFile("/lambda01.pt");
+	}
+
+	@Test
+	public void testLambda02() {
+		testFileWithMultipleRuns("/lambda02.pt");
+	}
+
+	@Test
+	public void testLambda03() {
+		testFileWithMultipleRuns("/lambda03.pt");
 	}
 
 	@Test
 	public void testMethod01() {
-		testFileWithExplicitResult("/method01.pt", 0d);
+		testFile("/method01.pt");
 	}
 
 	@Test
@@ -166,94 +154,91 @@ public class TestLanguage {
 
 	@Test
 	public void testMethod03() {
-		testFileWithExplicitResult("/method03.pt", 7.658068177120837);
+		testFile("/method03.pt");
 	}
 
 	@Test
 	public void testMethod04() {
-		testFileWithExplicitResult("/method04.pt", Tuple.create(new Object[] { 9.0, 2.0, 7.0, 4.0 }));
+		testFile("/method04.pt");
 	}
 
 	@Test
 	public void testMethod05() {
-		testFileWithExplicitResult("/method05.pt", true);
+		testFile("/method05.pt");
 	}
 
 	@Test
 	public void testModules01() {
-		testFileWithExplicitResult("/modules01.pt", 1d);
+		testFile("/modules01.pt");
 	}
 
 	@Test
 	public void testModules02() {
-		testFileWithExplicitResult("/modules02.pt", true);
+		testFile("/modules02.pt");
 	}
 
 	@Test
 	public void testModules03() {
-		testFileWithExplicitResult("/modules03.pt", true);
+		testFile("/modules03.pt");
 	}
 
 	@Test
 	public void testModules04() {
-		testFileWithExplicitResult("/modules04.pt", 1d);
+		testFile("/modules04.pt");
 	}
 
 	@Test
 	public void testMux01() {
-		for (int i = 1; i < 100; i++) {
-			testFile("/mux01.pt", i, (double) (((i - 1) % 6 < 3) ? i : -i));
-		}
+		testFileWithMultipleRuns("/mux01.pt");
 	}
 
 	@Test
 	public void testMultiStatement01() {
-		testFileWithExplicitResult("/multistatement01.pt", 9.0);
+		testFile("/multistatement01.pt");
 	}
 
 	@Test
 	public void testMultiStatement02() {
-		testFileWithExplicitResult("/multistatement02.pt", 256.0);
+		testFile("/multistatement02.pt");
 	}
 
 	@Test
 	public void testMultiStatement03() {
-		testFileWithExplicitResult("/multistatement03.pt", 1.0);
+		testFile("/multistatement03.pt");
 	}
 
 	@Test
 	public void testMultiStatement04() {
-		testFileWithExplicitResult("/multistatement04.pt", 2.0);
+		testFile("/multistatement04.pt");
 	}
 
 	@Test
 	public void testRandom01() {
-		testFile("/random01.pt", 10, true);
+		testFileWithMultipleRuns("/random01.pt", 100, 100);
 	}
 
 	@Test
 	public void testRep01() {
-		for (int i = 1; i < 100000; i *= 10) {
-			testFile("/rep01.pt", i, (double) i);
-		}
+		testFileWithMultipleRuns("/rep01.pt", IntStream.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
 	}
 
 	@Test
 	public void testRep02() {
-		testFile("/rep02.pt", 1, 1d);
-		testFile("/rep02.pt", 2, 2d);
-		testFile("/rep02.pt", 3, 6d);
-		testFile("/rep02.pt", 4, 42d);
+		double prev = 1;
+		for (int i = 1; i < 100; i++) {
+			testFile("/rep02.pt", i, prev);
+			prev = prev * (prev + 1);
+		}
 	}
 
 	@Test
 	public void testSum() {
-		testFileWithExplicitResult("/sum.pt", 8d);
+		testFile("/sum.pt");
 	}
 
 	@Test
 	public void testLoadFile() {
-		testFileWithExplicitResult("/sum.pt", 8d);
+		testFile("/sum.pt");
 	}
 
 	@Test
@@ -283,12 +268,12 @@ public class TestLanguage {
 
 	@Test
 	public void testTuple02() {
-		testFileWithExplicitResult("/tuple02.pt", Tuple.create(new Object[] { 3.0, 3.0, 4.0 }));
+		testFile("/tuple02.pt");
 	}
 
 	@Test
 	public void testUnary01() {
-		testFileWithExplicitResult("/unary01.pt", true);
+		testFile("/unary01.pt");
 	}
 
 	@Test
@@ -304,6 +289,20 @@ public class TestLanguage {
 		testFile(file, 1);
 	}
 
+	private static void testFileWithMultipleRuns(final String file) {
+		testFileWithMultipleRuns(file, MIN_CYCLE_NUM, MAX_CYCLE_NUM);
+	}
+
+	private static void testFileWithMultipleRuns(final String file, final int min, final int max) {
+		testFileWithMultipleRuns(file, IntStream.rangeClosed(min, max));
+	}
+	
+	private static void testFileWithMultipleRuns(final String file, final IntStream stream) {
+		stream.parallel().forEach(i -> {
+			testFile(file, i);
+		});
+	}
+	
 	private static void testFile(final String file, final int runs) {
 		final InputStream is = TestLanguage.class.getResourceAsStream(file);
 		try {

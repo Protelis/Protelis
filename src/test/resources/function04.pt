@@ -1,6 +1,9 @@
-// Test to make sure that more than one instance of a function can be active at a time
-// f -> g -> f -> h -> f
-
+/*
+ * Test to make sure that more than one instance of a function can be active at a time
+ * f -> g -> f -> h -> f 
+ * 
+ * EXPECTED_RESULT: 6
+ */ 
 def f(x,y){
 	if(x) {
 		2+g();
@@ -22,4 +25,3 @@ def h() {
 }
 
 f(true,false);
-// Should return 6
