@@ -3,19 +3,17 @@
  */
 package it.unibo.alchemist.language.protelis.vm.simulatorvm;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Objects;
-
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import it.unibo.alchemist.language.protelis.protelis.Program;
 import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.vm.NetworkManager;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.nodes.ProtelisNode;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
+
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Emulates a {@link NetworkManager}. This particular network manager does not
@@ -35,6 +33,14 @@ public final class AlchemistNetworkManager implements NetworkManager, Serializab
 	private TLongObjectMap<Map<CodePath, Object>> msgs = new TLongObjectHashMap<>();
 	private Map<CodePath, Object> toBeSent;
 
+	/**
+	 * @param environment
+	 *            the environment
+	 * @param local
+	 *            the node
+	 * @param program
+	 *            the {@link ProtelisProgram}
+	 */
 	public AlchemistNetworkManager(final IEnvironment<Object> environment, final ProtelisNode local, final ProtelisProgram program) {
 		env = environment;
 		node = local;
@@ -58,13 +64,20 @@ public final class AlchemistNetworkManager implements NetworkManager, Serializab
 	 */
 	public void simulateMessageArrival() {
 		Objects.requireNonNull(toBeSent);
-		env.getNeighborhood(node).forEach(n -> {
-			if (n instanceof ProtelisNode) {
-				final AlchemistNetworkManager destination = ((ProtelisNode) n).getNetworkManager(prog);
-				Objects.requireNonNull(destination);
-				destination.msgs.put(node.getId(), toBeSent);
-			}
-		});
+		if (!toBeSent.isEmpty()) {
+			env.getNeighborhood(node).forEach(n -> {
+				if (n instanceof ProtelisNode) {
+					final AlchemistNetworkManager destination = ((ProtelisNode) n).getNetworkManager(prog);
+					if (destination != null) {
+						/*
+						 * The node is running the program. Otherwise, the
+						 * program is discarded
+						 */
+						destination.msgs.put(node.getId(), toBeSent);
+					}
+				}
+			});
+		}
 		toBeSent = null;
 	}
 	
