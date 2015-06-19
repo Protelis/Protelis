@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Danilo Pianini
  *
  */
-public class DotOperator extends AbstractSATree<Object, Object> {
+public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 	
 	private static final long serialVersionUID = -9128116355271771986L;
 	private static final byte LEFT_POS = -1;
