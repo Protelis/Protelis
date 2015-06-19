@@ -8,15 +8,29 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
+import it.unibo.alchemist.language.protelis.Constant;
+import it.unibo.alchemist.language.protelis.FunctionCall;
+import it.unibo.alchemist.language.protelis.FunctionDefinition;
+import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
+import it.unibo.alchemist.language.protelis.vm.DummyContext;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.danilopianini.lang.HashUtils;
+import org.danilopianini.lang.LangUtils;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 
 /**
  * @author Danilo Pianini
@@ -28,7 +42,6 @@ public class ArrayTupleImpl implements Tuple {
 	private final Object[] a;
 	private int hash;
 	private String string;
-
 	/**
 	 * @param base the elements
 	 */
@@ -89,11 +102,11 @@ public class ArrayTupleImpl implements Tuple {
 				return o1.toString().compareTo(o2.toString());
 			}
 		}
-		if(res == 0 && a.length != otherSize) {
+		if (res == 0 && a.length != otherSize) {
 			/*
 			 * Same content but different size: shortest is smaller
 			 */
-			if(a.length > otherSize) {
+			if (a.length > otherSize) {
 				return 1;
 			}
 			return -1;
@@ -153,16 +166,6 @@ public class ArrayTupleImpl implements Tuple {
 		return false;
 	}
 
-	@Override
-	public Field fcontains(final Field element) {
-		// TODO: this is a kludge, and must be removed:
-		Field result = new FieldTroveMapImpl();
-		((Field) element).coupleIterator().forEach(pair -> {
-			result.addSample(pair.getFirst(), contains(pair.getSecond()));
-		});
-		return result;
-	}
-	
 	@Override
 	public String toString() {
 		if (string == null) {
@@ -260,4 +263,90 @@ public class ArrayTupleImpl implements Tuple {
 		return Tuple.create(l.toArray());
 	}
 
+	@Override
+	public Object reduce(final Object defVal, final FunctionDefinition fun) {
+		/*
+		 * TODO Do a Objects.requireNonNull
+		 */
+		if (fun.getArgNumber() == 2) {
+			final ExecutionContext ctx = initCtx();
+			return Arrays.stream(a)
+					.reduce((first, second) -> {
+						@SuppressWarnings("unchecked")
+						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(new Constant<>(first), new Constant<>(second)));
+						fc.eval(ctx);
+						return fc.getAnnotation();
+					})
+					.orElse(defVal);
+		}
+		throw new IllegalArgumentException("Reducing Function must take two parameters.");
+	}
+	
+	private static ExecutionContext initCtx() {
+		final ExecutionContext ctx = new DummyContext();
+		ctx.setAvailableFunctions(Collections.emptyMap());
+		ctx.setup();
+		return ctx;
+	}
+	
+	@Override
+	public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
+		LangUtils.requireNonNull(defVal, fun);
+		return Arrays.stream(a).reduce(fun).orElse(defVal);
+	}
+
+	@Override
+	public Tuple map(final FunctionDefinition fun) {
+		if (fun.getArgNumber() == 1) {
+			final ExecutionContext ctx = initCtx();
+			return Tuple.create(
+					Arrays.stream(a)
+					.map(Constant<Object>::new)
+					.map(elem -> {
+						@SuppressWarnings("unchecked")
+						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
+						fc.eval(ctx);
+						return fc.getAnnotation();
+					}).toArray());
+		}
+		throw new IllegalArgumentException("Mapping Function must take one parameter.");
+	}
+
+	@Override
+	public Tuple map(final Function<Object, Object> fun) {
+		Objects.requireNonNull(fun);
+		return Tuple.create(Arrays.stream(a).map(fun).toArray());
+	}
+
+	@Override
+	public Tuple filter(final FunctionDefinition fun) {
+		Objects.requireNonNull(fun);
+		if (fun.getArgNumber() == 1) {
+			final ExecutionContext ctx = initCtx();
+			return Tuple.create(
+					Arrays.stream(a)
+					.map(Constant<Object>::new)
+					.filter(elem -> {
+						@SuppressWarnings("unchecked")
+						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
+						fc.eval(ctx);
+						Object outcome = fc.getAnnotation();
+						if (outcome instanceof Boolean) {
+							return (Boolean) outcome;
+						} else {
+							throw new IllegalArgumentException("Filtering function must return a boolean.");
+						}
+					})
+					.map(AnnotatedTree::getAnnotation)
+					.toArray());
+		}
+		throw new IllegalArgumentException("Mapping Function must take one parameter.");
+	}
+
+	@Override
+	public Tuple filter(final Predicate<Object> fun) {
+		Objects.requireNonNull(fun);
+		return Tuple.create(Arrays.stream(a).filter(fun).toArray());
+	}
+	
 }

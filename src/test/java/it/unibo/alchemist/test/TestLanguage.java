@@ -272,6 +272,21 @@ public class TestLanguage {
 	}
 
 	@Test
+	public void testTupleMap01() {
+		testFile("/TupleMap01.pt");
+	}
+
+	@Test
+	public void testTupleReduce01() {
+		testFile("/TupleReduce01.pt");
+	}
+
+	@Test
+	public void testTupleFilter01() {
+		testFile("/TupleFilter01.pt");
+	}
+
+	@Test
 	public void testUnary01() {
 		testFile("/unary01.pt");
 	}

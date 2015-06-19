@@ -46,6 +46,7 @@ dependencies {
     compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
     compile "it.unibo.alchemist:alchemist-implementationbase:$implbaseVersion"
     compile "it.unibo.alice.tuprolog:tuprolog:$tuprologVersion"
+    compile "org.danilopianini:javalib:$javalibVersion"
     
     testCompile "junit:junit:$junitVersion"
     testCompile "it.unibo.alchemist:alchemist.protelisdsl:$protelisdslVersion"

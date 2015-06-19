@@ -8,9 +8,13 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
+import it.unibo.alchemist.language.protelis.FunctionDefinition;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author Danilo Pianini
@@ -66,6 +70,7 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 	Tuple intersection(Tuple t);
 	
 	Tuple subtract(Tuple t);
+	
 
 	static Tuple union(Tuple t1, Tuple t2) {
 		return t1.union(t2);
@@ -92,10 +97,16 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 		return create(res);
 	}
 
-	// This is a kludge, and must be removed when we get DotOperator working correctly for fields
-	Field fcontains(Field element);
+	Object reduce(Object defVal, FunctionDefinition fun);
 
-	static boolean scontains(Tuple t1, Object element) {
-		return t1.contains(element);
-	}
+	Object reduce(Object defVal, BinaryOperator<Object> fun);
+
+	Tuple map(FunctionDefinition fun);
+
+	Tuple map(Function<Object, Object> fun);
+
+	Tuple filter(FunctionDefinition fun);
+
+	Tuple filter(Predicate<Object> fun);
+
 }
