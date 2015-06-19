@@ -11,9 +11,16 @@ package it.unibo.alchemist.language.protelis.interfaces;
 /**
  * @author Danilo Pianini
  *
+ * @param <S>
+ *            Superscript type
+ * @param <T>
+ *            Annotation type
  */
 public interface SuperscriptedAnnotatedTree<S, T> extends AnnotatedTree<T> {
 
+	/**
+	 * @return the superscript
+	 */
 	S getSuperscript();
-	
+
 }
