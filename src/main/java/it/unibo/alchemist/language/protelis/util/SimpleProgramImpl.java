@@ -12,6 +12,7 @@ import it.unibo.alchemist.utils.FasterString;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Danilo Pianini
@@ -20,22 +21,38 @@ import java.util.Objects;
 public class SimpleProgramImpl implements IProgram {
 	
 	private static final long serialVersionUID = -986976491484860840L;
+	private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
 	private final AnnotatedTree<?> prog;
 	private final Map<FasterString, FunctionDefinition> funs;
 	private final FasterString name;
 	
+	/**
+	 * @param source
+	 *            Original {@link Program} parsed by Xtext. Used to get the module name.
+	 * @param program
+	 *            evaluation tree
+	 * @param functions
+	 *            available functions
+	 */
 	public SimpleProgramImpl(final Program source, final AnnotatedTree<?> program, final Map<FasterString, FunctionDefinition> functions) {
+		this(Optional.of(source).map(Program::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
+	}
+
+	/**
+	 * @param pName
+	 *            Program name
+	 * @param program
+	 *            evaluation tree
+	 * @param functions
+	 *            available functions
+	 */
+	public SimpleProgramImpl(final String pName, final AnnotatedTree<?> program, final Map<FasterString, FunctionDefinition> functions) {
+		Objects.requireNonNull(pName);
 		Objects.requireNonNull(program);
 		Objects.requireNonNull(functions);
-		Objects.requireNonNull(source);
 		prog = program;
 		funs = Collections.unmodifiableMap(functions);
-		final String pName = source.getName();
-		if (pName == null) {
-		 	name = new FasterString("(default-module)::(default-program)");
-		} else {
-			name = new FasterString(pName);
-		}
+		name = new FasterString(pName);
 	}
 
 	@Override
