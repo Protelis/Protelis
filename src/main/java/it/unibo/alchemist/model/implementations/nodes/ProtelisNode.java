@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import it.unibo.alchemist.language.protelis.vm.NetworkManager;
 import it.unibo.alchemist.language.protelis.vm.simulatorvm.AlchemistNetworkManager;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.concentrations.Local;
@@ -36,17 +37,31 @@ public class ProtelisNode extends GenericNode<Object> {
 	protected Local createT() {
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return Long.toString(getId());
 	}
 
-	public void addNetworkManger(ProtelisProgram program, AlchemistNetworkManager netmgr) {
+	/**
+	 * Adds a new {@link NetworkManager}.
+	 * 
+	 * @param program
+	 *            the {@link ProtelisProgram}
+	 * @param netmgr
+	 *            the {@link AlchemistNetworkManager}
+	 */
+	public void addNetworkManger(final ProtelisProgram program, final AlchemistNetworkManager netmgr) {
 		netmgrs.put(program, netmgr);
 	}
-	
-	public AlchemistNetworkManager getNetworkManager(ProtelisProgram program) {
+
+	/**
+	 * @param program
+	 *            the {@link ProtelisProgram}
+	 * @return the {@link AlchemistNetworkManager} for this specific
+	 *         {@link ProtelisProgram}
+	 */
+	public AlchemistNetworkManager getNetworkManager(final ProtelisProgram program) {
 		Objects.requireNonNull(program);
 		return netmgrs.get(program);
 	}
