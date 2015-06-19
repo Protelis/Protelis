@@ -8,42 +8,66 @@
  */
 package it.unibo.alchemist.language.protelis.interfaces;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.map.TIntObjectMap;
-import it.unibo.alchemist.language.protelis.util.CodePath;
-import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.model.interfaces.INode;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Danilo Pianini
  *
+ * @param <T>
  */
 public interface AnnotatedTree<T> extends Serializable {
-	
-	T getAnnotation();
-	
+
 	/**
-	 * Prepares for a new computation round
+	 * @return the current value of this program
+	 */
+	T getAnnotation();
+
+	/**
+	 * Recursively deletes any existing annotation.
 	 */
 	void reset();
-	
+
 	/**
 	 * |e| operation.
 	 */
 	void erase();
-	
+
+	/**
+	 * @return true if this program has been erased
+	 */
 	boolean isErased();
-	
+
+	/**
+	 * @return a copy of this program.
+	 */
 	AnnotatedTree<T> copy();
-	
+
+	/**
+	 * Evaluates the program using the passed {@link ExecutionContext}.
+	 * 
+	 * @param context
+	 *            the execution context
+	 */
 	void eval(ExecutionContext context);
 
+	/**
+	 * @param i
+	 *            the index
+	 * @return the i-th branch of the evaluation tree
+	 */
 	AnnotatedTree<?> getBranch(int i);
-	
-	public void toString(StringBuilder sb, int i);
-	
+
+	/**
+	 * A faster toString, that only uses a single instance of
+	 * {@link StringBuilder}.
+	 * 
+	 * @param sb
+	 *            the {@link StringBuilder} where to load the {@link String}
+	 * @param i
+	 *            the number of indentations for the current level
+	 */
+	void toString(StringBuilder sb, int i);
+
 }
