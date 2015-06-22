@@ -46,7 +46,7 @@ public class HoodCall extends AbstractAnnotatedTree<Object> {
 	@Override
 	public void eval(final ExecutionContext context) {
 		projectAndEval(context);
-		setAnnotation(f.run(body.getAnnotation(), inclusive ? null : context.getLocalDevice()));
+		setAnnotation(f.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
 	}
 
 	@Override

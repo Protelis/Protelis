@@ -48,7 +48,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 	}
 	
 	@Override
-	public DeviceUID getLocalDevice() {
+	public DeviceUID getDeviceUID() {
 		return device;
 	}
 

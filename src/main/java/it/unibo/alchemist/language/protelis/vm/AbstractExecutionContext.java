@@ -110,7 +110,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	@Override
 	public final AbstractExecutionContext restrictDomain(final Field f) {
 		final TLongObjectMap<Map<CodePath, Object>> restricted = new TLongObjectHashMap<>(theta.size());
-		final DeviceUID localDevice = getLocalDevice();
+		final DeviceUID localDevice = getDeviceUID();
 		for (final DeviceUID n : f.nodeIterator()) {
 			if (!n.equals(localDevice)) {
 				final long id = n.getId();
@@ -142,7 +142,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		 * If there is a request to build a field, then it means this is a nbr-like operation
 		 */
 		if (toSend.putIfAbsent(codePath, localValue) != null) {
-			throw new IllegalStateException("This program has attempted to build a field twice with the same code path. It can either be a bug in Protelis");
+			throw new IllegalStateException("This program has attempted to build a field twice with the same code path. It is probably a bug in Protelis");
 		}
 		final Field res = Field.create(theta.size() + 1);
 		theta.forEachEntry((n, pathsMap) -> {
@@ -156,7 +156,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 			}
 			return true;
 		});
-		res.addSample(getLocalDevice(), computeValue.apply(localValue));
+		res.addSample(getDeviceUID(), computeValue.apply(localValue));
 		return res;
 	}
 	

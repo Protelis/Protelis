@@ -53,7 +53,7 @@ public interface ExecutionContext {
 
 	ExecutionContext restrictDomain(Field f);
 	
-	DeviceUID getLocalDevice();
+	DeviceUID getDeviceUID();
 
 	/**
 	 * @return the current time, absolute

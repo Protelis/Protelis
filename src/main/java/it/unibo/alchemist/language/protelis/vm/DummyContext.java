@@ -35,7 +35,7 @@ public final class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public DeviceUID getLocalDevice() {
+	public DeviceUID getDeviceUID() {
 		return dummy;
 	}
 

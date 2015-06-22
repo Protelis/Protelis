@@ -134,7 +134,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			/*
 			 * Make sure that self is present in each field
 			 */
-			final DeviceUID sigma = context.getLocalDevice();
+			final DeviceUID sigma = context.getDeviceUID();
 			if (!value.containsNode(sigma)) {
 				value.addSample(sigma, defVal.getAnnotation());
 			}
