@@ -39,7 +39,25 @@ public class All extends AbstractAnnotatedTree<Object> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		forEach(b -> b.eval(context));
+		if (getBranchesNumber() > 1) {
+			/*
+			 * Prevents the same nbr operation on multiple lines to conflict
+			 */
+			forEachWithIndex((i, b) -> {
+				context.newCallStackFrame(i.byteValue());
+				b.eval(context);
+				/*
+				 * Do not return immediately, or the lets won't be available
+				 * to further branches.
+				 */
+			});
+			/*
+			 * Once finished, cleanup the stack
+			 */
+			forEach(b -> context.returnFromCallFrame());
+		} else {
+			getBranch(last).eval(context);
+		}
 		setAnnotation(getBranch(last).getAnnotation());
 	}
 
