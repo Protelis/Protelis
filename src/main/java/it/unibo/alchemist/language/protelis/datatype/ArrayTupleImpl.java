@@ -264,12 +264,11 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
-	public Object reduce(final Object defVal, final FunctionDefinition fun) {
+	public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
 		/*
 		 * TODO Do a Objects.requireNonNull
 		 */
 		if (fun.getArgNumber() == 2) {
-			final ExecutionContext ctx = initCtx();
 			return Arrays.stream(a)
 					.reduce((first, second) -> {
 						@SuppressWarnings("unchecked")
@@ -282,13 +281,6 @@ public class ArrayTupleImpl implements Tuple {
 		throw new IllegalArgumentException("Reducing Function must take two parameters.");
 	}
 	
-	private static ExecutionContext initCtx() {
-		final ExecutionContext ctx = new DummyContext();
-		ctx.setAvailableFunctions(Collections.emptyMap());
-		ctx.setup();
-		return ctx;
-	}
-	
 	@Override
 	public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
 		LangUtils.requireNonNull(defVal, fun);
@@ -296,9 +288,8 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
-	public Tuple map(final FunctionDefinition fun) {
+	public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
 		if (fun.getArgNumber() == 1) {
-			final ExecutionContext ctx = initCtx();
 			return Tuple.create(
 					Arrays.stream(a)
 					.map(Constant<Object>::new)
@@ -319,10 +310,9 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
-	public Tuple filter(final FunctionDefinition fun) {
+	public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
 		Objects.requireNonNull(fun);
 		if (fun.getArgNumber() == 1) {
-			final ExecutionContext ctx = initCtx();
 			return Tuple.create(
 					Arrays.stream(a)
 					.map(Constant<Object>::new)
@@ -347,6 +337,11 @@ public class ArrayTupleImpl implements Tuple {
 	public Tuple filter(final Predicate<Object> fun) {
 		Objects.requireNonNull(fun);
 		return Tuple.create(Arrays.stream(a).filter(fun).toArray());
+	}
+
+	@Override
+	public Tuple prepend(final Object element) {
+		return insert(0, element);
 	}
 	
 }

@@ -9,6 +9,7 @@
 package it.unibo.alchemist.language.protelis.datatype;
 
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
+import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,6 +42,8 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 	}
 
 	Tuple append(Object element);
+
+	Tuple prepend(Object element);
 
 	Object get(int i);
 
@@ -97,15 +100,15 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 		return create(res);
 	}
 
-	Object reduce(Object defVal, FunctionDefinition fun);
+	Object reduce(ExecutionContext ctx, Object defVal, FunctionDefinition fun);
 
 	Object reduce(Object defVal, BinaryOperator<Object> fun);
 
-	Tuple map(FunctionDefinition fun);
+	Tuple map(ExecutionContext ctx, FunctionDefinition fun);
 
 	Tuple map(Function<Object, Object> fun);
 
-	Tuple filter(FunctionDefinition fun);
+	Tuple filter(ExecutionContext ctx, FunctionDefinition fun);
 
 	Tuple filter(Predicate<Object> fun);
 
