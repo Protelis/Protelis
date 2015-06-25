@@ -12,7 +12,6 @@ import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Field;
-import it.unibo.alchemist.language.protelis.protelisDSL.Time;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.util.Stack;
