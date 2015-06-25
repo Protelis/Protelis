@@ -58,7 +58,12 @@ public interface ExecutionContext {
 	/**
 	 * @return the current time, absolute
 	 */
-	double getCurrentTime();
+	Number getCurrentTime();
+	
+	/**
+	 * @return the current time, relative to last round
+	 */
+	Number getDeltaTime();
 	
 	/**
 	 * @param target

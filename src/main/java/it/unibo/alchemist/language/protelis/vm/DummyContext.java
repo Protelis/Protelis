@@ -40,8 +40,8 @@ public final class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public double getCurrentTime() {
-		throw new UnsupportedOperationException();
+	public Number getCurrentTime() {
+		return System.currentTimeMillis() / 1000d;
 	}
 
 	@Override

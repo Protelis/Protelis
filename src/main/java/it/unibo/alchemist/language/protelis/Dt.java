@@ -8,7 +8,6 @@
  */
 package it.unibo.alchemist.language.protelis;
 
-import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 /**
@@ -17,26 +16,23 @@ import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
  * @author Danilo Pianini
  *
  */
-public class Dt extends AbstractAnnotatedTree<Double> {
+public class Dt extends AbstractAnnotatedTree<Number> {
 
 	private static final long serialVersionUID = -583345937082081400L;
-	private double lastT;
 	
 	@Override
-	public AnnotatedTree<Double> copy() {
+	public Dt copy() {
 		return new Dt();
 	}
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		final double now = context.getCurrentTime();
-		setAnnotation(now - lastT);
-		lastT = now;
+		setAnnotation(context.getDeltaTime());
 	}
 
 	@Override
 	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(sb);
+		sb.append("dt");
 	}
 
 }

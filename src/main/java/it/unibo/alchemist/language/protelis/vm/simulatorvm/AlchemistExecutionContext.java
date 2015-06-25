@@ -56,7 +56,7 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public double getCurrentTime() {
+	public Number getCurrentTime() {
 		return react.getTau().toDouble();
 	}
 
@@ -142,5 +142,5 @@ public class AlchemistExecutionContext extends AbstractExecutionContext {
 		}
 		return getDevicePosition().getDistanceTo(dest);
 	}
-	
+
 }

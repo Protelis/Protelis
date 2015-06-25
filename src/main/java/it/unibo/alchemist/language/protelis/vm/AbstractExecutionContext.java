@@ -12,6 +12,7 @@ import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.datatype.Field;
+import it.unibo.alchemist.language.protelis.protelisDSL.Time;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.util.Stack;
@@ -23,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+
+import org.danilopianini.lang.PrimitiveUtils;
 
 import com.google.common.collect.MapMaker;
 
@@ -42,6 +45,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private TLongObjectMap<Map<CodePath, Object>> theta;
 	private Map<FasterString, Object> env;
 	private Map<CodePath, Object> toSend;
+	private Number previousRoundTime;
 	
 	protected AbstractExecutionContext(final NetworkManager netmgr) {
 		Objects.requireNonNull(netmgr);
@@ -63,6 +67,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		Objects.requireNonNull(theta);
 		Objects.requireNonNull(toSend);
 		Objects.requireNonNull(functions);
+		previousRoundTime = getCurrentTime();
 		setEnvironment(env);
 		nm.sendMessage(toSend);
 		env = null;
@@ -73,6 +78,9 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	
 	@Override
 	public final void setup() {
+		if (previousRoundTime == null) {
+			previousRoundTime = getCurrentTime();
+		}
 		callStack.clear();
 		callStack.add((byte) 1);
 		env = currentEnvironment();
@@ -191,6 +199,18 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
 	protected final Map<FasterString, ?> getFunctions() {
 		return functions;
+	}
+	
+	@Override
+	public Number getDeltaTime() {
+		/*
+		 * try not to lose precision:
+		 */
+		Class<? extends Number> tClass = PrimitiveUtils.toPrimitiveWrapper(previousRoundTime);
+		if (Double.class.equals(tClass) || Float.class.equals(tClass)) {
+			return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
+		}
+		return getCurrentTime().longValue() - previousRoundTime.longValue();
 	}
 
 }
