@@ -8,14 +8,14 @@
  */
 package it.unibo.alchemist.model.implementations.nodes;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-
 import it.unibo.alchemist.language.protelis.vm.NetworkManager;
 import it.unibo.alchemist.language.protelis.vm.simulatorvm.AlchemistNetworkManager;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.concentrations.Local;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Danilo Pianini
@@ -65,5 +65,5 @@ public class ProtelisNode extends GenericNode<Object> {
 		Objects.requireNonNull(program);
 		return netmgrs.get(program);
 	}
-
+	
 }
