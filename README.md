@@ -1,7 +1,16 @@
 # Protelis 
 *Practical aggregate programming, hosted in Java*
 
-## Why Protelis
+**Table of Contents**
+
+* [Why Protelis](#why)
+ * [Further reading / references](#reading)
+* [Developing with Protelis](#developing)
+* [Contributing to Protelis](#contributing)
+ * [Current build status of Protelis](#buildstatus)
+* [History and Trivia](#history)
+
+## <a name="why"></a>Why Protelis
 
 Developing networked systems is really hard.
 To make a good resilient system, you generally need to bring three types of expertise to bear all at once in the same code:
@@ -22,7 +31,7 @@ A few of the key design decisions behind Protelis are:
 * Protelis looks as much like Java as practical in order to make it easier to learn and adopt.
 * Protelis ensures safe and resilient composition because its core is *field calculus*, a theoretical model of aggregate programming much like [lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus) is for functional programming.
 
-### Further reading / references:
+### <a name="reading"></a>Further reading / references:
 
 * [Protelis: Practical Aggregate Programming](http://jakebeal.com/Publications/SAC2015-Protelis.pdf),
 	Danilo Pianini, Mirko Viroli, Jacob Beal, ACM Symposium on Applied Computing 2015, April 2015.
@@ -42,11 +51,11 @@ A few of the key design decisions behind Protelis are:
 	Jacob Beal, Stefan Dulman, Kyle Usbeck, Mirko Viroli, and Nikolaus Correll, chapter in "Formal and Practical Aspects of Domain-Specific Languages: Recent Developments", ed. Marjan Mernik, IGI Global, December 2012.
 	<br>*A survey of other aggregate programming approaches, with a focus on spatially-distributed networks*
 
-## Developing with Protelis
+## <a name="developing"></a>Developing with Protelis
 
 
 
-## Contributing to Protelis
+## <a name="contributing"></a>Contributing to Protelis
 
 Protelis is a free and open project that welcomes additional contributions.
 
@@ -54,7 +63,7 @@ If you want to help improve Protelis, just dive in, fork a copy of this code, an
 Development customs follow a standard GitHub workflow: get things working in your own branch, then request pull integration.
 The file README.developer contains information about setting up development and contributing.
 
-### Current build status of Protelis:
+### <a name="buildstatus"></a>Current build status of Protelis:
 
 [![Build Status](https://drone.io/github.com/Protelis/Protelis/status.png)](https://drone.io/github.com/Protelis/Protelis/latest)
 
@@ -62,7 +71,7 @@ The file README.developer contains information about setting up development and 
 * [FindBugs reporting](https://drone.io/github.com/Protelis/Protelis/files/build/reports/findbugs/main.html)
 * [All build reports](https://drone.io/github.com/Protelis/Protelis/files/build/reports/reports.tar)
 
-## History and Trivia
+## <a name="history"></a>History and Trivia
 
 Protelis emerged from the synthesis of several prior projects:
 
