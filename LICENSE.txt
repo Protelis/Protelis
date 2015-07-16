@@ -1,10 +1,10 @@
-Alchemist is Copyright (C) 2010-2015, Danilo Pianini and contributors listed in the pom.xml file available for each module from "The Central Repository", reachable from http://search.maven.org/.
+Protelis is Copyright (C) 2014-2015, Danilo Pianini and Jacob Beal.
 
-Alchemist is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3, or (at your option) any later version.  Alchemist's documentation is licensed under the Creative Commons Attribution 3.0 License (http://creativecommons.org/licenses/by/3.0/).
+Protelis is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3, or (at your option) any later version.  Protelis' documentation is licensed under the Creative Commons Attribution 3.0 License (http://creativecommons.org/licenses/by/3.0/).
 
-Alchemist is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+Protelis is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Alchemist; see the file GPLv3.txt.  If not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+You should have received a copy of the GNU General Public License along with Protelis; see the file GPLv3.txt.  If not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 Compiling or linking this code statically or dynamically with other modules is making a combined work based on this code.  Thus, the terms and conditions of the GNU General Public License cover the whole combination.
 

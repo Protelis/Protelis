@@ -4,11 +4,11 @@
 ## Why Protelis
 
 Developing networked systems is really hard.
-To make a good resilient system, a person generally has to be three types of expert all at once:
+To make a good resilient system, you generally need to bring three types of expertise to bear all at once in the same code:
 
-* An expert in the actual focus of the system
-* A networking expert, to manage the interactions between individual devices
-* A distributed algorithms expert, to ensure that the collective behavior is desirable and resilient to all sorts of failures and system changes
+* Expertise regarding the actual purpose of the system
+* Networking expertise, to manage the interactions between individual devices
+* Distributed algorithms expertise, to ensure that the collective behavior is desirable and resilient to all sorts of failures and system changes
 
 This "aggregate programming" problem, of obtaining resilient collective behavior from local interactions between machines, has been with us ever since people started networking computers.
 In some specialized areas, such as cloud computing and GPU programming, there a simple and regular network architecture has already led to good aggregate programming methods (e.g., [MapReduce](https://en.wikipedia.org/wiki/MapReduce)).
@@ -44,4 +44,32 @@ A few of the key design decisions behind Protelis are:
 
 ## Developing with Protelis
 
+
+
 ## Contributing to Protelis
+
+Protelis is a free and open project that welcomes additional contributions.
+
+If you want to help improve Protelis, just dive in, fork a copy of this code, and get started!
+Development customs follow a standard GitHub workflow: get things working in your own branch, then request pull integration.
+The file README.developer contains information about setting up development and contributing.
+
+### Current build status of Protelis:
+
+[![Build Status](https://drone.io/github.com/Protelis/Protelis/status.png)](https://drone.io/github.com/Protelis/Protelis/latest)
+
+* [Test details](https://drone.io/github.com/Protelis/Protelis/files/build/reports/tests/index.html)
+* [FindBugs reporting](https://drone.io/github.com/Protelis/Protelis/files/build/reports/findbugs/main.html)
+* [All build reports](https://drone.io/github.com/Protelis/Protelis/files/build/reports/reports.tar)
+
+## History and Trivia
+
+Protelis emerged from the synthesis of several prior projects:
+
+* [Proto](http://mitproto.net), an aggregate programming language created by [Jacob Beal](http://jakebeal.com) and [Jonathan Bachrach](http://www.eecs.berkeley.edu/~jrb/).
+* [Field calculus](http://jakebeal.com/Publications/FOCLASA13-FieldCalculus.pdf), a distillation of aggregate programming models by [Mirko Viroli](http://www.apice.unibo.it/xwiki/bin/view/MirkoViroli/), [Ferruccio Damiani](http://www.di.unito.it/~damiani/), and [Jacob Beal](http://jakebeal.com)
+* The [Alchemist Simulator](http://www.apice.unibo.it/xwiki/bin/view/Alchemist/) project, led by [Danilo Pianini](http://www.danilopianini.org/) and [Mirko Viroli](http://www.apice.unibo.it/xwiki/bin/view/MirkoViroli/).
+
+The first version of Protelis was designed jointly during the summer of 2014 by Jacob Beal, Danilo Pianini, and Mirko Viroli, with the first implementation carried out primarily by Danilo Pianini.
+
+The name "Protelis," a Latin word which trnanslates approximately as "regarding a team," was chosen to reflect both its nature as an aggregate language and its derivation from Proto.
