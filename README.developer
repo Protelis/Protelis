@@ -5,7 +5,7 @@ assume Eclipse.
 Eclipse Prerequisites:
 - Eclipse 4.4+ (Luna)
 - Java 8+
-- Gradle IDE (3.6.4+)
+- Gradle IDE
 - git
 If you do not have all of these, install them from the Eclipse Marketplace
 
