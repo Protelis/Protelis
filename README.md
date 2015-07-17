@@ -1,5 +1,9 @@
 # Using Protelis in your projects
 
+Theoretically, you should be able to do it just by including Protelis as a dependency from the Maven central repository.
+Right now, however, that results in lots of broken dependencies.
+Instead, set up as a developer (using the instructions below) and put a dependency between the two projects.
+
 # Setting as a developer for Protelis
 
 To work on Protelis as a developer, the Eclipse development
