@@ -14,7 +14,6 @@ import it.unibo.alchemist.core.interfaces.ISimulation;
 import it.unibo.alchemist.language.EnvironmentBuilder;
 import it.unibo.alchemist.language.protelis.ProtelisDSLStandaloneSetup;
 import it.unibo.alchemist.language.protelis.datatype.Field;
-import it.unibo.alchemist.language.protelis.protelisDSL.Environment;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.times.DoubleTime;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
