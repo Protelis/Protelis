@@ -8,15 +8,10 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
-import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
-import it.unibo.alchemist.model.interfaces.INode;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
