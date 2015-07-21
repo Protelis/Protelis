@@ -78,16 +78,18 @@ public class TestInSimulator {
 			fail();
 		}
 		final ByteArrayInputStream strIS = new ByteArrayInputStream(files.stream().findFirst().get().toString().getBytes(Charsets.UTF_8));
-		EnvironmentBuilder<Object> eb = new EnvironmentBuilder<>(strIS);
-		eb.buildEnvironment();
-		final IEnvironment<Object> env = eb.getEnvironment();
-		final ISimulation<Object> sim = new Simulation<>(env, new DoubleTime(finalTime));
-		sim.play();
-		/*
-		 * Use this thread: intercept failures.
-		 */
-		sim.run();
-		Arrays.stream(checkProcedures).forEachOrdered(p -> p.accept(env));
+		assertTrue(false); // this fails currently, because we cannot build environments with EnvironmentBuilder
+		// TODO: fix the EnvironmentBuilder dependency errors that currently prevent this from compiling correctly
+//		EnvironmentBuilder<Object> eb = new EnvironmentBuilder<>(strIS);
+//		eb.buildEnvironment();
+//		final IEnvironment<Object> env = eb.getEnvironment();
+//		final ISimulation<Object> sim = new Simulation<>(env, new DoubleTime(finalTime));
+//		sim.play();
+//		/*
+//		 * Use this thread: intercept failures.
+//		 */
+//		sim.run();
+//		Arrays.stream(checkProcedures).forEachOrdered(p -> p.accept(env));
 	}
 	
 	private static <T> Consumer<IEnvironment<T>> checkOnNodes(final Consumer<INode<T>> proc) {
