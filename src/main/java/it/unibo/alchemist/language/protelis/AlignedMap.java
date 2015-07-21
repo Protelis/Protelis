@@ -13,7 +13,7 @@ import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 import java.io.Serializable;
 import java.util.ArrayList;

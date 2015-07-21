@@ -5,7 +5,7 @@ import java.util.Map;
 
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 public interface IProgram extends Serializable {
 	

@@ -8,7 +8,7 @@ import it.unibo.alchemist.language.protelis.datatype.Field;
 import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.model.interfaces.IPosition;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 import java.util.Map;
 import java.util.function.Function;

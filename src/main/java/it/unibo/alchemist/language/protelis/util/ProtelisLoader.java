@@ -48,7 +48,7 @@ import it.unibo.alchemist.language.protelis.protelis.Statement;
 import it.unibo.alchemist.language.protelis.protelis.StringVal;
 import it.unibo.alchemist.language.protelis.protelis.TupleVal;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 import it.unibo.alchemist.utils.L;
 
 import java.io.IOException;

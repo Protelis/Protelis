@@ -8,7 +8,7 @@
  */
 package it.unibo.alchemist.language.protelis.util;
 
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 import java.util.Deque;
 import java.util.HashMap;

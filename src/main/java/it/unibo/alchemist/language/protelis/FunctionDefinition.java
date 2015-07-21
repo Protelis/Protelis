@@ -12,7 +12,7 @@ import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;

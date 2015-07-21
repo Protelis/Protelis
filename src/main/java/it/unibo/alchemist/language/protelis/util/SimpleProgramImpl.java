@@ -7,7 +7,7 @@ import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.protelis.Program;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 import java.util.Collections;
 import java.util.Map;

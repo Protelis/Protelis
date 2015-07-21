@@ -17,7 +17,7 @@ import it.unibo.alchemist.model.implementations.molecules.Molecule;
 import it.unibo.alchemist.model.interfaces.IMolecule;
 import it.unibo.alchemist.model.interfaces.INode;
 import it.unibo.alchemist.model.interfaces.Incarnation;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 import it.unibo.alchemist.utils.L;
 
 import java.util.Arrays;
