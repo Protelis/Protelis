@@ -22,15 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
-import org.danilopianini.lang.Couple;
-import org.danilopianini.lang.Pair;
 
 /**
  * @author Danilo Pianini
  *
  */
-public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>, Tuple> {
+public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
 
 	private static final long serialVersionUID = -7655993075803732148L;
 	private static final String APPLY = "apply";
@@ -104,11 +103,11 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 		/*
 		 * Get or initialize the mapping between keys and functions
 		 */
-		Map<Object, Couple<DotOperator>> funmap = getSuperscript();
+		Map<Object, Pair<DotOperator, DotOperator>> funmap = getSuperscript();
 		if (funmap == null) {
 			funmap = new HashMap<>();
 		}
-		final Map<Object, Couple<DotOperator>> newFunmap = new HashMap<>(funmap.size());
+		final Map<Object, Pair<DotOperator, DotOperator>> newFunmap = new HashMap<>(funmap.size());
 		setSuperscript(newFunmap);
 		final List<Tuple> resl = new ArrayList<>(fieldKeys.size());
 		for (final Entry<Object, Field> kf : fieldKeys.entrySet()) {
@@ -153,9 +152,9 @@ public class AlignedMap extends AbstractSATree<Map<Object, Couple<DotOperator>>,
 			/*
 			 * Compute functions if needed
 			 */
-			Couple<DotOperator> funs = funmap.get(key);
+			Pair<DotOperator, DotOperator> funs = funmap.get(key);
 			if (funs == null) {
-				funs = new Couple<>(new DotOperator(APPLY, filterOp, args), new DotOperator(APPLY, runOp, args));
+				funs = new Pair<>(new DotOperator(APPLY, filterOp, args), new DotOperator(APPLY, runOp, args));
 			}
 			/*
 			 * Run the actual filtering and operation

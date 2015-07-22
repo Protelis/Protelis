@@ -17,8 +17,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.HashUtils;
-import org.danilopianini.lang.Pair;
 
 /**
  * @author Danilo Pianini
