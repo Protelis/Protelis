@@ -12,11 +12,9 @@ import it.unibo.alchemist.language.protelis.Constant;
 import it.unibo.alchemist.language.protelis.FunctionCall;
 import it.unibo.alchemist.language.protelis.FunctionDefinition;
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
-import it.unibo.alchemist.language.protelis.vm.DummyContext;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
@@ -271,7 +269,6 @@ public class ArrayTupleImpl implements Tuple {
 		if (fun.getArgNumber() == 2) {
 			return Arrays.stream(a)
 					.reduce((first, second) -> {
-						@SuppressWarnings("unchecked")
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(new Constant<>(first), new Constant<>(second)));
 						fc.eval(ctx);
 						return fc.getAnnotation();
@@ -294,7 +291,6 @@ public class ArrayTupleImpl implements Tuple {
 					Arrays.stream(a)
 					.map(Constant<Object>::new)
 					.map(elem -> {
-						@SuppressWarnings("unchecked")
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
 						fc.eval(ctx);
 						return fc.getAnnotation();
@@ -317,7 +313,6 @@ public class ArrayTupleImpl implements Tuple {
 					Arrays.stream(a)
 					.map(Constant<Object>::new)
 					.filter(elem -> {
-						@SuppressWarnings("unchecked")
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
 						fc.eval(ctx);
 						Object outcome = fc.getAnnotation();

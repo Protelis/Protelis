@@ -8,6 +8,10 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
+import gnu.trove.map.TLongObjectMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -15,10 +19,6 @@ import java.util.Objects;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.HashUtils;
-
-import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TLongObjectHashMap;
-import it.unibo.alchemist.language.protelis.util.DeviceUID;
 
 /**
  * @author Danilo Pianini

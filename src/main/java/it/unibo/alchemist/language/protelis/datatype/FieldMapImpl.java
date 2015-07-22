@@ -9,7 +9,6 @@
 package it.unibo.alchemist.language.protelis.datatype;
 
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
-import it.unibo.alchemist.model.interfaces.INode;
 
 import java.util.HashMap;
 import java.util.Map;
