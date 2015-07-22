@@ -36,17 +36,6 @@ configurations {
     }
     doclet
 }
-configurations.all {
-	// Dealing with a dependency failure: should get corrected in the future
-	resolutionStrategy {
-		force 'org.danilopianini:javalib:1.3.2'
-		eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.danilopianini' && details.requested.name == 'javalib') {
-                details.useVersion '1.3.2'
-            }
-        }
-    }
-}
 
 dependencies {
     compile "org.danilopianini:javalib:$javalibVersion"
