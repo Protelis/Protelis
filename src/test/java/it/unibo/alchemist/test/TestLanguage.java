@@ -188,6 +188,11 @@ public class TestLanguage {
 	}
 
 	@Test
+	public void testModules05() {
+		testFile("/modules05.pt");
+	}
+
+	@Test
 	public void testMux01() {
 		testFileWithMultipleRuns("/mux01.pt");
 	}

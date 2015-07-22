@@ -8,7 +8,9 @@
  */
 package it.unibo.alchemist.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import it.unibo.alchemist.core.implementations.Simulation;
 import it.unibo.alchemist.core.interfaces.ISimulation;
 import it.unibo.alchemist.language.EnvironmentBuilder;
