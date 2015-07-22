@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.danilopianini.lang.Pair;
+import org.apache.commons.math3.util.Pair;
 
 /**
  * @author Danilo Pianini

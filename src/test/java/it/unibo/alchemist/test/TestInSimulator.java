@@ -14,7 +14,6 @@ import it.unibo.alchemist.core.interfaces.ISimulation;
 import it.unibo.alchemist.language.EnvironmentBuilder;
 import it.unibo.alchemist.language.protelis.ProtelisDSLStandaloneSetup;
 import it.unibo.alchemist.language.protelis.datatype.Field;
-import it.unibo.alchemist.language.protelis.protelisDSL.Environment;
 import it.unibo.alchemist.model.implementations.actions.ProtelisProgram;
 import it.unibo.alchemist.model.implementations.times.DoubleTime;
 import it.unibo.alchemist.model.interfaces.IEnvironment;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -55,12 +55,12 @@ public class TestInSimulator {
 	}
 	
 	@Test
-	public void testSimple01() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SAXException, IOException, ParserConfigurationException, InterruptedException { 
+	public void testSimple01() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SAXException, IOException, ParserConfigurationException, InterruptedException, ExecutionException { 
 		runSimulation("simple01.psim", 2, checkProgramValueOnAll(v -> assertEquals(1.0, v)));
 	}
 	
 	@Test
-	public void testNbr01() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SAXException, IOException, ParserConfigurationException, InterruptedException { 
+	public void testNbr01() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SAXException, IOException, ParserConfigurationException, InterruptedException, ExecutionException { 
 		runSimulation("nbr01.psim", 2, checkProgramValueOnAll(v -> {
 			assertTrue(v instanceof Field);
 			final Field res = (Field) v;
@@ -69,7 +69,7 @@ public class TestInSimulator {
 	}
 	
 	@SafeVarargs
-	private static <T> void runSimulation(final String relativeFilePath, final double finalTime, final Consumer<IEnvironment<Object>>... checkProcedures) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SAXException, IOException, ParserConfigurationException, InterruptedException  {
+	private static <T> void runSimulation(final String relativeFilePath, final double finalTime, final Consumer<IEnvironment<Object>>... checkProcedures) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SAXException, IOException, ParserConfigurationException, InterruptedException, ExecutionException  {
 		Resource res = XTEXT.getResource(URI.createURI("classpath:/simulations/" + relativeFilePath), true);
 		IGenerator generator = INJECTOR.getInstance(IGenerator.class);
 		InMemoryFileSystemAccess fsa = INJECTOR.getInstance(InMemoryFileSystemAccess.class);
@@ -79,9 +79,7 @@ public class TestInSimulator {
 			fail();
 		}
 		final ByteArrayInputStream strIS = new ByteArrayInputStream(files.stream().findFirst().get().toString().getBytes(Charsets.UTF_8));
-		EnvironmentBuilder<Object> eb = new EnvironmentBuilder<>(strIS);
-		eb.buildEnvironment();
-		final IEnvironment<Object> env = eb.getEnvironment();
+		final IEnvironment<Object> env = EnvironmentBuilder.build(strIS).get().getEnvironment();
 		final ISimulation<Object> sim = new Simulation<>(env, new DoubleTime(finalTime));
 		sim.play();
 		/*

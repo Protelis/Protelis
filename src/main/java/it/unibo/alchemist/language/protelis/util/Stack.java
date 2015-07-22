@@ -11,7 +11,7 @@ package it.unibo.alchemist.language.protelis.util;
 import java.io.Serializable;
 import java.util.Map;
 
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 /**
  * @author Danilo Pianini

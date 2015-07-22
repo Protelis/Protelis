@@ -13,10 +13,9 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
-import it.unibo.alchemist.model.interfaces.INode;
 
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.HashUtils;
-import org.danilopianini.lang.Pair;
 
 /**
  * @author Danilo Pianini

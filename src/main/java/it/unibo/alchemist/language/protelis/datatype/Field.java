@@ -17,7 +17,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import org.danilopianini.lang.Pair;
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.TriFunction;
 
 /**

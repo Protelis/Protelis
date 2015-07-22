@@ -8,22 +8,17 @@
  */
 package it.unibo.alchemist.language.protelis.datatype;
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.map.hash.TLongObjectHashMap;
-import it.unibo.alchemist.language.protelis.util.DeviceUID;
-import it.unibo.alchemist.model.interfaces.INode;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.HashUtils;
-import org.danilopianini.lang.Pair;
+
+import gnu.trove.map.TLongObjectMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
+import it.unibo.alchemist.language.protelis.util.DeviceUID;
 
 /**
  * @author Danilo Pianini

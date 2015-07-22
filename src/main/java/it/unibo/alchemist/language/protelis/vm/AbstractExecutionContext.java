@@ -16,7 +16,7 @@ import it.unibo.alchemist.language.protelis.util.CodePath;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.util.Stack;
 import it.unibo.alchemist.language.protelis.util.StackImpl;
-import it.unibo.alchemist.utils.FasterString;
+import org.danilopianini.lang.util.FasterString;
 
 import java.util.Collections;
 import java.util.HashMap;

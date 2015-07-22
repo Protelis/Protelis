@@ -39,6 +39,7 @@ configurations {
 
 dependencies {
     compile "org.danilopianini:javalib:$javalibVersion"
+    compile "org.danilopianini:javalib-java7:$javalib7Version"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
     compile "commons-logging:commons-logging:$commonsloggingVersion"
