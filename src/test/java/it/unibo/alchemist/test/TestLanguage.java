@@ -10,10 +10,6 @@ package it.unibo.alchemist.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import it.unibo.alchemist.language.protelis.datatype.Tuple;
-import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
-import it.unibo.alchemist.language.protelis.vm.DummyContext;
-import it.unibo.alchemist.language.protelis.vm.ProtelisVM;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +22,10 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.danilopianini.lang.LangUtils;
 import org.junit.Test;
+import org.protelis.lang.ProtelisLoader;
+import org.protelis.lang.datatype.Tuple;
+import org.protelis.vm.ProtelisVM;
+import org.protelis.vm.impl.DummyContext;
 
 public class TestLanguage {
 	
