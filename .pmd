@@ -160,6 +160,10 @@
             <ruleset>Basic Velocity</ruleset>
         </rule>
         <rule>
+            <name>EmptyIfStmt</name>
+            <ruleset>Basic Velocity</ruleset>
+        </rule>
+        <rule>
             <name>ExcessiveTemplateLength</name>
             <ruleset>Basic Velocity</ruleset>
         </rule>
@@ -205,6 +209,10 @@
         </rule>
         <rule>
             <name>NcssConstructorCount</name>
+            <ruleset>Code Size</ruleset>
+        </rule>
+        <rule>
+            <name>NcssMethodCount</name>
             <ruleset>Code Size</ruleset>
         </rule>
         <rule>
