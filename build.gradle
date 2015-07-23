@@ -27,12 +27,22 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+  	resolutionStrategy {
+	    failOnVersionConflict()
+	    force "com.google.guava:guava:$guavaVersion",
+	    	"org.ow2.asm:asm-commons:$asmVersion",
+	    	"log4j:log4j:1.2.16"
+    }
+}
+
 configurations {
     doc {
         transitive false
     }
     compile {
         exclude module: 'org.eclipse.xtext.dependencies'
+        exclude group: 'asm', module: 'asm'
     }
     doclet
 }
@@ -48,11 +58,9 @@ dependencies {
     compile "org.danilopianini:javalib:$javalibVersion"
     compile "org.springframework:spring-core:$springVersion"
     compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
-    compile "org.eclipse.xtext:org.eclipse.xtext.xtext:$xtextVersion"
-    compile "org.eclipse.xtext:org.eclipse.xtext.common.types:$xtextVersion"
-    compile "org.eclipse.xtext:org.eclipse.xtext.util:$xtextVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
-	
+    compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
+    compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
 	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
 	
 	/*
