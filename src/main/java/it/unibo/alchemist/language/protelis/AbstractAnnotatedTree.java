@@ -146,7 +146,17 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 	 * @return returns a stream containing the branches' annotations
 	 */
 	protected Stream<?> getBranchesAnnotationStream() {
-		return branches.stream().map(AnnotatedTree::getAnnotation);
+		/*
+		 * TODO: as soon as Javac fixes its terrible bug, switch this to:
+		 * 
+		 * return branches.stream().map(AnnotatedTree::getAnnotation);
+		 */
+		final List<Object> res = new ArrayList<>(branches.size());
+		for (final AnnotatedTree<?> o : branches) {
+			res.add(o.getAnnotation());
+		}
+		return res.stream();
+//		return branches.stream().map(AnnotatedTree::getAnnotation);
 	}
 
 	/**
