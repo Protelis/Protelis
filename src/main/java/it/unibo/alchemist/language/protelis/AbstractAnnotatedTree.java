@@ -10,7 +10,6 @@ package it.unibo.alchemist.language.protelis;
 
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.utils.L;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +21,9 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Danilo Pianini
  *
@@ -31,6 +33,7 @@ import java.util.stream.Stream;
 public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 
 	private static final long serialVersionUID = -8156985119843359212L;
+	private static final Logger L = LoggerFactory.getLogger(AbstractAnnotatedTree.class);
 	private final List<AnnotatedTree<?>> branches;
 	private T annotation;
 	private boolean erased = true;
@@ -219,20 +222,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		forEachWithIndex(evalOp(context));
 	}
 
-	/*
-	 * This is dangerous and has been disabled
-	 */
-//	/**
-//	 * Runs eval() in parallel on every branch, creating a new stack frame for
-//	 * each one. HANDLE WITH CARE.
-//	 * 
-//	 * @param context
-//	 *            the execution context
-//	 */
-//	protected final void parallelProjectAndEval(final ExecutionContext context) {
-//		parallelForEachWithIndex(evalOp(context));
-//	}
-	
 	private static BiConsumer<Integer, ? super AnnotatedTree<?>> evalOp(final ExecutionContext context) {
 		return (i, branch) -> {
 			context.newCallStackFrame(i.byteValue());
@@ -272,7 +261,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 			try {
 				target.append('\t');
 			} catch (IOException e) {
-				L.error(e);
+				L.error("There is a bug.", e);
 			}
 		}
 	}

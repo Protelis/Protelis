@@ -49,7 +49,6 @@ import it.unibo.alchemist.language.protelis.protelis.StringVal;
 import it.unibo.alchemist.language.protelis.protelis.TupleVal;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
 import org.danilopianini.lang.util.FasterString;
-import it.unibo.alchemist.utils.L;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,6 +84,8 @@ import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.inject.Injector;
@@ -95,6 +96,7 @@ import com.google.inject.Injector;
  */
 public final class ProtelisLoader {
 
+	private static final Logger L = LoggerFactory.getLogger(ProtelisLoader.class);
 	private static final AtomicInteger IDGEN = new AtomicInteger();
 	private static final XtextResourceSet XTEXT = createResourceSet();
 	private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
@@ -229,7 +231,7 @@ public final class ProtelisLoader {
 		try {
 			r.load(in, xrs.getLoadOptions());
 		} catch (IOException e) {
-			L.error("I/O error while reading in RAM: this must be tough.");
+			L.error("I/O error while reading in RAM: this must be tough.", e);
 		}
 		return r;
 	}

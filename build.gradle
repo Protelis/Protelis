@@ -38,22 +38,36 @@ configurations {
 }
 
 dependencies {
-    compile "org.danilopianini:javalib:$javalibVersion"
-    compile "org.danilopianini:javalib-java7:$javalib7Version"
+/*
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
     compile "commons-logging:commons-logging:$commonsloggingVersion"
-    compile "org.springframework:spring-core:$springVersion"
-    compile "commons-io:commons-io:$commonsIO"
-    compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
     compile "it.unibo.alchemist:alchemist-implementationbase:$implbaseVersion"
     compile "it.unibo.alchemist:alchemist-maps:$mapsVersion"
     compile "it.unibo.alice.tuprolog:tuprolog:$tuprologVersion"
+*/
+    compile "commons-io:commons-io:$commonsIOVersion"
+    compile "org.apache.commons:commons-math3:$math3Version"
+    compile "net.sf.trove4j:trove4j:$trove4jVersion"
+    compile "com.google.guava:guava:$guavaVersion"
+	compile "org.apache.commons:commons-lang3:$lang3Version"
+    compile "org.danilopianini:javalib-java7:$javalib7Version"
+    compile "org.danilopianini:javalib:$javalibVersion"
+    compile "org.springframework:spring-core:$springVersion"
+    compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
+    compile "org.eclipse.xtext:org.eclipse.xtext.xtext:$xtextVersion"
+    compile "org.eclipse.xtext:org.eclipse.xtext.common.types:$xtextVersion"
+    compile "org.eclipse.xtext:org.eclipse.xtext.util:$xtextVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+	
+	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+	
+	/*
+	 * This dependency will be dropped.
+	 */
+    compile "it.unibo.alchemist:alchemist-interfaces:$interfacesVersion"
     
     testCompile "junit:junit:$junitVersion"
-    testCompile "it.unibo.alchemist:alchemist.protelisdsl:$protelisdslVersion"
-    testCompile "it.unibo.alchemist:alchemist-engine:$engineVersion"
-    testRuntime "it.unibo.alchemist:alchemist-enginedependentmodel:$engineDepVersion"
     
     doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     

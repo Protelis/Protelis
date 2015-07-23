@@ -8,8 +8,6 @@
  */
 package it.unibo.alchemist.language.protelis.util;
 
-import it.unibo.alchemist.utils.L;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,6 +24,8 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.PrimitiveUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -39,6 +39,7 @@ import com.google.common.cache.LoadingCache;
  */
 public final class ReflectionUtils {
 	
+	private static final Logger L = LoggerFactory.getLogger(ReflectionUtils.class);
 	private static final int CACHE_MAX_SIZE = 1000;
 	private static final LoadingCache<Triple<Class<?>, String, List<Class<?>>>, Method> METHOD_CACHE = CacheBuilder
 			.newBuilder()
@@ -210,7 +211,7 @@ public final class ReflectionUtils {
 		try {
 			return method.invoke(target, actualArgs);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			L.error(e);
+			L.error("Error invoking method", e);
 			throw new IllegalStateException("Cannot invoke " + method + " with arguments " + Arrays.toString(args) + " on " + target, e);
 		}
 	}
