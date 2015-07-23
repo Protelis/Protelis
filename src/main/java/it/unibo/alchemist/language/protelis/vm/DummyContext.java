@@ -3,16 +3,16 @@
  */
 package it.unibo.alchemist.language.protelis.vm;
 
-import it.unibo.alchemist.external.cern.jet.random.engine.MersenneTwister;
-import it.unibo.alchemist.external.cern.jet.random.engine.RandomEngine;
 import it.unibo.alchemist.language.protelis.util.DeviceUID;
 import it.unibo.alchemist.language.protelis.util.DeviceUIDImpl;
-import it.unibo.alchemist.model.implementations.positions.Continuous2DEuclidean;
 import it.unibo.alchemist.model.interfaces.IPosition;
+
+import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.util.FasterString;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * A dummy Protelis VM to be used for testing.
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public final class DummyContext extends AbstractExecutionContext {
 	
-	private final RandomEngine rng = new MersenneTwister();
+	private final Random rng = new Random(0);
 	private final DeviceUID dummy = new DeviceUIDImpl(0);
 	private Map<FasterString, Object> environment = new HashMap<>();
 	
@@ -51,7 +51,33 @@ public final class DummyContext extends AbstractExecutionContext {
 	
 	@Override
 	public IPosition getDevicePosition() {
-		return new Continuous2DEuclidean(0, 0);
+		return new IPosition() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public int compareTo(IPosition o) {
+				return 0;
+			}
+			@Override
+			public double getDistanceTo(IPosition p) {
+				return 0;
+			}
+			@Override
+			public int getDimensions() {
+				return 2;
+			}
+			@Override
+			public double getCoordinate(int dim) {
+				return 0;
+			}
+			@Override
+			public double[] getCartesianCoordinates() {
+				return new double[]{0, 0};
+			}
+			@Override
+			public Pair<IPosition, IPosition> buildBoundingBox(double range) {
+				return Pair.create(this, this);
+			}
+		};
 	}
 	
 	@Override

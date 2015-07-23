@@ -10,7 +10,6 @@ package it.unibo.alchemist.language.protelis.util;
 
 import static it.unibo.alchemist.language.protelis.util.OpUtil.unsupported;
 import it.unibo.alchemist.language.protelis.datatype.Field;
-import it.unibo.alchemist.utils.L;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -19,6 +18,8 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
 import org.apache.commons.math3.util.FastMath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Danilo Pianini
@@ -43,6 +44,7 @@ public enum Op2 {
 	SMALLER_EQUALS("<=", Op2::smallerEquals),
 	TIMES("*", Op2::times);
 	
+	private static final Logger L = LoggerFactory.getLogger(Op2.class);
 	private static final int[] BOTH = new int[]{0, 1};
 	private static final int[] LEFT = new int[]{0};
 	private static final int[] RIGHT = new int[]{1};

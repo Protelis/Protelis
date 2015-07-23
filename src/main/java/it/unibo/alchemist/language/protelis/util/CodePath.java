@@ -10,7 +10,6 @@ package it.unibo.alchemist.language.protelis.util;
 
 import static org.danilopianini.lang.Constants.DJB2_MAGIC;
 import gnu.trove.list.TByteList;
-import it.unibo.alchemist.Global;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import org.danilopianini.lang.Constants;
 public class CodePath implements Serializable {
 
 	private static final long serialVersionUID = 5914261026069038877L;
+	private static final int ENCODING_BASE = 36;
 	private final long[] path;
 	private final int size;
 	private final boolean safe;
@@ -76,10 +76,10 @@ public class CodePath implements Serializable {
 	public String toString() {
 		if (string == null) {
 			final StringBuilder sb = new StringBuilder();
-			sb.append(Integer.toString(hash, Global.ENCODING_BASE));
+			sb.append(Integer.toString(hash, ENCODING_BASE));
 			if (!safe) {
 				for (final long l : path) {
-					sb.append(Long.toString(l, Global.ENCODING_BASE));
+					sb.append(Long.toString(l, ENCODING_BASE));
 				}
 			}
 			string = sb.toString();

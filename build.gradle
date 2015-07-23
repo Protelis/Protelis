@@ -27,33 +27,48 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+  	resolutionStrategy {
+	    failOnVersionConflict()
+	    force "com.google.guava:guava:$guavaVersion",
+	    	"org.ow2.asm:asm-commons:$asmVersion",
+	    	"log4j:log4j:1.2.16"
+    }
+}
+
 configurations {
     doc {
         transitive false
     }
     compile {
         exclude module: 'org.eclipse.xtext.dependencies'
+        exclude group: 'asm', module: 'asm'
     }
     doclet
 }
 
 dependencies {
-    compile "org.danilopianini:javalib:$javalibVersion"
+
+    compile "commons-io:commons-io:$commonsIOVersion"
+    compile "org.apache.commons:commons-math3:$math3Version"
+    compile "net.sf.trove4j:trove4j:$trove4jVersion"
+    compile "com.google.guava:guava:$guavaVersion"
+	compile "org.apache.commons:commons-lang3:$lang3Version"
     compile "org.danilopianini:javalib-java7:$javalib7Version"
+    compile "org.danilopianini:javalib:$javalibVersion"
+    compile "org.springframework:spring-core:$springVersion"
+    compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
-    compile "commons-logging:commons-logging:$commonsloggingVersion"
-    compile "org.springframework:spring-core:$springVersion"
-    compile "commons-io:commons-io:$commonsIO"
-    compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
-    compile "it.unibo.alchemist:alchemist-implementationbase:$implbaseVersion"
-    compile "it.unibo.alchemist:alchemist-maps:$mapsVersion"
-    compile "it.unibo.alice.tuprolog:tuprolog:$tuprologVersion"
+	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+	
+	/*
+	 * This dependency is temporary and will be dropped.
+	 */
+    compile "it.unibo.alchemist:alchemist-interfaces:$interfacesVersion"
     
     testCompile "junit:junit:$junitVersion"
-    testCompile "it.unibo.alchemist:alchemist.protelisdsl:$protelisdslVersion"
-    testCompile "it.unibo.alchemist:alchemist-engine:$engineVersion"
-    testRuntime "it.unibo.alchemist:alchemist-enginedependentmodel:$engineDepVersion"
     
     doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     

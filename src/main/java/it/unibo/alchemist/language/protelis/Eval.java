@@ -8,11 +8,13 @@
  */
 package it.unibo.alchemist.language.protelis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.alchemist.language.protelis.interfaces.AnnotatedTree;
 import it.unibo.alchemist.language.protelis.util.IProgram;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.ExecutionContext;
-import it.unibo.alchemist.utils.L;
 
 /**
  * @author Danilo Pianini
@@ -21,6 +23,7 @@ import it.unibo.alchemist.utils.L;
 public class Eval extends AbstractAnnotatedTree<Object> {
 
 	private static final long serialVersionUID = 8811510896686579514L;
+	private static final Logger L = LoggerFactory.getLogger(Eval.class);
 	private static final byte DYN_CODE_INDEX = -1;
 	
 	/**
@@ -47,7 +50,7 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 			setAnnotation(result.getCurrentValue());
 			context.returnFromCallFrame();
 		} catch (IllegalArgumentException e) {
-			L.error(e);
+			L.error("Non parse-able program", e);
 			throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
 		}
 	}

@@ -14,7 +14,6 @@ import it.unibo.alchemist.language.protelis.datatype.Tuple;
 import it.unibo.alchemist.language.protelis.util.ProtelisLoader;
 import it.unibo.alchemist.language.protelis.vm.DummyContext;
 import it.unibo.alchemist.language.protelis.vm.ProtelisVM;
-import it.unibo.alchemist.utils.L;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +24,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
+import org.danilopianini.lang.LangUtils;
 import org.junit.Test;
 
 public class TestLanguage {
@@ -341,8 +341,7 @@ public class TestLanguage {
 				fail("Your test does not include the expected result");
 			}
 		} catch (IOException e) {
-			L.error(e);
-			fail();
+			fail(LangUtils.stackTraceToString(e));
 		}
 	}
 
