@@ -37,6 +37,7 @@ configurations.all {
 	      substitute module('com.google.guava:guava:14.0.1') with module('com.google.guava:guava-jdk5:14.0.1')
     	}
     	
+	    force "com.google.guava:guava:$guavaVersion"
 	    force "org.ow2.asm:asm-commons:$asmVersion"
 	    force "log4j:log4j:1.2.16"
     }
