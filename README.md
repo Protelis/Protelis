@@ -15,6 +15,7 @@ assume Eclipse.
 * Java 8+
 * Gradle IDE
 * git
+* Checkstyle 5.9+
 
 If you do not have all of these, install them from the Eclipse Marketplace
 

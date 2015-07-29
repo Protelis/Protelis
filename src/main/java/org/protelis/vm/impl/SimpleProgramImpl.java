@@ -56,7 +56,7 @@ public class SimpleProgramImpl implements IProgram {
 		funs = Collections.unmodifiableMap(functions);
 		name = new FasterString(pName);
 	}
-
+	
 	@Override
 	public Object getCurrentValue() {
 		return prog.getAnnotation();
