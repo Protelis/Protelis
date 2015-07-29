@@ -1,0 +1,4 @@
+/*
+ * EXPECTED_RESULT: 2
+ */
+minHoodPlusSelf(nbr(2));

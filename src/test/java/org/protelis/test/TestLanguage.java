@@ -123,6 +123,21 @@ public class TestLanguage {
 	}
 
 	@Test
+	public void testHood01() {
+		testFile("/hood01.pt");
+	}
+
+	@Test
+	public void testHood02() {
+		testFile("/hood02.pt");
+	}
+
+	@Test
+	public void testHood03() {
+		testFile("/hood03.pt");
+	}
+
+	@Test
 	public void testIf01() {
 		testFileWithMultipleRuns("/if01.pt");
 	}
