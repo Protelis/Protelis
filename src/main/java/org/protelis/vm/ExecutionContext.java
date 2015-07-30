@@ -122,11 +122,6 @@ public interface ExecutionContext {
 	 */
 	Object removeEnvironmentVariable(final String id);
 	
-//	/**
-//	 * @return a safe view of the internal environment
-//	 */
-//	Map<FasterString, Object> getCurrentEnvironment();
-
 	void setup();
 
 	void commit();

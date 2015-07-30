@@ -44,7 +44,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private final NetworkManager nm;
 	private Map<FasterString, ?> functions;
 	private Stack gamma;
-	private TLongObjectMap<Map<CodePath, Object>> theta;
+	private Map<DeviceUID, Map<CodePath, Object>> theta;
 	private Map<FasterString, Object> env;
 	private Map<CodePath, Object> toSend;
 	private Number previousRoundTime;
@@ -88,7 +88,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		env = currentEnvironment();
 		toSend = MAPMAKER.makeMap();
 		gamma = new StackImpl(new HashMap<>(functions));
-		theta = TCollections.unmodifiableMap(nm.takeMessages());
+		theta = Collections.unmodifiableMap(nm.takeMessages());
 	}
 	
 	@Override
@@ -119,15 +119,14 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	
 	@Override
 	public final AbstractExecutionContext restrictDomain(final Field f) {
-		final TLongObjectMap<Map<CodePath, Object>> restricted = new TLongObjectHashMap<>(theta.size());
+		final Map<DeviceUID, Map<CodePath, Object>> restricted = new HashMap<>(theta.size());
 		final DeviceUID localDevice = getDeviceUID();
 		for (final DeviceUID n : f.nodeIterator()) {
 			if (!n.equals(localDevice)) {
-				final long id = n.getId();
-				restricted.put(id, theta.get(id));
+				restricted.put(n, theta.get(n));
 			}
 		}
-		AbstractExecutionContext restrictedInstance = instance();
+		final AbstractExecutionContext restrictedInstance = instance();
 		restrictedInstance.theta = restricted;
 		restrictedInstance.gamma = gamma;
 		restrictedInstance.env = env;
@@ -139,7 +138,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	 * @param id
 	 * @return
 	 */
-	protected abstract DeviceUID deviceFromId(long id);
+//	protected abstract DeviceUID deviceFromId(long id);
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -155,17 +154,20 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 			throw new IllegalStateException("This program has attempted to build a field twice with the same code path. It is probably a bug in Protelis");
 		}
 		final Field res = Field.create(theta.size() + 1);
-		theta.forEachEntry((n, pathsMap) -> {
-			final Object val = pathsMap.get(codePath);
-			if (val != null) {
-				/*
-				 * This cast is OK by construction, if no bug is there and no
-				 * wild casts are done by the caller.
-				 */
-				res.addSample(deviceFromId(n), computeValue.apply((T) val));
-			}
-			return true;
-		});
+		theta.entrySet().stream()
+			.filter(e -> e.getValue() != null)
+			.forEachOrdered(e -> res.addSample(e.getKey(), e.getValue()));
+//		theta.forEachEntry((n, pathsMap) -> {
+//			final Object val = pathsMap.get(codePath);
+//			if (val != null) {
+//				/*
+//				 * This cast is OK by construction, if no bug is there and no
+//				 * wild casts are done by the caller.
+//				 */
+//				res.addSample(n, computeValue.apply((T) val));
+//			}
+//			return true;
+//		});
 		res.addSample(getDeviceUID(), computeValue.apply(localValue));
 		return res;
 	}

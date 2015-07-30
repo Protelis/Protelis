@@ -17,7 +17,7 @@ import java.util.function.UnaryOperator;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.TriFunction;
-import org.protelis.lang.datatype.impl.FieldTroveMapImpl;
+import org.protelis.lang.datatype.impl.FieldMapImpl;
 
 /**
  * @author Danilo Pianini
@@ -30,7 +30,7 @@ public interface Field extends Serializable {
 	 * @return an empty {@link Field}
 	 */
 	static Field create(int defaultSize) {
-		return new FieldTroveMapImpl(defaultSize + 1, 1f);
+		return new FieldMapImpl(defaultSize + 1, 1f);
 	}
 	
 	static Field applyWithSingleParam(UnaryOperator<Object> fun, int[] fields, Object a) {
@@ -141,7 +141,7 @@ public interface Field extends Serializable {
 	
 	boolean containsNode(DeviceUID n);
 	
-	boolean containsNode(long n);
+//	boolean containsNode(long n);
 	
 	Class<?> getExpectedType();
 

@@ -3,11 +3,10 @@
  */
 package org.protelis.vm.impl;
 
-import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TLongObjectHashMap;
-
+import java.util.Collections;
 import java.util.Map;
 
+import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 
@@ -18,8 +17,8 @@ import org.protelis.vm.util.CodePath;
 public class DummyNetworkManager implements NetworkManager {
 
 	@Override
-	public TLongObjectMap<Map<CodePath, Object>> takeMessages() {
-		return new TLongObjectHashMap<>();
+	public Map<DeviceUID, Map<CodePath, Object>> takeMessages() {
+		return Collections.emptyMap();
 	}
 
 	@Override

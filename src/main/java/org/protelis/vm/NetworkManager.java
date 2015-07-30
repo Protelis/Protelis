@@ -2,13 +2,12 @@ package org.protelis.vm;
 
 import java.util.Map;
 
+import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.util.CodePath;
-
-import gnu.trove.map.TLongObjectMap;
 
 public interface NetworkManager {
 
-	TLongObjectMap<Map<CodePath, Object>> takeMessages();
+	Map<DeviceUID, Map<CodePath, Object>> takeMessages();
 
 	void sendMessage(Map<CodePath, Object> toSend);
 
