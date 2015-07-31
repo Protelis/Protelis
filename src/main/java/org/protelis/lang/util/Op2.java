@@ -107,6 +107,9 @@ public enum Op2 {
 		if (a == null || b == null) {
 			return false;
 		}
+		if (a instanceof Number && b instanceof Number) {
+			return ((Number) a).doubleValue() == ((Number) b).doubleValue();
+		}
 		return a.equals(b);
 	}
 

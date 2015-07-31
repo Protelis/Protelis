@@ -158,6 +158,26 @@ public class TestLanguage {
 	}
 
 	@Test
+	public void testMath01() {
+		testFile("/math01.pt");
+	}
+
+	@Test
+	public void testMath02() {
+		testFile("/math02.pt");
+	}
+
+	@Test
+	public void testMath03() {
+		testFile("/math03.pt");
+	}
+
+	@Test
+	public void testMath04() {
+		testFile("/math04.pt");
+	}
+
+	@Test
 	public void testMethod01() {
 		testFile("/method01.pt");
 	}
@@ -289,6 +309,11 @@ public class TestLanguage {
 	@Test
 	public void testTuple02() {
 		testFile("/tuple02.pt");
+	}
+
+	@Test
+	public void testTuple03() {
+		testFileWithExplicitResult("/tuple03.pt", new Integer(3));
 	}
 
 	@Test
