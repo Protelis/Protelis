@@ -1,13 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2010, 2015, Danilo Pianini and contributors
+ * listed in the project's build.gradle or pom.xml file.
+ *
+ * This file is part of Protelis, and is distributed under the terms of
+ * the GNU General Public License, with a linking exception, as described
+ * in the file LICENSE.txt in this project's top directory.
+ *******************************************************************************/
 /**
  * 
  */
 package org.protelis.vm.impl;
 
-import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TLongObjectHashMap;
-
+import java.util.Collections;
 import java.util.Map;
 
+import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 
@@ -18,8 +25,8 @@ import org.protelis.vm.util.CodePath;
 public class DummyNetworkManager implements NetworkManager {
 
 	@Override
-	public TLongObjectMap<Map<CodePath, Object>> takeMessages() {
-		return new TLongObjectHashMap<>();
+	public Map<DeviceUID, Map<CodePath, Object>> takeMessages() {
+		return Collections.emptyMap();
 	}
 
 	@Override

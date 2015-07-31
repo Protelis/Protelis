@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014, Danilo Pianini and contributors
+ * Copyright (C) 2010-2015, Danilo Pianini and contributors
  * listed in the project's pom.xml file.
  * 
  * This file is part of Alchemist, and is distributed under the terms of
@@ -8,9 +8,9 @@
  */
 package org.protelis.lang.datatype.impl;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DeviceUID;
@@ -24,14 +24,9 @@ public class FieldMapImpl extends AbstractField {
 	private static final long serialVersionUID = -2947000086262191216L;
 	private final Map<DeviceUID, Object> fld;
 
-	public FieldMapImpl() {
-		super();
-		fld = new HashMap<>();
-	}
-	
 	public FieldMapImpl(final int size, final float loadFactor) {
 		super();
-		fld = new HashMap<>(size, loadFactor);
+		fld = new LinkedHashMap<>(size, loadFactor);
 	}
 	
 	@Override
@@ -45,18 +40,17 @@ public class FieldMapImpl extends AbstractField {
 	}
 
 	@Override
-	public boolean containsNode(final long n) {
-		return fld.keySet().stream().anyMatch(k -> k.getId() == n);
-	}
-
-	@Override
 	public Iterable<Pair<DeviceUID, Object>> coupleIterator() {
-		return fld.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue())).collect(Collectors.toList());
+		return fld.entrySet().stream()
+				.map(e -> new Pair<>(e.getKey(), e.getValue()))
+				.collect(() -> new ArrayList<>(size()),
+						(a, e) -> a.add(e),
+						(a1, a2) -> a1.addAll(a2));
 	}
 
 	@Override
 	public Class<?> getExpectedType() {
-		if(fld.isEmpty()) {
+		if (fld.isEmpty()) {
 			return null;
 		}
 		return fld.values().iterator().next().getClass();
