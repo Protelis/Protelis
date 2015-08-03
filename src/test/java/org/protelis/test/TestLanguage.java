@@ -292,6 +292,11 @@ public class TestLanguage {
 	}
 
 	@Test
+	public void testAnonymousLoadModule() {
+		testFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
+	}
+
+	@Test
 	public void testLoadFromModuleName01() {
 		testFileWithExplicitResult("modules04", 1d);
 	}

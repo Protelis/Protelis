@@ -230,15 +230,34 @@ public final class ProtelisLoader {
 	 * @return a dummy:/ resource that can be used to interpret the program
 	 */
 	public static Resource resourceFromString(final String program) {
-		final XtextResourceSet xrs = createResourceSet();
+		final XtextResourceSet xrs = XTEXT;//createResourceSet();
+		InputStream in = new StringInputStream(program);
+		try {
+			loadStringResources(xrs,in);
+		} catch (IOException e) {
+			L.error("Couldn't get resources associated with anonymous program", e);
+		}
 		final Resource r = xrs.createResource(URI.createURI("dummy:/protelis-generated-program-" + IDGEN.getAndIncrement() + ".pt"));
-		final InputStream in = new StringInputStream(program);
+		in = new StringInputStream(program);
 		try {
 			r.load(in, xrs.getLoadOptions());
 		} catch (IOException e) {
 			L.error("I/O error while reading in RAM: this must be tough.", e);
 		}
 		return r;
+	}
+	
+	private static void loadStringResources(final XtextResourceSet target, final InputStream is) throws IOException {
+		final Set<String> alreadyInQueue = new LinkedHashSet<>();
+		final String ss = IOUtils.toString(is, "UTF-8");
+		final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
+		while (matcher.find()) {
+			final int start = matcher.start(1);
+			final int end = matcher.end(1);
+			final String imp = ss.substring(start, end);
+			final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
+			loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+		}
 	}
 	
 	private static XtextResourceSet createResourceSet() {
