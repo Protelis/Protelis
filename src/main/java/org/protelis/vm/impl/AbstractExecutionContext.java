@@ -163,8 +163,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		}
 		final Field res = Field.create(theta.size() + 1);
 		theta.entrySet().stream()
-			.filter(e -> e.getValue() != null)
-			.forEachOrdered(e -> res.addSample(e.getKey(), e.getValue()));
+			.filter(e -> e.getValue().get(codePath) != null)
+			.forEachOrdered(e -> res.addSample(e.getKey(), e.getValue().get(codePath)));
 //		theta.forEachEntry((n, pathsMap) -> {
 //			final Object val = pathsMap.get(codePath);
 //			if (val != null) {
