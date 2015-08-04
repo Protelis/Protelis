@@ -6,9 +6,6 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-/**
- * 
- */
 package org.protelis.vm.impl;
 
 import java.util.Collections;
