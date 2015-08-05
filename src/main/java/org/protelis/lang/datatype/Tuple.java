@@ -52,7 +52,14 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 	boolean isEmpty();
 
 	boolean contains(Object element);
-	
+
+	/**
+	 * Searches for an element in a tuple, returning its index if found.
+	 * @param element The object to be searched for
+	 * @return The first index where the search object is found, or -1 if not found
+	 */
+	int indexof(Object element);
+
 	Tuple insert(int i, Object element);
 
 	Tuple set(int i, Object element);

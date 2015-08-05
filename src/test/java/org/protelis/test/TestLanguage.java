@@ -322,6 +322,11 @@ public class TestLanguage {
 	}
 
 	@Test
+	public void testTuple04() {
+		testFile("/tuple04.pt");
+	}
+
+	@Test
 	public void testTupleMap01() {
 		testFile("/TupleMap01.pt");
 	}

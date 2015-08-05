@@ -156,12 +156,17 @@ public class ArrayTupleImpl implements Tuple {
 
 	@Override
 	public boolean contains(final Object element) {
+		return indexof(element) >= 0;
+	}
+	
+	@Override
+	public int indexof(final Object element) {
 		for (int i = 0; i < a.length; i++) {
 			if (a[i].equals(element)) {
-				return true;
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	}
 
 	@Override
