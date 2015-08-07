@@ -117,6 +117,15 @@ public interface ExecutionContext {
 	/**
 	 * @param id
 	 *            the variable name
+	 * @param defaultValue
+	 *            a parameterizable default value
+	 * @return the value of the variable if present, defaultValue otherwise
+	 */
+	Object getEnvironmentVariable(final String id, final Object defaultValue);
+
+	/**
+	 * @param id
+	 *            the variable name
 	 * @param v
 	 *            the value that should be associated
 	 * @return

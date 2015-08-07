@@ -178,6 +178,15 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	}
 
 	@Override
+	public final Object getEnvironmentVariable(final String id, final Object defaultValue) {
+		if (hasEnvironmentVariable(id)) {
+			return env.get(new FasterString(id));
+		} else {
+			return defaultValue;
+		}
+	}
+
+	@Override
 	public final boolean putEnvironmentVariable(final String id, final Object v) {
 		return env.put(new FasterString(id), v) != null;
 	}
