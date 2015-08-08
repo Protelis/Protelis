@@ -23,12 +23,14 @@ import it.unibo.alchemist.language.protelis.protelis.Statement;
 import it.unibo.alchemist.language.protelis.protelis.StringVal;
 import it.unibo.alchemist.language.protelis.protelis.TupleVal;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
+
 import org.danilopianini.lang.util.FasterString;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -56,6 +58,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.common.types.JvmOperation;
+import org.eclipse.xtext.diagnostics.AbstractDiagnostic;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
@@ -101,7 +104,7 @@ import com.google.inject.Injector;
  */
 public final class ProtelisLoader {
 
-	private static final Logger L = LoggerFactory.getLogger(ProtelisLoader.class);
+	private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
 	private static final AtomicInteger IDGEN = new AtomicInteger();
 	private static final XtextResourceSet XTEXT = createResourceSet();
 	private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
@@ -276,14 +279,12 @@ public final class ProtelisLoader {
 	 */
 	public static IProgram parse(final Resource resource) {
 		if (!resource.getErrors().isEmpty()) {
-			for (final Diagnostic d : resource.getErrors()) {
-				final StringBuilder b = new StringBuilder("Error at line ");
-				b.append(d.getLine());
-				b.append(": ");
-				b.append(d.getMessage());
-				L.error(b.toString());
+			for (final Diagnostic d : recursivelyCollectErrors(resource)) {
+				AbstractDiagnostic ad = (AbstractDiagnostic) d;
+				String place = ad.getUriToProblem().toString().split("#")[0];
+				L.error("Error in " + place + " at line " + d.getLine() + ": " + d.getMessage());
 			}
-			throw new IllegalArgumentException("Your program has syntax errors. Feed me something usable, please.");
+			throw new IllegalArgumentException("Protelis program cannot be run because it has errors.");
 		}
 		final Program root = (Program) resource.getContents().get(0);
 		/*
@@ -313,6 +314,24 @@ public final class ProtelisLoader {
 		return new SimpleProgramImpl(root, parseBlock(root.getProgram(), nameToFun, funToFun, id), nameToFun);
 	}
 	
+	private static Iterable<Diagnostic> recursivelyCollectErrors(final Resource resource) {
+		return recursivelyCollectErrors(resource, new ArrayList<>(), new HashSet<>());
+	}
+
+	private static Iterable<Diagnostic> recursivelyCollectErrors(final Resource resource, final List<Diagnostic> errors, final Set<Resource> completed) {
+		// Mark as visited
+		completed.add(resource);
+		// Walk linked resources
+		for (Resource r : resource.getResourceSet().getResources()) {
+			if (!completed.contains(r)) { 
+				recursivelyCollectErrors(r, errors, completed); 
+			}
+		}
+		// Add local errors (last, so that the "deeper" errors are listed first)
+		errors.addAll(resource.getErrors());
+		return errors;
+	}
+
 	private static void recursivelyInitFunctions(
 			final Program module,
 			final Map<FasterString, FunctionDefinition> nameToFun,
