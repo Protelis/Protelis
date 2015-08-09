@@ -56,7 +56,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		nm = netmgr;
 	}
 	
-	public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions){
+	public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions) {
 		functions = Collections.unmodifiableMap(knownFunctions);
 	}
 	

@@ -308,7 +308,8 @@ public class TestLanguage {
 
 	@Test
 	public void testTuple01() {
-		testFileWithExplicitResult("/tuple01.pt", Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 }));
+		final Tuple expectedResult = Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
+		testFileWithExplicitResult("/tuple01.pt", expectedResult);
 	}
 
 	@Test

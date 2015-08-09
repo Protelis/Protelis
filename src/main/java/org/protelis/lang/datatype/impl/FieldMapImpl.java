@@ -17,13 +17,19 @@ import org.protelis.lang.datatype.DeviceUID;
 
 /**
  * @author Danilo Pianini
- *
+ * Field implementation based on neighbor/value pairs stored in a hash table.
  */
 public class FieldMapImpl extends AbstractField {
 
 	private static final long serialVersionUID = -2947000086262191216L;
 	private final Map<DeviceUID, Object> fld;
 
+	/**
+	 * @param size
+	 * 		The initial size of the hash table used internally to implement the field.
+	 * @param loadFactor
+	 * 		The load factor of the hash table used internally to implement the field.
+	 */
 	public FieldMapImpl(final int size, final float loadFactor) {
 		super();
 		fld = new LinkedHashMap<>(size, loadFactor);

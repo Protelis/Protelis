@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.util;
 
-import static org.protelis.lang.util.OpUtil.unsupported;
+import static org.protelis.lang.util.OpUtils.unsupported;
 
 import java.util.Arrays;
 import java.util.Map;

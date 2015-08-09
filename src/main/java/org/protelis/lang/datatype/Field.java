@@ -41,7 +41,7 @@ public interface Field extends Serializable {
 		return apply((t, p) -> fun.apply(p[0], p[1]), false, fields, null, a, b);
 	}
 
-	static Field apply(final TriFunction<Object, Object, Object, Object> fun, int[] fields, Object a, Object b, Object c){
+	static Field apply(final TriFunction<Object, Object, Object, Object> fun, int[] fields, Object a, Object b, Object c) {
 		return apply((t, p) -> fun.apply(p[0], p[1], p[2]), false, fields, null, a, b, c);
 	}
 	
@@ -55,7 +55,7 @@ public interface Field extends Serializable {
 	 * @return a new field resulting from the application of the
 	 *         {@link Function} to the target and the arguments
 	 */
-	static Field apply(final Function<Object[], Object> fun, int[] fieldIndexes, Object... args){
+	static Field apply(final Function<Object[], Object> fun, int[] fieldIndexes, Object... args) {
 	    return apply(fun, false, fieldIndexes, null, args);
 	}
 
@@ -73,7 +73,7 @@ public interface Field extends Serializable {
 	 * @return a new field resulting from the application of the
 	 *         {@link Function} to the target and the arguments
 	 */
-	static Field apply(final Function<Object[], Object> fun, final boolean fieldTarget, int[] fieldIndexes, final Object target, Object... args){
+	static Field apply(final Function<Object[], Object> fun, final boolean fieldTarget, int[] fieldIndexes, final Object target, Object... args) {
 		return apply((t, p) -> fun.apply(p), fieldTarget, fieldIndexes, target, args);
 	}
 

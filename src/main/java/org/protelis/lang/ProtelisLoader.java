@@ -136,7 +136,7 @@ public final class ProtelisLoader {
 
 	/**
 	 * @param program
-	 *            Protelis module, program file or program to execute. It must
+	 *            Protelis module, program file or program to be prepared for execution. It must
 	 *            be one of:
 	 * 
 	 *            i) a valid Protelis qualifier name (Java like name, colon
@@ -158,10 +158,10 @@ public final class ProtelisLoader {
 	 *            automatically by this constructor, linking is performed by
 	 *            Xtext transparently. {@link URI}s of type "platform:/" are
 	 *            supported, for those who work within an Eclipse environment.
-	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
-	 *         {@link FunctionDefinition} (containing the available functions)
+	 * @return an {@link IProgram} comprising the constructed program
+	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parse(final String program) {
+	public static IProgram parse(final String program) throws IllegalArgumentException {
 		try {
 			if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
 				return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
@@ -172,13 +172,26 @@ public final class ProtelisLoader {
 		}
 	}
 	
-	public static IProgram parseAnonymousModule(final String program) {
+	/**
+	 * @param program
+	 *            A valid Protelis program to be prepared for execution.
+	 * 
+	 * 			  All the Protelis modules your program relies upon must be included in
+	 *            your Java classpath. The Java classpath scanning is done
+	 *            automatically by this constructor, linking is performed by
+	 *            Xtext transparently. {@link URI}s of type "platform:/" are
+	 *            supported, for those who work within an Eclipse environment.
+	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
+	 *         {@link FunctionDefinition} (containing the available functions)
+	 * @throws IllegalArgumentException when the program has errors
+	 */
+	public static IProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
 		return parse(resourceFromString(program));
 	}
 	
 	/**
 	 * @param programURI
-	 *            Protelis program file to execute. It must be a either a valid
+	 *            Protelis program file to be prepared for execution. It must be a either a valid
 	 *            {@link URI} string, for instance
 	 *            "file:///home/user/protelis/myProgram" or a location relative
 	 *            to the classpath. In case, for instance,
@@ -190,9 +203,10 @@ public final class ProtelisLoader {
 	 *            Xtext transparently. {@link URI}s of type "platform:/" are
 	 *            supported, for those who work within an Eclipse environment.
 	 * @return a new {@link IProgram}
-	 * @throws IOException 
+	 * @throws IOException when the resource cannot be found
+	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parseURI(final String programURI) throws IOException {
+	public static IProgram parseURI(final String programURI) throws IOException, IllegalArgumentException {
 			return parse(resourceFromURIString(programURI));
 	}
 	
@@ -233,10 +247,10 @@ public final class ProtelisLoader {
 	 * @return a dummy:/ resource that can be used to interpret the program
 	 */
 	public static Resource resourceFromString(final String program) {
-		final XtextResourceSet xrs = XTEXT;//createResourceSet();
+		final XtextResourceSet xrs = XTEXT;
 		InputStream in = new StringInputStream(program);
 		try {
-			loadStringResources(xrs,in);
+			loadStringResources(xrs, in);
 		} catch (IOException e) {
 			L.error("Couldn't get resources associated with anonymous program", e);
 		}
