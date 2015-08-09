@@ -14,10 +14,22 @@ import java.util.Map;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
 
+/**
+ * @author Danilo Pianini
+ * Executable representation of a Protelis program
+ */
 public interface IProgram extends Serializable {
 	
+	/**
+	 * @return The value computed during the most recent invocation of {@link compute}
+	 */
 	Object getCurrentValue();
 	
+	/**
+	 * Execute one round of computation of this Protelis program.
+	 * @param context
+	 * 		The virtual machine environment in which computation will take place.
+	 */
 	void compute(ExecutionContext context);
 	
 	Map<FasterString, FunctionDefinition> getKnownFunctions();

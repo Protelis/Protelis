@@ -61,6 +61,9 @@ public interface ExecutionContext {
 
 	ExecutionContext restrictDomain(Field f);
 	
+	/**
+	 * @return The unique identifier for the device where execution is taking place.
+	 */
 	DeviceUID getDeviceUID();
 
 	/**

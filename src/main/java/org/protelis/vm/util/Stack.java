@@ -15,12 +15,18 @@ import org.danilopianini.lang.util.FasterString;
 
 /**
  * @author Danilo Pianini
- *
+ * Stack implementation used by the Protelis VM for tracking local variable values during execution
  */
 public interface Stack extends Serializable {
 	
+	/**
+	 * Enter a new nested lexical scope.
+	 */
 	void push();
 	
+	/**
+	 * Exit the current most-nested lexical scope.
+	 */
 	void pop();
 	
 	Object put(FasterString var, Object val, boolean canShadow);
