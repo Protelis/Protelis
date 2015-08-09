@@ -83,6 +83,11 @@ public interface ExecutionContext {
 	 */
 	double distanceTo(DeviceUID target);
 	
+	/**
+	 * @deprecated This function is deprecated because position information cannot be assumed to be available; 
+	 * 		It should be instead be provided by particular instantiations of ExecutionContext where appropriate
+	 * @return Coordinates of the device
+	 */
 	IPosition getDevicePosition();
 
 	/**
@@ -91,16 +96,32 @@ public interface ExecutionContext {
 	 * {@link CodePath}. The field will always contain at least one value,
 	 * namely the value of the local device.
 	 * 
+	 * @param computeValue
+	 * 			  a function that will be applied to localValue and the equivalents shared from 
+	 * 			  neighbors in the process of constructing this field: the field consists of the 
+	 * 			  values returned from applying computeValue to each of device's value
 	 * @param localValue
 	 *            a {@link Supplier} which will be used to compute the local
 	 *            value for this field
+	 * @param <T> 
+	 * 			  the type of the input
 	 * @return a new {@link Field} containing the local device value and the
 	 *         values for any of the aligned neighbors
 	 */
 	<T> Field buildField(Function<T, ?> computeValue, T localValue);
 
+	/**
+	 * Obtain a system-independent (pseudo)random number.
+	 * @return a uniformly distributed value between 0.0 and 1.0
+	 */
 	double nextRandomDouble();
 
+	/**
+	 * Look up the value of a variable from the local environment.
+	 * @param name 
+	 * 		Name of the variable to be looked up
+	 * @return Value of the variable, or null if it cannot be found.
+	 */
 	Object getVariable(FasterString name);
 	
 	/**
@@ -130,20 +151,26 @@ public interface ExecutionContext {
 	 * @param id
 	 *            the variable name
 	 * @param v
-	 *            the value that should be associated
-	 * @return
+	 *            the value that should be associated with id
+     * @return true if there was previously a value associated with id, and false if not.
 	 */
 	boolean putEnvironmentVariable(final String id, final Object v);
 	
 	/**
 	 * @param id
 	 *            the variable name
-	 * @return
+	 * @return Returns the value to which this map previously associated the key, or null if the map contained no mapping for the key.
 	 */
 	Object removeEnvironmentVariable(final String id);
 	
+	/**
+	 * Called just before the VM is executed, to enable and preparations needed in the environment.
+	 */
 	void setup();
 
+	/**
+	 * Called just after the VM is executed, to finalize information of the execution for the environment.
+	 */
 	void commit();
 
 	void setAvailableFunctions(Map<FasterString, FunctionDefinition> knownFunctions);

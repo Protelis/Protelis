@@ -32,8 +32,14 @@ public interface IProgram extends Serializable {
 	 */
 	void compute(ExecutionContext context);
 	
+	/**
+	 * @return Set of named functions defined in this program
+	 */
 	Map<FasterString, FunctionDefinition> getKnownFunctions();
 	
+	/**
+	 * @return Name of the program, or some default name if no specific name is provided
+	 */
 	FasterString getName();
 
 }
