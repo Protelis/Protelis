@@ -19,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 
 /**
  * @author Danilo Pianini
- *
+ * Implementation of mathematical tuples as indexed objects T = [element0, element1, element2 ...] 
  */
 public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple> {
 
@@ -41,16 +41,48 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 		return new ArrayTupleImpl(l);
 	}
 
+	/**
+	 * Add an element to the end of a tuple.
+	 * Equivalent to insert(size, element).
+	 * @param element
+	 * 		Element to be added
+	 * @return A new tuple with equal to the current plus the new element added to the end
+	 */
 	Tuple append(Object element);
 
+	/**
+	 * Add an element to the start of a tuple.
+	 * Equivalent to insert(0, element).
+	 * @param element
+	 * 		Element to be added
+	 * @return A new tuple with equal to the current plus the new element added to the start
+	 */
 	Tuple prepend(Object element);
 
+	/**
+	 * Retrieve the object at one of a tuple's indices.
+	 * @param i
+	 * 		Zero-based index of the object to be retrieved
+	 * @return The object at index i
+	 */
 	Object get(int i);
 
+	/**
+	 * @return Number of elements in the tuple
+	 */
 	int size();
 	
+	/**
+	 * @return Returns true iff the {@link size} of the tuple is zero
+	 */
 	boolean isEmpty();
 
+	/**
+	 * Tests whether the tuple has an element equal to its argument.
+	 * @param element
+	 * 		Element to test whether it is equal to any element in the tuple
+	 * @return true if the tuple contains an element equal to "element"
+	 */
 	boolean contains(Object element);
 
 	/**
@@ -60,8 +92,24 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 	 */
 	int indexof(Object element);
 
+	/**
+	 * Add an element to an arbitrary location within a tuple, moving all elements after it down.
+	 * @param i
+	 * 		Zero-based index at which the element is to be added
+	 * @param element
+	 * 		Element to be added
+	 * @return A new tuple with equal to the current plus the new element added at the given index
+	 */
 	Tuple insert(int i, Object element);
 
+	/**
+	 * Replace an element in a tuple.
+	 * @param i
+	 * 		Zero-based index at which the element is to be replaced
+	 * @param element
+	 * 		Element to replace the current element
+	 * @return A new tuple with the element at the ith index replaced by "element"
+	 */
 	Tuple set(int i, Object element);
 
 	Tuple subTupleStart(int i);

@@ -267,6 +267,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
 		/*
 		 * TODO Do a Objects.requireNonNull
@@ -290,6 +291,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
 		if (fun.getArgNumber() == 1) {
 			return Tuple.create(
@@ -311,6 +313,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
 		Objects.requireNonNull(fun);
 		if (fun.getArgNumber() == 1) {

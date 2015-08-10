@@ -81,81 +81,129 @@ public class TestLanguage {
 		testFile("/eval02.pt");
 	}
 
+	/**
+	 * Exercise method calls on fields.
+	 */
 	@Test
 	public void testFieldMethod01() {
 		testFile("/fieldMethod01.pt");
 	}
 
+	/**
+	 * Exercise method calls on fields.
+	 */
 	@Test
 	public void testFieldMethod02() {
 		testFile("/fieldMethod02.pt");
 	}
 
+	/**
+	 * Exercise method calls on fields.
+	 */
 	@Test
 	public void testFieldMethod03() {
 		testFile("/fieldMethod03.pt");
 	}
 
+	/**
+	 * Test simple function call with no arguments.
+	 */
 	@Test
 	public void testFunction01() {
 		testFile("/function01.pt");
 	}
 
+	/**
+	 * Test simple function call with one argument.
+	 */
 	@Test
 	public void testFunction02() {
 		testFile("/function02.pt");
 	}
 
+	/**
+	 * Test simple function call with two arguments.
+	 */
 	@Test
 	public void testFunction03() {
 		testFile("/function03.pt");
 	}
 
+	/**
+	 * Test to make sure that more than one instance of a function can be active at a time.
+	 */
 	@Test
 	public void testFunction04() {
 		testFile("/function04.pt");
 	}
 
+	/**
+	 * Test simple use of apply.
+	 */
 	@Test
 	public void testHof01() {
 		testFileWithMultipleRuns("/hof01.pt");
 	}
 
+	/**
+	 * Test apply on a more complex function.
+	 */
 	@Test
 	public void testHof02() {
 		testFileWithMultipleRuns("/hof02.pt");
 	}
 
+	/**
+	 * Test to make sure that each apply call bounds to a different instance of the function.
+	 */
 	@Test
 	public void testHof03() {
 		testFileWithMultipleRuns("/hof03.pt");
 	}
 
+	/**
+	 * Test using apply to define a higher-order map function.
+	 */
 	@Test
 	public void testHof04() {
 		testFile("/hof04.pt");
 	}
 
+	/**
+	 * Test multiple applications of a higher-order map function.
+	 */
 	@Test
 	public void testHof05() {
 		testFile("/hof05.pt");
 	}
 
+	/**
+	 * Test that plain hood functions don't include local value.
+	 */
 	@Test
 	public void testHood01() {
 		testFile("/hood01.pt");
 	}
 
+	/**
+	 * Test that PlusSelf hood functions do include local value.
+	 */
 	@Test
 	public void testHood02() {
 		testFile("/hood02.pt");
 	}
 
+	/**
+	 * Test a more complex hood function.
+	 */
 	@Test
 	public void testHood03() {
 		testFile("/hood03.pt");
 	}
 
+	/**
+	 * Test operation of "if" restrictive branching.
+	 */
 	@Test
 	public void testIf01() {
 		testFileWithMultipleRuns("/if01.pt");
@@ -246,6 +294,9 @@ public class TestLanguage {
 		testFile("/modules05.pt");
 	}
 
+	/**
+	 * Test operation of "mux" inclusive branching.
+	 */
 	@Test
 	public void testMux01() {
 		testFileWithMultipleRuns("/mux01.pt");
