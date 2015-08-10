@@ -40,6 +40,18 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
 	static Tuple create(Object... l) {
 		return new ArrayTupleImpl(l);
 	}
+	
+	/**
+	 * Create a Tuple with all elements initialized to the same value.
+	 * @param value
+	 * 		Value to which all elements will be initialized
+	 * @param length
+	 * 		Size of the tuple
+	 * @return a new tuple
+	 */
+	static Tuple fill(Object value, int length) {
+		return new ArrayTupleImpl(value, length);
+	}
 
 	/**
 	 * Add an element to the end of a tuple.

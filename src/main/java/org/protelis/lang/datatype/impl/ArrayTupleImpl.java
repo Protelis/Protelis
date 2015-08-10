@@ -51,6 +51,18 @@ public class ArrayTupleImpl implements Tuple {
 		a = copy ? Arrays.copyOf(base, base.length) : base;
 	}
 	
+	/**
+	 * Create an ArrayTupleImpl with all elements initialized to a given value.
+	 * @param value The value to initialize to
+	 * @param length The length of the tuple
+	 */
+	public ArrayTupleImpl(final Object value, final int length) {
+		a = new Object[length];
+		for (int i = 0; i < length; i++) { 
+			a[i] = value;
+		}
+	}
+	
 	@Override
 	public Iterator<Object> iterator() {
 		return Iterators.forArray(a);

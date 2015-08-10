@@ -440,6 +440,15 @@ public class TestLanguage {
 	}
 
 	/** 
+	 * Test the Tuple.fill method.
+	 */
+	@Test
+	public void testTuple05() {
+		final Tuple expectedResult = Tuple.create(new Object[] { 2.0, 2.0, 2.0 });
+		testFileWithExplicitResult("/tuple05.pt", expectedResult);
+	}
+
+	/** 
 	 * Test the Tuple.map method.
 	 */
 	@Test
