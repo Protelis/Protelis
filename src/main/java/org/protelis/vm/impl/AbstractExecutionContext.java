@@ -51,17 +51,29 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 	private Map<CodePath, Object> toSend;
 	private Number previousRoundTime;
 	
+	/**
+	 * Create a new AbstractExecutionContext.
+	 * @param netmgr Abstract network interface to be used
+	 */
 	protected AbstractExecutionContext(final NetworkManager netmgr) {
 		Objects.requireNonNull(netmgr);
 		nm = netmgr;
 	}
 	
+	@Override
 	public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions) {
 		functions = Collections.unmodifiableMap(knownFunctions);
 	}
 	
+	/**
+	 * @return The current set of environment variables bindings
+	 */
 	protected abstract Map<FasterString, Object> currentEnvironment();
 	
+	/**
+	 * Replace the entire current set of environment variable bindings.
+	 * @param newEnvironment New set of variable bindings
+	 */
 	protected abstract void setEnvironment(Map<FasterString, Object> newEnvironment);
 	
 	@Override
@@ -117,6 +129,10 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		gamma.putAll(map);
 	}
 	
+	/**
+	 * Produce a child execution context, for encapsulated evaluation of sub-programs.
+	 * @return Child execution context
+	 */
 	protected abstract AbstractExecutionContext instance();
 	
 	@Override
@@ -196,10 +212,18 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		return env.remove(new FasterString(id));
 	}
 	
+	/**
+	 * Accessor for abstract network interface.
+	 * @return Current abstract network interface
+	 */
 	protected final NetworkManager getNetworkManager() {
 		return nm;
 	}
 
+	/**
+	 * Support for first-class functions by returning the set of currently accessible functions.
+	 * @return Map from function name to function objects
+	 */
 	protected final Map<FasterString, ?> getFunctions() {
 		return functions;
 	}

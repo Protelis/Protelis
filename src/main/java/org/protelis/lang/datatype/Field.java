@@ -138,10 +138,29 @@ public interface Field extends Serializable {
 	 */
 	Object getSample(DeviceUID n);
 	
+	/**
+	 * Apply an operator to reduce over the set of all devices, selecting a single device.
+	 * @param op Order-insensitive operator to reduce devices in pairs
+	 * @param exclude Device to be excluded (typically self), or null if all devices are to be considered
+	 * @return The single device selected by reduction over the set of all devices
+	 */
 	DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude);
 	
+	/**
+	 * Apply an operator to reduce over the set of all values, selecting a single value.
+	 * @param op Order-insensitive operator to reduce values, two at a time, starting with the default
+	 * @param exclude Device to be excluded (typically self), or null if all devices are to be considered
+	 * @param defaultVal The value to return if the field contains no devices or only the excluded device
+	 * @return The single value created by reduction over the set of all values
+	 */
 	Object reduceVals(final BinaryOperator<Object> op, final DeviceUID exclude, final Object defaultVal);
 	
+	/**
+	 * Apply an operator to reduce over the set of all device/value pairs, selecting a single pair.
+	 * @param accumulator Order-insensitive operator to reduce pairs, two at a time, starting with the default
+	 * @param exclude Device to be excluded (typically self), or null if all devices are to be considered
+	 * @return The single pair selected by reduction over the set of all pairs
+	 */
 	Pair<DeviceUID, Object> reducePairs(final BinaryOperator<Pair<DeviceUID, Object>> accumulator, final DeviceUID exclude);
 
 	/**
@@ -165,7 +184,7 @@ public interface Field extends Serializable {
 	int size();
 
 	/**
-	 * @return True if there are no negihbors
+	 * @return True if there are no neighbors
 	 */
 	boolean isEmpty();
 	
@@ -176,7 +195,9 @@ public interface Field extends Serializable {
 	boolean containsNode(DeviceUID n);
 	
 //	boolean containsNode(long n);
-	
+	/**
+	 * @return The type of the values of this field
+	 */
 	Class<?> getExpectedType();
 
 	

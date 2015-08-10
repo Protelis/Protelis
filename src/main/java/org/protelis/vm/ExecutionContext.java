@@ -173,6 +173,10 @@ public interface ExecutionContext {
 	 */
 	void commit();
 
+	/**
+	 * Used internally to support first-class functions by make the functions of a program accessible for reflection at runtime.
+	 * @param knownFunctions Collection of accessible functions, associating function name and value.
+	 */
 	void setAvailableFunctions(Map<FasterString, FunctionDefinition> knownFunctions);
 	
 }
