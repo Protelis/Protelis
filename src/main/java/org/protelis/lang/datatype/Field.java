@@ -117,10 +117,25 @@ public interface Field extends Serializable {
 		return result;
 	}
 	
+	/**
+	 * Add a neighbor/value pair to this Field.
+	 * @param n Neighbor to add
+	 * @param v Value associated with the neighbor
+	 */
 	void addSample(DeviceUID n, Object v);
 	
+	/**
+	 * Remove a neighbor/value pair from this Field.
+	 * @param n Neighbor to remove
+	 * @return Value that was associated with this neighbor, null if neighbor was not present
+	 */
 	Object removeSample(DeviceUID n);
 	
+	/**
+	 * Get the value associated with a neighbor by this Field.
+	 * @param n Neighbor
+	 * @return Value that is associated with this neighbor, null if neighbor is not present
+	 */
 	Object getSample(DeviceUID n);
 	
 	DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude);
@@ -129,16 +144,35 @@ public interface Field extends Serializable {
 	
 	Pair<DeviceUID, Object> reducePairs(final BinaryOperator<Pair<DeviceUID, Object>> accumulator, final DeviceUID exclude);
 
+	/**
+	 * @return An iterator over the set of neighbors.
+	 */
 	Iterable<DeviceUID> nodeIterator();
 
+	/**
+	 * @return An iterator over the set of neighbor values.
+	 */
 	Iterable<Object> valIterator();
 	
+	/**
+	 * @return An iterator over the set of neighbor/value pairs
+	 */
 	Iterable<Pair<DeviceUID, Object>> coupleIterator();
 
+	/**
+	 * @return Number of neighbors with values in the field
+	 */
 	int size();
 
+	/**
+	 * @return True if there are no negihbors
+	 */
 	boolean isEmpty();
 	
+	/**
+	 * @param n The device being checked for
+	 * @return True if n is contained in this field
+	 */
 	boolean containsNode(DeviceUID n);
 	
 //	boolean containsNode(long n);
