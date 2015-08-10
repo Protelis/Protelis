@@ -27,6 +27,10 @@ import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.ProtelisVM;
 import org.protelis.vm.impl.DummyContext;
 
+/**
+ * @author Danilo Pianini
+ * Main collection of tests for the Protelis language and VM
+ */
 public class TestLanguage {
 	
 	private static final String SL_NAME = "singleLineComment";
@@ -37,26 +41,41 @@ public class TestLanguage {
 	private static final int MIN_CYCLE_NUM = 1;
 	private static final int MAX_CYCLE_NUM = 100;
 
+	/**
+	 * Test the alignedMap construct.
+	 */
 	@Test
 	public void testAlignedMap() {
 		testFileWithMultipleRuns("/alignedMap.pt");
 	}
 
+	/**
+	 * Test Boolean logic operators.
+	 */
 	@Test
 	public void testBinary01() {
 		testFile("/binary01.pt");
 	}
 
+	/**
+	 * Test putting and getting of environment variables.
+	 */
 	@Test
 	public void testEnvironment01() {
 		testFile("/environment01.pt");
 	}
 
+	/**
+	 * Smoke test of basic dynamic program evaluation.
+	 */
 	@Test
 	public void testEval01() {
 		testFile("/eval01.pt");
 	}
 
+	/**
+	 * Test of dynamic evaluation of a complex program, including function definitions.
+	 */
 	@Test
 	public void testEval02() {
 		testFile("/eval02.pt");
@@ -252,16 +271,25 @@ public class TestLanguage {
 		testFile("/multistatement04.pt");
 	}
 
+	/**
+	 * Test random number generation.
+	 */
 	@Test
 	public void testRandom01() {
 		testFileWithMultipleRuns("/random01.pt", 100, 100);
 	}
-
+	
+	/**
+	 * Test rep via a canonical use: creating a counter.
+	 */
 	@Test
 	public void testRep01() {
 		testFileWithMultipleRuns("/rep01.pt", IntStream.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
 	}
 
+	/**
+	 * Test nested rep statements.
+	 */
 	@Test
 	public void testRep02() {
 		double prev = 1;
@@ -271,86 +299,136 @@ public class TestLanguage {
 		}
 	}
 
+	/**
+	 * Test infix addition.
+	 */
 	@Test
 	public void testSum() {
 		testFile("/sum.pt");
 	}
 
+	/**
+	 * Test loading of a file from name without explicit classpath statement.
+	 */
 	@Test
 	public void testLoadFile() {
 		testFile("/sum.pt");
 	}
 
+	/**
+	 * Test loading of a file with explicit classpath statement.
+	 */
 	@Test
 	public void testLoadFromClasspath() {
 		testFileWithExplicitResult("classpath:/sum.pt", 8d);
 	}
 
+	/**
+	 * Test parsing of anonymous expression.
+	 */
 	@Test
 	public void testLoadModule() {
 		testFileWithExplicitResult("5+3", 8d);
 	}
 
+	/**
+	 * Test import of a module as part of an anonymous expression.
+	 */
 	@Test
 	public void testAnonymousLoadModule() {
 		testFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
 	}
 
+	/**
+	 * Test loading from a module name with default package.
+	 */
 	@Test
 	public void testLoadFromModuleName01() {
 		testFileWithExplicitResult("modules04", 1d);
 	}
 
+	/**
+	 * Test loading from a module name from a nested package.
+	 */
 	@Test
 	public void testLoadFromModuleName02() {
 		testFileWithExplicitResult("protelis:test:circular02", 1d);
 	}
 
+	/** 
+	 * Test construction of tuple using '[]' syntax.
+	 */
 	@Test
 	public void testTuple01() {
 		final Tuple expectedResult = Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
 		testFileWithExplicitResult("/tuple01.pt", expectedResult);
 	}
 
+	/** 
+	 * Test construction of tuple with some elements computed rather than inline constants.
+	 */
 	@Test
 	public void testTuple02() {
 		testFile("/tuple02.pt");
 	}
 
+	/**
+	 * Test calling of tuple methods, in particular Tuple.size().
+	 */
 	@Test
 	public void testTuple03() {
 		testFileWithExplicitResult("/tuple03.pt", new Integer(3));
 	}
 
+	/** 
+	 * Test the Tuple.indexof method.
+	 */
 	@Test
 	public void testTuple04() {
 		testFile("/tuple04.pt");
 	}
 
+	/** 
+	 * Test the Tuple.map method.
+	 */
 	@Test
 	public void testTupleMap01() {
 		testFile("/TupleMap01.pt");
 	}
 
+	/** 
+	 * Test the Tuple.reduce method.
+	 */
 	@Test
 	public void testTupleReduce01() {
 		testFile("/TupleReduce01.pt");
 	}
 
+	/** 
+	 * Test the Tuple.filter method.
+	 */
 	@Test
 	public void testTupleFilter01() {
 		testFile("/TupleFilter01.pt");
 	}
 
+	/** 
+	 * Test the unary '!' operator.
+	 */
 	@Test
 	public void testUnary01() {
 		testFile("/unary01.pt");
 	}
 
+	/** 
+	 * Test the unary '-' operator.
+	 */
 	@Test
 	public void testUnary02() {
 		testFileWithExplicitResult("/unary02.pt", -Math.PI);
 	}
+	
+	/********* From this point the rest of the file is not tests, but utility methods *********/
 
 	private static void testFileWithExplicitResult(final String file, final Object expectedResult) {
 		testFile(file, 1, expectedResult);
