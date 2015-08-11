@@ -209,86 +209,137 @@ public class TestLanguage {
 		testFileWithMultipleRuns("/if01.pt");
 	}
 
+	/**
+	 * Test a simple anonymous function inline definition and application.
+	 */
 	@Test
 	public void testLambda01() {
 		testFile("/lambda01.pt");
 	}
 
+	/**
+	 * Test a complex passing and application of lambdas, including an if.
+	 */
 	@Test
 	public void testLambda02() {
 		testFileWithMultipleRuns("/lambda02.pt");
 	}
 
+	/**
+	 * Test a complex passing and application of lambdas, including a mux.
+	 */
 	@Test
 	public void testLambda03() {
 		testFileWithMultipleRuns("/lambda03.pt");
 	}
 
+	/**
+	 * Test constants: -Infinity.
+	 */
 	@Test
 	public void testMath01() {
 		testFile("/math01.pt");
 	}
 
+	/**
+	 * Test constants: -3.
+	 */
 	@Test
 	public void testMath02() {
 		testFile("/math02.pt");
 	}
 
+	/**
+	 * Test arithmetic: addition.
+	 */
 	@Test
 	public void testMath03() {
 		testFile("/math03.pt");
 	}
 
+	/**
+	 * Test arithmetic: equality.
+	 */
 	@Test
 	public void testMath04() {
 		testFile("/math04.pt");
 	}
 
+	/**
+	 * Test fully-qualified call of individually imported static Java method.
+	 */
 	@Test
 	public void testMethod01() {
 		testFile("/method01.pt");
 	}
 
+	/**
+	 * Test unqualified call of individually imported static Java method.
+	 */
 	@Test
 	public void testMethod02() {
 		testFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
 	}
 
+	/**
+	 * Test unqualified call of batch-imported static Java methods.
+	 */
 	@Test
 	public void testMethod03() {
 		testFile("/method03.pt");
 	}
 
+	/**
+	 * Test "dot" call of non-static Java methods.
+	 */
 	@Test
 	public void testMethod04() {
 		testFile("/method04.pt");
 	}
-
+	
+	/**
+	 * Confirm that qualified and unqualified methods are equal.
+	 */
 	@Test
 	public void testMethod05() {
 		testFile("/method05.pt");
 	}
 
+	/**
+	 * Test showing that when unqualified imported Protelis method names conflict, first imported shadows later imports.
+	 */
 	@Test
 	public void testModules01() {
 		testFile("/modules01.pt");
 	}
 
+	/**
+	 * Confirm that local definitions shadow imported Protelis definitions.
+	 */
 	@Test
 	public void testModules02() {
 		testFile("/modules02.pt");
 	}
 
+	/**
+	 * Test that shadowed imported Protelis functions can still be called via their fully qualified names.
+	 */
 	@Test
 	public void testModules03() {
 		testFile("/modules03.pt");
 	}
 
+	/**
+	 * Test that module imports can handle circular references between modules.
+	 */
 	@Test
 	public void testModules04() {
 		testFile("/modules04.pt");
 	}
 
+	/**
+	 * Test that imported modules can import other modules in different packages.
+	 */
 	@Test
 	public void testModules05() {
 		testFile("/modules05.pt");
@@ -302,21 +353,33 @@ public class TestLanguage {
 		testFileWithMultipleRuns("/mux01.pt");
 	}
 
+	/**
+	 * Test two statement sequence.
+	 */
 	@Test
 	public void testMultiStatement01() {
 		testFile("/multistatement01.pt");
 	}
 
+	/**
+	 * Test multiple variable re-assignments.
+	 */
 	@Test
 	public void testMultiStatement02() {
 		testFile("/multistatement02.pt");
 	}
 
+	/**
+	 * Test independence of sequential invocations of a function.
+	 */
 	@Test
 	public void testMultiStatement03() {
 		testFile("/multistatement03.pt");
 	}
 
+	/**
+	 * Test assignment within nested lexical scope.
+	 */
 	@Test
 	public void testMultiStatement04() {
 		testFile("/multistatement04.pt");
