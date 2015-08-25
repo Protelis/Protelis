@@ -1,11 +1,3 @@
-@rem ***************************************************************************
-@rem Copyright (C) 2014, 2015, Danilo Pianini and contributors
-@rem listed in the project's build.gradle or pom.xml file.
-@rem
-@rem This file is part of Protelis, and is distributed under the terms of
-@rem the GNU General Public License, with a linking exception, as described
-@rem in the file LICENSE.txt in this project's top directory.
-@rem ***************************************************************************
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem
