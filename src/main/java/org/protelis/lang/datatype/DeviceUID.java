@@ -12,10 +12,9 @@ import java.io.Serializable;
 
 /**
  * @author Danilo Pianini
- *
+ * The DeviceUID class can be implemented however is appropriate for a given system.
+ * What is important is just that no two devices should ever have the same UID.
+ * If two devices do have the same UID, then the behavior of Protelis is undefined.
  */
 public interface DeviceUID extends Serializable {
-	
-//	long getId();
-	
 }
