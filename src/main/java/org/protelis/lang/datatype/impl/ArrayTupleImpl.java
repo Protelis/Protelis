@@ -307,7 +307,7 @@ public class ArrayTupleImpl implements Tuple {
 					.filter(elem -> {
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
 						fc.eval(ctx);
-						Object outcome = fc.getAnnotation();
+						final Object outcome = fc.getAnnotation();
 						if (outcome instanceof Boolean) {
 							return (Boolean) outcome;
 						} else {
