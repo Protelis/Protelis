@@ -167,7 +167,7 @@ public final class ProtelisLoader {
 				return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
 			}
 			return parseURI(program);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			return parseAnonymousModule(program);
 		}
 	}
