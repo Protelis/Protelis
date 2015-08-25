@@ -14,7 +14,7 @@ package org.protelis.vm;
  */
 public class ProtelisVM {
 
-	private final IProgram prog;
+	private final ProtelisProgram prog;
 	private final ExecutionContext ctx;
 	
 	/**
@@ -24,10 +24,10 @@ public class ProtelisVM {
 	 * @param context
 	 * 		Environment in which this program will be executed
 	 */
-	public ProtelisVM(final IProgram program, final ExecutionContext context) {
+	public ProtelisVM(final ProtelisProgram program, final ExecutionContext context) {
 		prog = program;
 		ctx = context;
-		ctx.setAvailableFunctions(program.getKnownFunctions());
+		ctx.setAvailableFunctions(program.getNamedFunctions());
 	}
 	
 	/**
