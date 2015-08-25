@@ -2,8 +2,11 @@
 
 Java-hosted execution of Protelis programs.
 
-
 ## Usage
+
+### Prerequisites
+
+Protelis requires Java 8+ in order to run.
 
 
 ### Using Protelis in your project
