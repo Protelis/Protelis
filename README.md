@@ -38,7 +38,7 @@ The documentation for any specific version of this library is released on Maven 
 
 ### Downloads
 
-The latest artifacts for this project can be downloaded [here][Jars]. This page includes three artifacts:
+The latest _stable_ artifacts for this project can be downloaded [here][Jars]. This page includes three artifacts:
 * A jar file containing the compiled class files
 * A jar file containing the source code
 * A jar file containing the generated javadoc
@@ -140,7 +140,7 @@ We use a three levels numbering:
 
 
 [Javadoc]: http://137.204.107.70/protelis-build/protelis/build/docs/javadoc/
-[Jars]: https://drone.io/github.com/Protelis/Protelis/files
+[Jars]: http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22protelis%22
 [reports]: https://drone.io/github.com/Protelis/Protelis/files/build/reports/reports.tar
 [dashboard]: http://137.204.107.70/protelis-build/protelis/build/reports/buildDashboard/
 [test]: http://137.204.107.70/protelis-build/protelis/build/reports/tests/
