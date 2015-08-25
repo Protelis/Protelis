@@ -113,7 +113,7 @@ public enum HoodOp {
 				return empty.get();
 			}
 			final Class<?> type = field.getExpectedType();
-			for (Pair<Class<?>, Supplier<Object>> sup : suppliers) {
+			for (final Pair<Class<?>, Supplier<Object>> sup : suppliers) {
 				if (sup.getFirst().isAssignableFrom(type)) {
 					/*
 					 * Field has compatible type
@@ -121,7 +121,7 @@ public enum HoodOp {
 					return sup.getSecond().get();
 				}
 			}
-			for (Pair<Class<?>, Function<Object, Object>> cloner : cloners) {
+			for (final Pair<Class<?>, Function<Object, Object>> cloner : cloners) {
 				if (cloner.getFirst().isAssignableFrom(type)) {
 					return cloner.getSecond().apply(field.valIterator().iterator().next());
 				}

@@ -294,8 +294,8 @@ public final class ProtelisLoader {
 	public static IProgram parse(final Resource resource) {
 		if (!resource.getErrors().isEmpty()) {
 			for (final Diagnostic d : recursivelyCollectErrors(resource)) {
-				AbstractDiagnostic ad = (AbstractDiagnostic) d;
-				String place = ad.getUriToProblem().toString().split("#")[0];
+				final AbstractDiagnostic ad = (AbstractDiagnostic) d;
+				final String place = ad.getUriToProblem().toString().split("#")[0];
 				L.error("Error in " + place + " at line " + d.getLine() + ": " + d.getMessage());
 			}
 			throw new IllegalArgumentException("Protelis program cannot be run because it has errors.");
@@ -336,7 +336,7 @@ public final class ProtelisLoader {
 		// Mark as visited
 		completed.add(resource);
 		// Walk linked resources
-		for (Resource r : resource.getResourceSet().getResources()) {
+		for (final Resource r : resource.getResourceSet().getResources()) {
 			if (!completed.contains(r)) { 
 				recursivelyCollectErrors(r, errors, completed); 
 			}

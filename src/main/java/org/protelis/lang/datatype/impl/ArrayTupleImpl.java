@@ -89,7 +89,7 @@ public class ArrayTupleImpl implements Tuple {
 		return subTuple(0, i);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") // NOPMD by jakebeal on 8/25/15 12:42 PM
 	@Override
 	public int compareTo(final Tuple o) {
 		int res = 0;

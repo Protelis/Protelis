@@ -34,6 +34,6 @@ public final class OpUtils {
 			}
 			msg += '.';
 		}
-		throw new UnsupportedOperationException(msg.toString());
+		throw new UnsupportedOperationException(msg);
 	}	
 }
