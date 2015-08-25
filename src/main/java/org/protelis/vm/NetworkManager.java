@@ -26,13 +26,18 @@ import org.protelis.vm.util.CodePath;
 public interface NetworkManager {
 
 	/**
-	 * Called by {@link ProtelisVM} during execution to collect the most recent information available from neighbors.
-	 * @return A map associated each neighbor with its shared state
+	 * Called by {@link ProtelisVM} during execution to collect the most recent information available 
+	 * from neighbors.  The call is serial within the execution, so this should probably poll 
+	 * state maintained by a separate thread, rather than gathering state during this call.
+	 * @return A map associating each neighbor with its shared state.  
+	 * 		The object returned should not be modified, and {@link ProtelisVM} will not change it either.
 	 */
 	Map<DeviceUID, Map<CodePath, Object>> takeMessages();
 
 	/**
 	 * Called by {@link ProtelisVM} during execution to send its current shared state to neighbors.
+	 * The call is serial within the execution, so this should probably queue up a message to
+	 * be sent, rather than actually carrying out a lengthy operations during this call.
 	 * @param toSend 
 	 * 		Shared state to be transmitted to neighbors.
 	 */
