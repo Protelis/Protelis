@@ -10,27 +10,29 @@ package org.protelis.lang.util;
 
 /**
  * @author Danilo Pianini
- *
+ * Utility class that OpN classes use for reporting certain failure patterns
  */
-public final class OpUtil {
+public final class OpUtils {
 
-	private static final int INITIAL_SIZE = 128;
-	
-	private OpUtil() {
+	// Not constructable: can only be used for static methods
+	private OpUtils() {
 	}
-
-	public static <T> T unsupported(final String op, final Object... a) {
-		final StringBuilder msg = new StringBuilder(INITIAL_SIZE);
-		msg.append("Nobody told me how to run ");
-		msg.append(op);
+	
+	// Made this package-only 
+	static <T> T unsupported(final String op, final Object... a) {
+		String msg = "Nobody told me how to run " + op;
 		if (a.length > 0) {
-			msg.append(" with parameters of class: ");
+			msg += " with parameters of class: ";
+			boolean first = true;
 			for (final Object o : a) {
-				msg.append(o == null ? "null" : o.getClass().getSimpleName());
-				msg.append(", ");
+				if (first) { 
+					first = false; 
+				} else { 
+					msg += ", "; 
+				}
+				msg += (o == null ? "null" : o.getClass().getSimpleName());
 			}
-			msg.delete(msg.length() - 2, msg.length());
-			msg.append('.');
+			msg += '.';
 		}
 		throw new UnsupportedOperationException(msg.toString());
 	}	

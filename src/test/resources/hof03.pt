@@ -1,5 +1,5 @@
 /*
- * Make sure that each each call bounds to a different instance of the function
+ * Make sure that each apply call bounds to a different instance of the function
  * 
  * EXPECTED_RESULT: $CYCLE
  */

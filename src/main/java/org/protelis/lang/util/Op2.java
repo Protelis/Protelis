@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.util;
 
-import static org.protelis.lang.util.OpUtil.unsupported;
+import static org.protelis.lang.util.OpUtils.unsupported;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -23,25 +23,41 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Danilo Pianini
- *
+ * Infix operator that takes two inputs, such as addition, division, or "greater than" comparison
  */
 public enum Op2 {
 	
+	/** Logical AND operation. */
 	AND("&&", Op2::and),
+	/** Arithmetic division operation. */
 	DIVIDE("/", Op2::divide),
+	/** Equality comparison operation. */
 	EQUALS("==", Op2::equals),
+	/** Inequality comparison operation. */
 	NOT_EQUALS("!=", (a, b) -> !Op2.equals(a, b)),
+	/** Greater-than comparison operation. */
 	GREATER(">", Op2::greater),
+	/** Greater-than-or-equal comparison operation. */
 	GREATER_EQUALS(">=", Op2::greaterEquals),
+	/** Maximum of two numbers or other Comparable objects. */
 	MAX("min", Op2::max),
+	/** Minimum of two numbers or other Comparable objects. */
 	MIN("min", Op2::min),
+	/** Arithmetic subtraction operation. */
 	MINUS("-", Op2::minus),
+	/** Modulus operation. */
 	MODULUS("%", Op2::modulus),
+	/** Logical OR operation. */
 	OR("||", Op2::or),
+	/** Arithmetic addition operation. */
 	PLUS("+", Op2::plus),
+	/** Exponent operation. */
 	POWER("^", Op2::pow),
+	/** Less-than comparison operation. */
 	SMALLER("<", Op2::smaller),
+	/** Less-than-or-equal comparison operation. */
 	SMALLER_EQUALS("<=", Op2::smallerEquals),
+	/** Arithmetic multiplication operation. */
 	TIMES("*", Op2::times);
 	
 	private static final Logger L = LoggerFactory.getLogger(Op2.class);
@@ -58,10 +74,21 @@ public enum Op2 {
 		n = name;
 	}
 
+	/**
+	 * @return The function implementing this operator
+	 */
 	public BinaryOperator<Object> getFunction() {
 		return fun;
 	}
 
+	/**
+	 * Compute the value of applying the two-argument operator to inputs a and b.
+	 * @param a
+	 * 		First input
+	 * @param b
+	 * 		Second input
+	 * @return result of applying the operator to a and b
+	 */
 	public Object run(final Object a, final Object b) {
 		final boolean afield = a instanceof Field;
 		final boolean bfield = b instanceof Field;

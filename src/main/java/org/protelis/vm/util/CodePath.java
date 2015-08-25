@@ -18,7 +18,10 @@ import org.danilopianini.lang.Constants;
 
 /**
  * @author Danilo Pianini
- *
+ * A CodePath is a trace from the root to some node in a VM execution tree.
+ * Its use is to allow particular execution locations to be serialized and compared between
+ * different VMs, thereby enabling code alignment.  Importantly, the hashCode can be
+ * used to uniquely identify CodePath objects, allowing lightweight transmission and comparison.
  */
 public class CodePath implements Serializable {
 
@@ -31,7 +34,8 @@ public class CodePath implements Serializable {
 	private String string;
 
 	/**
-	 * 
+	 * @param stack 
+	 * 		The numerical markers forming an execution trace to be represented
 	 */
 	public CodePath(final TByteList stack) {
 		size = stack.size();
