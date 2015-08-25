@@ -114,7 +114,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
 	@Override
 	public final void returnFromCallFrame() {
-		int size = callFrameSizes.pop();
+		final int size = callFrameSizes.pop();
 		callStack.remove(callStack.size() - size, size);
 		gamma.pop();
 	}
@@ -233,7 +233,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		/*
 		 * try not to lose precision:
 		 */
-		Class<? extends Number> tClass = PrimitiveUtils.toPrimitiveWrapper(previousRoundTime);
+		final Class<? extends Number> tClass = PrimitiveUtils.toPrimitiveWrapper(previousRoundTime);
 		if (Double.class.equals(tClass) || Float.class.equals(tClass)) {
 			return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
 		}
