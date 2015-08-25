@@ -216,7 +216,7 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public int hashCode() {
 		if (hash == 0) {
-			hash = HashUtils.djb2int32obj(a);
+			hash = HashUtils.hash32(a);
 		}
 		return hash;
 	}
