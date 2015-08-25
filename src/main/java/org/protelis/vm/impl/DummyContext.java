@@ -60,33 +60,7 @@ public final class DummyContext extends AbstractExecutionContext {
 	
 	@Override
 	public IPosition getDevicePosition() {
-		return new IPosition() {
-			private static final long serialVersionUID = 1L;
-			@Override
-			public int compareTo(final IPosition o) {
-				return 0;
-			}
-			@Override
-			public double getDistanceTo(final IPosition p) {
-				return 0;
-			}
-			@Override
-			public int getDimensions() {
-				return 2;
-			}
-			@Override
-			public double getCoordinate(final int dim) {
-				return 0;
-			}
-			@Override
-			public double[] getCartesianCoordinates() {
-				return new double[]{0, 0};
-			}
-			@Override
-			public Pair<IPosition, IPosition> buildBoundingBox(final double range) {
-				return Pair.create(this, this);
-			}
-		};
+		return new DummyPosition();
 	}
 	
 	@Override
@@ -107,6 +81,42 @@ public final class DummyContext extends AbstractExecutionContext {
 	@Override
 	protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
 		environment = newEnvironment;
+	}
+	
+	private static class DummyPosition implements IPosition {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public int compareTo(final IPosition o) {
+			return 0;
+		}
+		@Override
+		public double getDistanceTo(final IPosition p) {
+			return 0;
+		}
+		@Override
+		public int getDimensions() {
+			return 2;
+		}
+		@Override
+		public double getCoordinate(final int dim) {
+			return 0;
+		}
+		@Override
+		public double[] getCartesianCoordinates() {
+			return new double[]{0, 0};
+		}
+		@Override
+		public Pair<IPosition, IPosition> buildBoundingBox(final double range) {
+			return Pair.create(this, this);
+		}
+		@Override
+		public boolean equals(final Object obj) {
+			return obj instanceof DummyPosition;
+		}
+		@Override
+		public int hashCode() {
+			return 0;
+		}
 	}
 
 

@@ -25,11 +25,11 @@ import java.util.List;
 public class FunctionDefinition implements Serializable {
 
 	private static final long serialVersionUID = -4996419276551742628L;
-	private final FasterString n;
+	private final FasterString functionName;
 	private final int argNumber;
 	private final FasterString[] internalNames;
 	private final TByteList stackCode;
-	private AnnotatedTree<?> b;
+	private AnnotatedTree<?> functionBody;
 	
 	/**
 	 * @param name function name
@@ -37,14 +37,14 @@ public class FunctionDefinition implements Serializable {
 	 */
 	public FunctionDefinition(final FasterString name, final List<VAR> args) {
 		argNumber = args.size();
-		n = name;
+		functionName = name;
 		internalNames = new FasterString[argNumber];
 		for (int i = 0; i < argNumber; i++) {
 			internalNames[i] = new FasterString(args.get(i).getName());
 		}
 		final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES + Long.BYTES + 1);
-		bb.putInt(n.hashCode());
-		bb.putLong(n.hash64());
+		bb.putInt(functionName.hashCode());
+		bb.putLong(functionName.hash64());
 		bb.put((byte) argNumber);
 		stackCode = new TByteArrayList(bb.array());
 	}
@@ -69,33 +69,33 @@ public class FunctionDefinition implements Serializable {
 	 *         are cleared. No side effects.
 	 */
 	public AnnotatedTree<?> getBody() {
-		return b.copy();
+		return functionBody.copy();
 	}
 
 	/**
 	 * @param body the body of this function
 	 */
 	public void setBody(final AnnotatedTree<?> body) {
-		b = body;
+		functionBody = body;
 	}
 	
 	/**
 	 * @return function name
 	 */
 	public FasterString getName() {
-		return n;
+		return functionName;
 	}
 	
 	@Override
 	public String toString() {
-		return n + "/" + argNumber;
+		return functionName + "/" + argNumber;
 	}
 	
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof FunctionDefinition) {
 			final FunctionDefinition fd = (FunctionDefinition) o;
-			return n.equals(fd.n) && argNumber == fd.argNumber;
+			return functionName.equals(fd.functionName) && argNumber == fd.argNumber;
 		}
 		return false;
 	}
@@ -110,7 +110,7 @@ public class FunctionDefinition implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		return n.hashCode() + argNumber;
+		return functionName.hashCode() + argNumber;
 	}
 	
 	/**
