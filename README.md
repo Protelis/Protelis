@@ -38,7 +38,7 @@ The documentation for any specific version of this library is released on Maven 
 
 ### Downloads
 
-The latest artifacts for this project can be downloaded [here][Jars]. This page includes three artifacts:
+The latest _stable_ artifacts for this project can be downloaded [here][Jars]. This page includes three artifacts:
 * A jar file containing the compiled class files
 * A jar file containing the source code
 * A jar file containing the generated javadoc
@@ -107,6 +107,8 @@ The project has been developed using Eclipse, and can be easily imported in such
 * The project will appear in your projects list.
 * Right click on the project, select Gradle -> Refresh Dependencies. If the option is disabled, do first Gradle -> Enable Dependency Management and then try again.
 * Checkstyle, PMD and FindBugs should be pre-configured. **Do not** run Gradle -> Refresh all, because that would delete the automatic invocation of the code checkers.
+	* If you have not noticed the warning above and you have deleted our Eclipse configuration, assuming that you have not committed your changes, you can recover it by using ```git checkout HEAD .settings/edu.umd.cs.findbugs.core.prefs .settings/org.eclipse.jdt.core.prefs .pmd .checkstyle .project .classpath```
+	* If you also have committed the changes to those files, run the same command substituting ``HEAD`` with the latest commit from us.
 
 ### Developing the project
 Contributions to this project are welcome.  To ensure that your contribution is incorporated quickly, we request that you follow the following coding best practices:
@@ -139,7 +141,7 @@ We use a three level numbering, following the model of [Semantic Versioning][Sem
 
 
 [Javadoc]: http://137.204.107.70/protelis-build/protelis/build/docs/javadoc/
-[Jars]: https://drone.io/github.com/Protelis/Protelis/files
+[Jars]: http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22protelis%22
 [reports]: https://drone.io/github.com/Protelis/Protelis/files/build/reports/reports.tar
 [dashboard]: http://137.204.107.70/protelis-build/protelis/build/reports/buildDashboard/
 [test]: http://137.204.107.70/protelis-build/protelis/build/reports/tests/
