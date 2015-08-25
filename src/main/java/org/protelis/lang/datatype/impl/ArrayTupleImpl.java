@@ -51,6 +51,18 @@ public class ArrayTupleImpl implements Tuple {
 		a = copy ? Arrays.copyOf(base, base.length) : base;
 	}
 	
+	/**
+	 * Create an ArrayTupleImpl with all elements initialized to a given value.
+	 * @param value The value to initialize to
+	 * @param length The length of the tuple
+	 */
+	public ArrayTupleImpl(final Object value, final int length) {
+		a = new Object[length];
+		for (int i = 0; i < length; i++) { 
+			a[i] = value;
+		}
+	}
+	
 	@Override
 	public Iterator<Object> iterator() {
 		return Iterators.forArray(a);
@@ -156,12 +168,17 @@ public class ArrayTupleImpl implements Tuple {
 
 	@Override
 	public boolean contains(final Object element) {
+		return indexof(element) >= 0;
+	}
+	
+	@Override
+	public int indexof(final Object element) {
 		for (int i = 0; i < a.length; i++) {
 			if (a[i].equals(element)) {
-				return true;
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	}
 
 	@Override
@@ -262,6 +279,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
 		/*
 		 * TODO Do a Objects.requireNonNull
@@ -285,6 +303,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
 		if (fun.getArgNumber() == 1) {
 			return Tuple.create(
@@ -306,6 +325,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
 		Objects.requireNonNull(fun);
 		if (fun.getArgNumber() == 1) {

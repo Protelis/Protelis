@@ -23,12 +23,14 @@ import it.unibo.alchemist.language.protelis.protelis.Statement;
 import it.unibo.alchemist.language.protelis.protelis.StringVal;
 import it.unibo.alchemist.language.protelis.protelis.TupleVal;
 import it.unibo.alchemist.language.protelis.protelis.VAR;
+
 import org.danilopianini.lang.util.FasterString;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -56,6 +58,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.common.types.JvmOperation;
+import org.eclipse.xtext.diagnostics.AbstractDiagnostic;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
@@ -101,7 +104,7 @@ import com.google.inject.Injector;
  */
 public final class ProtelisLoader {
 
-	private static final Logger L = LoggerFactory.getLogger(ProtelisLoader.class);
+	private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
 	private static final AtomicInteger IDGEN = new AtomicInteger();
 	private static final XtextResourceSet XTEXT = createResourceSet();
 	private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
@@ -133,7 +136,7 @@ public final class ProtelisLoader {
 
 	/**
 	 * @param program
-	 *            Protelis module, program file or program to execute. It must
+	 *            Protelis module, program file or program to be prepared for execution. It must
 	 *            be one of:
 	 * 
 	 *            i) a valid Protelis qualifier name (Java like name, colon
@@ -155,10 +158,10 @@ public final class ProtelisLoader {
 	 *            automatically by this constructor, linking is performed by
 	 *            Xtext transparently. {@link URI}s of type "platform:/" are
 	 *            supported, for those who work within an Eclipse environment.
-	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
-	 *         {@link FunctionDefinition} (containing the available functions)
+	 * @return an {@link IProgram} comprising the constructed program
+	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parse(final String program) {
+	public static IProgram parse(final String program) throws IllegalArgumentException {
 		try {
 			if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
 				return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
@@ -169,13 +172,26 @@ public final class ProtelisLoader {
 		}
 	}
 	
-	public static IProgram parseAnonymousModule(final String program) {
+	/**
+	 * @param program
+	 *            A valid Protelis program to be prepared for execution.
+	 * 
+	 * 			  All the Protelis modules your program relies upon must be included in
+	 *            your Java classpath. The Java classpath scanning is done
+	 *            automatically by this constructor, linking is performed by
+	 *            Xtext transparently. {@link URI}s of type "platform:/" are
+	 *            supported, for those who work within an Eclipse environment.
+	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
+	 *         {@link FunctionDefinition} (containing the available functions)
+	 * @throws IllegalArgumentException when the program has errors
+	 */
+	public static IProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
 		return parse(resourceFromString(program));
 	}
 	
 	/**
 	 * @param programURI
-	 *            Protelis program file to execute. It must be a either a valid
+	 *            Protelis program file to be prepared for execution. It must be a either a valid
 	 *            {@link URI} string, for instance
 	 *            "file:///home/user/protelis/myProgram" or a location relative
 	 *            to the classpath. In case, for instance,
@@ -187,9 +203,10 @@ public final class ProtelisLoader {
 	 *            Xtext transparently. {@link URI}s of type "platform:/" are
 	 *            supported, for those who work within an Eclipse environment.
 	 * @return a new {@link IProgram}
-	 * @throws IOException 
+	 * @throws IOException when the resource cannot be found
+	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parseURI(final String programURI) throws IOException {
+	public static IProgram parseURI(final String programURI) throws IOException, IllegalArgumentException {
 			return parse(resourceFromURIString(programURI));
 	}
 	
@@ -230,10 +247,10 @@ public final class ProtelisLoader {
 	 * @return a dummy:/ resource that can be used to interpret the program
 	 */
 	public static Resource resourceFromString(final String program) {
-		final XtextResourceSet xrs = XTEXT;//createResourceSet();
+		final XtextResourceSet xrs = XTEXT;
 		InputStream in = new StringInputStream(program);
 		try {
-			loadStringResources(xrs,in);
+			loadStringResources(xrs, in);
 		} catch (IOException e) {
 			L.error("Couldn't get resources associated with anonymous program", e);
 		}
@@ -276,14 +293,12 @@ public final class ProtelisLoader {
 	 */
 	public static IProgram parse(final Resource resource) {
 		if (!resource.getErrors().isEmpty()) {
-			for (final Diagnostic d : resource.getErrors()) {
-				final StringBuilder b = new StringBuilder("Error at line ");
-				b.append(d.getLine());
-				b.append(": ");
-				b.append(d.getMessage());
-				L.error(b.toString());
+			for (final Diagnostic d : recursivelyCollectErrors(resource)) {
+				AbstractDiagnostic ad = (AbstractDiagnostic) d;
+				String place = ad.getUriToProblem().toString().split("#")[0];
+				L.error("Error in " + place + " at line " + d.getLine() + ": " + d.getMessage());
 			}
-			throw new IllegalArgumentException("Your program has syntax errors. Feed me something usable, please.");
+			throw new IllegalArgumentException("Protelis program cannot be run because it has errors.");
 		}
 		final Program root = (Program) resource.getContents().get(0);
 		/*
@@ -313,6 +328,24 @@ public final class ProtelisLoader {
 		return new SimpleProgramImpl(root, parseBlock(root.getProgram(), nameToFun, funToFun, id), nameToFun);
 	}
 	
+	private static Iterable<Diagnostic> recursivelyCollectErrors(final Resource resource) {
+		return recursivelyCollectErrors(resource, new ArrayList<>(), new HashSet<>());
+	}
+
+	private static Iterable<Diagnostic> recursivelyCollectErrors(final Resource resource, final List<Diagnostic> errors, final Set<Resource> completed) {
+		// Mark as visited
+		completed.add(resource);
+		// Walk linked resources
+		for (Resource r : resource.getResourceSet().getResources()) {
+			if (!completed.contains(r)) { 
+				recursivelyCollectErrors(r, errors, completed); 
+			}
+		}
+		// Add local errors (last, so that the "deeper" errors are listed first)
+		errors.addAll(resource.getErrors());
+		return errors;
+	}
+
 	private static void recursivelyInitFunctions(
 			final Program module,
 			final Map<FasterString, FunctionDefinition> nameToFun,
