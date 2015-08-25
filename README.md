@@ -107,6 +107,8 @@ The project has been developed using Eclipse, and can be easily imported in such
 * The project will appear in your projects list.
 * Right click on the project, select Gradle -> Refresh Dependencies. If the option is disabled, do first Gradle -> Enable Dependency Management and then try again.
 * Checkstyle, PMD and FindBugs should be pre-configured. **Do not** run Gradle -> Refresh all, because that would delete the automatic invocation of the code checkers.
+	* If you have not noticed the warning above and you have deleted our Eclipse configuration, assuming that you have not committed your changes, you can recover it by using ```git checkout HEAD .settings/edu.umd.cs.findbugs.core.prefs .settings/org.eclipse.jdt.core.prefs .pmd .checkstyle .project .classpath```
+	* If you also have committed the changes to those files, run the same command substituting ``HEAD`` with the latest commit from us.
 
 ### Developing the project
 Contributions to this project are welcome. Just some rules:
