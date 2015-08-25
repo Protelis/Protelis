@@ -9,7 +9,6 @@
 package org.protelis.lang.datatype.impl;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -27,8 +26,10 @@ import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.vm.ExecutionContext;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * @author Danilo Pianini
@@ -232,29 +233,20 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	@Override
-	public Tuple union(final Tuple t) {
-		final Set<Object> l = new HashSet<>(Arrays.asList(a));
-		for (final Object o : t) {
-			l.add(o);
-		}
-		return Tuple.create(l.toArray());
+	public ArrayTupleImpl union(final Tuple t) {
+		return new ArrayTupleImpl(Sets.newLinkedHashSet(Iterables.concat(this, t)).toArray(), false);
 	}
 
 	@Override
 	public Tuple intersection(final Tuple t) {
-		final Set<Object> l = new HashSet<>();
-		final Set<Object> lIn = new HashSet<>(Arrays.asList(a));
-		for (final Object o : t) {
-			if (lIn.contains(o)) {
-				l.add(o);
-			}
-		}
-		return Tuple.create(l.toArray());
+		final Set<Object> l1 = Sets.newLinkedHashSet(this);
+		final Set<Object> l2 = Sets.newLinkedHashSet(t);
+		return new ArrayTupleImpl(Sets.intersection(l1, l2).toArray(), false);
 	}
 
 	@Override
 	public Tuple subtract(final Tuple t) {
-		final Set<Object> l = new HashSet<>(Arrays.asList(a));
+		final Set<Object> l = Sets.newLinkedHashSet(this);
 		for (final Object o : t) {
 			l.remove(o);
 		}
