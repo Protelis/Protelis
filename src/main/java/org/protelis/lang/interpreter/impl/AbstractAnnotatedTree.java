@@ -288,4 +288,15 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		}
 	}
 
+	/**
+	 * Push a new scope onto the stack, evaluate in that scope, then return to the prior scope.
+	 * @param context	Evaluation context to be extended with new frame
+	 * @param target	Item to be evaluated
+	 * @param frameId	id marker for new frame
+	 */
+	protected static void evalInNewStackFrame(final ExecutionContext context, final AnnotatedTree<?> target, final byte frameId) {
+		context.newCallStackFrame(frameId);
+		target.eval(context);
+		context.returnFromCallFrame();
+	}
 }
