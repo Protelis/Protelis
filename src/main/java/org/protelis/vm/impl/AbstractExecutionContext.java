@@ -85,7 +85,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		Objects.requireNonNull(functions);
 		previousRoundTime = getCurrentTime();
 		setEnvironment(env);
-		nm.sendMessage(toSend);
+		nm.shareState(toSend);
 		env = null;
 		gamma = null;
 		theta = null;
@@ -102,7 +102,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		env = currentEnvironment();
 		toSend = MAPMAKER.makeMap();
 		gamma = new StackImpl(new HashMap<>(functions));
-		theta = Collections.unmodifiableMap(nm.takeMessages());
+		theta = Collections.unmodifiableMap(nm.getNeighborState());
 	}
 	
 	@Override
