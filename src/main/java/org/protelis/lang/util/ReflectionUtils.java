@@ -44,7 +44,7 @@ public final class ReflectionUtils {
 			.expireAfterAccess(1, TimeUnit.HOURS)
 			.build(new CacheLoader<Triple<Class<?>, String, List<Class<?>>>, Method>() {
 				@Override
-				public Method load(final Triple<Class<?>, String, List<Class<?>>> key) throws Exception {
+				public Method load(final Triple<Class<?>, String, List<Class<?>>> key) {
 					final List<Class<?>> al = key.getRight();
 					final Class<?>[] args = new Class<?>[al.size()];
 					return loadBestMethod(key.getLeft(), key.getMiddle(), al.toArray(args));
