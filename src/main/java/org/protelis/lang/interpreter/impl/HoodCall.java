@@ -22,7 +22,7 @@ import org.protelis.vm.ExecutionContext;
 public class HoodCall extends AbstractAnnotatedTree<Object> {
 	
 	private static final long serialVersionUID = -4925767634715581329L;
-	private final HoodOp f;
+	private final HoodOp function;
 	private final AnnotatedTree<Field> body;
 	private final boolean inclusive;
 
@@ -34,24 +34,24 @@ public class HoodCall extends AbstractAnnotatedTree<Object> {
 	public HoodCall(final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
 		super(arg);
 		body = arg;
-		f = func;
+		function = func;
 		inclusive = includeSelf;
 	}
 	
 	@Override
 	public AnnotatedTree<Object> copy() {
-		return new HoodCall(body.copy(), f, inclusive);
+		return new HoodCall(body.copy(), function, inclusive);
 	}
 
 	@Override
 	public void eval(final ExecutionContext context) {
 		projectAndEval(context);
-		setAnnotation(f.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
+		setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
 	}
 
 	@Override
 	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(f.toString().toLowerCase(Locale.US));
+		sb.append(function.toString().toLowerCase(Locale.US));
 		sb.append("Hood (");
 		fillBranches(sb, i, ',');
 		sb.append(')');

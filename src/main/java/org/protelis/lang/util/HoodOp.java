@@ -87,7 +87,7 @@ public enum HoodOp {
 		of(create(Object.class, Tuple::create)),
 		of()
 	);
-	private final BiFunction<Field, DeviceUID, Object> f;
+	private final BiFunction<Field, DeviceUID, Object> function;
 	private final Function<Field, Object> defs;
 	
 	/**
@@ -104,7 +104,7 @@ public enum HoodOp {
 	 *            provide a specific value-agnostic default
 	 */
 	private HoodOp(final BiFunction<Field, DeviceUID, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
-		f = fun;
+		function = fun;
 		defs = (field) -> {
 			/*
 			 * Field empty: generate a default.
@@ -164,7 +164,7 @@ public enum HoodOp {
 	 * @return the Object resulting in the hood application
 	 */
 	public Object run(final Field o, final DeviceUID n) {
-		return f.apply(o, n);
+		return function.apply(o, n);
 	}
 	
 	private static Object min(final Field f, final DeviceUID n) {

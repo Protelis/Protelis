@@ -67,11 +67,11 @@ public enum Op2 {
 	private static final int[] NONE = new int[]{};
 	private static final Map<String, Op2> MAP = new ConcurrentHashMap<>();
 	private final BinaryOperator<Object> fun;
-	private final String n;
+	private final String opName;
 
 	private Op2(final String name, final BinaryOperator<Object> function) {
 		fun = function;
-		n = name;
+		opName = name;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public enum Op2 {
 
 	@Override
 	public String toString() {
-		return n;
+		return opName;
 	}
 
 	/**
@@ -113,7 +113,7 @@ public enum Op2 {
 	public static Op2 getOp(final String name) {
 		Op2 op = MAP.get(name);
 		if (op == null) {
-			op = Arrays.stream(values()).parallel().filter(o -> o.n.equals(name)).findFirst().get();
+			op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
 			MAP.put(name, op);
 		}
 		return op;
