@@ -25,8 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * @author Danilo Pianini
- *
+ *	Base implementation of {@link ProtelisProgram}.
  */
 public class SimpleProgramImpl implements ProtelisProgram {
 	

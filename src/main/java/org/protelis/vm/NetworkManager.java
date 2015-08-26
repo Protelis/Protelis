@@ -14,7 +14,6 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.util.CodePath;
 
 /**
- * @author Danilo Pianini
  * Abstraction of networking used by the virtual machine: at each execution round, the VM needs
  * to be able to access the most recent state received from neighbors and to be able to update
  * the state that it is exporting to neighbors.

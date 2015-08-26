@@ -15,8 +15,7 @@ import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
 
 /**
- * @author Danilo Pianini
- * Executable representation of a Protelis program
+ * Executable representation of a Protelis program.
  */
 public interface ProtelisProgram extends Serializable {
 	

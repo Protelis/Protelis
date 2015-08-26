@@ -12,8 +12,7 @@ import org.danilopianini.lang.util.FasterString;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Access a variable.
  */
 public class Variable extends AbstractAnnotatedTree<Object> {
 
@@ -51,6 +50,7 @@ public class Variable extends AbstractAnnotatedTree<Object> {
 			 */
 			val = false;
 		}
+		// TODO: is all this stuff really OK to be removed?  I don't think so...
 //		if(val instanceof Field) {
 //			final CodePath curPath = new CodePath(currentPosition);
 //			newMap.put(curPath, val);

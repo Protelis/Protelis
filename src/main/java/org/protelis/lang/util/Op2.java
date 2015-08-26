@@ -22,8 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Danilo Pianini
- * Infix operator that takes two inputs, such as addition, division, or "greater than" comparison
+ * Infix operator that takes two inputs, such as addition, division, or "greater than" comparison.
  */
 public enum Op2 {
 	

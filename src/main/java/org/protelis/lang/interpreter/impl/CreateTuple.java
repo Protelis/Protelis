@@ -19,8 +19,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Construct a Tuple.
  */
 public class CreateTuple extends AbstractAnnotatedTree<Object> {
 	

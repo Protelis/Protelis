@@ -27,8 +27,9 @@ import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
 
 /**
- * @author Danilo Pianini
- *
+ *	Operation evaluating a collection of expressions associated with keys, such
+ *	as a set of publish-subscribe streams.  This allows devices with different
+ *	sets of keys to align the expressions that share keys together.
  */
 public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
 

@@ -28,8 +28,7 @@ import org.protelis.vm.ProtelisVM;
 import org.protelis.vm.impl.DummyContext;
 
 /**
- * @author Danilo Pianini
- * Main collection of tests for the Protelis language and VM
+ * Main collection of tests for the Protelis language and VM.
  */
 public class TestLanguage {
 	

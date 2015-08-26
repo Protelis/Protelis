@@ -16,7 +16,6 @@ import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DeviceUID;
 
 /**
- * @author Danilo Pianini
  * Field implementation based on neighbor/value pairs stored in a hash table.
  */
 public class FieldMapImpl extends AbstractField {

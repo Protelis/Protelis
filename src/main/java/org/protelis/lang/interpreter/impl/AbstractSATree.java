@@ -14,7 +14,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.SuperscriptedAnnotatedTree;
 
 /**
- * @author Danilo Pianini
+ * Basic implementation of a {@link SuperscriptedAnnotatedTree}.
  *
  * @param <S> Superscript type
  * @param <T> Annotation type

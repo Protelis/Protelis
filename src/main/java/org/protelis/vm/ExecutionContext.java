@@ -23,8 +23,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * @author Danilo Pianini
- *
+ *	Interface between a ProtelisVM and environment in which it is executing.
+ *	The ExecutionContext is responsible for three things:
+ *	1. Tracking local persistent state from evaluation to evaluation
+ *	2. Tracking evaluation state shared by neighbors
+ *	3. The state of the device in its external environment (time, space, sensors, etc.)
  */
 public interface ExecutionContext {
 

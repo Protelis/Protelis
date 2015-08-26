@@ -23,8 +23,6 @@ import java.util.Random;
 
 /**
  * A dummy Protelis VM to be used for testing.
- * 
- * @author Danilo Pianini
  *
  */
 public final class DummyContext extends AbstractExecutionContext {

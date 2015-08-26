@@ -99,8 +99,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.google.inject.Injector;
 
 /**
- * @author Danilo Pianini
- *
+ *	Main entry-point class for loading/parsing Protelis programs.
  */
 public final class ProtelisLoader {
 

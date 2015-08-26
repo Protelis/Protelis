@@ -18,8 +18,7 @@ import java.util.function.UnaryOperator;
 import org.protelis.lang.datatype.Field;
 
 /**
- * @author Danilo Pianini
- *
+ *	Collection of functions and helper methods for unary operators.
  */
 public enum Op1 {
 	

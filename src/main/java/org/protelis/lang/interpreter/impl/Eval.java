@@ -16,8 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Danilo Pianini
- *
+ *	Evaluate a Protelis sub-program.
  */
 public class Eval extends AbstractAnnotatedTree<Object> {
 

@@ -16,8 +16,7 @@ import org.protelis.lang.util.HoodOp;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Reduce a field into a local value by reduction using a {@link HoodOp}.
  */
 public class HoodCall extends AbstractAnnotatedTree<Object> {
 	

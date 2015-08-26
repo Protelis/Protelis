@@ -26,8 +26,7 @@ import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 
 /**
- * @author Danilo Pianini
- *
+ *	Collection of functions and helper methods for reducing fields into local values.
  */
 public enum HoodOp {
 	

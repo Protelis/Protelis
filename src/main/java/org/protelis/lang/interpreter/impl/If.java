@@ -12,7 +12,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
+ * Branch, restricting domain of true and false branches into their own aligned subspaces.
  *
  * @param <T>
  */

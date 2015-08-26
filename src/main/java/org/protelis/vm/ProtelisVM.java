@@ -9,8 +9,7 @@
 package org.protelis.vm;
 
 /**
- * @author Danilo Pianini
- * Create a virtual machine that
+ * A virtual machine for executing a Protelis program on a particular device (context).
  */
 public class ProtelisVM {
 

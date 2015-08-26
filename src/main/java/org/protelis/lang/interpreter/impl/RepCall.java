@@ -15,9 +15,8 @@ import org.protelis.vm.ExecutionContext;
 import java.util.List;
 
 /**
+ * "Repeat" state variable.
  * 
- * @author Danilo Pianini
- *
  * @param <T>
  */
 public class RepCall<T> extends AbstractSATree<T, T> {

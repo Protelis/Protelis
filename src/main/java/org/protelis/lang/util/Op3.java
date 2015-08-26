@@ -21,8 +21,7 @@ import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.Field;
 
 /**
- * @author Danilo Pianini
- *
+ *	Collection of functions and helper methods for ternary syntactic operators.
  */
 public enum Op3 {
 	

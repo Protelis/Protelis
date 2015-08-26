@@ -14,8 +14,7 @@ import org.protelis.vm.ExecutionContext;
 import it.unibo.alchemist.model.interfaces.IPosition;
 
 /**
- * @author Danilo Pianini
- * Retrieve a field providing best estimates of range to neighbors
+ * Retrieve a field providing best estimates of range to neighbors.
  */
 public class NBRRange extends AbstractAnnotatedTree<Field> {
 

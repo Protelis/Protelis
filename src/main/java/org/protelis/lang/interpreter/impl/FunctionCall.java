@@ -16,8 +16,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Call a Protelis function.
  */
 public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 

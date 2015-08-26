@@ -20,8 +20,7 @@ import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.impl.FieldMapImpl;
 
 /**
- * @author Danilo Pianini
- *
+ *	A field is a function associating a collection of devices to values.
  */
 public interface Field extends Serializable {
 	

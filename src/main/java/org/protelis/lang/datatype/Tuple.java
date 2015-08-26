@@ -18,8 +18,7 @@ import org.protelis.lang.datatype.impl.ArrayTupleImpl;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- * Implementation of mathematical tuples as indexed objects T = [element0, element1, element2 ...] 
+ * Implementation of mathematical tuples as indexed objects T = [element0, element1, element2 ...] .
  */
 public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple> {
 

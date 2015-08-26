@@ -13,8 +13,7 @@ import java.io.Serializable;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ * Data structure representing the field calculus semantics of annotating expressions with their evaluated values.
  * @param <T>
  */
 public interface AnnotatedTree<T> extends Serializable {

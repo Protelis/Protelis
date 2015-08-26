@@ -15,9 +15,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
- * Implementation of 'nbr' operator
+ * Implementation of 'nbr' operator.
  */
 public class NBRCall extends AbstractAnnotatedTree<Field> {
 

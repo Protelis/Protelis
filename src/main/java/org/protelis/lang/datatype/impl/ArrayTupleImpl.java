@@ -32,8 +32,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * @author Danilo Pianini
- *
+ *	Implementation of a Tuple using an array data structure.
  */
 public class ArrayTupleImpl implements Tuple {
 	

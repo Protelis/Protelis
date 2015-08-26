@@ -33,9 +33,6 @@ import com.google.common.cache.LoadingCache;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
- * 
- * @author Danilo Pianini
- *
  */
 public final class ReflectionUtils {
 	

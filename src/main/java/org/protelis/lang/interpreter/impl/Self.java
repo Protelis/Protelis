@@ -12,8 +12,8 @@ import org.protelis.vm.ExecutionContext;
 
 
 /**
- * @author Danilo Pianini
- *
+ *	Access to the evaluation context, which is used for interfacing with sensors, actuators, and
+ *	the rest of the external non-static programmatic environment outside of Protelis.
  */
 public class Self extends AbstractAnnotatedTree<ExecutionContext> {
 

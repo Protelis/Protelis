@@ -13,8 +13,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Declare a variable from a "let" expression.
  */
 public class CreateVar extends AbstractAnnotatedTree<Object> {
 

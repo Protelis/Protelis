@@ -20,10 +20,8 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
-
 /**
- * @author Danilo Pianini
- *
+ *	Call an external Java non-static method.
  */
 public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 	

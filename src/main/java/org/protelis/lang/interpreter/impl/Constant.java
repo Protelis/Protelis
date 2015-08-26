@@ -12,7 +12,7 @@ import org.protelis.vm.ExecutionContext;
 
 
 /**
- * @author Danilo Pianini
+ * An arbitrary object-valued constant.
  *
  * @param <T>
  */

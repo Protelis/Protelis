@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Danilo Pianini
+ * Basic implementation of an {@link AnnotatedTree}.
  *
  * @param <T>
  *            annotation type

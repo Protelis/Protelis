@@ -16,8 +16,7 @@ import org.protelis.lang.util.Op2;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Two-argument (inline) operator, such as addition.
  */
 public class BinaryOp extends AbstractAnnotatedTree<Object> {
 
