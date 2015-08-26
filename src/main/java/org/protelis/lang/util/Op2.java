@@ -156,10 +156,7 @@ public enum Op2 {
 			if (a instanceof Comparable && b instanceof Comparable) {
 				return f.apply((double) ((Comparable) a).compareTo(b), 0d);
 			}
-		} catch (RuntimeException e) {
-			/*
-			 * Comparison of different types
-			 */
+		} catch (RuntimeException e) { //NOPMD: comparison of different types
 		}
 		/*
 		 * Fall back to lexicographic comparison
