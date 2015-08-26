@@ -9,8 +9,7 @@
 package org.protelis.lang.util;
 
 /**
- * @author Danilo Pianini
- * Utility class that OpN classes use for reporting certain failure patterns
+ * Utility class that OpN classes use for reporting certain failure patterns.
  */
 public final class OpUtils {
 
