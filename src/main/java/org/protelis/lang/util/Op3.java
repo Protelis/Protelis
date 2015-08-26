@@ -21,8 +21,7 @@ import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.Field;
 
 /**
- * @author Danilo Pianini
- *
+ *	Collection of functions and helper methods for ternary syntactic operators.
  */
 public enum Op3 {
 	
@@ -33,11 +32,11 @@ public enum Op3 {
 	
 	private static final Map<String, Op3> MAP = new ConcurrentHashMap<>();
 	private final TriFunction<Object, Object, Object, Object> fun;
-	private final String n;
+	private final String opName;
 	
 	Op3(final String name, final TriFunction<Object, Object, Object, Object> function) {
 		fun = function;
-		n = name;
+		opName = name;
 	}
 	
 	/**
@@ -69,7 +68,7 @@ public enum Op3 {
 	
 	@Override
 	public String toString() {
-		return n;
+		return opName;
 	}
 
 	/**
@@ -79,7 +78,7 @@ public enum Op3 {
 	public static Op3 getOp(final String name) {
 		Op3 op = MAP.get(name);
 		if (op == null) {
-			op = Arrays.stream(values()).parallel().filter(o -> o.n.equals(name)).findFirst().get();
+			op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
 			MAP.put(name, op);
 		}
 		return op;

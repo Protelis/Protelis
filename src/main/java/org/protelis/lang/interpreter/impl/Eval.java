@@ -11,13 +11,12 @@ package org.protelis.lang.interpreter.impl;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
-import org.protelis.vm.IProgram;
+import org.protelis.vm.ProtelisProgram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Danilo Pianini
- *
+ *	Evaluate a Protelis sub-program.
  */
 public class Eval extends AbstractAnnotatedTree<Object> {
 
@@ -42,9 +41,9 @@ public class Eval extends AbstractAnnotatedTree<Object> {
 		projectAndEval(context);
 		final String program = getBranch(0).getAnnotation().toString();
 		try {
-			final IProgram result = ProtelisLoader.parseAnonymousModule(program);
+			final ProtelisProgram result = ProtelisLoader.parseAnonymousModule(program);
 			context.newCallStackFrame(DYN_CODE_INDEX);
-			context.putMultipleVariables(result.getKnownFunctions());
+			context.putMultipleVariables(result.getNamedFunctions());
 			result.compute(context);
 			setAnnotation(result.getCurrentValue());
 			context.returnFromCallFrame();

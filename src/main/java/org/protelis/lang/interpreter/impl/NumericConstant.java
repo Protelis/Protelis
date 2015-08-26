@@ -9,8 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 /**
- * @author Danilo Pianini
- *
+ *	A numerical constant.
  */
 public class NumericConstant extends Constant<Double> {
 

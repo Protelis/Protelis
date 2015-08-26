@@ -16,8 +16,7 @@ import org.protelis.lang.util.Op3;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Three-argument syntactic operator such as multiplexing (mux).
  */
 public class TernaryOp extends AbstractAnnotatedTree<Object> {
 

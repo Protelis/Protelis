@@ -32,13 +32,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * @author Danilo Pianini
- *
+ *	Implementation of a Tuple using an array data structure.
  */
 public class ArrayTupleImpl implements Tuple {
 	
 	private static final long serialVersionUID = 5453783531251313649L;
-	private final Object[] a;
+	private final Object[] arrayContents;
 	private int hash;
 	private String string;
 	/**
@@ -49,7 +48,7 @@ public class ArrayTupleImpl implements Tuple {
 	}
 
 	private ArrayTupleImpl(final Object[] base, final boolean copy) {
-		a = copy ? Arrays.copyOf(base, base.length) : base;
+		arrayContents = copy ? Arrays.copyOf(base, base.length) : base;
 	}
 	
 	/**
@@ -58,30 +57,30 @@ public class ArrayTupleImpl implements Tuple {
 	 * @param length The length of the tuple
 	 */
 	public ArrayTupleImpl(final Object value, final int length) {
-		a = new Object[length];
+		arrayContents = new Object[length];
 		for (int i = 0; i < length; i++) { 
-			a[i] = value;
+			arrayContents[i] = value;
 		}
 	}
 	
 	@Override
 	public Iterator<Object> iterator() {
-		return Iterators.forArray(a);
+		return Iterators.forArray(arrayContents);
 	}
 
 	@Override
 	public Object get(final int i) {
-		return a[(int) i];
+		return arrayContents[(int) i];
 	}
 
 	@Override
 	public int size() {
-		return a.length;
+		return arrayContents.length;
 	}
 
 	@Override
 	public ArrayTupleImpl subTupleEnd(final int i) {
-		return subTuple(i, a.length);
+		return subTuple(i, arrayContents.length);
 	}
 
 	@Override
@@ -89,13 +88,13 @@ public class ArrayTupleImpl implements Tuple {
 		return subTuple(0, i);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") // NOPMD by jakebeal on 8/25/15 12:42 PM
 	@Override
 	public int compareTo(final Tuple o) {
 		int res = 0;
 		final int otherSize = o.size();
-		for (int i = 0; res == 0 && i < a.length && i < otherSize; i++) {
-			final Object o1 = a[i];
+		for (int i = 0; res == 0 && i < arrayContents.length && i < otherSize; i++) {
+			final Object o1 = arrayContents[i];
 			final Object o2 = o.get(i);
 			if (o1 instanceof Comparable && o2 instanceof Comparable) {
 				try {
@@ -113,11 +112,11 @@ public class ArrayTupleImpl implements Tuple {
 				return o1.toString().compareTo(o2.toString());
 			}
 		}
-		if (res == 0 && a.length != otherSize) {
+		if (res == 0 && arrayContents.length != otherSize) {
 			/*
 			 * Same content but different size: shortest is smaller
 			 */
-			if (a.length > otherSize) {
+			if (arrayContents.length > otherSize) {
 				return 1;
 			}
 			return -1;
@@ -127,44 +126,44 @@ public class ArrayTupleImpl implements Tuple {
 
 	@Override
 	public Tuple append(final Object element) {
-		final Object[] copy = Arrays.copyOf(a, a.length + 1);
-		copy[a.length] = element;
+		final Object[] copy = Arrays.copyOf(arrayContents, arrayContents.length + 1);
+		copy[arrayContents.length] = element;
 		return new ArrayTupleImpl(copy, false);
 	}
 
 	@Override
 	public Tuple insert(final int i, final Object element) {
-		return new ArrayTupleImpl(ArrayUtils.add(a, (int) i, element), false);
+		return new ArrayTupleImpl(ArrayUtils.add(arrayContents, (int) i, element), false);
 	}
 
 	@Override
 	public Tuple set(final int i, final Object element) {
-		final Object[] copy = Arrays.copyOf(a, a.length);
+		final Object[] copy = Arrays.copyOf(arrayContents, arrayContents.length);
 		copy[(int) i] = element;
 		return new ArrayTupleImpl(copy, false);
 	}
 
 	@Override
 	public ArrayTupleImpl subTuple(final int i, final int j) {
-		return new ArrayTupleImpl(ArrayUtils.subarray(a, (int) i, (int) j), false);
+		return new ArrayTupleImpl(ArrayUtils.subarray(arrayContents, (int) i, (int) j), false);
 	}
 
 	@Override
 	public Tuple mergeAfter(final Tuple tuple) {
 		if (tuple instanceof ArrayTupleImpl) {
-			return new ArrayTupleImpl(ArrayUtils.addAll(a, ((ArrayTupleImpl) tuple).a), false);
+			return new ArrayTupleImpl(ArrayUtils.addAll(arrayContents, ((ArrayTupleImpl) tuple).arrayContents), false);
 		}
-		final Object[] copy = new Object[a.length + (int) tuple.size()];
-		System.arraycopy(a, 0, copy, 0, a.length);
+		final Object[] copy = new Object[arrayContents.length + (int) tuple.size()];
+		System.arraycopy(arrayContents, 0, copy, 0, arrayContents.length);
 		for (int i = 0; i < copy.length; i++) {
-			copy[i] = tuple.get(i - a.length);
+			copy[i] = tuple.get(i - arrayContents.length);
 		}
 		return new ArrayTupleImpl(copy, false);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return a.length == 0;
+		return arrayContents.length == 0;
 	}
 
 	@Override
@@ -174,8 +173,8 @@ public class ArrayTupleImpl implements Tuple {
 	
 	@Override
 	public int indexof(final Object element) {
-		for (int i = 0; i < a.length; i++) {
-			if (a[i].equals(element)) {
+		for (int i = 0; i < arrayContents.length; i++) {
+			if (arrayContents[i].equals(element)) {
 				return i;
 			}
 		}
@@ -187,7 +186,7 @@ public class ArrayTupleImpl implements Tuple {
 		if (string == null) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append('[');
-			for (final Object o : a) {
+			for (final Object o : arrayContents) {
 				final boolean notNumber = !(o instanceof Number || o instanceof Tuple);
 				final boolean isString = o instanceof String;
 				if (isString) {
@@ -203,7 +202,7 @@ public class ArrayTupleImpl implements Tuple {
 				}
 				sb.append(", ");
 			}
-			if (a.length > 0) {
+			if (arrayContents.length > 0) {
 				sb.delete(sb.length() - 2, sb.length());
 			}
 			sb.append(']');
@@ -215,13 +214,13 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof ArrayTupleImpl) {
-			return Arrays.equals(a, ((ArrayTupleImpl) o).a);
+			return Arrays.equals(arrayContents, ((ArrayTupleImpl) o).arrayContents);
 		}
 		if (o instanceof Tuple) {
 			final Tuple t = (Tuple) o;
-			if ((int) t.size() == a.length) {
-				for (int i = 0; i < a.length; i++) {
-					if (!a[i].equals(t.get(i))) {
+			if ((int) t.size() == arrayContents.length) {
+				for (int i = 0; i < arrayContents.length; i++) {
+					if (!arrayContents[i].equals(t.get(i))) {
 						return false;
 					}
 				}
@@ -234,14 +233,14 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public int hashCode() {
 		if (hash == 0) {
-			hash = HashUtils.hash32(a);
+			hash = HashUtils.hash32(arrayContents);
 		}
 		return hash;
 	}
 
 	@Override
 	public Tuple unwrap(final int i) {
-		return Tuple.create(Arrays.stream(a).map((o) -> {
+		return Tuple.create(Arrays.stream(arrayContents).map((o) -> {
 			if (o instanceof Tuple) {
 				return ((Tuple) o).get(i);
 			}
@@ -277,7 +276,7 @@ public class ArrayTupleImpl implements Tuple {
 		 * TODO Do a Objects.requireNonNull
 		 */
 		if (fun.getArgNumber() == 2) {
-			return Arrays.stream(a)
+			return Arrays.stream(arrayContents)
 					.reduce((first, second) -> {
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(new Constant<>(first), new Constant<>(second)));
 						fc.eval(ctx);
@@ -291,7 +290,7 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
 		LangUtils.requireNonNull(defVal, fun);
-		return Arrays.stream(a).reduce(fun).orElse(defVal);
+		return Arrays.stream(arrayContents).reduce(fun).orElse(defVal);
 	}
 
 	@Override
@@ -299,7 +298,7 @@ public class ArrayTupleImpl implements Tuple {
 	public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
 		if (fun.getArgNumber() == 1) {
 			return Tuple.create(
-					Arrays.stream(a)
+					Arrays.stream(arrayContents)
 					.map(Constant<Object>::new)
 					.map(elem -> {
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
@@ -313,7 +312,7 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Tuple map(final Function<Object, Object> fun) {
 		Objects.requireNonNull(fun);
-		return Tuple.create(Arrays.stream(a).map(fun).toArray());
+		return Tuple.create(Arrays.stream(arrayContents).map(fun).toArray());
 	}
 
 	@Override
@@ -322,7 +321,7 @@ public class ArrayTupleImpl implements Tuple {
 		Objects.requireNonNull(fun);
 		if (fun.getArgNumber() == 1) {
 			return Tuple.create(
-					Arrays.stream(a)
+					Arrays.stream(arrayContents)
 					.map(Constant<Object>::new)
 					.filter(elem -> {
 						final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
@@ -343,7 +342,7 @@ public class ArrayTupleImpl implements Tuple {
 	@Override
 	public Tuple filter(final Predicate<Object> fun) {
 		Objects.requireNonNull(fun);
-		return Tuple.create(Arrays.stream(a).filter(fun).toArray());
+		return Tuple.create(Arrays.stream(arrayContents).filter(fun).toArray());
 	}
 
 	@Override

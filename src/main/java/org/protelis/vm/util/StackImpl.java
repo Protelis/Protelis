@@ -17,8 +17,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * @author Danilo Pianini
- *
+ *	Basic implementation of a {@link Stack}.
  */
 public class StackImpl implements Stack {
 	

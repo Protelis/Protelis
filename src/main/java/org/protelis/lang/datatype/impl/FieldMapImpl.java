@@ -16,13 +16,12 @@ import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DeviceUID;
 
 /**
- * @author Danilo Pianini
  * Field implementation based on neighbor/value pairs stored in a hash table.
  */
 public class FieldMapImpl extends AbstractField {
 
 	private static final long serialVersionUID = -2947000086262191216L;
-	private final Map<DeviceUID, Object> fld;
+	private final Map<DeviceUID, Object> fieldContents;
 
 	/**
 	 * @param size
@@ -32,22 +31,22 @@ public class FieldMapImpl extends AbstractField {
 	 */
 	public FieldMapImpl(final int size, final float loadFactor) {
 		super();
-		fld = new LinkedHashMap<>(size, loadFactor);
+		fieldContents = new LinkedHashMap<>(size, loadFactor);
 	}
 	
 	@Override
 	public void addSample(final DeviceUID n, final Object v) {
-		fld.put(n, v);
+		fieldContents.put(n, v);
 	}
 
 	@Override
 	public boolean containsNode(final DeviceUID n) {
-		return fld.containsKey(n);
+		return fieldContents.containsKey(n);
 	}
 
 	@Override
 	public Iterable<Pair<DeviceUID, Object>> coupleIterator() {
-		return fld.entrySet().stream()
+		return fieldContents.entrySet().stream()
 				.map(e -> new Pair<>(e.getKey(), e.getValue()))
 				.collect(() -> new ArrayList<>(size()),
 						(a, e) -> a.add(e),
@@ -56,40 +55,40 @@ public class FieldMapImpl extends AbstractField {
 
 	@Override
 	public Class<?> getExpectedType() {
-		if (fld.isEmpty()) {
+		if (fieldContents.isEmpty()) {
 			return null;
 		}
-		return fld.values().iterator().next().getClass();
+		return fieldContents.values().iterator().next().getClass();
 	}
 
 	@Override
 	public Object getSample(final DeviceUID n) {
-		return fld.get(n);
+		return fieldContents.get(n);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return fld.isEmpty();
+		return fieldContents.isEmpty();
 	}
 
 	@Override
 	public Iterable<DeviceUID> nodeIterator() {
-		return fld.keySet();
+		return fieldContents.keySet();
 	}
 
 	@Override
 	public Object removeSample(final DeviceUID n) {
-		return fld.remove(n);
+		return fieldContents.remove(n);
 	}
 
 	@Override
 	public int size() {
-		return fld.size();
+		return fieldContents.size();
 	}
 
 	@Override
 	public Iterable<Object> valIterator() {
-		return fld.values();
+		return fieldContents.values();
 	}
 	
 }

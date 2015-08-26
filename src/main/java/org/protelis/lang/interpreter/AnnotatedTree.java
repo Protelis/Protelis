@@ -13,8 +13,7 @@ import java.io.Serializable;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ * Data structure representing the field calculus semantics of annotating expressions with their evaluated values.
  * @param <T>
  */
 public interface AnnotatedTree<T> extends Serializable {
@@ -52,6 +51,14 @@ public interface AnnotatedTree<T> extends Serializable {
 	 */
 	void eval(ExecutionContext context);
 
+	/**
+	 * Evaluates the program using the passed {@link ExecutionContext}, but within a
+	 * new scope pushed onto the stack.  Returns to the current scope after evaluation.
+	 * @param context	the execution context
+	 * @param frameId	id marker for new frame
+	 */
+	void evalInNewStackFrame(final ExecutionContext context, final byte frameId);
+	
 	/**
 	 * @param i
 	 *            the index

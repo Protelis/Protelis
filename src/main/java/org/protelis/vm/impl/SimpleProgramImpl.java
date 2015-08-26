@@ -17,7 +17,7 @@ import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
-import org.protelis.vm.IProgram;
+import org.protelis.vm.ProtelisProgram;
 
 import java.util.Collections;
 import java.util.Map;
@@ -25,10 +25,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * @author Danilo Pianini
- *
+ *	Base implementation of {@link ProtelisProgram}.
  */
-public class SimpleProgramImpl implements IProgram {
+public class SimpleProgramImpl implements ProtelisProgram {
 	
 	private static final long serialVersionUID = -986976491484860840L;
 	private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
@@ -76,7 +75,7 @@ public class SimpleProgramImpl implements IProgram {
 	}
 
 	@Override
-	public Map<FasterString, FunctionDefinition> getKnownFunctions() {
+	public Map<FasterString, FunctionDefinition> getNamedFunctions() {
 		return funs;
 	}
 

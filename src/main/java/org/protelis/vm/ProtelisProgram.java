@@ -15,10 +15,9 @@ import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
 
 /**
- * @author Danilo Pianini
- * Executable representation of a Protelis program
+ * Executable representation of a Protelis program.
  */
-public interface IProgram extends Serializable {
+public interface ProtelisProgram extends Serializable {
 	
 	/**
 	 * @return The value computed during the most recent invocation of {@link compute}
@@ -35,7 +34,7 @@ public interface IProgram extends Serializable {
 	/**
 	 * @return Set of named functions defined in this program
 	 */
-	Map<FasterString, FunctionDefinition> getKnownFunctions();
+	Map<FasterString, FunctionDefinition> getNamedFunctions();
 	
 	/**
 	 * @return Name of the program, or some default name if no specific name is provided

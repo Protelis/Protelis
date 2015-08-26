@@ -6,7 +6,7 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE in the Alchemist distribution's top directory.
  */
-package org.protelis.test;
+package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -28,8 +28,7 @@ import org.protelis.vm.ProtelisVM;
 import org.protelis.vm.impl.DummyContext;
 
 /**
- * @author Danilo Pianini
- * Main collection of tests for the Protelis language and VM
+ * Main collection of tests for the Protelis language and VM.
  */
 public class TestLanguage {
 	
@@ -491,7 +490,7 @@ public class TestLanguage {
 	 */
 	@Test
 	public void testTuple03() {
-		testFileWithExplicitResult("/tuple03.pt", new Integer(3));
+		testFileWithExplicitResult("/tuple03.pt", Integer.valueOf(3));
 	}
 
 	/** 

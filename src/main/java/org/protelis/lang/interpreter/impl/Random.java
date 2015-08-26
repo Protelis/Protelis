@@ -10,10 +10,8 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.vm.ExecutionContext;
 
-
 /**
- * @author Danilo Pianini
- *
+ *	Generation of random numbers.
  */
 public class Random extends AbstractAnnotatedTree<Double> {
 

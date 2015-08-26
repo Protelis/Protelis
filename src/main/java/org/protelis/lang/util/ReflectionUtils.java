@@ -33,9 +33,6 @@ import com.google.common.cache.LoadingCache;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
- * 
- * @author Danilo Pianini
- *
  */
 public final class ReflectionUtils {
 	
@@ -199,7 +196,7 @@ public final class ReflectionUtils {
 	 */
 	public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
 		final Class<?>[] params = method.getParameterTypes();
-		Object[] actualArgs = IntStream.range(0, args.length).parallel()
+		final Object[] actualArgs = IntStream.range(0, args.length).parallel()
 				.mapToObj(i -> {
 					final Class<?> expected = params[i];
 					final Object actual = args[i];

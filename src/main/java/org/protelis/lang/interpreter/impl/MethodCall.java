@@ -24,8 +24,7 @@ import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Call an external Java static method.
  */
 public class MethodCall extends AbstractAnnotatedTree<Object> {
 

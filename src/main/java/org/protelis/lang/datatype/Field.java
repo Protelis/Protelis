@@ -20,8 +20,7 @@ import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.impl.FieldMapImpl;
 
 /**
- * @author Danilo Pianini
- *
+ *	A field is a function associating a collection of devices to values.
  */
 public interface Field extends Serializable {
 	
@@ -103,7 +102,6 @@ public interface Field extends Serializable {
 		final Field refField = (Field) (fieldTarget ? target : args[fieldIndexes[0]]);
 		final Field result = create(refField.size());
 		for (final DeviceUID node : refField.nodeIterator()) {
-			final Object actualTarget = fieldTarget ? (((Field) target).getSample(node)) : target;
 			Object[] actualArgs = Arrays.copyOf(args, args.length);
 			for (final int i : fieldIndexes) {
 				final Object arg = ((Field) actualArgs[i]).getSample(node);
@@ -112,6 +110,7 @@ public interface Field extends Serializable {
 				}
 				actualArgs[i] = arg;
 			}
+			final Object actualTarget = fieldTarget ? (((Field) target).getSample(node)) : target;
 			result.addSample(node, fun.apply(actualTarget, actualArgs));
 		}
 		return result;

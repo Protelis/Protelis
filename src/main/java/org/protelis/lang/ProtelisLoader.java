@@ -90,7 +90,7 @@ import org.protelis.lang.interpreter.impl.Variable;
 import org.protelis.lang.util.HoodOp;
 import org.protelis.lang.util.Op1;
 import org.protelis.lang.util.Op2;
-import org.protelis.vm.IProgram;
+import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,8 +99,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.google.inject.Injector;
 
 /**
- * @author Danilo Pianini
- *
+ *	Main entry-point class for loading/parsing Protelis programs.
  */
 public final class ProtelisLoader {
 
@@ -158,16 +157,16 @@ public final class ProtelisLoader {
 	 *            automatically by this constructor, linking is performed by
 	 *            Xtext transparently. {@link URI}s of type "platform:/" are
 	 *            supported, for those who work within an Eclipse environment.
-	 * @return an {@link IProgram} comprising the constructed program
+	 * @return an {@link ProtelisProgram} comprising the constructed program
 	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parse(final String program) throws IllegalArgumentException {
+	public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
 		try {
 			if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
 				return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
 			}
 			return parseURI(program);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			return parseAnonymousModule(program);
 		}
 	}
@@ -185,7 +184,7 @@ public final class ProtelisLoader {
 	 *         {@link FunctionDefinition} (containing the available functions)
 	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
+	public static ProtelisProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
 		return parse(resourceFromString(program));
 	}
 	
@@ -202,11 +201,11 @@ public final class ProtelisLoader {
 	 *            automatically by this constructor, linking is performed by
 	 *            Xtext transparently. {@link URI}s of type "platform:/" are
 	 *            supported, for those who work within an Eclipse environment.
-	 * @return a new {@link IProgram}
+	 * @return a new {@link ProtelisProgram}
 	 * @throws IOException when the resource cannot be found
 	 * @throws IllegalArgumentException when the program has errors
 	 */
-	public static IProgram parseURI(final String programURI) throws IOException, IllegalArgumentException {
+	public static ProtelisProgram parseURI(final String programURI) throws IOException, IllegalArgumentException {
 			return parse(resourceFromURIString(programURI));
 	}
 	
@@ -291,11 +290,11 @@ public final class ProtelisLoader {
 	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
 	 *         {@link FunctionDefinition} (containing the available functions)
 	 */
-	public static IProgram parse(final Resource resource) {
+	public static ProtelisProgram parse(final Resource resource) {
 		if (!resource.getErrors().isEmpty()) {
 			for (final Diagnostic d : recursivelyCollectErrors(resource)) {
-				AbstractDiagnostic ad = (AbstractDiagnostic) d;
-				String place = ad.getUriToProblem().toString().split("#")[0];
+				final AbstractDiagnostic ad = (AbstractDiagnostic) d;
+				final String place = ad.getUriToProblem().toString().split("#")[0];
 				L.error("Error in " + place + " at line " + d.getLine() + ": " + d.getMessage());
 			}
 			throw new IllegalArgumentException("Protelis program cannot be run because it has errors.");
@@ -336,7 +335,7 @@ public final class ProtelisLoader {
 		// Mark as visited
 		completed.add(resource);
 		// Walk linked resources
-		for (Resource r : resource.getResourceSet().getResources()) {
+		for (final Resource r : resource.getResourceSet().getResources()) {
 			if (!completed.contains(r)) { 
 				recursivelyCollectErrors(r, errors, completed); 
 			}

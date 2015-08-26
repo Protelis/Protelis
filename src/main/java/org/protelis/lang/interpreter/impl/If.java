@@ -12,7 +12,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
+ * Branch, restricting domain of true and false branches into their own aligned subspaces.
  *
  * @param <T>
  */
@@ -20,8 +20,8 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 
 	private static final long serialVersionUID = -4830593657731078743L;
 	private static final byte COND = 0, THEN = 1, ELSE = 2;
-	private final AnnotatedTree<Boolean> c;
-	private final AnnotatedTree<T> t, e;
+	private final AnnotatedTree<Boolean> conditionExpression;
+	private final AnnotatedTree<T> thenExpression, elseExpression;
 
 	/**
 	 * @param cond
@@ -33,30 +33,26 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	 */
 	public If(final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
 		super(cond, then, otherwise);
-		c = cond;
-		t = then;
-		e = otherwise;
+		conditionExpression = cond;
+		thenExpression = then;
+		elseExpression = otherwise;
 	}
 
 	@Override
 	public AnnotatedTree<T> copy() {
-		return new If<>(c.copy(), t.copy(), e.copy());
+		return new If<>(conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
 	}
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		context.newCallStackFrame(COND);
-		c.eval(context);
-		context.returnFromCallFrame();
-		final Object actualResult = c.getAnnotation();
-		final boolean bool = actualResult instanceof Boolean ? c.getAnnotation() : actualResult != null;
-		setAnnotation(bool ? choice(THEN, t, e, context) : choice(ELSE, e, t, context));
+		conditionExpression.evalInNewStackFrame(context, COND);
+		final Object actualResult = conditionExpression.getAnnotation();
+		final boolean bool = actualResult instanceof Boolean ? conditionExpression.getAnnotation() : actualResult != null;
+		setAnnotation(bool ? choice(THEN, thenExpression, elseExpression, context) : choice(ELSE, elseExpression, thenExpression, context));
 	}
 
 	private static <T> T choice(final byte branch, final AnnotatedTree<T> selected, final AnnotatedTree<T> erased, final ExecutionContext context) {
-		context.newCallStackFrame(branch);
-		selected.eval(context);
-		context.returnFromCallFrame();
+		selected.evalInNewStackFrame(context, branch);
 		erased.erase();
 		return selected.getAnnotation();
 	}
@@ -64,13 +60,13 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	@Override
 	protected void asString(final StringBuilder sb, final int i) {
 		sb.append("if (\n");
-		c.toString(sb, i + 1);
+		conditionExpression.toString(sb, i + 1);
 		sb.append(") {\n");
-		t.toString(sb, i + 1);
+		thenExpression.toString(sb, i + 1);
 		sb.append('\n');
 		indent(sb, i);
 		sb.append("} else {\n");
-		e.toString(sb, i + 1);
+		elseExpression.toString(sb, i + 1);
 		sb.append('\n');
 		indent(sb, i);
 		sb.append('}');

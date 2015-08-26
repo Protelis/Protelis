@@ -20,10 +20,8 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
-
 /**
- * @author Danilo Pianini
- *
+ *	Call an external Java non-static method.
  */
 public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 	
@@ -58,9 +56,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 		/*
 		 * Eval left
 		 */
-		context.newCallStackFrame(LEFT_POS);
-		left.eval(context);
-		context.returnFromCallFrame();
+		left.evalInNewStackFrame(context, LEFT_POS);
 		/*
 		 * If it is a function pointer, then create a new function call
 		 */

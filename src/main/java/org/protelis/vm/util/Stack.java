@@ -14,8 +14,7 @@ import java.util.Map;
 import org.danilopianini.lang.util.FasterString;
 
 /**
- * @author Danilo Pianini
- * Stack implementation used by the Protelis VM for tracking local variable values during execution
+ * Stack implementation used by the Protelis VM for tracking local variable values during execution.
  */
 public interface Stack extends Serializable {
 	

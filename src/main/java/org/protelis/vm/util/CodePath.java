@@ -17,7 +17,6 @@ import java.util.Arrays;
 import org.danilopianini.lang.Constants;
 
 /**
- * @author Danilo Pianini
  * A CodePath is a trace from the root to some node in a VM execution tree.
  * Its use is to allow particular execution locations to be serialized and compared between
  * different VMs, thereby enabling code alignment.  Importantly, the hashCode can be

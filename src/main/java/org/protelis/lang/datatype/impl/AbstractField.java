@@ -18,8 +18,7 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 
 /**
- * @author Danilo Pianini
- *
+ *	Core functionality for implementing a field.
  */
 public abstract class AbstractField implements Field {
 

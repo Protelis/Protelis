@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Danilo Pianini
+ * Basic implementation of an {@link AnnotatedTree}.
  *
  * @param <T>
  *            annotation type
@@ -288,4 +288,10 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 		}
 	}
 
+	@Override
+	public void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
+		context.newCallStackFrame(frameId);
+		eval(context);
+		context.returnFromCallFrame();
+	}
 }

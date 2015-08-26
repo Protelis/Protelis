@@ -11,10 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * Delta time.
- * 
- * @author Danilo Pianini
- *
+ * "Delta time" - amount of time that has passed since last evaluation.
  */
 public class Dt extends AbstractAnnotatedTree<Number> {
 

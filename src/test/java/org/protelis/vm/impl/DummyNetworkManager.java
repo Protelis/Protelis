@@ -19,8 +19,7 @@ import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 
 /**
- * @author Danilo Pianini
- *
+ *	Stub network manager for testing, in which there are no neighbors and no messages are ever sent.
  */
 public class DummyNetworkManager implements NetworkManager {
 

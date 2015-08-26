@@ -34,8 +34,8 @@ import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 
 /**
- * @author Danilo Pianini
- *
+ *	Partial implementation of ExecutionContext, containing functionality expected to be shared
+ *	between most implementations.  Instantiations of Protelis should generally extend this class.
  */
 public abstract class AbstractExecutionContext implements ExecutionContext {
 	

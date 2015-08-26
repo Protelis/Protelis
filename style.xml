@@ -88,7 +88,7 @@
 
 			<property name="scope" value="protected" />
 
-			<property name="authorFormat" value="\S" />
+<!-- 			<property name="authorFormat" value="\S" /> -->
 		</module>
 
 		<module name="JavadocVariable">

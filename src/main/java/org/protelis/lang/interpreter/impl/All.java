@@ -14,8 +14,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
- *
+ *	Evaluate a sequence of statements, returning the value of the last statement.
  */
 public class All extends AbstractAnnotatedTree<Object> {
 	

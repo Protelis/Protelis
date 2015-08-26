@@ -9,7 +9,9 @@
 package org.protelis.lang.interpreter;
 
 /**
- * @author Danilo Pianini
+ * Data structure representing the field calculus semantics of annotating expressions with 
+ * their evaluated values, in this case a dual annotation of value and additional evaluation or state
+ * in a superscript.
  *
  * @param <S>
  *            Superscript type

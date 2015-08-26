@@ -19,8 +19,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * @author Danilo Pianini
- *
+ *	First-class Protelis function.
  */
 public class FunctionDefinition implements Serializable {
 

@@ -26,8 +26,7 @@ import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 
 /**
- * @author Danilo Pianini
- *
+ *	Collection of functions and helper methods for reducing fields into local values.
  */
 public enum HoodOp {
 	
@@ -87,7 +86,7 @@ public enum HoodOp {
 		of(create(Object.class, Tuple::create)),
 		of()
 	);
-	private final BiFunction<Field, DeviceUID, Object> f;
+	private final BiFunction<Field, DeviceUID, Object> function;
 	private final Function<Field, Object> defs;
 	
 	/**
@@ -104,7 +103,7 @@ public enum HoodOp {
 	 *            provide a specific value-agnostic default
 	 */
 	private HoodOp(final BiFunction<Field, DeviceUID, Object> fun, final Supplier<Object> empty, final List<Pair<Class<?>, Supplier<Object>>> suppliers, final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
-		f = fun;
+		function = fun;
 		defs = (field) -> {
 			/*
 			 * Field empty: generate a default.
@@ -113,7 +112,7 @@ public enum HoodOp {
 				return empty.get();
 			}
 			final Class<?> type = field.getExpectedType();
-			for (Pair<Class<?>, Supplier<Object>> sup : suppliers) {
+			for (final Pair<Class<?>, Supplier<Object>> sup : suppliers) {
 				if (sup.getFirst().isAssignableFrom(type)) {
 					/*
 					 * Field has compatible type
@@ -121,7 +120,7 @@ public enum HoodOp {
 					return sup.getSecond().get();
 				}
 			}
-			for (Pair<Class<?>, Function<Object, Object>> cloner : cloners) {
+			for (final Pair<Class<?>, Function<Object, Object>> cloner : cloners) {
 				if (cloner.getFirst().isAssignableFrom(type)) {
 					return cloner.getSecond().apply(field.valIterator().iterator().next());
 				}
@@ -164,7 +163,7 @@ public enum HoodOp {
 	 * @return the Object resulting in the hood application
 	 */
 	public Object run(final Field o, final DeviceUID n) {
-		return f.apply(o, n);
+		return function.apply(o, n);
 	}
 	
 	private static Object min(final Field f, final DeviceUID n) {

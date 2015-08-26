@@ -15,7 +15,7 @@ import org.protelis.lang.util.Op1;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * @author Danilo Pianini
+ *	Unary (prefix) operator, such as negation.
  *
  */
 public class UnaryOp extends AbstractAnnotatedTree<Object> {
