@@ -58,9 +58,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 		/*
 		 * Eval left
 		 */
-		context.newCallStackFrame(LEFT_POS);
-		left.eval(context);
-		context.returnFromCallFrame();
+		left.evalInNewStackFrame(context, LEFT_POS);
 		/*
 		 * If it is a function pointer, then create a new function call
 		 */

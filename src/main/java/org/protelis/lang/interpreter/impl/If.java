@@ -45,14 +45,14 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 
 	@Override
 	public void eval(final ExecutionContext context) {
-		evalInNewStackFrame(context, conditionExpression, COND);
+		conditionExpression.evalInNewStackFrame(context, COND);
 		final Object actualResult = conditionExpression.getAnnotation();
 		final boolean bool = actualResult instanceof Boolean ? conditionExpression.getAnnotation() : actualResult != null;
 		setAnnotation(bool ? choice(THEN, thenExpression, elseExpression, context) : choice(ELSE, elseExpression, thenExpression, context));
 	}
 
 	private static <T> T choice(final byte branch, final AnnotatedTree<T> selected, final AnnotatedTree<T> erased, final ExecutionContext context) {
-		evalInNewStackFrame(context, selected, branch);
+		selected.evalInNewStackFrame(context, branch);
 		erased.erase();
 		return selected.getAnnotation();
 	}

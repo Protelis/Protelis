@@ -89,5 +89,4 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T> impl
 	 *            level of indentation
 	 */
 	protected abstract void innerAsString(StringBuilder sb, int indent);
-
 }

@@ -58,17 +58,13 @@ public class RepCall<T> extends AbstractSATree<T, T> {
 			 * Evaluate the initial value for the field. This is either a variable or a constant, so no projection is required.
 			 */
 			final AnnotatedTree<?> w = getBranch(W_BRANCH);
-			context.newCallStackFrame(W_BRANCH);
-			w.eval(context);
-			context.returnFromCallFrame();
+			w.evalInNewStackFrame(context, W_BRANCH);
 			context.putVariable(xName, w.getAnnotation(), true);
 		} else {
 			context.putVariable(xName, getSuperscript(), true);
 		}
 		final AnnotatedTree<?> body = getBranch(A_BRANCH);
-		context.newCallStackFrame(A_BRANCH);
-		body.eval(context);
-		context.returnFromCallFrame();
+		body.evalInNewStackFrame(context, A_BRANCH);
 		@SuppressWarnings("unchecked")
 		final T result = (T) body.getAnnotation();
 		setAnnotation(result);

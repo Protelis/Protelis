@@ -50,9 +50,7 @@ public class CreateTuple extends AbstractAnnotatedTree<Object> {
 		final Object[] a = new Object[getBranchesNumber()];
 		final TIntList fieldIndexes = new TIntArrayList();
 		forEachWithIndex((i, branch) -> {
-			context.newCallStackFrame(i.byteValue());
-			branch.eval(context);
-			context.returnFromCallFrame();
+			branch.evalInNewStackFrame(context, i.byteValue());
 			final Object elem = branch.getAnnotation();
 			a[i] = elem;
 			if (elem instanceof Field) {
