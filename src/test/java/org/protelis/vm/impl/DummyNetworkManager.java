@@ -24,12 +24,12 @@ import org.protelis.vm.util.CodePath;
 public class DummyNetworkManager implements NetworkManager {
 
 	@Override
-	public Map<DeviceUID, Map<CodePath, Object>> takeMessages() {
+	public Map<DeviceUID, Map<CodePath, Object>> getNeighborState() {
 		return Collections.emptyMap();
 	}
 
 	@Override
-	public void sendMessage(final Map<CodePath, Object> toSend) {
+	public void shareState(final Map<CodePath, Object> toSend) {
 	}
 
 }
