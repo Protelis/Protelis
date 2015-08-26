@@ -9,6 +9,7 @@
 package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -206,6 +207,19 @@ public class TestLanguage {
 	@Test
 	public void testIf01() {
 		testFileWithMultipleRuns("/if01.pt");
+	}
+
+	/**
+	 * Make sure if throws exceptions instead of returning fields.
+	 */
+	@Test
+	public void testIf02() {
+		try {
+			testFile("/if02.pt", 1, null);
+			fail("If should never return fields");
+		} catch (IllegalStateException e) {
+			assertNotNull(e);
+		}
 	}
 
 	/**

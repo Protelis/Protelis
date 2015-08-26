@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
@@ -54,7 +55,11 @@ public class If<T> extends AbstractAnnotatedTree<T> {
 	private static <T> T choice(final byte branch, final AnnotatedTree<T> selected, final AnnotatedTree<T> erased, final ExecutionContext context) {
 		selected.evalInNewStackFrame(context, branch);
 		erased.erase();
-		return selected.getAnnotation();
+		final T result = selected.getAnnotation();
+		if (result instanceof Field) {
+			throw new IllegalStateException("if statements cannot return a Field. This could break apart alignment. Consider using mux.");
+		}
+		return result;
 	}
 
 	@Override
