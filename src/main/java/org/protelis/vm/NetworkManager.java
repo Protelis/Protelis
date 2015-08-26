@@ -31,7 +31,7 @@ public interface NetworkManager {
 	 * @return A map associating each neighbor with its shared state.  
 	 * 		The object returned should not be modified, and {@link ProtelisVM} will not change it either.
 	 */
-	Map<DeviceUID, Map<CodePath, Object>> takeMessages();
+	Map<DeviceUID, Map<CodePath, Object>> getNeighborState();
 
 	/**
 	 * Called by {@link ProtelisVM} during execution to send its current shared state to neighbors.
@@ -40,6 +40,6 @@ public interface NetworkManager {
 	 * @param toSend 
 	 * 		Shared state to be transmitted to neighbors.
 	 */
-	void sendMessage(Map<CodePath, Object> toSend);
+	void shareState(Map<CodePath, Object> toSend);
 
 }
