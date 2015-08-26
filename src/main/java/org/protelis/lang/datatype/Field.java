@@ -32,14 +32,50 @@ public interface Field extends Serializable {
 		return new FieldMapImpl(defaultSize + 1, 1f);
 	}
 	
+	/**
+	 * @param fun
+	 *            the {@link UnaryOperator} to apply
+	 * @param fields
+	 *            an array of integers containing the indexes of the arguments
+	 *            that are fields
+	 * @param a
+	 *            the single parameter
+	 * @return the result of the execution of fun(a)
+	 */
 	static Field applyWithSingleParam(UnaryOperator<Object> fun, int[] fields, Object a) {
 		return apply((t, p) -> fun.apply(p[0]), false, fields, null, a);
 	}
 
+	/**
+	 * @param fun
+	 *            the 2-ary function to apply, in form of a {@link BinaryOperator}
+	 * @param fields
+	 *            an array of integers containing the indexes of the arguments
+	 *            that are fields
+	 * @param a
+	 *            the first parameter
+	 * @param b
+	 *            the second parameter
+	 * @return the result of the execution of fun(a, b)
+	 */
 	static Field apply(BinaryOperator<Object> fun, int[] fields, Object a, Object b) {
 		return apply((t, p) -> fun.apply(p[0], p[1]), false, fields, null, a, b);
 	}
 
+	/**
+	 * @param fun
+	 *            the {@link TriFunction} to apply
+	 * @param fields
+	 *            an array of integers containing the indexes of the arguments
+	 *            that are fields
+	 * @param a
+	 *            the first parameter
+	 * @param b
+	 *            the second parameter
+	 * @param c
+	 *            the third parameter
+	 * @return the result of the execution of fun(a, b, c)
+	 */
 	static Field apply(final TriFunction<Object, Object, Object, Object> fun, int[] fields, Object a, Object b, Object c) {
 		return apply((t, p) -> fun.apply(p[0], p[1], p[2]), false, fields, null, a, b, c);
 	}
