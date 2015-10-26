@@ -58,16 +58,14 @@
 	<module name="RegexpSingleline">
 		<property name="severity" value="warning" />
 		<property name="format" value="\s{2,}+$" />
-		<property name="minimum" value="0" />
-		<property name="maximum" value="0" />
+		<property name="fileExtensions" value="java xtend" />
 		<property name="message" value="Line has two or more trailing spaces." />
 	</module>
 
 	<module name="RegexpSingleline">
 		<property name="severity" value="warning" />
 		<property name="format" value="\t" />
-		<property name="minimum" value="0" />
-		<property name="maximum" value="0" />
+		<property name="fileExtensions" value="java xtend" />
 		<property name="message" value="Line is tab-indented (see Java Code Conventions, Section 4.2)." />
 	</module>
 
