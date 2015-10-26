@@ -19,35 +19,35 @@ import org.protelis.vm.ExecutionContext;
  */
 public class NBRCall extends AbstractAnnotatedTree<Field> {
 
-	private static final long serialVersionUID = 5255917527687990281L;
-	private static final byte BRANCH = 1;
+    private static final long serialVersionUID = 5255917527687990281L;
+    private static final byte BRANCH = 1;
 
-	/**
-	 * @param body
-	 *            body of nbr
-	 */
-	public NBRCall(final AnnotatedTree<?> body) {
-		super(body);
-	}
-	
-	@Override
-	public NBRCall copy() {
-		return new NBRCall(deepCopyBranches().get(0));
-	}
+    /**
+     * @param body
+     *            body of nbr
+     */
+    public NBRCall(final AnnotatedTree<?> body) {
+        super(body);
+    }
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		final AnnotatedTree<?> branch = getBranch(0);
-		branch.evalInNewStackFrame(context, BRANCH);
-		final Object childVal = branch.getAnnotation();
-		final Field res = context.buildField(Function.identity(), childVal);
-		setAnnotation(res);
-	}
+    @Override
+    public NBRCall copy() {
+        return new NBRCall(deepCopyBranches().get(0));
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append("nbr (");
-		fillBranches(sb, i, ',');
-		sb.append(')');
-	}
+    @Override
+    public void eval(final ExecutionContext context) {
+        final AnnotatedTree<?> branch = getBranch(0);
+        branch.evalInNewStackFrame(context, BRANCH);
+        final Object childVal = branch.getAnnotation();
+        final Field res = context.buildField(Function.identity(), childVal);
+        setAnnotation(res);
+    }
+
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append("nbr (");
+        fillBranches(sb, i, ',');
+        sb.append(')');
+    }
 }
