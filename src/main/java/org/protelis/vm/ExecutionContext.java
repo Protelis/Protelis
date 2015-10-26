@@ -11,7 +11,6 @@
  */
 package org.protelis.vm;
 
-import it.unibo.alchemist.model.interfaces.IPosition;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -79,20 +78,6 @@ public interface ExecutionContext {
 	 */
 	Number getDeltaTime();
 	
-	/**
-	 * @param target
-	 *            the device to compute the distance to
-	 * @return the distance to the device
-	 */
-	double distanceTo(DeviceUID target);
-	
-	/**
-	 * @deprecated This function is deprecated because position information cannot be assumed to be available; 
-	 * 		It should be instead be provided by particular instantiations of ExecutionContext where appropriate
-	 * @return Coordinates of the device
-	 */
-	IPosition getDevicePosition();
-
 	/**
 	 * Builds a new {@link Field}, fetching data from all the aligned neighbors.
 	 * A neighbor is considered to be aligned it it has reached the exact same

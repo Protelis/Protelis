@@ -8,22 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang;
 
-import it.unibo.alchemist.language.protelis.ProtelisStandaloneSetup;
-import it.unibo.alchemist.language.protelis.protelis.Assignment;
-import it.unibo.alchemist.language.protelis.protelis.Block;
-import it.unibo.alchemist.language.protelis.protelis.BooleanVal;
-import it.unibo.alchemist.language.protelis.protelis.Declaration;
-import it.unibo.alchemist.language.protelis.protelis.DoubleVal;
-import it.unibo.alchemist.language.protelis.protelis.Expression;
-import it.unibo.alchemist.language.protelis.protelis.FunctionDef;
-import it.unibo.alchemist.language.protelis.protelis.Import;
-import it.unibo.alchemist.language.protelis.protelis.Program;
-import it.unibo.alchemist.language.protelis.protelis.RepInitialize;
-import it.unibo.alchemist.language.protelis.protelis.Statement;
-import it.unibo.alchemist.language.protelis.protelis.StringVal;
-import it.unibo.alchemist.language.protelis.protelis.TupleVal;
-import it.unibo.alchemist.language.protelis.protelis.VAR;
-
 import org.danilopianini.lang.util.FasterString;
 
 import java.io.IOException;
@@ -79,7 +63,6 @@ import org.protelis.lang.interpreter.impl.HoodCall;
 import org.protelis.lang.interpreter.impl.If;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.interpreter.impl.NBRCall;
-import org.protelis.lang.interpreter.impl.NBRRange;
 import org.protelis.lang.interpreter.impl.NumericConstant;
 import org.protelis.lang.interpreter.impl.Random;
 import org.protelis.lang.interpreter.impl.RepCall;
@@ -90,6 +73,21 @@ import org.protelis.lang.interpreter.impl.Variable;
 import org.protelis.lang.util.HoodOp;
 import org.protelis.lang.util.Op1;
 import org.protelis.lang.util.Op2;
+import org.protelis.parser.ProtelisStandaloneSetup;
+import org.protelis.parser.protelis.Assignment;
+import org.protelis.parser.protelis.Block;
+import org.protelis.parser.protelis.BooleanVal;
+import org.protelis.parser.protelis.Declaration;
+import org.protelis.parser.protelis.DoubleVal;
+import org.protelis.parser.protelis.Expression;
+import org.protelis.parser.protelis.FunctionDef;
+import org.protelis.parser.protelis.Import;
+import org.protelis.parser.protelis.Module;
+import org.protelis.parser.protelis.RepInitialize;
+import org.protelis.parser.protelis.Statement;
+import org.protelis.parser.protelis.StringVal;
+import org.protelis.parser.protelis.TupleVal;
+import org.protelis.parser.protelis.VAR;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
@@ -299,7 +297,7 @@ public final class ProtelisLoader {
 			}
 			throw new IllegalArgumentException("Protelis program cannot be run because it has errors.");
 		}
-		final Program root = (Program) resource.getContents().get(0);
+		final Module root = (Module) resource.getContents().get(0);
 		/*
 		 * Create the function headers.
 		 * 
@@ -346,17 +344,17 @@ public final class ProtelisLoader {
 	}
 
 	private static void recursivelyInitFunctions(
-			final Program module,
+			final Module module,
 			final Map<FasterString, FunctionDefinition> nameToFun,
 			final Map<FunctionDef, FunctionDefinition> funToFun) {
 		recursivelyInitFunctions(module, nameToFun, funToFun, new HashSet<>(), true);
 	}
 	
 	private static void recursivelyInitFunctions(
-			final Program module,
+			final Module module,
 			final Map<FasterString, FunctionDefinition> nameToFun,
 			final Map<FunctionDef, FunctionDefinition> funToFun,
-			final Set<Program> completed,
+			final Set<Module> completed,
 			final boolean initPrivate) {
 		if (!completed.contains(module)) {
 			completed.add(module);
@@ -603,9 +601,6 @@ public final class ProtelisLoader {
 			final AnnotatedTree<?> body = parseBlock(e.getBody(), nameToFun, funToFun, id);
 			lambda.setBody(body);
 			return new Constant<>(lambda);
-		}
-		if (name.equals(NBR_RANGE)) {
-			return new NBRRange();
 		}
 		if (name.equals(EVAL_NAME)) {
 			final AnnotatedTree<?> arg = parseExpression(e.getArg(), nameToFun, funToFun, id);

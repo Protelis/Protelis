@@ -11,15 +11,12 @@
  */
 package org.protelis.vm.impl;
 
-import it.unibo.alchemist.model.interfaces.IPosition;
-
-import org.apache.commons.math3.util.Pair;
-import org.danilopianini.lang.util.FasterString;
-import org.protelis.lang.datatype.DeviceUID;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import org.danilopianini.lang.util.FasterString;
+import org.protelis.lang.datatype.DeviceUID;
 
 /**
  * A dummy Protelis VM to be used for testing.
@@ -52,16 +49,6 @@ public final class DummyContext extends AbstractExecutionContext {
 	}
 
 	@Override
-	public double distanceTo(final DeviceUID target) {
-		throw new UnsupportedOperationException();
-	}
-	
-	@Override
-	public IPosition getDevicePosition() {
-		return new DummyPosition();
-	}
-	
-	@Override
 	public double nextRandomDouble() {
 		return rng.nextDouble();
 	}
@@ -80,42 +67,4 @@ public final class DummyContext extends AbstractExecutionContext {
 	protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
 		environment = newEnvironment;
 	}
-	
-	private static class DummyPosition implements IPosition {
-		private static final long serialVersionUID = 1L;
-		@Override
-		public int compareTo(final IPosition o) {
-			return 0;
-		}
-		@Override
-		public double getDistanceTo(final IPosition p) {
-			return 0;
-		}
-		@Override
-		public int getDimensions() {
-			return 2;
-		}
-		@Override
-		public double getCoordinate(final int dim) {
-			return 0;
-		}
-		@Override
-		public double[] getCartesianCoordinates() {
-			return new double[]{0, 0};
-		}
-		@Override
-		public Pair<IPosition, IPosition> buildBoundingBox(final double range) {
-			return Pair.create(this, this);
-		}
-		@Override
-		public boolean equals(final Object obj) {
-			return obj instanceof DummyPosition;
-		}
-		@Override
-		public int hashCode() {
-			return 0;
-		}
-	}
-
-
 }

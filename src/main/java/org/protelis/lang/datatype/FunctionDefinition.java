@@ -10,9 +10,9 @@ package org.protelis.lang.datatype;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
-import it.unibo.alchemist.language.protelis.protelis.VAR;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.parser.protelis.VAR;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;

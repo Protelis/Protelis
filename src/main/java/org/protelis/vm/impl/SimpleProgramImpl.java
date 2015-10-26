@@ -11,11 +11,10 @@
  */
 package org.protelis.vm.impl;
 
-import it.unibo.alchemist.language.protelis.protelis.Program;
-
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.parser.protelis.Module;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
 
@@ -43,8 +42,8 @@ public class SimpleProgramImpl implements ProtelisProgram {
 	 * @param functions
 	 *            available functions
 	 */
-	public SimpleProgramImpl(final Program source, final AnnotatedTree<?> program, final Map<FasterString, FunctionDefinition> functions) {
-		this(Optional.of(source).map(Program::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
+	public SimpleProgramImpl(final Module source, final AnnotatedTree<?> program, final Map<FasterString, FunctionDefinition> functions) {
+		this(Optional.of(source).map(Module::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
 	}
 
 	/**
