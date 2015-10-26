@@ -63,7 +63,6 @@ import org.protelis.lang.interpreter.impl.If;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.interpreter.impl.NBRCall;
 import org.protelis.lang.interpreter.impl.NumericConstant;
-import org.protelis.lang.interpreter.impl.Random;
 import org.protelis.lang.interpreter.impl.RepCall;
 import org.protelis.lang.interpreter.impl.Self;
 import org.protelis.lang.interpreter.impl.TernaryOp;
@@ -115,7 +114,6 @@ public final class ProtelisLoader {
     private static final String IF_NAME = "if";
     private static final String PI_NAME = "pi";
     private static final String E_NAME = "e";
-    private static final String RAND_NAME = "random";
     private static final String LAMBDA_NAME = "->";
     private static final String SELF_NAME = "self";
     private static final String EVAL_NAME = "eval";
@@ -576,9 +574,6 @@ public final class ProtelisLoader {
 		}
 		if (name.equals(E_NAME)) {
 			return new Constant<>(Math.E);
-		}
-		if (name.equals(RAND_NAME)) {
-			return new Random();
 		}
 		if (name.equals(SELF_NAME)) {
 			return new Self();

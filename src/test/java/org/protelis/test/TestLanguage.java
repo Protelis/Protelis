@@ -399,14 +399,6 @@ public class TestLanguage {
 	}
 
 	/**
-	 * Test random number generation.
-	 */
-	@Test
-	public void testRandom01() {
-		testFileWithMultipleRuns("/random01.pt", 100, 100);
-	}
-	
-	/**
 	 * Test rep via a canonical use: creating a counter.
 	 */
 	@Test
