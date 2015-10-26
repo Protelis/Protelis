@@ -8,11 +8,8 @@
  *******************************************************************************/
 package org.protelis.vm.impl;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
-import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.DeviceUID;
 
 /**
@@ -25,13 +22,12 @@ public final class DummyContext extends AbstractExecutionContext {
     private static final DeviceUID DUMMYUID = new DeviceUID() {
         private static final long serialVersionUID = 2306021805006825289L;
     };
-    private Map<FasterString, Object> environment = new HashMap<>();
 
     /**
      *
      */
     public DummyContext() {
-        super(new DummyNetworkManager());
+        super(new SimpleExecutionEnvironment(), new DummyNetworkManager());
     }
 
     @Override
@@ -54,13 +50,4 @@ public final class DummyContext extends AbstractExecutionContext {
         return new DummyContext();
     }
 
-    @Override
-    protected Map<FasterString, Object> currentEnvironment() {
-        return environment;
-    }
-
-    @Override
-    protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
-        environment = newEnvironment;
-    }
 }

@@ -1,5 +1,5 @@
 // EXPECTED_RESULT: 7
-self.putEnvironmentVariable("foobar",3);
-self.putEnvironmentVariable("baz",4);
+env.put("foobar",3);
+env.put("baz",4);
 
-self.getEnvironmentVariable("baz")+self.getEnvironmentVariable("foobar");
+env.get("baz")+env.get("foobar");

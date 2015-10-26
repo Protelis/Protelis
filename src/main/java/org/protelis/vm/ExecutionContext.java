@@ -128,45 +128,9 @@ public interface ExecutionContext {
     Object getVariable(FasterString name);
 
     /**
-     * @param id
-     *            the variable name
-     * @return true if the variable is present
+     * @return The current {@link ExecutionEnvironment}
      */
-    boolean hasEnvironmentVariable(final String id);
-
-    /**
-     * @param id
-     *            the variable name
-     * @return the value of the variable if present, false otherwise
-     */
-    Object getEnvironmentVariable(final String id);
-
-    /**
-     * @param id
-     *            the variable name
-     * @param defaultValue
-     *            a parameterizable default value
-     * @return the value of the variable if present, defaultValue otherwise
-     */
-    Object getEnvironmentVariable(final String id, final Object defaultValue);
-
-    /**
-     * @param id
-     *            the variable name
-     * @param v
-     *            the value that should be associated with id
-     * @return true if there was previously a value associated with id, and
-     *         false if not.
-     */
-    boolean putEnvironmentVariable(final String id, final Object v);
-
-    /**
-     * @param id
-     *            the variable name
-     * @return Returns the value to which this map previously associated the
-     *         key, or null if the map contained no mapping for the key.
-     */
-    Object removeEnvironmentVariable(final String id);
+    ExecutionEnvironment getExecutionEnvironment();
 
     /**
      * Called just before the VM is executed, to enable and preparations needed

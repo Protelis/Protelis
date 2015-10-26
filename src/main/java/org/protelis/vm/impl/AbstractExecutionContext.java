@@ -15,12 +15,14 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.commons.math3.util.Pair;
+import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.vm.ExecutionContext;
+import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 import org.protelis.vm.util.Stack;
@@ -48,38 +50,28 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private Map<FasterString, ?> functions;
     private Stack gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
-    private Map<FasterString, Object> env;
     private Map<CodePath, Object> toSend;
     private Number previousRoundTime;
+    private final ExecutionEnvironment env;
 
     /**
      * Create a new AbstractExecutionContext.
      * 
+     * @param execenv
+     *            The execution environment
      * @param netmgr
      *            Abstract network interface to be used
      */
-    protected AbstractExecutionContext(final NetworkManager netmgr) {
-        Objects.requireNonNull(netmgr);
+    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr) {
+        LangUtils.requireNonNull(execenv, netmgr);
         nm = netmgr;
+        env = execenv;
     }
 
     @Override
     public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions) {
         functions = Collections.unmodifiableMap(knownFunctions);
     }
-
-    /**
-     * @return The current set of environment variables bindings
-     */
-    protected abstract Map<FasterString, Object> currentEnvironment();
-
-    /**
-     * Replace the entire current set of environment variable bindings.
-     * 
-     * @param newEnvironment
-     *            New set of variable bindings
-     */
-    protected abstract void setEnvironment(Map<FasterString, Object> newEnvironment);
 
     @Override
     public final void commit() {
@@ -89,9 +81,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         Objects.requireNonNull(toSend);
         Objects.requireNonNull(functions);
         previousRoundTime = getCurrentTime();
-        setEnvironment(env);
+        env.commit();
         nm.shareState(toSend);
-        env = null;
         gamma = null;
         theta = null;
         toSend = null;
@@ -105,7 +96,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         assert previousRoundTime != null : "Round time is null.";
         callStack.clear();
         callStack.add((byte) 1);
-        env = currentEnvironment();
+        env.setup();
         toSend = MAPMAKER.makeMap();
         gamma = new StackImpl(new HashMap<>(functions));
         theta = Collections.unmodifiableMap(nm.getNeighborState());
@@ -155,7 +146,6 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         final AbstractExecutionContext restrictedInstance = instance();
         restrictedInstance.theta = restricted;
         restrictedInstance.gamma = gamma;
-        restrictedInstance.env = env;
         restrictedInstance.toSend = toSend;
         return restrictedInstance;
     }
@@ -194,35 +184,6 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         return gamma.get(name);
     }
 
-    @Override
-    public final boolean hasEnvironmentVariable(final String id) {
-        return env.containsKey(new FasterString(id));
-    }
-
-    @Override
-    public final Object getEnvironmentVariable(final String id) {
-        return env.get(new FasterString(id));
-    }
-
-    @Override
-    public final Object getEnvironmentVariable(final String id, final Object defaultValue) {
-        if (hasEnvironmentVariable(id)) {
-            return env.get(new FasterString(id));
-        } else {
-            return defaultValue;
-        }
-    }
-
-    @Override
-    public final boolean putEnvironmentVariable(final String id, final Object v) {
-        return env.put(new FasterString(id), v) != null;
-    }
-
-    @Override
-    public final Object removeEnvironmentVariable(final String id) {
-        return env.remove(new FasterString(id));
-    }
-
     /**
      * Accessor for abstract network interface.
      * 
@@ -252,6 +213,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
             return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
         }
         return getCurrentTime().longValue() - previousRoundTime.longValue();
+    }
+    
+    @Override
+    public ExecutionEnvironment getExecutionEnvironment() {
+        return env;
     }
 
 }
