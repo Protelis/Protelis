@@ -97,6 +97,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 		if (previousRoundTime == null) {
 			previousRoundTime = getCurrentTime();
 		}
+		assert previousRoundTime != null : "Round time is null.";
 		callStack.clear();
 		callStack.add((byte) 1);
 		env = currentEnvironment();
