@@ -9,9 +9,9 @@
 package org.protelis.lang.interpreter;
 
 /**
- * Data structure representing the field calculus semantics of annotating expressions with 
- * their evaluated values, in this case a dual annotation of value and additional evaluation or state
- * in a superscript.
+ * Data structure representing the field calculus semantics of annotating
+ * expressions with their evaluated values, in this case a dual annotation of
+ * value and additional evaluation or state in a superscript.
  *
  * @param <S>
  *            Superscript type
@@ -20,9 +20,9 @@ package org.protelis.lang.interpreter;
  */
 public interface SuperscriptedAnnotatedTree<S, T> extends AnnotatedTree<T> {
 
-	/**
-	 * @return the superscript
-	 */
-	S getSuperscript();
+    /**
+     * @return the superscript
+     */
+    S getSuperscript();
 
 }
