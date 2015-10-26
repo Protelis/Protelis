@@ -10,30 +10,30 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.vm.ExecutionContext;
 
-
 /**
- *	Access to the evaluation context, which is used for interfacing with sensors, actuators, and
- *	the rest of the external non-static programmatic environment outside of Protelis.
+ * Access to the evaluation context, which is used for interfacing with sensors,
+ * actuators, and the rest of the external non-static programmatic environment
+ * outside of Protelis.
  */
 public class Self extends AbstractAnnotatedTree<ExecutionContext> {
 
-	private static final long serialVersionUID = -5050040892058340950L;
+    private static final long serialVersionUID = -5050040892058340950L;
 
-	@Override
-	public Self copy() {
-		return new Self();
-	}
+    @Override
+    public Self copy() {
+        return new Self();
+    }
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		if (isErased()) {
-			setAnnotation(context);
-		}
-	}
+    @Override
+    public void eval(final ExecutionContext context) {
+        if (isErased()) {
+            setAnnotation(context);
+        }
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append("self");
-	}
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append("self");
+    }
 
 }
