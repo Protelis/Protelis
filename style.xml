@@ -16,7 +16,7 @@
 <module name="Checker">
 
 	<module name="SuppressionCommentFilter" />
-
+	
 	<property name="severity" value="warning" />
 
 	<!-- Checks that a package.html file exists for each package. -->
@@ -57,7 +57,7 @@
 
 	<module name="RegexpSingleline">
 
-		<property name="severity" value="ignore" />
+		<property name="severity" value="warning" />
 
 		<property name="format" value="\s+$" />
 
@@ -68,7 +68,15 @@
 		<property name="message" value="Line has trailing spaces." />
 	</module>
 
-	<module name="TreeWalker">
+	<module name="RegexpSingleline">
+		<property name="severity" value="warning" />
+		<property name="format" value="\t" />
+		<property name="minimum" value="0" />
+		<property name="maximum" value="0" />
+		<property name="message" value="Line is tab-indented." />
+	</module>
+
+		<module name="TreeWalker">
 
 		<property name="tabWidth" value="4" />
 
