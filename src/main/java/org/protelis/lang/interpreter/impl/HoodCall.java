@@ -16,44 +16,47 @@ import org.protelis.lang.util.HoodOp;
 import org.protelis.vm.ExecutionContext;
 
 /**
- *	Reduce a field into a local value by reduction using a {@link HoodOp}.
+ * Reduce a field into a local value by reduction using a {@link HoodOp}.
  */
 public class HoodCall extends AbstractAnnotatedTree<Object> {
-	
-	private static final long serialVersionUID = -4925767634715581329L;
-	private final HoodOp function;
-	private final AnnotatedTree<Field> body;
-	private final boolean inclusive;
 
-	/**
-	 * @param arg the argument to evaluate (must return a {@link Field}).
-	 * @param func the {@link HoodOp} to apply
-	 * @param includeSelf if true, sigma won't be excluded
-	 */
-	public HoodCall(final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
-		super(arg);
-		body = arg;
-		function = func;
-		inclusive = includeSelf;
-	}
-	
-	@Override
-	public AnnotatedTree<Object> copy() {
-		return new HoodCall(body.copy(), function, inclusive);
-	}
+    private static final long serialVersionUID = -4925767634715581329L;
+    private final HoodOp function;
+    private final AnnotatedTree<Field> body;
+    private final boolean inclusive;
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		projectAndEval(context);
-		setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
-	}
+    /**
+     * @param arg
+     *            the argument to evaluate (must return a {@link Field}).
+     * @param func
+     *            the {@link HoodOp} to apply
+     * @param includeSelf
+     *            if true, sigma won't be excluded
+     */
+    public HoodCall(final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
+        super(arg);
+        body = arg;
+        function = func;
+        inclusive = includeSelf;
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(function.toString().toLowerCase(Locale.US));
-		sb.append("Hood (");
-		fillBranches(sb, i, ',');
-		sb.append(')');
-	}
-	
+    @Override
+    public AnnotatedTree<Object> copy() {
+        return new HoodCall(body.copy(), function, inclusive);
+    }
+
+    @Override
+    public void eval(final ExecutionContext context) {
+        projectAndEval(context);
+        setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
+    }
+
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append(function.toString().toLowerCase(Locale.US));
+        sb.append("Hood (");
+        fillBranches(sb, i, ',');
+        sb.append(')');
+    }
+
 }
