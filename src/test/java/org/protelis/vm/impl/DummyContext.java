@@ -6,9 +6,6 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-/**
- * 
- */
 package org.protelis.vm.impl;
 
 import java.util.HashMap;
@@ -23,48 +20,47 @@ import org.protelis.lang.datatype.DeviceUID;
  *
  */
 public final class DummyContext extends AbstractExecutionContext {
-	
-	private final Random rng = new Random(0);
-	private static final DeviceUID DUMMYUID = new DeviceUID() {
-		private static final long serialVersionUID = 2306021805006825289L;
-	};
-	private Map<FasterString, Object> environment = new HashMap<>();
-	
-	
-	/**
-	 * 
-	 */
-	public DummyContext() {
-		super(new DummyNetworkManager());
-	}
 
-	@Override
-	public DeviceUID getDeviceUID() {
-		return DUMMYUID;
-	}
+    private final Random rng = new Random(0);
+    private static final DeviceUID DUMMYUID = new DeviceUID() {
+        private static final long serialVersionUID = 2306021805006825289L;
+    };
+    private Map<FasterString, Object> environment = new HashMap<>();
 
-	@Override
-	public Number getCurrentTime() {
-		return System.currentTimeMillis() / 1000d;
-	}
+    /**
+     *
+     */
+    public DummyContext() {
+        super(new DummyNetworkManager());
+    }
 
-	@Override
-	public double nextRandomDouble() {
-		return rng.nextDouble();
-	}
+    @Override
+    public DeviceUID getDeviceUID() {
+        return DUMMYUID;
+    }
 
-	@Override
-	protected AbstractExecutionContext instance() {
-		return new DummyContext();
-	}
+    @Override
+    public Number getCurrentTime() {
+        return System.currentTimeMillis() / 1000d;
+    }
 
-	@Override
-	protected Map<FasterString, Object> currentEnvironment() {
-		return environment;
-	}
+    @Override
+    public double nextRandomDouble() {
+        return rng.nextDouble();
+    }
 
-	@Override
-	protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
-		environment = newEnvironment;
-	}
+    @Override
+    protected AbstractExecutionContext instance() {
+        return new DummyContext();
+    }
+
+    @Override
+    protected Map<FasterString, Object> currentEnvironment() {
+        return environment;
+    }
+
+    @Override
+    protected void setEnvironment(final Map<FasterString, Object> newEnvironment) {
+        environment = newEnvironment;
+    }
 }
