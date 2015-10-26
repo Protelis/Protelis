@@ -12,83 +12,54 @@ import org.danilopianini.lang.util.FasterString;
 import org.protelis.vm.ExecutionContext;
 
 /**
- *	Access a variable.
+ * Access a variable.
  */
 public class Variable extends AbstractAnnotatedTree<Object> {
 
-	private static final long serialVersionUID = -3739014755916345132L;
-	private final FasterString name;
-	
-	/**
-	 * @param varName
-	 *            variable name
-	 */
-	public Variable(final FasterString varName) {
-		super();
-		name = varName;
-	}
-	
-	/**
-	 * @param varName
-	 *            variable name
-	 */
-	public Variable(final String varName) {
-		this(new FasterString(varName));
-	}
-	
-	@Override
-	public Variable copy() {
-		return new Variable(name);
-	}
+    private static final long serialVersionUID = -3739014755916345132L;
+    private final FasterString name;
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		Object val = context.getVariable(name);
-		if (val == null) {
-			/*
-			 * The variable cannot be read. Most probably, it is some node variable that is not set here. Defaults to false.
-			 */
-			val = false;
-		}
-		// TODO: is all this stuff really OK to be removed?  I don't think so...
-//		if(val instanceof Field) {
-//			final CodePath curPath = new CodePath(currentPosition);
-//			newMap.put(curPath, val);
-//			final Field v = (Field)val;
-//			
-//			/*
-//			 * theta cleaning
-//			 */
-//			theta.forEachEntry( (nid, cpMap) -> {
-//				final INode<Object> node = env.getNodeByID(nid);
-//				if(node == null || v.getSample(node) == null) {
-//					theta.remove(nid);
-//				} else if(!cpMap.containsKey(curPath)) {
-//					theta.remove(nid);
-//					v.removeSample(node);
-//				}
-//				return true;
-//			});
-//			
-//			/*
-//			 * Restrict variable to aligned fields
-//			 */
-//			final List<INode<Object>> toRemove = new ArrayList<>(v.size());
-//			for(final INode<Object> n: v.nodeIterator()) {
-//				if(!theta.containsKey(n.getId())) {
-//					toRemove.add(n);
-//				}
-//			}
-//			for(final INode<Object> n: toRemove) {
-//				v.removeSample(n);
-//			}
-//		}
-		setAnnotation(val);
-	}
+    /**
+     * @param varName
+     *            variable name
+     */
+    public Variable(final FasterString varName) {
+        super();
+        name = varName;
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(name);
-	}
+    /**
+     * @param varName
+     *            variable name
+     */
+    public Variable(final String varName) {
+        this(new FasterString(varName));
+    }
+
+    @Override
+    public Variable copy() {
+        return new Variable(name);
+    }
+
+    @Override
+    public void eval(final ExecutionContext context) {
+        Object val = context.getVariable(name);
+        if (val == null) {
+            /*
+             * The variable cannot be read. Most probably, it is some node
+             * variable that is not set here. Defaults to false.
+             */
+            val = false;
+        }
+        /*
+         * TODO: Restrict variable to aligned fields
+         */
+        setAnnotation(val);
+    }
+
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append(name);
+    }
 
 }
