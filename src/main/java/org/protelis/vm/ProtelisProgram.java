@@ -18,27 +18,31 @@ import org.protelis.lang.datatype.FunctionDefinition;
  * Executable representation of a Protelis program.
  */
 public interface ProtelisProgram extends Serializable {
-	
-	/**
-	 * @return The value computed during the most recent invocation of {@link compute}
-	 */
-	Object getCurrentValue();
-	
-	/**
-	 * Execute one round of computation of this Protelis program.
-	 * @param context
-	 * 		The virtual machine environment in which computation will take place.
-	 */
-	void compute(ExecutionContext context);
-	
-	/**
-	 * @return Set of named functions defined in this program
-	 */
-	Map<FasterString, FunctionDefinition> getNamedFunctions();
-	
-	/**
-	 * @return Name of the program, or some default name if no specific name is provided
-	 */
-	FasterString getName();
+
+    /**
+     * @return The value computed during the most recent invocation of
+     *         {@link compute}
+     */
+    Object getCurrentValue();
+
+    /**
+     * Execute one round of computation of this Protelis program.
+     * 
+     * @param context
+     *            The virtual machine environment in which computation will take
+     *            place.
+     */
+    void compute(ExecutionContext context);
+
+    /**
+     * @return Set of named functions defined in this program
+     */
+    Map<FasterString, FunctionDefinition> getNamedFunctions();
+
+    /**
+     * @return Name of the program, or some default name if no specific name is
+     *         provided
+     */
+    FasterString getName();
 
 }

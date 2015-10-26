@@ -9,45 +9,51 @@
 package org.protelis.vm;
 
 /**
- * A virtual machine for executing a Protelis program on a particular device (context).
+ * A virtual machine for executing a Protelis program on a particular device
+ * (context).
  */
 public class ProtelisVM {
 
-	private final ProtelisProgram prog;
-	private final ExecutionContext ctx;
-	
-	/**
-	 * Create a virtual machine for executing a Protelis program in a particular context.
-	 * @param program
-	 * 		Protelis program to be executed
-	 * @param context
-	 * 		Environment in which this program will be executed
-	 */
-	public ProtelisVM(final ProtelisProgram program, final ExecutionContext context) {
-		prog = program;
-		ctx = context;
-		ctx.setAvailableFunctions(program.getNamedFunctions());
-	}
-	
-	/**
-	 * Run one execution cycle of the VM, in which the computation is run atomically against the most recent neighbor and environment information, producing a new state to be committed to the environment and sent to neighbors.
-	 */
-	public void runCycle() {
-		// 1. Take the messages received by neighbors
-		ctx.setup();
-		// 2. Compute
-		prog.compute(ctx);
-		// 3. Finalize the new environment and send Messages away
-		ctx.commit();
-	}
-	
-	/**
-	 * Return the value computed in the most recent execution cycle.
-	 * @return
-	 * 		Last value computed
-	 */
-	public Object getCurrentValue() {
-		return prog.getCurrentValue();
-	}
+    private final ProtelisProgram prog;
+    private final ExecutionContext ctx;
+
+    /**
+     * Create a virtual machine for executing a Protelis program in a particular
+     * context.
+     * 
+     * @param program
+     *            Protelis program to be executed
+     * @param context
+     *            Environment in which this program will be executed
+     */
+    public ProtelisVM(final ProtelisProgram program, final ExecutionContext context) {
+        prog = program;
+        ctx = context;
+        ctx.setAvailableFunctions(program.getNamedFunctions());
+    }
+
+    /**
+     * Run one execution cycle of the VM, in which the computation is run
+     * atomically against the most recent neighbor and environment information,
+     * producing a new state to be committed to the environment and sent to
+     * neighbors.
+     */
+    public void runCycle() {
+        // 1. Take the messages received by neighbors
+        ctx.setup();
+        // 2. Compute
+        prog.compute(ctx);
+        // 3. Finalize the new environment and send Messages away
+        ctx.commit();
+    }
+
+    /**
+     * Return the value computed in the most recent execution cycle.
+     * 
+     * @return Last value computed
+     */
+    public Object getCurrentValue() {
+        return prog.getCurrentValue();
+    }
 
 }
