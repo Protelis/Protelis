@@ -56,7 +56,6 @@ import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
 import org.protelis.lang.interpreter.impl.CreateVar;
 import org.protelis.lang.interpreter.impl.DotOperator;
-import org.protelis.lang.interpreter.impl.Dt;
 import org.protelis.lang.interpreter.impl.Eval;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.impl.HoodCall;
@@ -97,94 +96,98 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.google.inject.Injector;
 
 /**
- *	Main entry-point class for loading/parsing Protelis programs.
+ * Main entry-point class for loading/parsing Protelis programs.
  */
 public final class ProtelisLoader {
 
-	private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
-	private static final AtomicInteger IDGEN = new AtomicInteger();
-	private static final XtextResourceSet XTEXT = createResourceSet();
-	private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
-	private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.DOTALL);
-	private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
-	private static final String PROTELIS_FILE_EXTENSION = "pt";
-	private static final String UNCHECKED = "unchecked";
-	private static final String ASSIGNMENT_NAME = "=";
-	private static final String DOT_NAME = ".";
-	private static final String REP_NAME = "rep";
-	private static final String IF_NAME = "if";
-	private static final String DT_NAME = "dt";
-	private static final String PI_NAME = "pi";
-	private static final String E_NAME = "e";
-	private static final String RAND_NAME = "random";
-	private static final String LAMBDA_NAME = "->";
-	private static final String SELF_NAME = "self";
-	private static final String EVAL_NAME = "eval";
-	private static final String NBR_NAME = "nbr";
-	private static final String NBR_RANGE = "nbrRange";
-	private static final String ALIGNED_MAP = "alignedMap";
-	private static final String MUX_NAME = "mux";
-	private static final String HOOD_END = "Hood";
-	private static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values()).map(Op2::toString).collect(Collectors.toList());
-	private static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values()).map(Op1::toString).collect(Collectors.toList());
+    private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
+    private static final AtomicInteger IDGEN = new AtomicInteger();
+    private static final XtextResourceSet XTEXT = createResourceSet();
+    private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
+    private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+",
+            Pattern.DOTALL);
+    private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
+    private static final String PROTELIS_FILE_EXTENSION = "pt";
+    private static final String UNCHECKED = "unchecked";
+    private static final String ASSIGNMENT_NAME = "=";
+    private static final String DOT_NAME = ".";
+    private static final String REP_NAME = "rep";
+    private static final String IF_NAME = "if";
+    private static final String PI_NAME = "pi";
+    private static final String E_NAME = "e";
+    private static final String RAND_NAME = "random";
+    private static final String LAMBDA_NAME = "->";
+    private static final String SELF_NAME = "self";
+    private static final String EVAL_NAME = "eval";
+    private static final String NBR_NAME = "nbr";
+    private static final String ALIGNED_MAP = "alignedMap";
+    private static final String MUX_NAME = "mux";
+    private static final String HOOD_END = "Hood";
+    private static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values())
+            .map(Op2::toString).collect(Collectors.toList());
+    private static final List<String> UNARY_OPERATORS = Arrays.stream(Op1.values())
+            .map(Op1::toString).collect(Collectors.toList());
 
-	private ProtelisLoader() {
-	}
+    private ProtelisLoader() {
+    }
 
-	/**
-	 * @param program
-	 *            Protelis module, program file or program to be prepared for execution. It must
-	 *            be one of:
-	 * 
-	 *            i) a valid Protelis qualifier name (Java like name, colon
-	 *            separated);
-	 * 
-	 *            ii) a valid {@link URI} string;
-	 * 
-	 *            iii) a valid Protelis program.
-	 * 
-	 *            Those possibilities are checked in order.
-	 * 
-	 *            The URI String can be in the form of a URL like
-	 *            "file:///home/user/protelis/myProgram" or a location relative
-	 *            to the classpath. In case, for instance,
-	 *            "/my/package/myProgram.pt" is passed, it will be automatically
-	 *            get converted to "classpath:/my/package/myProgram.pt". All the
-	 *            Protelis modules your program relies upon must be included in
-	 *            your Java classpath. The Java classpath scanning is done
-	 *            automatically by this constructor, linking is performed by
-	 *            Xtext transparently. {@link URI}s of type "platform:/" are
-	 *            supported, for those who work within an Eclipse environment.
-	 * @return an {@link ProtelisProgram} comprising the constructed program
-	 * @throws IllegalArgumentException when the program has errors
-	 */
-	public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
-		try {
-			if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
-				return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
-			}
-			return parseURI(program);
-		} catch (IOException e) {
-			return parseAnonymousModule(program);
-		}
-	}
-	
-	/**
-	 * @param program
-	 *            A valid Protelis program to be prepared for execution.
-	 * 
-	 * 			  All the Protelis modules your program relies upon must be included in
-	 *            your Java classpath. The Java classpath scanning is done
-	 *            automatically by this constructor, linking is performed by
-	 *            Xtext transparently. {@link URI}s of type "platform:/" are
-	 *            supported, for those who work within an Eclipse environment.
-	 * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
-	 *         {@link FunctionDefinition} (containing the available functions)
-	 * @throws IllegalArgumentException when the program has errors
-	 */
-	public static ProtelisProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
-		return parse(resourceFromString(program));
-	}
+    /**
+     * @param program
+     *            Protelis module, program file or program to be prepared for
+     *            execution. It must be one of:
+     * 
+     *            i) a valid Protelis qualifier name (Java like name, colon
+     *            separated);
+     * 
+     *            ii) a valid {@link URI} string;
+     * 
+     *            iii) a valid Protelis program.
+     * 
+     *            Those possibilities are checked in order.
+     * 
+     *            The URI String can be in the form of a URL like
+     *            "file:///home/user/protelis/myProgram" or a location relative
+     *            to the classpath. In case, for instance,
+     *            "/my/package/myProgram.pt" is passed, it will be automatically
+     *            get converted to "classpath:/my/package/myProgram.pt". All the
+     *            Protelis modules your program relies upon must be included in
+     *            your Java classpath. The Java classpath scanning is done
+     *            automatically by this constructor, linking is performed by
+     *            Xtext transparently. {@link URI}s of type "platform:/" are
+     *            supported, for those who work within an Eclipse environment.
+     * @return an {@link ProtelisProgram} comprising the constructed program
+     * @throws IllegalArgumentException
+     *             when the program has errors
+     */
+    public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
+        try {
+            if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
+                return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
+            }
+            return parseURI(program);
+        } catch (IOException e) {
+            return parseAnonymousModule(program);
+        }
+    }
+
+    /**
+     * @param program
+     *            A valid Protelis program to be prepared for execution.
+     * 
+     *            All the Protelis modules your program relies upon must be
+     *            included in your Java classpath. The Java classpath scanning
+     *            is done automatically by this constructor, linking is
+     *            performed by Xtext transparently. {@link URI}s of type
+     *            "platform:/" are supported, for those who work within an
+     *            Eclipse environment.
+     * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
+     *         {@link FunctionDefinition} (containing the available functions)
+     * @throws IllegalArgumentException
+     *             when the program has errors
+     */
+    public static ProtelisProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
+        return parse(resourceFromString(program));
+    }
 	
 	/**
 	 * @param programURI
@@ -576,9 +579,6 @@ public final class ProtelisLoader {
 		}
 		if (name.equals(RAND_NAME)) {
 			return new Random();
-		}
-		if (name.equals(DT_NAME)) {
-			return new Dt();
 		}
 		if (name.equals(SELF_NAME)) {
 			return new Self();
