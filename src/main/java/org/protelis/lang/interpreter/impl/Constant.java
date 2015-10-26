@@ -10,47 +10,47 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.vm.ExecutionContext;
 
-
 /**
  * An arbitrary object-valued constant.
  *
  * @param <T>
  */
 public class Constant<T> extends AbstractAnnotatedTree<T> {
-	
-	private static final long serialVersionUID = 2101316473738120102L;
-	private final T constantValue;
-	
-	/**
-	 * @param obj the constant to be associated
-	 */
-	public Constant(final T obj) {
-		super();
-		constantValue = obj;
-	}
 
-	@Override
-	public Constant<T> copy() {
-		return new Constant<>(constantValue);
-	}
+    private static final long serialVersionUID = 2101316473738120102L;
+    private final T constantValue;
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		if (isErased()) {
-			setAnnotation(constantValue);
-		}
-	}
-	
-	/**
-	 * @return the constant value
-	 */
-	protected T getInternalObject() {
-		return constantValue;
-	}
+    /**
+     * @param obj
+     *            the constant to be associated
+     */
+    public Constant(final T obj) {
+        super();
+        constantValue = obj;
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(constantValue);
-	}
+    @Override
+    public Constant<T> copy() {
+        return new Constant<>(constantValue);
+    }
+
+    @Override
+    public void eval(final ExecutionContext context) {
+        if (isErased()) {
+            setAnnotation(constantValue);
+        }
+    }
+
+    /**
+     * @return the constant value
+     */
+    protected T getInternalObject() {
+        return constantValue;
+    }
+
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append(constantValue);
+    }
 
 }
