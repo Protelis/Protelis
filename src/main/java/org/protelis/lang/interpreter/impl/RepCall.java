@@ -21,67 +21,67 @@ import java.util.List;
  */
 public class RepCall<T> extends AbstractSATree<T, T> {
 
-	private static final long serialVersionUID = 8643287734245198408L;
-	private static final byte W_BRANCH = 0;
-	private static final byte A_BRANCH = 1;
-	private final FasterString xName;
-	
-	/**
-	 * @param varName
-	 *            variable name
-	 * @param w
-	 *            initial value
-	 * @param body
-	 *            body
-	 */
-	public RepCall(final FasterString varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
-		super(w, body);
-		xName = varName;
-	}
+    private static final long serialVersionUID = 8643287734245198408L;
+    private static final byte W_BRANCH = 0;
+    private static final byte A_BRANCH = 1;
+    private final FasterString xName;
 
-	@Override
-	public RepCall<T> copy() {
-		final List<AnnotatedTree<?>> branches = deepCopyBranches();
-		final RepCall<T> res = new RepCall<>(xName, branches.get(W_BRANCH), branches.get(A_BRANCH));
-		if (!isErased()) {
-			res.setSuperscript(getSuperscript());
-			res.setAnnotation(null);
-		}
-		return res;
-	}
+    /**
+     * @param varName
+     *            variable name
+     * @param w
+     *            initial value
+     * @param body
+     *            body
+     */
+    public RepCall(final FasterString varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
+        super(w, body);
+        xName = varName;
+    }
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		if (isErased()) {
-			/*
-			 * Evaluate the initial value for the field. This is either a variable or a constant, so no projection is required.
-			 */
-			final AnnotatedTree<?> w = getBranch(W_BRANCH);
-			w.evalInNewStackFrame(context, W_BRANCH);
-			context.putVariable(xName, w.getAnnotation(), true);
-		} else {
-			context.putVariable(xName, getSuperscript(), true);
-		}
-		final AnnotatedTree<?> body = getBranch(A_BRANCH);
-		body.evalInNewStackFrame(context, A_BRANCH);
-		@SuppressWarnings("unchecked")
-		final T result = (T) body.getAnnotation();
-		setAnnotation(result);
-		setSuperscript(result);
-	}
+    @Override
+    public RepCall<T> copy() {
+        final List<AnnotatedTree<?>> branches = deepCopyBranches();
+        final RepCall<T> res = new RepCall<>(xName, branches.get(W_BRANCH), branches.get(A_BRANCH));
+        if (!isErased()) {
+            res.setSuperscript(getSuperscript());
+            res.setAnnotation(null);
+        }
+        return res;
+    }
 
-	@Override
-	protected void innerAsString(final StringBuilder sb, final int indent) {
-		sb.append("rep (");
-		sb.append(xName);
-		sb.append(" <- \n");
-		getBranch(W_BRANCH).toString(sb, indent + 1);
-		sb.append(") {\n");
-		getBranch(A_BRANCH).toString(sb, indent + 1);
-		sb.append('\n');
-		indent(sb, indent);
-		sb.append('}');
-	}
+    @Override
+    public void eval(final ExecutionContext context) {
+        if (isErased()) {
+            /*
+             * Evaluate the initial value for the field. This is either a
+             * variable or a constant, so no projection is required.
+             */
+            final AnnotatedTree<?> w = getBranch(W_BRANCH);
+            w.evalInNewStackFrame(context, W_BRANCH);
+            context.putVariable(xName, w.getAnnotation(), true);
+        } else {
+            context.putVariable(xName, getSuperscript(), true);
+        }
+        final AnnotatedTree<?> body = getBranch(A_BRANCH);
+        body.evalInNewStackFrame(context, A_BRANCH);
+        @SuppressWarnings("unchecked")
+        final T result = (T) body.getAnnotation();
+        setAnnotation(result);
+        setSuperscript(result);
+    }
 
+    @Override
+    protected void innerAsString(final StringBuilder sb, final int indent) {
+        sb.append("rep (");
+        sb.append(xName);
+        sb.append(" <- \n");
+        getBranch(W_BRANCH).toString(sb, indent + 1);
+        sb.append(") {\n");
+        getBranch(A_BRANCH).toString(sb, indent + 1);
+        sb.append('\n');
+        indent(sb, indent);
+        sb.append('}');
+    }
 
 }
