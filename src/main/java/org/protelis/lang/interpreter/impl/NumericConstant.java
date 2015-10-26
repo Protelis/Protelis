@@ -9,31 +9,31 @@
 package org.protelis.lang.interpreter.impl;
 
 /**
- *	A numerical constant.
+ * A numerical constant.
  */
 public class NumericConstant extends Constant<Double> {
 
-	private static final long serialVersionUID = 7005881609489257450L;
-	
-	/**
-	 * @param number
-	 *            the number
-	 */
-	public NumericConstant(final String number) {
-		this(Double.parseDouble(number));
-	}
-	
-	/**
-	 * @param number
-	 *            the number
-	 */
-	public NumericConstant(final double number) {
-		super(number);
-	}
-	
-	@Override
-	public NumericConstant copy() {
-		return new NumericConstant(getInternalObject());
-	}
+    private static final long serialVersionUID = 7005881609489257450L;
+
+    /**
+     * @param number
+     *            the number
+     */
+    public NumericConstant(final String number) {
+        this(Double.parseDouble(number));
+    }
+
+    /**
+     * @param number
+     *            the number
+     */
+    public NumericConstant(final double number) {
+        super(number);
+    }
+
+    @Override
+    public NumericConstant copy() {
+        return new NumericConstant(getInternalObject());
+    }
 
 }
