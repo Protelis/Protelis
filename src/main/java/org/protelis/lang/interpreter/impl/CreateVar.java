@@ -13,72 +13,72 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
 /**
- *	Declare a variable from a "let" expression.
+ * Declare a variable from a "let" expression.
  */
 public class CreateVar extends AbstractAnnotatedTree<Object> {
 
-	private static final long serialVersionUID = -7298208661255971616L;
-	private final FasterString var;
-	private final boolean definition;
-	
-	/**
-	 * @param name
-	 *            variable name
-	 * @param value
-	 *            program to evaluate to compute the value
-	 * @param isDefinition
-	 *            true if it is a let
-	 */
-	public CreateVar(final String name, final AnnotatedTree<?> value, final boolean isDefinition) {
-		this(new FasterString(name), value, isDefinition);
-	}
+    private static final long serialVersionUID = -7298208661255971616L;
+    private final FasterString var;
+    private final boolean definition;
 
-	/**
-	 * @param name
-	 *            variable name
-	 * @param value
-	 *            program to evaluate to compute the value
-	 * @param isDefinition
-	 *            true if it is a let
-	 */
-	public CreateVar(final FasterString name, final AnnotatedTree<?> value, final boolean isDefinition) {
-		super(value);
-		var = name;
-		definition = isDefinition;
-	}
+    /**
+     * @param name
+     *            variable name
+     * @param value
+     *            program to evaluate to compute the value
+     * @param isDefinition
+     *            true if it is a let
+     */
+    public CreateVar(final String name, final AnnotatedTree<?> value, final boolean isDefinition) {
+        this(new FasterString(name), value, isDefinition);
+    }
 
-	@Override
-	public AnnotatedTree<Object> copy() {
-		return new CreateVar(var, deepCopyBranches().get(0), definition);
-	}
+    /**
+     * @param name
+     *            variable name
+     * @param value
+     *            program to evaluate to compute the value
+     * @param isDefinition
+     *            true if it is a let
+     */
+    public CreateVar(final FasterString name, final AnnotatedTree<?> value, final boolean isDefinition) {
+        super(value);
+        var = name;
+        definition = isDefinition;
+    }
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		projectAndEval(context);
-		final Object res = getBranch(0).getAnnotation();
-		context.putVariable(var, res, isDefinition());
-		setAnnotation(res);
-	}
+    @Override
+    public AnnotatedTree<Object> copy() {
+        return new CreateVar(var, deepCopyBranches().get(0), definition);
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(var);
-		sb.append(" = \n");
-		getBranch(0).toString(sb, i + 1);
-	}
-	
-	/**
-	 * @return true if it is a let
-	 */
-	public boolean isDefinition() {
-		return definition;
-	}
-	
-	/**
-	 * @return the variable name
-	 */
-	public FasterString getVarName() {
-		return var;
-	}
+    @Override
+    public void eval(final ExecutionContext context) {
+        projectAndEval(context);
+        final Object res = getBranch(0).getAnnotation();
+        context.putVariable(var, res, isDefinition());
+        setAnnotation(res);
+    }
+
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append(var);
+        sb.append(" = \n");
+        getBranch(0).toString(sb, i + 1);
+    }
+
+    /**
+     * @return true if it is a let
+     */
+    public boolean isDefinition() {
+        return definition;
+    }
+
+    /**
+     * @return the variable name
+     */
+    public FasterString getVarName() {
+        return var;
+    }
 
 }
