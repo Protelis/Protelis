@@ -56,6 +56,7 @@ import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
 import org.protelis.lang.interpreter.impl.CreateVar;
 import org.protelis.lang.interpreter.impl.DotOperator;
+import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.impl.HoodCall;
@@ -116,6 +117,7 @@ public final class ProtelisLoader {
     private static final String E_NAME = "e";
     private static final String LAMBDA_NAME = "->";
     private static final String SELF_NAME = "self";
+    private static final String ENV_NAME = "env";
     private static final String EVAL_NAME = "eval";
     private static final String NBR_NAME = "nbr";
     private static final String ALIGNED_MAP = "alignedMap";
@@ -603,6 +605,9 @@ public final class ProtelisLoader {
         }
         if (name.equals(SELF_NAME)) {
             return new Self();
+        }
+        if (name.equals(ENV_NAME)) {
+            return new Env();
         }
         if (name.equals(NBR_NAME)) {
             return new NBRCall(parseExpression(e.getArg(), nameToFun, funToFun, id));
