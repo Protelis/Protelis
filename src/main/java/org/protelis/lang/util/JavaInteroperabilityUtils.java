@@ -1,5 +1,6 @@
 package org.protelis.lang.util;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +29,33 @@ public final class JavaInteroperabilityUtils {
      *            the function arguments
      * @return the result of the evaluation
      */
-    public static Object runProtelisFunction(final ExecutionContext ctx, final AnnotatedTree<FunctionDefinition> fd,
+    public static Object runProtelisFunction(
+            final ExecutionContext ctx,
+            final AnnotatedTree<FunctionDefinition> fd,
             final List<AnnotatedTree<?>> args) {
         final DotOperator dot = DotOperator.makeApply(fd, args);
         dot.eval(ctx);
         return dot.getAnnotation();
+    }
+
+    /**
+     * @param ctx
+     *            {@link ExecutionContext}
+     * @param fd
+     *            an {@link AnnotatedTree} with the {@link FunctionDefinition}
+     *            to instance and use
+     * @param args
+     *            the function arguments
+     * @return the result of the evaluation
+     */
+    public static Object runProtelisFunction(
+            final ExecutionContext ctx,
+            final AnnotatedTree<FunctionDefinition> fd,
+            final Object... args) {
+        final List<AnnotatedTree<?>> arguments = Arrays.stream(args)
+                .map(Constant<Object>::new)
+                .collect(Collectors.toList());
+        return runProtelisFunction(ctx, fd, arguments);
     }
 
     /**
@@ -44,7 +67,9 @@ public final class JavaInteroperabilityUtils {
      *            the function arguments
      * @return the result of the evaluation
      */
-    public static Object runProtelisFunction(final ExecutionContext ctx, final FunctionDefinition fd,
+    public static Object runProtelisFunction(
+            final ExecutionContext ctx,
+            final FunctionDefinition fd,
             final List<?> args) {
         final List<AnnotatedTree<?>> arguments = args.stream().map(Constant<Object>::new).collect(Collectors.toList());
         return runProtelisFunction(ctx, new Constant<>(fd), arguments);
