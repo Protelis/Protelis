@@ -10,7 +10,6 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,11 +24,27 @@ import org.protelis.vm.ExecutionContext;
  */
 public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 
+    /**
+     * Special method name, that causes a Protelis function invocation if the
+     * left hand side of the {@link DotOperator} is a {@link FunctionDefinition}.
+     */
+    public static final String APPLY = "apply";
     private static final long serialVersionUID = -9128116355271771986L;
     private static final byte LEFT_POS = -1;
     private final boolean isApply;
     private final String methodName;
     private final AnnotatedTree<?> left;
+    
+    /**
+     * Builds a new {@link #APPLY}.
+     * 
+     * @param target the target of the invocation
+     * @param args the arguments
+     * @return a new {@link #APPLY} {@link DotOperator}.
+     */
+    public static DotOperator makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
+        return new DotOperator(true, null, target, args);
+    }
 
     /**
      * @param name
@@ -41,13 +56,17 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
      *            arguments of the function
      */
     public DotOperator(final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+        this(name.equals(APPLY), name, target, args);
+    }
+    
+    private DotOperator(final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         super(args);
-        Objects.requireNonNull(name);
-        isApply = name.equals("apply");
-        methodName = name;
+        isApply = apply;
+        assert isApply || name != null;
+        methodName = apply ? APPLY : name;
         left = target;
     }
-
+    
     @Override
     public AnnotatedTree<Object> copy() {
         final DotOperator res = new DotOperator(methodName, left.copy(), deepCopyBranches());
