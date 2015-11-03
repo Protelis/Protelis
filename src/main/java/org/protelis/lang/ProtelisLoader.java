@@ -8,12 +8,9 @@
  *******************************************************************************/
 package org.protelis.lang;
 
-import org.danilopianini.lang.util.FasterString;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +33,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.math3.util.Pair;
+import org.danilopianini.lang.util.FasterString;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -59,6 +57,7 @@ import org.protelis.lang.interpreter.impl.DotOperator;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
 import org.protelis.lang.interpreter.impl.FunctionCall;
+import org.protelis.lang.interpreter.impl.GenericHoodCall;
 import org.protelis.lang.interpreter.impl.HoodCall;
 import org.protelis.lang.interpreter.impl.If;
 import org.protelis.lang.interpreter.impl.MethodCall;
@@ -70,6 +69,7 @@ import org.protelis.lang.interpreter.impl.TernaryOp;
 import org.protelis.lang.interpreter.impl.UnaryOp;
 import org.protelis.lang.interpreter.impl.Variable;
 import org.protelis.lang.util.HoodOp;
+import org.protelis.lang.util.JavaInteroperabilityUtils;
 import org.protelis.lang.util.Op1;
 import org.protelis.lang.util.Op2;
 import org.protelis.parser.ProtelisStandaloneSetup;
@@ -108,7 +108,6 @@ public final class ProtelisLoader {
             Pattern.DOTALL);
     private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
     private static final String PROTELIS_FILE_EXTENSION = "pt";
-    private static final String UNCHECKED = "unchecked";
     private static final String ASSIGNMENT_NAME = "=";
     private static final String DOT_NAME = ".";
     private static final String REP_NAME = "rep";
@@ -122,6 +121,7 @@ public final class ProtelisLoader {
     private static final String NBR_NAME = "nbr";
     private static final String ALIGNED_MAP = "alignedMap";
     private static final String MUX_NAME = "mux";
+    private static final String HOOD_NAME = "hood";
     private static final String HOOD_END = "Hood";
     private static final List<String> BINARY_OPERATORS = Arrays.stream(Op2.values())
             .map(Op2::toString).collect(Collectors.toList());
@@ -303,7 +303,7 @@ public final class ProtelisLoader {
                 final String place = ad.getUriToProblem().toString().split("#")[0];
                 L.error("Error in " + place + " at line " + d.getLine() + ": " + d.getMessage());
             }
-            throw new IllegalArgumentException("Protelis program cannot be run because it has errors.");
+            throw new IllegalArgumentException("Protelis program cannot run because it has errors.");
         }
         final Module root = (Module) resource.getContents().get(0);
         /*
@@ -445,39 +445,13 @@ public final class ProtelisLoader {
         final List<AnnotatedTree<?>> arguments = parseArgs(args, nameToFun, funToFun, id);
         final String classname = jvmOp.getDeclaringType().getQualifiedName();
         try {
-            final Class<?> clazz = Class.forName(classname);
-            /*
-             * TODO: Check for return type and params: if param is Field and
-             * return type is not then L.warn()
-             */
-            Stream<Method> methods = Arrays.stream(clazz.getMethods());
-            if (ztatic) {
-                methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
-            }
-            /*
-             * Same number of arguments
-             */
-            final int parameterCount = jvmOp.getParameters().size();
-            methods = methods.filter(m -> m.getParameterCount() == parameterCount);
-            /*
-             * Same name
-             */
-            final String methodName = jvmOp.getSimpleName();
-            methods = methods.filter(m -> m.getName().equals(methodName));
-            /*
-             * There should be only one left - otherwise we have overloading,
-             * and to properly deal with that we need type checking. The
-             * following collection operation is for debug and warning purposes,
-             * and should be removed as soon as we have a proper way to deal
-             * with overloading in place. TODO
-             */
-            final List<Method> res = methods.collect(Collectors.toList());
+            final List<Method> res = JavaInteroperabilityUtils.jvmOperationToMethod(jvmOp);
             if (res.size() > 1) {
                 final StringBuilder sb = new StringBuilder(64);
                 sb.append("Method ");
                 sb.append(jvmOp.getQualifiedName());
                 sb.append('/');
-                sb.append(parameterCount);
+                sb.append(jvmOp.getParameters().size());
                 sb.append(" is overloaded by:\n");
                 res.forEach(m -> {
                     sb.append(m.toString());
@@ -488,7 +462,7 @@ public final class ProtelisLoader {
             }
             if (res.isEmpty()) {
                 throw new IllegalStateException("Can not bind any method that satisfies the name "
-                        + jvmOp.getQualifiedName() + "/" + parameterCount + ".");
+                        + jvmOp.getQualifiedName() + "/" + jvmOp.getParameters().size() + ".");
             }
             return new MethodCall(res.get(0), arguments, ztatic);
         } catch (ClassNotFoundException e) {
@@ -518,7 +492,8 @@ public final class ProtelisLoader {
             final AtomicInteger id) {
         return args.stream().map(e -> parseExpression(e, nameToFun, funToFun, id)).collect(Collectors.toList());
     }
-
+    
+    @SuppressWarnings("unchecked")
     private static <T> AnnotatedTree<?> parseExpression(
             final Expression e,
             final Map<FasterString, FunctionDefinition> nameToFun,
@@ -547,25 +522,25 @@ public final class ProtelisLoader {
             throw new IllegalArgumentException("null expression, this is a bug.");
         }
         final Optional<EObject> ref = Optional.ofNullable(e.getReference());
-        if (ref.isPresent()) {
-            /*
-             * Function or method call
-             */
-            final EObject eRef = ref.get();
-            if (eRef instanceof JvmOperation) {
-                final JvmOperation m = (JvmOperation) eRef;
-                return parseMethod(m, extractArgs(e), nameToFun, funToFun, id);
-            } else if (eRef instanceof FunctionDef) {
-                final FunctionDef fun = (FunctionDef) eRef;
-                return parseFunction(fun, extractArgs(e), nameToFun, funToFun, id);
-            } else {
-                throw new IllegalStateException(
-                        "I do not know how I should interpret a call to a "
-                        + eRef.getClass().getSimpleName() + " object.");
-            }
-        }
         final String name = e.getName();
         if (name == null) {
+            if (ref.isPresent()) {
+                /*
+                 * Function or method call
+                 */
+                final EObject eRef = ref.get();
+                if (eRef instanceof JvmOperation) {
+                    final JvmOperation m = (JvmOperation) eRef;
+                    return parseMethod(m, extractArgs(e), nameToFun, funToFun, id);
+                } else if (eRef instanceof FunctionDef) {
+                    final FunctionDef fun = (FunctionDef) eRef;
+                    return parseFunction(fun, extractArgs(e), nameToFun, funToFun, id);
+                } else {
+                    throw new IllegalStateException(
+                            "I do not know how I should interpret a call to a "
+                            + eRef.getClass().getSimpleName() + " object.");
+                }
+            }
             /*
              * Envelope: recurse in
              */
@@ -588,12 +563,9 @@ public final class ProtelisLoader {
                     parseBlock(e.getBody(), nameToFun, funToFun, id));
         }
         if (name.equals(IF_NAME)) {
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<Boolean> cond = (AnnotatedTree<Boolean>)
                 parseExpression(e.getCond(), nameToFun, funToFun, id);
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<T> then = (AnnotatedTree<T>) parseBlock(e.getThen(), nameToFun, funToFun, id);
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<T> elze = (AnnotatedTree<T>) parseBlock(e.getElse(), nameToFun, funToFun, id);
             return new If<>(cond, then, elze);
         }
@@ -613,13 +585,10 @@ public final class ProtelisLoader {
             return new NBRCall(parseExpression(e.getArg(), nameToFun, funToFun, id));
         }
         if (name.equals(ALIGNED_MAP)) {
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<Field> arg = (AnnotatedTree<Field>)
                 parseExpression(e.getArg(), nameToFun, funToFun, id);
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<FunctionDefinition> cond = (AnnotatedTree<FunctionDefinition>)
                 parseExpression(e.getCond(), nameToFun, funToFun, id);
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<FunctionDefinition> op = (AnnotatedTree<FunctionDefinition>)
                 parseExpression(e.getOp(), nameToFun, funToFun, id);
             final AnnotatedTree<?> def = parseExpression(e.getDefault(), nameToFun, funToFun, id);
@@ -647,13 +616,38 @@ public final class ProtelisLoader {
             final AnnotatedTree<?> elze = parseBlock(e.getElse(), nameToFun, funToFun, id);
             return new TernaryOp(MUX_NAME, cond, then, elze);
         }
+        if (name.startsWith(HOOD_NAME)) {
+            assert e.getDefault() != null;
+            assert e.getArg() != null;
+            final AnnotatedTree<?> defVal = parseExpression(e.getDefault(), nameToFun, funToFun, id);
+            final AnnotatedTree<Field> target = (AnnotatedTree<Field>) parseExpression(e.getArg(), nameToFun, funToFun, id);
+            final boolean inclusive = !name.equals(HOOD_NAME);
+            if (ref.isPresent()) {
+                final EObject eRef = ref.get();
+                if (eRef instanceof JvmOperation) {
+                    final JvmOperation fun = (JvmOperation) eRef;
+                    return new GenericHoodCall(inclusive, fun, defVal, target);
+                } else {
+                    assert eRef instanceof FunctionDef;
+                    final AnnotatedTree<FunctionDefinition> fun = new Constant<>(funToFun.get((FunctionDef) eRef));
+                    return new GenericHoodCall(inclusive, fun, defVal, target);
+                }
+            } else {
+                /*
+                 * Lambda
+                 */
+                assert e.getOp() != null;
+                final AnnotatedTree<FunctionDefinition> fun = (AnnotatedTree<FunctionDefinition>)
+                        parseExpression(e.getOp(), nameToFun, funToFun, id);
+                return new GenericHoodCall(inclusive, fun, defVal, target);
+            }
+        }
         if (name.endsWith(HOOD_END)) {
             final String op = name.replace(HOOD_END, "");
             final HoodOp hop = HoodOp.get(op);
             if (hop == null) {
                 throw new UnsupportedOperationException("Unsupported hood operation: " + op);
             }
-            @SuppressWarnings(UNCHECKED)
             final AnnotatedTree<Field> arg = (AnnotatedTree<Field>)
                     parseExpression(e.getArg(), nameToFun, funToFun, id);
             return new HoodCall(arg, hop, e.isInclusive());

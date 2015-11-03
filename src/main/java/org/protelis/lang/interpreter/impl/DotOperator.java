@@ -64,7 +64,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
         isApply = apply;
         assert isApply || name != null;
         methodName = apply ? APPLY : name;
-        left = target;
+        left = target == null ? new Constant<>(null) : target;
     }
     
     @Override

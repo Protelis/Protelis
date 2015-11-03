@@ -142,6 +142,21 @@ public class TestLanguage {
         testFile("/function04.pt");
     }
 
+    @Test
+    public void testGenericHood01() {
+        testFile("/genericHood01.pt");
+    }
+
+    @Test
+    public void testGenericHood02() {
+        testFile("/genericHood02.pt");
+    }
+
+    @Test
+    public void testGenericHood03() {
+        testFile("/genericHood03.pt");
+    }
+
     /**
      * Test simple use of apply.
      */
