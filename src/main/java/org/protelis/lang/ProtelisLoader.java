@@ -297,6 +297,7 @@ public final class ProtelisLoader {
      *         {@link FunctionDefinition} (containing the available functions)
      */
     public static ProtelisProgram parse(final Resource resource) {
+        Objects.requireNonNull(resource);
         if (!resource.getErrors().isEmpty()) {
             for (final Diagnostic d : recursivelyCollectErrors(resource)) {
                 final AbstractDiagnostic ad = (AbstractDiagnostic) d;
@@ -306,6 +307,8 @@ public final class ProtelisLoader {
             throw new IllegalArgumentException("Protelis program cannot run because it has errors.");
         }
         final Module root = (Module) resource.getContents().get(0);
+        assert root != null;
+        Objects.requireNonNull(root.getProgram(), "The provided resource does not contain any main program, and can not be executed.");
         /*
          * Create the function headers.
          * 
