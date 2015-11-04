@@ -81,7 +81,7 @@ public interface ExecutionContext {
     DeviceUID getDeviceUID();
 
     /**
-     * @return the current time, absolute
+     * @return the current device time, absolute
      */
     Number getCurrentTime();
 
