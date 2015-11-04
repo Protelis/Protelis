@@ -47,7 +47,7 @@ def higherVersion(def v1, def v2) {
 	 }
 	 def v1parts = v1.split("\\.")
 	 def v2parts = v2.split("\\.")
-	 for (i in 0..Math.min(v1parts.length, v2parts.length)) {
+	 for (i in 0..Math.min(v1parts.length, v2parts.length) - 1) {
 	 	if (v1parts[i] != v2parts[i]) {
 		    def p1 = convertToNumber(v1parts[i])
 		    def p2 = convertToNumber(v2parts[i])
