@@ -24,102 +24,106 @@ import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
- *	Call an external Java static method.
+ * Call an external Java static method.
  */
 public class MethodCall extends AbstractAnnotatedTree<Object> {
 
-	private static final long serialVersionUID = -2299070628855971997L;
-	private transient Method method;
-	private final boolean fieldComposable;
-	private final boolean ztatic;
+    private static final long serialVersionUID = -2299070628855971997L;
+    private transient Method method;
+    private final boolean fieldComposable;
+    private final boolean ztatic;
 
-	/**
-	 * @param m
-	 *            the method to call
-	 * @param branch
-	 *            the Protelis sub-programs
-	 * @param isStatic
-	 *            if false, the first branch must contain the AnnotatedTree whose
-	 *            annotation will contain the object on which the method will be
-	 *            invoked
-	 */
-	public MethodCall(final Method m, final List<AnnotatedTree<?>> branch, final boolean isStatic) {
-		super(branch);
-		Objects.requireNonNull(m, "No compatible method found.");
-		method = m;
-		ztatic = isStatic;
-		fieldComposable = !Arrays.stream(method.getParameterTypes()).parallel() // NOPMD by Danilo Pianini
-				.anyMatch(clazz -> Field.class.isAssignableFrom(clazz)); 
-	}
+    /**
+     * @param m
+     *            the method to call
+     * @param branch
+     *            the Protelis sub-programs
+     * @param isStatic
+     *            if false, the first branch must contain the AnnotatedTree
+     *            whose annotation will contain the object on which the method
+     *            will be invoked
+     */
+    public MethodCall(final Method m, final List<AnnotatedTree<?>> branch, final boolean isStatic) {
+        super(branch);
+        Objects.requireNonNull(m, "No compatible method found.");
+        method = m;
+        ztatic = isStatic;
+        fieldComposable = !Arrays.stream(method.getParameterTypes()).parallel() // NOPMD
+                .anyMatch(clazz -> Field.class.isAssignableFrom(clazz));
+    }
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		projectAndEval(context);
-		// Obtain target and arguments
-		final Object target = ztatic ? null : getBranch(0).getAnnotation();
-		final Stream<?> s = getBranchesAnnotationStream();
-		final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
-		/*
-		 * Check if any of the parameters is a field
-		 */
-		if (fieldComposable) {
-			final boolean fieldTarget = target == null ? false : Field.class.isAssignableFrom(target.getClass());
-			Stream<Object> str = Arrays.stream(args).parallel();
-			/*
-			 * Filter the fields
-			 */
-			str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
-			/*
-			 * Store their indexes
-			 */
-			final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
-			if (fieldTarget || fieldIndexes.length > 0) {
-				setAnnotation(Field.apply((actualT, actualA) -> ReflectionUtils.invokeMethod(method, actualT, actualA), fieldTarget, fieldIndexes, target, args));
-				return;
-			}
-		}
-		setAnnotation(ReflectionUtils.invokeMethod(method, target, args));
-	}
+    @Override
+    public void eval(final ExecutionContext context) {
+        projectAndEval(context);
+        // Obtain target and arguments
+        final Object target = ztatic ? null : getBranch(0).getAnnotation();
+        final Stream<?> s = getBranchesAnnotationStream();
+        final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
+        /*
+         * Check if any of the parameters is a field
+         */
+        if (fieldComposable) {
+            final boolean fieldTarget = target == null ? false : Field.class.isAssignableFrom(target.getClass());
+            Stream<Object> str = Arrays.stream(args).parallel();
+            /*
+             * Filter the fields
+             */
+            str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
+            /*
+             * Store their indexes
+             */
+            final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
+            if (fieldTarget || fieldIndexes.length > 0) {
+                setAnnotation(
+                        Field.apply((actualT, actualA) -> ReflectionUtils.invokeMethod(method, actualT, actualA),
+                        fieldTarget, fieldIndexes, target, args));
+                return;
+            }
+        }
+        setAnnotation(ReflectionUtils.invokeMethod(method, target, args));
+    }
 
-	/**
-	 * @return the method return type
-	 */
-	public Class<?> getReturnType() {
-		return method.getReturnType();
-	}
+    /**
+     * @return the method return type
+     */
+    public Class<?> getReturnType() {
+        return method.getReturnType();
+    }
 
-	@Override
-	public MethodCall copy() {
-		return new MethodCall(method, deepCopyBranches(), ztatic);
-	}
+    @Override
+    public MethodCall copy() {
+        return new MethodCall(method, deepCopyBranches(), ztatic);
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		sb.append(method.getName());
-		sb.append('/');
-		sb.append(method.getParameterCount());
-		sb.append(" (");
-		fillBranches(sb, i, ',');
-		sb.append(')');
-	}
-	
-	private void writeObject(final ObjectOutputStream out) throws IOException {
-		out.defaultWriteObject();
-		out.writeObject(method.getDeclaringClass());
-		out.writeUTF(method.getName());
-		out.writeObject(method.getParameterTypes());
-	}
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        sb.append(method.getName());
+        sb.append('/');
+        sb.append(method.getParameterCount());
+        sb.append(" (");
+        fillBranches(sb, i, ',');
+        sb.append(')');
+    }
 
-	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
-		final Class<?> declaringClass = (Class<?>) in.readObject();
-		final String methodName = in.readUTF();
-		final Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
-		try {
-			method = declaringClass.getMethod(methodName, parameterTypes);
-		} catch (Exception e) {
-			throw new IOException(String.format("Error occurred resolving deserialized method '%s.%s'", declaringClass.getSimpleName(), methodName), e);
-		}
-	}
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(method.getDeclaringClass());
+        out.writeUTF(method.getName());
+        out.writeObject(method.getParameterTypes());
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        final Class<?> declaringClass = (Class<?>) in.readObject();
+        final String methodName = in.readUTF();
+        final Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
+        try {
+            method = declaringClass.getMethod(methodName, parameterTypes);
+        } catch (final Exception e) {
+            throw new IOException("Error occurred resolving deserialized method "
+                    + declaringClass.getSimpleName() + ". " + methodName,
+                    e);
+        }
+    }
 
 }

@@ -16,52 +16,52 @@ import org.protelis.lang.util.Op2;
 import org.protelis.vm.ExecutionContext;
 
 /**
- *	Two-argument (inline) operator, such as addition.
+ * Two-argument (inline) operator, such as addition.
  */
 public class BinaryOp extends AbstractAnnotatedTree<Object> {
 
-	private static final long serialVersionUID = 2803028109250981637L;
-	private final Op2 op;
-	
-	/**
-	 * @param name
-	 *            operation name
-	 * @param branch1
-	 *            left operand
-	 * @param branch2
-	 *            right operand
-	 */
-	public BinaryOp(final String name, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
-		this(Op2.getOp(name), branch1, branch2);
-	}
-	
-	private BinaryOp(final Op2 operator, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
-		super(branch1, branch2);
-		Objects.requireNonNull(branch1);
-		Objects.requireNonNull(branch2);
-		op = operator;
-	}
+    private static final long serialVersionUID = 2803028109250981637L;
+    private final Op2 op;
 
-	@Override
-	public AnnotatedTree<Object> copy() {
-		final List<AnnotatedTree<?>> branches = deepCopyBranches();
-		return new BinaryOp(op, branches.get(0), branches.get(1));
-	}
+    /**
+     * @param name
+     *            operation name
+     * @param branch1
+     *            left operand
+     * @param branch2
+     *            right operand
+     */
+    public BinaryOp(final String name, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
+        this(Op2.getOp(name), branch1, branch2);
+    }
 
-	@Override
-	public void eval(final ExecutionContext context) {
-		projectAndEval(context);
-		setAnnotation(op.run(getBranch(0).getAnnotation(), getBranch(1).getAnnotation()));
-	}
+    private BinaryOp(final Op2 operator, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
+        super(branch1, branch2);
+        Objects.requireNonNull(branch1);
+        Objects.requireNonNull(branch2);
+        op = operator;
+    }
 
-	@Override
-	protected void asString(final StringBuilder sb, final int i) {
-		getBranch(0).toString(sb, i);
-		sb.append('\n');
-		indent(sb, i);
-		sb.append(op.toString());
-		sb.append('\n');
-		getBranch(1).toString(sb, i);
-	}
+    @Override
+    public AnnotatedTree<Object> copy() {
+        final List<AnnotatedTree<?>> branches = deepCopyBranches();
+        return new BinaryOp(op, branches.get(0), branches.get(1));
+    }
+
+    @Override
+    public void eval(final ExecutionContext context) {
+        projectAndEval(context);
+        setAnnotation(op.run(getBranch(0).getAnnotation(), getBranch(1).getAnnotation()));
+    }
+
+    @Override
+    protected void asString(final StringBuilder sb, final int i) {
+        getBranch(0).toString(sb, i);
+        sb.append('\n');
+        indent(sb, i);
+        sb.append(op.toString());
+        sb.append('\n');
+        getBranch(1).toString(sb, i);
+    }
 
 }

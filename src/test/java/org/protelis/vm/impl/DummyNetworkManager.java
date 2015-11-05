@@ -19,17 +19,18 @@ import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 
 /**
- *	Stub network manager for testing, in which there are no neighbors and no messages are ever sent.
+ * Stub network manager for testing, in which there are no neighbors and no
+ * messages are ever sent.
  */
 public class DummyNetworkManager implements NetworkManager {
 
-	@Override
-	public Map<DeviceUID, Map<CodePath, Object>> getNeighborState() {
-		return Collections.emptyMap();
-	}
+    @Override
+    public Map<DeviceUID, Map<CodePath, Object>> getNeighborState() {
+        return Collections.emptyMap();
+    }
 
-	@Override
-	public void shareState(final Map<CodePath, Object> toSend) {
-	}
+    @Override
+    public void shareState(final Map<CodePath, Object> toSend) {
+    }
 
 }

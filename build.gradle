@@ -1,12 +1,25 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
-apply plugin: 'checkstyle'
+apply from: 'eclipse.gradle'
+apply from: 'codequality.gradle'
 apply plugin: 'project-report'
-apply plugin: 'maven'
+apply from: 'maven.gradle'
 apply plugin: 'build-dashboard'
-apply plugin: 'signing'
+apply from: 'signing.gradle'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.danilopianini:smartrrr:[0, 1['
+    }
+}
+apply plugin: 'org.danilopianini.smartrrr'
+
+substitutions {
+	substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
+	substitute 'com.google.guava:guava' up_to '14.0.1' with 'com.google.guava:guava-jdk5' at '+'
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -25,22 +38,6 @@ jar {
 
 repositories {
     mavenCentral()
-}
-
-configurations.all {
-  	resolutionStrategy {
-	    failOnVersionConflict()
-	    
-	    dependencySubstitution {
-	      substitute module('asm:asm') with module("org.ow2.asm:asm:$asmVersion")
-	      substitute module('com.google.guava:guava:[10.0.1,14.0.1]') with module('com.google.guava:guava-jdk5:14.0.1')
-	      substitute module('com.google.guava:guava:14.0.1') with module('com.google.guava:guava-jdk5:14.0.1')
-    	}
-    	
-	    force "com.google.guava:guava:$guavaVersion"
-	    force "org.ow2.asm:asm-commons:$asmVersion"
-	    force "log4j:log4j:1.2.16"
-    }
 }
 
 configurations {
@@ -63,18 +60,15 @@ dependencies {
     compile "org.danilopianini:javalib-java7:$javalib7Version"
     compile "org.danilopianini:javalib:$javalibVersion"
     compile "org.springframework:spring-core:$springVersion"
-    compile "it.unibo.alchemist:alchemist.protelis:$protelisVersion"
+    compile "org.protelis:protelis.parser:$parserVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
 	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
 	
-	/*
-	 * This dependency is temporary and will be dropped.
-	 */
-    compile "it.unibo.alchemist:alchemist-interfaces:$interfacesVersion"
-    
     testCompile "junit:junit:$junitVersion"
+
+    testRuntime "ch.qos.logback:logback-classic:1.1.3"
     
     doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     
@@ -125,117 +119,6 @@ task javadocJar(type: Jar, dependsOn: aggregateJavadoc) {
 artifacts {
     archives sourcesJar
     archives javadocJar
-}
-
-signing {
-    sign configurations.archives
-}
-
-// Eclipse configuration
-
-eclipse {
-	classpath {
-    	downloadJavadoc = true
-		downloadSources = true
-	}
-}
-
-// FindBugs configuration
-
-findbugs {
-	ignoreFailures = true
-	effort = "max"
-	reportLevel = "low"
-}
-
-tasks.withType(FindBugs) {
-	reports {
-		xml.enabled = false
-		html.enabled = true
-	}
-}
-
-// PMD configuration
-
-pmd {
-	ignoreFailures = true
-	ruleSets = []
-	ruleSetFiles = files("pmd.xml")
-	targetJdk = pmdTargetJdk
-	toolVersion = pmdVersion
-}
-
-tasks.withType(Pmd) {
-	reports {
-		xml.enabled = false
-		html.enabled = true
-	}
-}
-
-// Checkstyle configuration
-
-checkstyle {
-	ignoreFailures = true
-	configFile = new File("style.xml")
-}
-
-checkstyleMain << {
-    ant.xslt(in: reports.xml.destination,
-             style: new File("$project.projectDir/checkstyle-noframes-sorted.xsl"),
-             out: new File(reports.xml.destination.parent, 'main.html'))
-}
-
-checkstyleTest << {
-    ant.xslt(in: reports.xml.destination,
-             style: new File("$project.projectDir/checkstyle-noframes-sorted.xsl"),
-             out: new File(reports.xml.destination.parent, 'main.html'))
-}
-
-// Upload configuration
-
-signArchives.onlyIf { Boolean.parseBoolean(signArchivesIsEnabled) }
-
-uploadArchives {
-	repositories {
-    	mavenDeployer {
-      		beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-      		repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        		authentication(userName: ossrhUsername, password: ossrhPassword)
-      		}
-      		snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        		authentication(userName: ossrhUsername, password: ossrhPassword)
-      		}
-		    pom.project {
-	            name artifactId
-	            description projectDescription
-	            packaging 'jar'
-	            url "$scmRootUrl/$artifactId"
-	            licenses {
-	                license {
-	                    name licenseName
-	                    url licenseUrl
-	                }
-	            }
-	            developers {
-	            	developer {
-	            		name 'Danilo Pianini'
-	            		email 'danilo.pianini@unibo.it'
-	            		url 'http://danilopianini.apice.unibo.it/'
-	            	}
-	            	developer {
-	            		name 'Jacob Beal'
-	            		email 'jakebeal@bbn.com'
-	            		url 'http://web.mit.edu/jakebeal/www/'
-	            	}
-	            }
-	            scm {
-	            	url "$scmRootUrl/$artifactId"
-	            	connection "$scmType:$scmLogin/$scmRepoName"
-	            	developerConnection "$scmType:$scmLogin/$scmRepoName"
-	            }
-		    }
-    	}
-  	}
 }
 
 defaultTasks 'wrapper', 'clean', 'build', 'check', 'assemble', 'install', 'aggregateJavadoc', 'buildDashboard'
