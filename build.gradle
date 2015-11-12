@@ -123,4 +123,12 @@ artifacts {
 
 defaultTasks 'wrapper', 'clean', 'build', 'check', 'assemble', 'install', 'aggregateJavadoc', 'buildDashboard'
 
-
+task fatJar(type: Jar) {
+    baseName = project.name + '-redist'
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
