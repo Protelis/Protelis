@@ -44,7 +44,7 @@ public final class JavaInteroperabilityUtils {
         dot.eval(ctx);
         return dot.getAnnotation();
     }
-    
+
     /**
      * @param ctx
      *            {@link ExecutionContext}
@@ -64,7 +64,7 @@ public final class JavaInteroperabilityUtils {
             final AnnotatedTree<?>... args) {
         return runMethod(ctx, target, method, Arrays.asList(args));
     }
-    
+
     /**
      * @param ctx
      *            {@link ExecutionContext}
@@ -84,11 +84,11 @@ public final class JavaInteroperabilityUtils {
             final Object... args) {
         return runMethod(ctx, target, method, toAnnotatedTree(args));
     }
-    
+
     private static List<AnnotatedTree<?>> toAnnotatedTree(final Object[] a) {
         return Arrays.stream(a).map(Constant<Object>::new).collect(Collectors.toList());
     }
-    
+
     /**
      * @param ctx
      *            {@link ExecutionContext}
@@ -174,5 +174,5 @@ public final class JavaInteroperabilityUtils {
         methods = methods.filter(m -> m.getName().equals(methodName));
         return methods.collect(Collectors.toList());
     }
-    
+
 }

@@ -214,7 +214,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         }
         return getCurrentTime().longValue() - previousRoundTime.longValue();
     }
-    
+
     @Override
     public ExecutionEnvironment getExecutionEnvironment() {
         return env;

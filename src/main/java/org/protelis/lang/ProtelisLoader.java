@@ -495,7 +495,7 @@ public final class ProtelisLoader {
             final AtomicInteger id) {
         return args.stream().map(e -> parseExpression(e, nameToFun, funToFun, id)).collect(Collectors.toList());
     }
-    
+
     @SuppressWarnings("unchecked")
     private static <T> AnnotatedTree<?> parseExpression(
             final Expression e,

@@ -34,7 +34,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
     private final boolean isApply;
     private final String methodName;
     private final AnnotatedTree<?> left;
-    
+
     /**
      * Builds a new {@link #APPLY}.
      * 
@@ -58,7 +58,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
     public DotOperator(final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         this(name.equals(APPLY), name, target, args);
     }
-    
+
     private DotOperator(final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         super(args);
         isApply = apply;
@@ -66,7 +66,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
         methodName = apply ? APPLY : name;
         left = target == null ? new Constant<>(null) : target;
     }
-    
+
     @Override
     public AnnotatedTree<Object> copy() {
         final DotOperator res = new DotOperator(methodName, left.copy(), deepCopyBranches());
