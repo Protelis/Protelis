@@ -10,15 +10,14 @@ package org.protelis.lang.interpreter.impl;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.protelis.lang.datatype.Field;
+import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
@@ -29,27 +28,79 @@ import org.protelis.vm.ExecutionContext;
 public class MethodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -2299070628855971997L;
-    private transient Method method;
-    private final boolean fieldComposable;
     private final boolean ztatic;
+    private final Class<?> clazz;
+    private final String methodName;
+    private transient Method method;
 
     /**
-     * @param m
+     * @param jvmOp
      *            the method to call
      * @param branch
      *            the Protelis sub-programs
-     * @param isStatic
-     *            if false, the first branch must contain the AnnotatedTree
-     *            whose annotation will contain the object on which the method
-     *            will be invoked
+     * @throws ClassNotFoundException
+     *             in case the {@link JvmOperation} reference class couldn't be
+     *             found in the classpath
      */
-    public MethodCall(final Method m, final List<AnnotatedTree<?>> branch, final boolean isStatic) {
+    public MethodCall(final JvmOperation jvmOp, final List<AnnotatedTree<?>> branch) throws ClassNotFoundException {
         super(branch);
-        Objects.requireNonNull(m, "No compatible method found.");
-        method = m;
-        ztatic = isStatic;
-        fieldComposable = !Arrays.stream(method.getParameterTypes()).parallel() // NOPMD
-                .anyMatch(clazz -> Field.class.isAssignableFrom(clazz));
+        final String classname = jvmOp.getDeclaringType().getQualifiedName();
+        clazz = Class.forName(classname);
+        ztatic = jvmOp.isStatic();
+        methodName = jvmOp.getSimpleName();
+        extractMethod(jvmOp.getParameters().size());
+    }
+
+    /**
+     * @param clazz
+     *            the class where to search for the method
+     * @param methodName
+     *            the method name
+     * @param ztatic
+     *            true if the method is static
+     * @param branch
+     *            method arguments
+     */
+    public MethodCall(final Class<?> clazz,
+            final String methodName,
+            final boolean ztatic,
+            final List<AnnotatedTree<?>> branch) {
+        super(branch);
+        this.clazz = clazz;
+        this.methodName = methodName;
+        this.ztatic = ztatic;
+        extractMethod();
+    }
+
+    private void extractMethod() {
+        extractMethod(getBranchesNumber() + (ztatic ? 0 : 1));
+    }
+
+    private void extractMethod(final int parameterCount) {
+        Stream<Method> methods = Arrays.stream(clazz.getMethods());
+        if (ztatic) {
+            methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
+        } else {
+            methods = methods.filter(m -> !Modifier.isStatic(m.getModifiers()));
+        }
+        /*
+         * Same number of arguments
+         */
+        if (getBranches().size() != parameterCount + (ztatic ? 0 : 1)) {
+            throw new IllegalArgumentException(clazz + "." + methodName + " expects " + parameterCount + "arguments."
+                    + getBranches() + "was provided instead.");
+        }
+        final List<Method> matches = methods.filter(m -> m.getParameterCount() == parameterCount)
+                .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
+        /*
+         * Same name
+         */
+        if (matches.isEmpty()) {
+            throw new IllegalStateException("No method matches " + clazz + "." + methodName);
+        }
+        if (matches.size() == 1) {
+            method = matches.get(0);
+        }
     }
 
     @Override
@@ -59,71 +110,27 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
         final Object target = ztatic ? null : getBranch(0).getAnnotation();
         final Stream<?> s = getBranchesAnnotationStream();
         final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
-        /*
-         * Check if any of the parameters is a field
-         */
-        if (fieldComposable) {
-            final boolean fieldTarget = target == null ? false : Field.class.isAssignableFrom(target.getClass());
-            Stream<Object> str = Arrays.stream(args).parallel();
-            /*
-             * Filter the fields
-             */
-            str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
-            /*
-             * Store their indexes
-             */
-            final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
-            if (fieldTarget || fieldIndexes.length > 0) {
-                setAnnotation(
-                        Field.apply((actualT, actualA) -> ReflectionUtils.invokeMethod(method, actualT, actualA),
-                        fieldTarget, fieldIndexes, target, args));
-                return;
-            }
-        }
-        setAnnotation(ReflectionUtils.invokeMethod(method, target, args));
-    }
-
-    /**
-     * @return the method return type
-     */
-    public Class<?> getReturnType() {
-        return method.getReturnType();
+        setAnnotation(method == null
+                ? ReflectionUtils.invokeFieldable(clazz, methodName, target, args)
+                : ReflectionUtils.invokeFieldable(method, target, args));
     }
 
     @Override
     public MethodCall copy() {
-        return new MethodCall(method, deepCopyBranches(), ztatic);
+        return new MethodCall(clazz, methodName, ztatic, deepCopyBranches());
     }
 
     @Override
     protected void asString(final StringBuilder sb, final int i) {
-        sb.append(method.getName());
-        sb.append('/');
-        sb.append(method.getParameterCount());
-        sb.append(" (");
+        sb.append(methodName);
+        sb.append('(');
         fillBranches(sb, i, ',');
         sb.append(')');
     }
 
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeObject(method.getDeclaringClass());
-        out.writeUTF(method.getName());
-        out.writeObject(method.getParameterTypes());
-    }
-
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        final Class<?> declaringClass = (Class<?>) in.readObject();
-        final String methodName = in.readUTF();
-        final Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
-        try {
-            method = declaringClass.getMethod(methodName, parameterTypes);
-        } catch (final Exception e) {
-            throw new IOException("Error occurred resolving deserialized method "
-                    + declaringClass.getSimpleName() + ". " + methodName,
-                    e);
-        }
+        extractMethod();
     }
 
 }

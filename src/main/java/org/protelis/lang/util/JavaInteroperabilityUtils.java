@@ -1,17 +1,16 @@
 package org.protelis.lang.util;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.DotOperator;
+import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -29,18 +28,25 @@ public final class JavaInteroperabilityUtils {
      * @param target
      *            the {@link AnnotatedTree} on which annotation the method will
      *            be invoked
+     * @param clazz
+     *            the class where to search for the method
      * @param method
      *            a valid {@link Method} name
      * @param args
      *            the arguments for the method
      * @return the result of the evaluation
      */
-    public static Object runMethod(
+    private static Object runMethodWithProtelisArguments(
             final ExecutionContext ctx,
             final AnnotatedTree<?> target,
+            final Class<?> clazz,
             final String method,
             final List<AnnotatedTree<?>> args) {
-        final DotOperator dot = new DotOperator(method, target, args);
+        if (target != null && !clazz.isAssignableFrom(target.getClass())) {
+            throw new IllegalArgumentException(
+                    "The target object class(" + target.getClass() + ") is not compatible with " + clazz);
+        }
+        final MethodCall dot = new MethodCall(clazz, method, target == null, args);
         dot.eval(ctx);
         return dot.getAnnotation();
     }
@@ -48,21 +54,21 @@ public final class JavaInteroperabilityUtils {
     /**
      * @param ctx
      *            {@link ExecutionContext}
-     * @param target
-     *            the {@link AnnotatedTree} on which annotation the method will
-     *            be invoked
+     * @param clazz
+     *            the class where to search for the method
      * @param method
      *            a valid {@link Method} name
      * @param args
      *            the arguments for the method
      * @return the result of the evaluation
      */
-    public static Object runMethod(
+    public static Object runStaticMethodWithProtelisArguments(
             final ExecutionContext ctx,
-            final AnnotatedTree<?> target,
+            final Class<?> clazz,
             final String method,
             final AnnotatedTree<?>... args) {
-        return runMethod(ctx, target, method, Arrays.asList(args));
+        Objects.requireNonNull(clazz);
+        return runMethodWithProtelisArguments(ctx, null, clazz, method, Arrays.asList(args));
     }
 
     /**
@@ -77,12 +83,13 @@ public final class JavaInteroperabilityUtils {
      *            the arguments for the method
      * @return the result of the evaluation
      */
-    public static Object runMethod(
+    public static Object runMethodWithProtelisArguments(
             final ExecutionContext ctx,
             final AnnotatedTree<?> target,
             final String method,
-            final Object... args) {
-        return runMethod(ctx, target, method, toAnnotatedTree(args));
+            final AnnotatedTree<?>... args) {
+        Objects.requireNonNull(target);
+        return runMethodWithProtelisArguments(ctx, target, target.getClass(), method, Arrays.asList(args));
     }
 
     private static List<AnnotatedTree<?>> toAnnotatedTree(final Object[] a) {
@@ -118,7 +125,7 @@ public final class JavaInteroperabilityUtils {
      *            the function arguments
      * @return the result of the evaluation
      */
-    public static Object runProtelisFunction(
+    public static Object runProtelisFunctionWithJavaArguments(
             final ExecutionContext ctx,
             final AnnotatedTree<FunctionDefinition> fd,
             final Object... args) {
@@ -134,45 +141,12 @@ public final class JavaInteroperabilityUtils {
      *            the function arguments
      * @return the result of the evaluation
      */
-    public static Object runProtelisFunction(
+    public static Object runProtelisFunctionWithJavaArguments(
             final ExecutionContext ctx,
             final FunctionDefinition fd,
             final List<?> args) {
         final List<AnnotatedTree<?>> arguments = args.stream().map(Constant<Object>::new).collect(Collectors.toList());
         return runProtelisFunction(ctx, new Constant<>(fd), arguments);
-    }
-
-    /**
-     * @param jvmOp
-     *            the {@link JvmOperation} to convert
-     * @return a list of matching {@link Method}s. If the list is longer than 1,
-     *         then we have overloading
-     * @throws ClassNotFoundException
-     *             if the type can not be found
-     */
-    public static List<Method> jvmOperationToMethod(final JvmOperation jvmOp) throws ClassNotFoundException {
-        final String classname = jvmOp.getDeclaringType().getQualifiedName();
-        final Class<?> clazz = Class.forName(classname);
-        /*
-         * TODO: Check for return type and params: if param is Field and return
-         * type is not then L.warn()
-         */
-        Stream<Method> methods = Arrays.stream(clazz.getMethods());
-        final boolean ztatic = jvmOp.isStatic();
-        if (ztatic) {
-            methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
-        }
-        /*
-         * Same number of arguments
-         */
-        final int parameterCount = jvmOp.getParameters().size();
-        methods = methods.filter(m -> m.getParameterCount() == parameterCount);
-        /*
-         * Same name
-         */
-        final String methodName = jvmOp.getSimpleName();
-        methods = methods.filter(m -> m.getName().equals(methodName));
-        return methods.collect(Collectors.toList());
     }
 
 }
