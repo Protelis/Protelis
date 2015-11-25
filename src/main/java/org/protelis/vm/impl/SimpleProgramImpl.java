@@ -36,7 +36,7 @@ public class SimpleProgramImpl implements ProtelisProgram {
 
     /**
      * @param source
-     *            Original {@link Program} parsed by Xtext. Used to get the
+     *            Original {@link ProtelisProgram} parsed by Xtext. Used to get the
      *            module name.
      * @param program
      *            evaluation tree
