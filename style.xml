@@ -2,7 +2,7 @@
 <!DOCTYPE module PUBLIC
     "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
     "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
-<!-- Checkstyle configuration that checks the sun coding conventions from: 
+<!-- Checkstyle configuration that checks a relaxed version of the Java Coding Conventions from: 
 	- the Java Language Specification at http://java.sun.com/docs/books/jls/second_edition/html/index.html 
 	- the Sun Code Conventions at http://java.sun.com/docs/codeconv/ - the Javadoc 
 	guidelines at http://java.sun.com/j2se/javadoc/writingdoccomments/index.html 
@@ -16,66 +16,54 @@
 <module name="Checker">
 
 	<module name="SuppressionCommentFilter" />
-	
+
 	<property name="severity" value="warning" />
-
-	<!-- Checks that a package.html file exists for each package. -->
-	<!-- See http://checkstyle.sf.net/config_javadoc.html#PackageHtml -->
-	<!-- module name="JavadocPackage" / -->
-
-
-	<!-- Checks whether files end with a new line. -->
-	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-
-	<module name="NewlineAtEndOfFile">
-
-		<property name="severity" value="ignore" />
-	</module>
 
 	<!-- Checks that property files contain the same keys. -->
 	<!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
-
 	<module name="Translation" />
-
-	<!-- Checks for Size Violations. -->
-	<!-- See http://checkstyle.sf.net/config_sizes.html -->
-
-	<module name="FileLength">
-		<property name="fileExtensions" value="java,alsap" />
-	</module>
 
 	<!-- Checks for whitespace -->
 	<!-- See http://checkstyle.sf.net/config_whitespace.html -->
-
 	<module name="FileTabCharacter">
-
-		<property name="severity" value="ignore" />
+		<property name="fileExtensions" value="java" />
+	    <property name="severity" value="warning" />
 	</module>
 
 	<!-- Miscellaneous other checks. -->
 	<!-- See http://checkstyle.sf.net/config_misc.html -->
-
 	<module name="RegexpSingleline">
 		<property name="severity" value="warning" />
-		<property name="format" value="\s{2,}+$" />
-		<property name="fileExtensions" value="java xtend" />
-		<property name="message" value="Line has two or more trailing spaces." />
+		<property name="format" value="\s{2,}$" />
+		<property name="fileExtensions" value="java,xtend" />
+		<property name="message" value="Line has trailing spaces." />
 	</module>
-
 	<module name="RegexpSingleline">
 		<property name="severity" value="warning" />
 		<property name="format" value="\t" />
-		<property name="fileExtensions" value="java xtend" />
-		<property name="message" value="Line is tab-indented (see Java Code Conventions, Section 4.2)." />
+		<property name="fileExtensions" value="java,xtend" />
+		<property name="message"
+			value="Line is tab-indented (see Java Code Conventions, Section 4.2)." />
+	</module>
+	<module name="RegexpSingleline">
+		<property name="severity" value="warning" />
+		<property name="format" value="@author" />
+		<property name="fileExtensions" value="java,xtend" />
+		<property name="message"
+			value="@author should no longer be used. If you want to identify authors, use a DVCS properly." />
+	</module>
+	<module name="RegexpSingleline">
+		<property name="severity" value="warning" />
+		<property name="format" value="@version" />
+		<property name="fileExtensions" value="java,xtend" />
+		<property name="message"
+			value="@version should no longer be used. You should version your source with a proper tool." />
 	</module>
 
 	<module name="TreeWalker">
-
 		<property name="tabWidth" value="8" />
-
 		<!-- Checks for Javadoc comments. -->
 		<!-- See http://checkstyle.sf.net/config_javadoc.html -->
-
 		<module name="JavadocMethod">
 			<property name="scope" value="protected" />
 			<property name="logLoadErrors" value="true" />
@@ -143,7 +131,6 @@
 		<module name="RightCurly" />
 		<module name="EmptyStatement" />
 		<module name="EqualsHashCode" />
-		<module name="HiddenField" />
 		<module name="IllegalInstantiation" />
 		<module name="InnerAssignment" />
 		<module name="MagicNumber">
