@@ -21,7 +21,7 @@ public interface ProtelisProgram extends Serializable {
 
     /**
      * @return The value computed during the most recent invocation of
-     *         {@link compute}
+     *         {@link ProtelisProgram#compute(ExecutionContext)}
      */
     Object getCurrentValue();
 

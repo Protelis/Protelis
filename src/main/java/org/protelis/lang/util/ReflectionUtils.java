@@ -109,7 +109,9 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
-        final List<Class<?>> argClass = args.stream().map(Object::getClass).collect(Collectors.toList());
+        final List<Class<?>> argClass = Arrays.asList(args.stream()
+                .map(Object::getClass)
+                .toArray(length -> new Class<?>[length]));
         try {
             return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, argClass));
         } catch (ExecutionException e) {
@@ -269,21 +271,28 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
-        final Class<?>[] params = method.getParameterTypes();
-        final Object[] actualArgs = IntStream.range(0, args.length).parallel().mapToObj(i -> {
-            final Class<?> expected = params[i];
-            final Object actual = args[i];
-            if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
-                return PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
-            }
-            return actual;
-        }).toArray();
         try {
-            return method.invoke(target, actualArgs);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            L.error("Error invoking method", e);
-            throw new IllegalStateException(
-                    "Cannot invoke " + method + " with arguments " + Arrays.toString(args) + " on " + target, e);
+            return method.invoke(target, args);
+        } catch (Exception exc) {
+            /*
+             * Failure: maybe some cast was required?
+             */
+            final Class<?>[] params = method.getParameterTypes();
+            final Object[] actualArgs = IntStream.range(0, args.length).parallel().mapToObj(i -> {
+                final Class<?> expected = params[i];
+                final Object actual = args[i];
+                if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
+                    return PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
+                }
+                return actual;
+            }).toArray();
+            try {
+                return method.invoke(target, actualArgs);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                L.error("Error invoking method", e);
+                throw new IllegalStateException(
+                        "Cannot invoke " + method + " with arguments " + Arrays.toString(args) + " on " + target, e);
+            }
         }
     }
 
