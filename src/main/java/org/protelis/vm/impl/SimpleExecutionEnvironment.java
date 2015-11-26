@@ -14,7 +14,7 @@ import org.protelis.vm.ExecutionEnvironment;
 public final class SimpleExecutionEnvironment implements ExecutionEnvironment {
 
     private final Map<FasterString, Object> env = new LinkedHashMap<>();
-    
+
     @Override
     public boolean has(final String id) {
         return env.containsKey(new FasterString(id));

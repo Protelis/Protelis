@@ -19,11 +19,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.PrimitiveUtils;
+import org.protelis.lang.datatype.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +80,7 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Object invokeBestStatic(final Class<?> clazz, final String methodName, final Object[] args) {
+    public static Object invokeBestStatic(final Class<?> clazz, final String methodName, final Object... args) {
         return invokeBestMethod(clazz, methodName, null, args);
     }
 
@@ -106,7 +109,9 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
-        final List<Class<?>> argClass = args.stream().map(Object::getClass).collect(Collectors.toList());
+        final List<Class<?>> argClass = Arrays.asList(args.stream()
+                .map(Object::getClass)
+                .toArray(length -> new Class<?>[length]));
         try {
             return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, argClass));
         } catch (ExecutionException e) {
@@ -180,9 +185,78 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Object invokeBestMethod(final Class<?> clazz, final String methodName, final Object target,
+    public static Object invokeBestMethod(
+            final Class<?> clazz,
+            final String methodName,
+            final Object target,
             final Object[] args) {
         return invokeMethod(searchBestMethod(clazz, methodName, args), target, args);
+    }
+
+    /**
+     * Invokes a method. If there are fields involved, field operations are
+     * applied
+     * 
+     * @param clazz
+     *            the class to search for a method
+     * @param methodName
+     *            the name of the method
+     * @param target
+     *            the target object (can be null in case of static invocation)
+     * @param args
+     *            the arguments for the method
+     * @return the result of the method invocation
+     */
+    public static Object invokeFieldable(
+            final Class<?> clazz,
+            final String methodName,
+            final Object target,
+            final Object[] args) {
+        if (Field.class.isAssignableFrom(clazz) && target instanceof Field) {
+            return invokeFieldable(
+                    ((Field) target).valIterator().iterator().next().getClass(),
+                    methodName,
+                    target,
+                    args);
+        }
+        return invokeFieldable(searchBestMethod(clazz, methodName, args), target, args);
+    }
+
+    /**
+     * Invokes a method. If there are fields involved, field operations are
+     * applied
+     * 
+     * @param toInvoke
+     *            the method to be invoked
+     * @param target
+     *            the target object (can be null in case of static invocation)
+     * @param args
+     *            the arguments for the method
+     * @return the result of the method invocation
+     */
+    public static Object invokeFieldable(
+            final Method toInvoke,
+            final Object target,
+            final Object[] args) {
+        final boolean fieldTarget = target instanceof Field;
+        Stream<Object> str = Arrays.stream(args).parallel();
+        /*
+         * Filter the fields
+         */
+        str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
+        /*
+         * Store their indexes
+         */
+        final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
+        if (fieldTarget || fieldIndexes.length > 0) {
+            return Field.apply(
+                    (actualT, actualA) -> ReflectionUtils.invokeMethod(toInvoke, actualT, actualA),
+                    fieldTarget,
+                    fieldIndexes,
+                    target,
+                    args);
+        }
+        return ReflectionUtils.invokeMethod(toInvoke, target, args);
     }
 
     /**
@@ -197,21 +271,28 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
-        final Class<?>[] params = method.getParameterTypes();
-        final Object[] actualArgs = IntStream.range(0, args.length).parallel().mapToObj(i -> {
-            final Class<?> expected = params[i];
-            final Object actual = args[i];
-            if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
-                return PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
-            }
-            return actual;
-        }).toArray();
         try {
-            return method.invoke(target, actualArgs);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            L.error("Error invoking method", e);
-            throw new IllegalStateException(
-                    "Cannot invoke " + method + " with arguments " + Arrays.toString(args) + " on " + target, e);
+            return method.invoke(target, args);
+        } catch (Exception exc) {
+            /*
+             * Failure: maybe some cast was required?
+             */
+            final Class<?>[] params = method.getParameterTypes();
+            final Object[] actualArgs = IntStream.range(0, args.length).parallel().mapToObj(i -> {
+                final Class<?> expected = params[i];
+                final Object actual = args[i];
+                if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
+                    return PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
+                }
+                return actual;
+            }).toArray();
+            try {
+                return method.invoke(target, actualArgs);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                L.error("Error invoking method", e);
+                throw new IllegalStateException(
+                        "Cannot invoke " + method + " with arguments " + Arrays.toString(args) + " on " + target, e);
+            }
         }
     }
 

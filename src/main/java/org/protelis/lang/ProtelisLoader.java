@@ -10,7 +10,6 @@ package org.protelis.lang;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,7 +68,6 @@ import org.protelis.lang.interpreter.impl.TernaryOp;
 import org.protelis.lang.interpreter.impl.UnaryOp;
 import org.protelis.lang.interpreter.impl.Variable;
 import org.protelis.lang.util.HoodOp;
-import org.protelis.lang.util.JavaInteroperabilityUtils;
 import org.protelis.lang.util.Op1;
 import org.protelis.lang.util.Op2;
 import org.protelis.parser.ProtelisStandaloneSetup;
@@ -444,30 +442,10 @@ public final class ProtelisLoader {
             final Map<FasterString, FunctionDefinition> nameToFun,
             final Map<FunctionDef, FunctionDefinition> funToFun,
             final AtomicInteger id) {
-        final boolean ztatic = jvmOp.isStatic();
         final List<AnnotatedTree<?>> arguments = parseArgs(args, nameToFun, funToFun, id);
         final String classname = jvmOp.getDeclaringType().getQualifiedName();
         try {
-            final List<Method> res = JavaInteroperabilityUtils.jvmOperationToMethod(jvmOp);
-            if (res.size() > 1) {
-                final StringBuilder sb = new StringBuilder(64);
-                sb.append("Method ");
-                sb.append(jvmOp.getQualifiedName());
-                sb.append('/');
-                sb.append(jvmOp.getParameters().size());
-                sb.append(" is overloaded by:\n");
-                res.forEach(m -> {
-                    sb.append(m.toString());
-                    sb.append('\n'); // NOPMD
-                });
-                sb.append("Protelis can not (yet) properly deal with that.");
-                L.warn(sb.toString());
-            }
-            if (res.isEmpty()) {
-                throw new IllegalStateException("Can not bind any method that satisfies the name "
-                        + jvmOp.getQualifiedName() + "/" + jvmOp.getParameters().size() + ".");
-            }
-            return new MethodCall(res.get(0), arguments, ztatic);
+            return new MethodCall(jvmOp, arguments);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Class " + classname + " could not be found in classpath.");
         } catch (SecurityException e) {
@@ -495,7 +473,7 @@ public final class ProtelisLoader {
             final AtomicInteger id) {
         return args.stream().map(e -> parseExpression(e, nameToFun, funToFun, id)).collect(Collectors.toList());
     }
-    
+
     @SuppressWarnings("unchecked")
     private static <T> AnnotatedTree<?> parseExpression(
             final Expression e,
@@ -629,7 +607,12 @@ public final class ProtelisLoader {
                 final EObject eRef = ref.get();
                 if (eRef instanceof JvmOperation) {
                     final JvmOperation fun = (JvmOperation) eRef;
-                    return new GenericHoodCall(inclusive, fun, defVal, target);
+                    try {
+                        return new GenericHoodCall(inclusive, fun, defVal, target);
+                    } catch (ClassNotFoundException e1) {
+                        L.error("No class in the classpath can be found for " + fun);
+                        throw new IllegalStateException(fun + " unavailable in the classpath.");
+                    }
                 } else {
                     assert eRef instanceof FunctionDef;
                     final AnnotatedTree<FunctionDefinition> fun = new Constant<>(funToFun.get((FunctionDef) eRef));

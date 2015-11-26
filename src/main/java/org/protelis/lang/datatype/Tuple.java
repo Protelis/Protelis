@@ -21,10 +21,6 @@ import org.protelis.vm.ExecutionContext;
  * Implementation of mathematical tuples as indexed objects T = [element0,
  * element1, element2 ...] .
  */
-/**
- * @author danysk
- *
- */
 public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple> {
 
     /**
@@ -95,7 +91,7 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     int size();
 
     /**
-     * @return Returns true iff the {@link size} of the tuple is zero
+     * @return Returns true iff the size of the tuple is zero
      */
     boolean isEmpty();
 

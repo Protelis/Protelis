@@ -5,7 +5,7 @@ package org.protelis.vm;
  *
  */
 public interface ExecutionEnvironment {
-    
+
     /**
      * @param id
      *            the variable name

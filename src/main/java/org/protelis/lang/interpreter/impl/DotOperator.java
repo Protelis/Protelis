@@ -8,12 +8,9 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.ReflectionUtils;
@@ -34,7 +31,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
     private final boolean isApply;
     private final String methodName;
     private final AnnotatedTree<?> left;
-    
+
     /**
      * Builds a new {@link #APPLY}.
      * 
@@ -58,7 +55,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
     public DotOperator(final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         this(name.equals(APPLY), name, target, args);
     }
-    
+
     private DotOperator(final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         super(args);
         isApply = apply;
@@ -66,7 +63,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
         methodName = apply ? APPLY : name;
         left = target == null ? new Constant<>(null) : target;
     }
-    
+
     @Override
     public AnnotatedTree<Object> copy() {
         final DotOperator res = new DotOperator(methodName, left.copy(), deepCopyBranches());
@@ -111,33 +108,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
              */
             final Stream<?> argsstr = getBranchesAnnotationStream();
             final Object[] args = argsstr.toArray();
-            /*
-             * collect any field indices
-             */
-            Stream<Object> str = Arrays.stream(args).parallel();
-            str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
-            final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
-            /*
-             * if there are any fields, do a field apply:
-             */
-            final boolean fieldTarget = target instanceof Field;
-            if (fieldTarget || fieldIndexes.length > 0) {
-                /*
-                 * Run on every element of the field, and at each iteration use
-                 * the current annotation as corresponding element for the
-                 * field. Once done, set the entire field as annotation.
-                 */
-                final Field res = Field.apply(
-                        (actualT, actualA) -> ReflectionUtils.invokeBestNotStatic(actualT, methodName, actualA),
-                        fieldTarget,
-                        fieldIndexes,
-                        target,
-                        args);
-                setAnnotation(res);
-            } else {
-                final Object annotation = ReflectionUtils.invokeBestNotStatic(target, methodName, args);
-                setAnnotation(annotation);
-            }
+            setAnnotation(ReflectionUtils.invokeFieldable(target.getClass(), methodName, target, args));
         }
     }
 

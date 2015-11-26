@@ -14,6 +14,7 @@ import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.HoodOp;
 import org.protelis.lang.util.JavaInteroperabilityUtils;
+import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -26,6 +27,7 @@ public class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     private final AnnotatedTree<Field> body;
     private final AnnotatedTree<?> empty;
     private final String methodName;
+    private final Class<?> clazz;
     private final boolean inclusive;
 
     /**
@@ -49,6 +51,7 @@ public class GenericHoodCall extends AbstractAnnotatedTree<Object> {
         empty = nullResult;
         inclusive = includeSelf;
         methodName = null;
+        clazz = null;
     }
 
     /**
@@ -60,17 +63,19 @@ public class GenericHoodCall extends AbstractAnnotatedTree<Object> {
      *            the expression that will be evaluated if the field is empty
      * @param arg
      *            the argument to evaluate (must return a {@link Field}).
+     * @throws ClassNotFoundException 
      */
     public GenericHoodCall(
             final boolean includeSelf,
             final JvmOperation fun,
             final AnnotatedTree<?> nullResult,
-            final AnnotatedTree<Field> arg) {
+            final AnnotatedTree<Field> arg) throws ClassNotFoundException {
         super(nullResult, arg);
         body = arg;
         empty = nullResult;
         inclusive = includeSelf;
         methodName = fun.getSimpleName();
+        clazz = Class.forName(fun.getDeclaringType().getQualifiedName());
         function = null;
     }
 
@@ -87,8 +92,9 @@ public class GenericHoodCall extends AbstractAnnotatedTree<Object> {
         projectAndEval(context);
         final Object result = body.getAnnotation().reduceVals(
                 (a, b) -> function == null
-                    ? JavaInteroperabilityUtils.runProtelisFunction(context, function, a, b)
-                    : JavaInteroperabilityUtils.runMethod(context, null, methodName, a, b),
+//                    ? JavaInteroperabilityUtils.runStaticMethod(context, clazz, methodName, a, b)
+                    ? ReflectionUtils.invokeBestStatic(clazz, methodName, a, b)
+                    : JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(context, function, a, b),
                 inclusive ? null : context.getDeviceUID(),
                 empty.getAnnotation());
         setAnnotation(result);

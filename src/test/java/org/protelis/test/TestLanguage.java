@@ -167,6 +167,30 @@ public class TestLanguage {
     }
 
     /**
+     * Test hood with a generated field.
+     */
+    @Test
+    public void testGenericHood04() {
+        testFile("/genericHood04.pt");
+    }
+
+    /**
+     * Test hood with a generated field.
+     */
+    @Test
+    public void testGenericHood05() {
+        testFile("/genericHood05.pt");
+    }
+
+    /**
+     * Test hood with a generated field.
+     */
+    @Test
+    public void testGenericHood06() {
+        testFile("/genericHood06.pt");
+    }
+
+    /**
      * Test simple use of apply.
      */
     @Test
@@ -617,6 +641,7 @@ public class TestLanguage {
     }
 
     private static void testFile(final String file, final int runs) {
+        final Object execResult = runProgram(file, runs);
         final InputStream is = TestLanguage.class.getResourceAsStream(file);
         try {
             final String test = IOUtils.toString(is, Charsets.UTF_8);
@@ -629,7 +654,9 @@ public class TestLanguage {
                 final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
                 final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
                 vm.runCycle();
-                assertEquals(vm.getCurrentValue(), runProgram(file, runs));
+                assertEquals(vm.getCurrentValue(), execResult instanceof Number
+                        ? ((Number) execResult).doubleValue()
+                        : execResult);
             } else {
                 fail("Your test does not include the expected result");
             }
