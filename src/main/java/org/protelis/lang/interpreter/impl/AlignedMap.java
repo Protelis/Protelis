@@ -77,12 +77,25 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
         }
         final Field origin = (Field) originObj;
         /*
-         * Extract one field for each key
+         * Extract one field for each key.
+         * 
+         * This operation translates a field of tuples of tuples of the form:
+         * 
+         * {ID0 : [[key1, val1], [key2, val2]], ID2 : [[key3, val3], [key2, val4]]}
+         * 
+         * into a collection such as:
+         * 
+         * key1 : {ID0 : val1}
+         * key2 : {ID0 : val2, ID2 : val4}
+         * key3 : {ID2: val3}
          */
         final Map<Object, Field> fieldKeys = new HashMap<>();
         for (final Pair<DeviceUID, Object> pair : origin.coupleIterator()) {
             final DeviceUID node = pair.getFirst();
             final Object mapo = pair.getSecond();
+            /*
+             * Mappings are of the form: [[key1, value1][key2, value2]...]
+             */
             if (mapo instanceof Tuple) {
                 final Tuple map = (Tuple) mapo;
                 for (final Object mappingo : map) {
@@ -91,6 +104,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
                         if (mapping.size() == 2) {
                             final Object key = mapping.get(0);
                             final Object value = mapping.get(1);
+                            // TODO: use getOrDefault
                             Field ref = fieldKeys.get(key);
                             if (ref == null) {
                                 ref = Field.create(map.size());
@@ -138,7 +152,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
             args.add(new Variable(CURFIELD));
             context.putVariable(CURFIELD, value, true);
             /*
-             * Compute the code path
+             * Compute the code path: align on keys
              */
             final byte[] hash = FileUtilities.serializeObject((Serializable) key);
             context.newCallStackFrame(hash);
