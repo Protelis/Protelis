@@ -53,6 +53,22 @@ public class TestLanguage {
     }
 
     /**
+     * Test closures.
+     */
+    @Test
+    public void testClosure01() {
+        testFile("/closure01.pt");
+    }
+
+    /**
+     * Test the cyclic timer.
+     */
+    @Test
+    public void testCyclicTimer() {
+        testFileWithMultipleRuns("/cyclicTimer.pt");
+    }
+
+    /**
      * Test Boolean logic operators.
      */
     @Test
