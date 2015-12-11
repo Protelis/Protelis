@@ -10,26 +10,27 @@ package org.protelis.vm.util;
 
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.eclipse.emf.ecore.EObject;
+import org.protelis.lang.util.Reference;
 
 /**
  * Basic implementation of a {@link Stack}.
  */
 public class StackImpl implements Stack {
 
-    private final Deque<Map<EObject, Object>> stack = new LinkedList<>();
+    private final Deque<Map<Reference, Object>> stack = new LinkedList<>();
 
     /**
      * @param gamma
      *            Initial set of variables
      */
     @SuppressWarnings("unchecked")
-    public StackImpl(final Map<EObject, ?> gamma) {
-        stack.push((Map<EObject, Object>) gamma);
+    public StackImpl(final Map<Reference, ?> gamma) {
+        stack.push((Map<Reference, Object>) gamma);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class StackImpl implements Stack {
     }
 
     @Override
-    public Object put(final EObject var, final Object val, final boolean canShadow) {
+    public Object put(final Reference var, final Object val, final boolean canShadow) {
         if (canShadow) {
             /*
              * Overrides the previous value only if it is at this depth in the
@@ -52,9 +53,9 @@ public class StackImpl implements Stack {
              * let c = 0; if(true) { let c = 1 } else { 1 } // c = 0
              * 
              */
-            Map<EObject, Object> cur = stack.pop();
+            Map<Reference, Object> cur = stack.pop();
             if (cur == null) {
-                cur = new HashMap<>();
+                cur = new LinkedHashMap<>();
             }
             final Object res = cur.put(var, val);
             stack.push(cur);
@@ -70,8 +71,8 @@ public class StackImpl implements Stack {
         return stackOperation(varMap -> varMap.computeIfPresent(var, (k, v) -> val));
     }
 
-    private Object stackOperation(final Function<Map<EObject, Object>, Object> op) {
-        for (final Map<EObject, Object> varMap : stack) {
+    private Object stackOperation(final Function<Map<Reference, Object>, Object> op) {
+        for (final Map<Reference, Object> varMap : stack) {
             if (varMap != null) {
                 final Object res = op.apply(varMap);
                 if (res != null) {
@@ -83,7 +84,7 @@ public class StackImpl implements Stack {
     }
 
     @Override
-    public Object get(final EObject var) {
+    public Object get(final Reference var) {
         return stackOperation(varMap -> varMap.get(var));
     }
 
@@ -93,8 +94,8 @@ public class StackImpl implements Stack {
     }
 
     @Override
-    public void putAll(final Map<EObject, ?> map) {
-        Map<EObject, Object> cur = stack.pop();
+    public void putAll(final Map<Reference, ?> map) {
+        Map<Reference, Object> cur = stack.pop();
         if (cur == null) {
             cur = new HashMap<>();
         }

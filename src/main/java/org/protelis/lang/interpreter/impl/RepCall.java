@@ -11,7 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.parser.protelis.VarDef;
+import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -24,7 +24,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
     private static final long serialVersionUID = 8643287734245198408L;
     private static final byte W_BRANCH = 0;
     private static final byte A_BRANCH = 1;
-    private final VarDef xName;
+    private final Reference xName;
 
     /**
      * @param varName
@@ -34,7 +34,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
      * @param body
      *            body
      */
-    public RepCall(final VarDef varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
+    public RepCall(final Reference varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
         super(w, body);
         xName = varName;
     }

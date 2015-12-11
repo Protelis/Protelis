@@ -10,7 +10,7 @@ package org.protelis.vm.util;
 
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EObject;
+import org.protelis.lang.util.Reference;
 
 /**
  * Stack implementation used by the Protelis VM for tracking local variable
@@ -42,7 +42,7 @@ public interface Stack {
      *            is always overwritten.
      * @return Value overwritten, or null if no value is overwritten
      */
-    Object put(EObject var, Object val, boolean canShadow);
+    Object put(Reference var, Object val, boolean canShadow);
 
     /**
      * Bind a collection of variable/value pairs into the current lexical scope,
@@ -51,7 +51,7 @@ public interface Stack {
      * @param map
      *            Collection of variable/value pairs to be bound
      */
-    void putAll(Map<EObject, ? extends Object> map);
+    void putAll(Map<Reference, ? extends Object> map);
 
     /**
      * Look up a variable in the stack.
@@ -61,6 +61,6 @@ public interface Stack {
      * @return Value of the variable in the innermost lexical scope where it
      *         exists, if bound; otherwise null.
      */
-    Object get(EObject var);
+    Object get(Reference var);
 
 }

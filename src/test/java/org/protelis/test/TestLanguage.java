@@ -21,10 +21,12 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
+import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.Tuple;
+import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
 import org.protelis.vm.impl.DummyContext;
 
@@ -686,7 +688,13 @@ public class TestLanguage {
     }
 
     private static Object runProgram(final String s, final int runs) {
-        final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(s), new DummyContext());
+        final ProtelisProgram program = ProtelisLoader.parse(s);
+        try {
+            FileUtilities.serializeObject(program);
+        } catch (Exception e) {
+            fail();
+        }
+        final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
         }

@@ -9,7 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.parser.protelis.VarDef;
+import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
 public class CreateVar extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
-    private final VarDef var;
+    private final Reference var;
     private final boolean definition;
 
     /**
@@ -29,7 +29,7 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
      * @param isDefinition
      *            true if it is a let
      */
-    public CreateVar(final VarDef name, final AnnotatedTree<?> value, final boolean isDefinition) {
+    public CreateVar(final Reference name, final AnnotatedTree<?> value, final boolean isDefinition) {
         super(value);
         var = name;
         definition = isDefinition;

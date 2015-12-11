@@ -15,10 +15,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.util.Reference;
 import org.protelis.vm.util.CodePath;
 
 /**
@@ -51,7 +51,7 @@ public interface ExecutionContext {
      * @param map
      *            the variables to push
      */
-    void putMultipleVariables(Map<EObject, ?> map);
+    void putMultipleVariables(Map<Reference, ?> map);
 
     /**
      * @param name
@@ -64,7 +64,7 @@ public interface ExecutionContext {
      *            be shadowed. If false, the variable will be overridden (with
      *            possible side effects upon return) instead.
      */
-    void putVariable(EObject name, Object value, boolean canShadow);
+    void putVariable(Reference name, Object value, boolean canShadow);
 
     /**
      * Give a field, returns a new {@link ExecutionContext} whose domain is the same of the field one.
@@ -125,7 +125,7 @@ public interface ExecutionContext {
      *            The variable to be looked up
      * @return Value of the variable, or null if it cannot be found.
      */
-    Object getVariable(EObject reference);
+    Object getVariable(Reference reference);
 
     /**
      * @return The current {@link ExecutionEnvironment}
@@ -152,6 +152,6 @@ public interface ExecutionContext {
      *            Collection of accessible functions, associating function name
      *            and value.
      */
-    void setAvailableFunctions(Map<EObject, FunctionDefinition> knownFunctions);
+    void setAvailableFunctions(Map<Reference, FunctionDefinition> knownFunctions);
 
 }

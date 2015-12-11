@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.eclipse.emf.ecore.EObject;
+import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -17,13 +17,13 @@ import org.protelis.vm.ExecutionContext;
 public class Variable extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -3739014755916345132L;
-    private final EObject name;
+    private final Reference name;
 
     /**
      * @param ref
      *            variable name
      */
-    public Variable(final EObject ref) {
+    public Variable(final Reference ref) {
         super();
         name = ref;
     }
