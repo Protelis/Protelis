@@ -8,12 +8,11 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.danilopianini.lang.util.FasterString;
+import java.util.List;
+
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.parser.protelis.VarDef;
 import org.protelis.vm.ExecutionContext;
-
-import java.util.List;
 
 /**
  * "Repeat" state variable.

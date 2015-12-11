@@ -28,7 +28,6 @@ public class FunctionDefinition implements Serializable {
     private static final long serialVersionUID = -4996419276551742628L;
     private final FasterString functionName;
     private final int argNumber;
-//    private final FasterString[] internalNames;
     private final List<VarDef> args;
     private final TByteList stackCode;
     private AnnotatedTree<?> functionBody;
