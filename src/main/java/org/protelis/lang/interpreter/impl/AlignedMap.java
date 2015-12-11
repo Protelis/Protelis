@@ -8,7 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.danilopianini.lang.util.FasterString;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
 import org.protelis.lang.datatype.DeviceUID;
@@ -40,7 +39,6 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
     private static final String APPLY = "apply";
     private static final byte FILTER_POS = -1;
     private static final byte RUN_POS = -2;
-//    private static final FasterString CURFIELD = new FasterString("^CURFIELD^");
     private static final EObject CURFIELD = new BasicEObjectImpl() { };
     private final AnnotatedTree<Field> fgen;
     private final AnnotatedTree<FunctionDefinition> filterOp;
@@ -155,7 +153,6 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
             args.add(new Constant<>(key));
             args.add(new Variable(CURFIELD));
             context.putVariable(CURFIELD, value, true);
-//            args.add(new Variable<>(value));
             /*
              * Compute the code path: align on keys
              */
