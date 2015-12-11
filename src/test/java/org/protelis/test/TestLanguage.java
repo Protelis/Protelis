@@ -630,9 +630,9 @@ public class TestLanguage {
         testFileWithExplicitResult("/unary02.pt", -Math.PI);
     }
 
-    /*********
+    /*
      * From this point the rest of the file is not tests, but utility methods
-     *********/
+     */
 
     private static void testFileWithExplicitResult(final String file, final Object expectedResult) {
         testFile(file, 1, expectedResult);
