@@ -319,18 +319,17 @@ public final class ProtelisLoader {
          */
         return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), nameToFun), nameToFun);
     }
-    
-    private static <E> Stream<E> flatten(final E target,
+
+    private static <E> Stream<E> flatten(
+            final E target,
             final Function<? super E, ? extends Stream<? extends E>> extractor) {
-        return Stream.concat(
-                Stream.of(target),
-                extractor.apply(target).flatMap(el -> flatten(el, extractor)));
+        return Stream.concat(Stream.of(target), extractor.apply(target).flatMap(el -> flatten(el, extractor)));
     }
-    
+
     private static List<AnnotatedTree<?>> callArgs(final Call call, final Map<FunctionDef, FunctionDefinition> env) {
         return exprListArgs(call.getArgs(), env);
     }
-    
+
     private static List<AnnotatedTree<?>> exprListArgs(final ExprList l, final Map<FunctionDef, FunctionDefinition> env) {
         return Optional.ofNullable(l)
                 .map(ExprList::getArgs)
@@ -339,7 +338,7 @@ public final class ProtelisLoader {
                 .map(s -> s.collect(Collectors.<AnnotatedTree<?>>toList()))
                 .orElse(Collections.emptyList());
     }
-    
+
     private enum Dispatch {
         ALIGNED_MAP((e, m) -> {
             final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
