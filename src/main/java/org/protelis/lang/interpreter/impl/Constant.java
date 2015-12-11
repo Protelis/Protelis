@@ -8,6 +8,8 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import java.util.Objects;
+
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -26,6 +28,7 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
      */
     public Constant(final T obj) {
         super();
+        Objects.requireNonNull(obj);
         constantValue = obj;
     }
 
