@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.parser.protelis.VarDef;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -18,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 public class CreateVar extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
-    private final FasterString var;
+    private final VarDef var;
     private final boolean definition;
 
     /**
@@ -29,19 +30,7 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
      * @param isDefinition
      *            true if it is a let
      */
-    public CreateVar(final String name, final AnnotatedTree<?> value, final boolean isDefinition) {
-        this(new FasterString(name), value, isDefinition);
-    }
-
-    /**
-     * @param name
-     *            variable name
-     * @param value
-     *            program to evaluate to compute the value
-     * @param isDefinition
-     *            true if it is a let
-     */
-    public CreateVar(final FasterString name, final AnnotatedTree<?> value, final boolean isDefinition) {
+    public CreateVar(final VarDef name, final AnnotatedTree<?> value, final boolean isDefinition) {
         super(value);
         var = name;
         definition = isDefinition;
@@ -74,11 +63,11 @@ public class CreateVar extends AbstractAnnotatedTree<Object> {
         return definition;
     }
 
-    /**
-     * @return the variable name
-     */
-    public FasterString getVarName() {
-        return var;
-    }
+//    /**
+//     * @return the variable name
+//     */
+//    public FasterString getVarName() {
+//        return var;
+//    }
 
 }

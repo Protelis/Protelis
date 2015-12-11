@@ -42,10 +42,14 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
      *             in case the {@link JvmOperation} reference class couldn't be
      *             found in the classpath
      */
-    public MethodCall(final JvmOperation jvmOp, final List<AnnotatedTree<?>> branch) throws ClassNotFoundException {
+    public MethodCall(final JvmOperation jvmOp, final List<AnnotatedTree<?>> branch) {
         super(branch);
         final String classname = jvmOp.getDeclaringType().getQualifiedName();
-        clazz = Class.forName(classname);
+        try {
+            clazz = Class.forName(classname);
+        } catch (ClassNotFoundException e) {
+           throw new IllegalStateException(e);
+        }
         ztatic = jvmOp.isStatic();
         methodName = jvmOp.getSimpleName();
         extractMethod(jvmOp.getParameters().size());

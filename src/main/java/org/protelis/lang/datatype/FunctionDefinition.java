@@ -10,9 +10,11 @@ package org.protelis.lang.datatype;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
+
+import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.parser.protelis.VAR;
+import org.protelis.parser.protelis.VarDef;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -26,7 +28,8 @@ public class FunctionDefinition implements Serializable {
     private static final long serialVersionUID = -4996419276551742628L;
     private final FasterString functionName;
     private final int argNumber;
-    private final FasterString[] internalNames;
+//    private final FasterString[] internalNames;
+    private final List<VarDef> args;
     private final TByteList stackCode;
     private AnnotatedTree<?> functionBody;
 
@@ -36,13 +39,11 @@ public class FunctionDefinition implements Serializable {
      * @param args
      *            arguments
      */
-    public FunctionDefinition(final FasterString name, final List<VAR> args) {
+    public FunctionDefinition(final FasterString name, final List<VarDef> args) {
+        LangUtils.requireNonNull(name, args);
         argNumber = args.size();
         functionName = name;
-        internalNames = new FasterString[argNumber];
-        for (int i = 0; i < argNumber; i++) {
-            internalNames[i] = new FasterString(args.get(i).getName());
-        }
+        this.args = args;
         final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES + Long.BYTES + 1);
         bb.putInt(functionName.hashCode());
         bb.putLong(functionName.hash64());
@@ -56,7 +57,7 @@ public class FunctionDefinition implements Serializable {
      * @param args
      *            arguments
      */
-    public FunctionDefinition(final String name, final List<VAR> args) {
+    public FunctionDefinition(final String name, final List<VarDef> args) {
         this(new FasterString(name), args);
     }
 
@@ -109,8 +110,10 @@ public class FunctionDefinition implements Serializable {
      *            argument position
      * @return argument internal name
      */
-    public FasterString getInternalName(final int i) {
-        return internalNames[i];
+    public VarDef getArgumentByPosition(final int i) {
+        assert i > 0;
+        assert i < args.size();
+        return args.get(i);
     }
 
     @Override

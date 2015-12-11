@@ -12,6 +12,7 @@
 package org.protelis.vm;
 
 import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
@@ -51,11 +52,11 @@ public interface ExecutionContext {
      * @param map
      *            the variables to push
      */
-    void putMultipleVariables(Map<FasterString, ?> map);
+    void putMultipleVariables(Map<EObject, ?> map);
 
     /**
      * @param name
-     *            variable name
+     *            variable reference
      * @param value
      *            variable value
      * @param canShadow
@@ -64,7 +65,7 @@ public interface ExecutionContext {
      *            be shadowed. If false, the variable will be overridden (with
      *            possible side effects upon return) instead.
      */
-    void putVariable(FasterString name, Object value, boolean canShadow);
+    void putVariable(EObject name, Object value, boolean canShadow);
 
     /**
      * Give a field, returns a new {@link ExecutionContext} whose domain is the same of the field one.
@@ -121,11 +122,11 @@ public interface ExecutionContext {
     /**
      * Look up the value of a variable from the local environment.
      * 
-     * @param name
-     *            Name of the variable to be looked up
+     * @param reference
+     *            The variable to be looked up
      * @return Value of the variable, or null if it cannot be found.
      */
-    Object getVariable(FasterString name);
+    Object getVariable(EObject reference);
 
     /**
      * @return The current {@link ExecutionEnvironment}
@@ -152,6 +153,6 @@ public interface ExecutionContext {
      *            Collection of accessible functions, associating function name
      *            and value.
      */
-    void setAvailableFunctions(Map<FasterString, FunctionDefinition> knownFunctions);
+    void setAvailableFunctions(Map<EObject, FunctionDefinition> knownFunctions);
 
 }

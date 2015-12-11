@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.ecore.EObject;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -17,23 +17,15 @@ import org.protelis.vm.ExecutionContext;
 public class Variable extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -3739014755916345132L;
-    private final FasterString name;
+    private final EObject name;
 
     /**
-     * @param varName
+     * @param ref
      *            variable name
      */
-    public Variable(final FasterString varName) {
+    public Variable(final EObject ref) {
         super();
-        name = varName;
-    }
-
-    /**
-     * @param varName
-     *            variable name
-     */
-    public Variable(final String varName) {
-        this(new FasterString(varName));
+        name = ref;
     }
 
     @Override

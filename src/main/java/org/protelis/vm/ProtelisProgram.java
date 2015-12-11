@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.FunctionDefinition;
 
 /**
@@ -37,7 +38,7 @@ public interface ProtelisProgram extends Serializable {
     /**
      * @return Set of named functions defined in this program
      */
-    Map<FasterString, FunctionDefinition> getNamedFunctions();
+    Map<EObject, FunctionDefinition> getNamedFunctions();
 
     /**
      * @return Name of the program, or some default name if no specific name is

@@ -18,6 +18,7 @@ import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
@@ -47,7 +48,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final TByteList callStack = new TByteArrayList();
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
-    private Map<FasterString, ?> functions;
+    private Map<EObject, ?> functions;
     private Stack gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Object> toSend;
@@ -69,7 +70,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions) {
+    public final void setAvailableFunctions(final Map<EObject, FunctionDefinition> knownFunctions) {
         functions = Collections.unmodifiableMap(knownFunctions);
     }
 
@@ -117,12 +118,12 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final void putVariable(final FasterString name, final Object value, final boolean canShadow) {
+    public final void putVariable(final EObject name, final Object value, final boolean canShadow) {
         gamma.put(name, value, canShadow);
     }
 
     @Override
-    public final void putMultipleVariables(final Map<FasterString, ?> map) {
+    public final void putMultipleVariables(final Map<EObject, ?> map) {
         gamma.putAll(map);
     }
 
@@ -180,7 +181,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final Object getVariable(final FasterString name) {
+    public final Object getVariable(final EObject name) {
         return gamma.get(name);
     }
 
@@ -199,7 +200,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * 
      * @return Map from function name to function objects
      */
-    protected final Map<FasterString, ?> getFunctions() {
+    protected final Map<EObject, ?> getFunctions() {
         return functions;
     }
 

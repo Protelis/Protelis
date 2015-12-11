@@ -10,8 +10,10 @@ package org.protelis.lang;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -23,19 +25,29 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.common.types.JvmOperation;
@@ -74,23 +86,38 @@ import org.protelis.parser.ProtelisStandaloneSetup;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
 import org.protelis.parser.protelis.BooleanVal;
+import org.protelis.parser.protelis.Builtin;
+import org.protelis.parser.protelis.BuiltinHoodOp;
+import org.protelis.parser.protelis.Call;
 import org.protelis.parser.protelis.Declaration;
 import org.protelis.parser.protelis.DoubleVal;
+import org.protelis.parser.protelis.ExprList;
 import org.protelis.parser.protelis.Expression;
 import org.protelis.parser.protelis.FunctionDef;
+import org.protelis.parser.protelis.GenericHood;
 import org.protelis.parser.protelis.Import;
+import org.protelis.parser.protelis.Lambda;
 import org.protelis.parser.protelis.Module;
+import org.protelis.parser.protelis.Mux;
+import org.protelis.parser.protelis.NBR;
+import org.protelis.parser.protelis.Pi;
+import org.protelis.parser.protelis.Rep;
 import org.protelis.parser.protelis.RepInitialize;
 import org.protelis.parser.protelis.Statement;
 import org.protelis.parser.protelis.StringVal;
 import org.protelis.parser.protelis.TupleVal;
-import org.protelis.parser.protelis.VAR;
+import org.protelis.parser.protelis.VarDef;
+import org.protelis.parser.protelis.VarDefList;
+import org.protelis.parser.protelis.VarUse;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
 /**
@@ -317,23 +344,280 @@ public final class ProtelisLoader {
          * 
          * 2) Override conflicting names with local names
          */
-        final Map<FasterString, FunctionDefinition> nameToFun = new LinkedHashMap<>();
-        final Map<FunctionDef, FunctionDefinition> funToFun = new LinkedHashMap<>();
-        recursivelyInitFunctions(root, nameToFun, funToFun);
+        final Map<FunctionDef, FunctionDefinition> nameToFun = new LinkedHashMap<>();
+//        final Map<FunctionDef, FunctionDefinition> funToFun = new LinkedHashMap<>();
+        recursivelyInitFunctions(root, nameToFun);
         /*
          * Function definitions are in place, now create function bodies. Bodies
          * may contain lambdas, lambdas are named using processing order, as a
          * consequence function bodies must be evaluated sequentially.
          */
-        final AtomicInteger id = new AtomicInteger();
-        funToFun.forEach(
-                (fd, fun) -> fun.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), nameToFun, funToFun, id)));
+        nameToFun.forEach((fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), nameToFun)));
+//        final AtomicInteger id = new AtomicInteger();
+//        funToFun.forEach(
+//                (fd, fun) -> fun.setBody((AnnotatedTree<?>) parseBlock(fd.getBody(), nameToFun, funToFun, id)));
         /*
          * Create the main program
          */
-        return new SimpleProgramImpl(root, parseBlock(root.getProgram(), nameToFun, funToFun, id), nameToFun);
+//        .map(e -> {System.out.println(e); return e;})
+//        System.out.println(Dispatch.translate(root.getProgram(), nameToFun));
+        return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), nameToFun), nameToFun);
+//        return new SimpleProgramImpl(root, parseBlock(root.getProgram(), nameToFun, funToFun, id), nameToFun);
+    }
+    
+    private static <E> Stream<E> flatten(final E target,
+            final Function<? super E, ? extends Stream<? extends E>> extractor) {
+        return Stream.concat(
+                Stream.of(target),
+                extractor.apply(target).flatMap(el -> flatten(el, extractor)));
+    }
+    
+    private static List<AnnotatedTree<?>> callArgs(final Call call, final Map<FunctionDef, FunctionDefinition> env) {
+        return exprListArgs(call.getArgs(), env);
+    }
+    
+    private static List<AnnotatedTree<?>> exprListArgs(final ExprList l, final Map<FunctionDef, FunctionDefinition> env) {
+        return Optional.ofNullable(l)
+                .map(ExprList::getArgs)
+                .map(List::stream)
+                .map(s -> s.map(e -> Dispatch.translate(e, env)))
+                .map(s -> s.collect(Collectors.<AnnotatedTree<?>>toList()))
+                .orElse(Collections.emptyList());
+    }
+    
+    private enum Dispatch {
+        ALIGNED_MAP((e, m) -> {
+            final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
+            return new AlignedMap(
+                translate(alMap.getArg(), m),
+                translate(alMap.getCond(), m),
+                translate(alMap.getOp(), m),
+                translate(alMap.getDefault(), m));
+        }),
+        ASSIGNMENT((e, m) -> new CreateVar(((Assignment) e).getRefVar(), translate(((Assignment) e).getRight(), m), false)),
+        BLOCK((e, m) -> new All(
+                flatten((Block) e, b -> b.getOthers() == null ? Stream.empty() : Stream.<Block>of(b.getOthers()))
+                .map(b -> b.getFirst())
+                .map(s -> translate(s, m))
+                .collect(Collectors.toList()))),
+        BOOLEAN((e, m) -> new Constant<>(((BooleanVal) e).isVal())),
+        BUILTIN_HOOD((e, m) -> {
+            final BuiltinHoodOp hood = (BuiltinHoodOp) e;
+            return new HoodCall(
+                    translate(hood.getArg(), m),
+                    HoodOp.get(hood.getName().replace(HOOD_END, "")),
+                    hood.isInclusive());
+        }),
+        CALL_METHOD((e, m) -> new MethodCall((JvmOperation) ((Call) e).getReference(), callArgs((Call) e, m))),
+        CALL_FUNCTION((e, m) -> new FunctionCall(m.get(((Call) e).getReference()), callArgs((Call) e, m))),
+        DECLARATION((e, m) -> new CreateVar(((VarDef) e), translate(((VarDef) e).getRight(), m), true)),
+        DOUBLE((e, m) -> new Constant<>(((DoubleVal) e).getVal())),
+        E((e, m) -> e instanceof org.protelis.parser.protelis.E ? new Constant<>(Math.E) : null),
+        ENV((e, m) -> e instanceof org.protelis.parser.protelis.Env ? new Env() : null),
+        EVAL((e, m) -> new Eval(translate(((org.protelis.parser.protelis.Eval) e).getArg(), m))),
+        EXPRESSION((e, m) -> {
+            final Expression exp = (Expression) e;
+            if (exp.getMethodName() != null) {
+                return new DotOperator(exp.getMethodName(), translate(exp.getLeft(), m), exprListArgs(exp.getArgs(), m));
+            }
+            if (exp.getV() != null) {
+                return translate(exp.getV(), m);
+            }
+            if (exp.getLeft() == null) {
+                return new UnaryOp(exp.getName(), translate(exp.getRight(), m));
+            }
+            if (exp.getRight() == null) {
+                return new UnaryOp(exp.getName(), translate(exp.getLeft(), m));
+            }
+            return new BinaryOp(exp.getName(), translate(exp.getLeft(), m), translate(exp.getRight(), m));
+        }),
+        GENERIC_HOOD((e, m) -> {
+            final GenericHood hood = (GenericHood) e;
+            final boolean inclusive = hood.getName().length() > 4;
+            final AnnotatedTree<?> nullResult = translate(hood.getDefault(), m);
+            final AnnotatedTree<Field> field = translate(hood.getArg(), m);
+            final EObject ref = hood.getReference();
+            if (hood.getReference() == null) {
+                return new GenericHoodCall(inclusive, translate(hood.getOp(), m), nullResult, field);
+            }
+            if (ref instanceof JvmOperation) {
+                return new GenericHoodCall(inclusive, (JvmOperation) ref, nullResult, field);
+            }
+            return new GenericHoodCall(inclusive, new Constant<>(m.get(hood.getReference())), nullResult, field);
+        }),
+        IF((e, m) -> {
+            final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
+            return new If<>(translate(ifop.getCond(), m),
+                    translate(ifop.getThen(), m),
+                    translate(ifop.getElse(), m));
+        }),
+        LAMBDA((e, m) -> {
+            final Lambda l = (Lambda) e;
+            final EObject argobj = l.getArgs();
+            final List<VarDef> args = argobj == null ? Collections.emptyList() :
+                argobj instanceof VarDef ? Lists.newArrayList((VarDef) l.getArgs())
+                    : ((VarDefList) argobj).getArgs();
+            final AnnotatedTree<?> body = translate(l.getBody(), m);
+            final String base = Base64.encodeBase64String(
+                    Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
+            final FunctionDefinition lambda = new FunctionDefinition("λ" + base, args);
+            lambda.setBody(body);
+            return new Constant<>(lambda);
+        }),
+        MUX((e, m) -> {
+            final Mux mux = (Mux) e;
+            return new TernaryOp(mux.getName(),
+                    translate(mux.getCond(), m),
+                    translate(mux.getThen(), m),
+                    translate(mux.getElse(), m));
+        }),
+        NBR((e, m) -> new NBRCall(translate(((NBR) e).getArg(), m))),
+        PI((e, m) -> e instanceof Pi ? new Constant<>(Math.PI) : null),
+        REP((e, m) -> new RepCall<>(((Rep) e).getInit().getX(),
+                    translate(((Rep) e).getInit().getW(), m),
+                    translate(((Rep) e).getBody(), m))),
+        SELF((e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self() : null),
+        STRING((e, m) -> new Constant<>(((StringVal) e).getVal())),
+        TUPLE((e, m) -> new CreateTuple(exprListArgs(((TupleVal) e).getArgs(), m))),
+        VARIABLE((e, m) -> new Variable(((VarUse) e).getReference()));
+
+        private BiFunction<EObject, Map<FunctionDef, FunctionDefinition>, AnnotatedTree<?>> translator;
+
+        Dispatch(final BiFunction<EObject, Map<FunctionDef, FunctionDefinition>, AnnotatedTree<?>> translator) {
+            this.translator = translator;
+        }
+
+        @SuppressWarnings("unchecked")
+        public static <T> AnnotatedTree<T> translate(final EObject o, final Map<FunctionDef, FunctionDefinition> functions) {
+            return Arrays.stream(values())
+                .map(dispatch -> {
+                    try {
+                        return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));
+                    } catch (RuntimeException e) {
+                        return Optional.<AnnotatedTree<T>>empty();
+                    }
+                })
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny()
+                .get();
+        }
+
     }
 
+    //    private class EObjectVisitor<T> {
+//        AnnotatedTree<T> visit(A v);
+//    }
+//
+//    private class VisitableEObject implements EObject {
+//        
+//        private final EObject adaptee;
+//        
+//        public VisitableEObject(final EObject target) {
+//            this.adaptee = target;
+//        }
+//        
+//        public <T> AnnotatedTree<T> accept(EObjectVisitor<T> visitor) {
+//            return visitor.visit(this);
+//        }
+//
+//        @Override
+//        public EList<Adapter> eAdapters() {
+//            return adaptee.eAdapters();
+//        }
+//
+//        @Override
+//        public boolean eDeliver() {
+//            return adaptee.eDeliver();
+//        }
+//
+//        @Override
+//        public void eSetDeliver(final boolean deliver) {
+//            adaptee.eSetDeliver(deliver);
+//        }
+//
+//        @Override
+//        public void eNotify(final Notification notification) {
+//            adaptee.eNotify(notification);
+//        }
+//
+//        @Override
+//        public EClass eClass() {
+//            return adaptee.eClass();
+//        }
+//
+//        @Override
+//        public Resource eResource() {
+//            return adaptee.eResource();
+//        }
+//
+//        @Override
+//        public EObject eContainer() {
+//            return adaptee.eContainer();
+//        }
+//
+//        @Override
+//        public EStructuralFeature eContainingFeature() {
+//            return adaptee.eContainingFeature();
+//        }
+//
+//        @Override
+//        public EReference eContainmentFeature() {
+//            return adaptee.eContainmentFeature();
+//        }
+//
+//        @Override
+//        public EList<EObject> eContents() {
+//            return adaptee.eContents();
+//        }
+//
+//        @Override
+//        public TreeIterator<EObject> eAllContents() {
+//            return adaptee.eAllContents();
+//        }
+//
+//        @Override
+//        public boolean eIsProxy() {
+//            return adaptee.eIsProxy();
+//        }
+//
+//        @Override
+//        public EList<EObject> eCrossReferences() {
+//            return adaptee.eCrossReferences();
+//        }
+//
+//        @Override
+//        public Object eGet(final EStructuralFeature feature) {
+//            return adaptee.eGet(feature);
+//        }
+//
+//        @Override
+//        public Object eGet(final EStructuralFeature feature, final boolean resolve) {
+//            return adaptee.eGet(feature, resolve);
+//        }
+//
+//        @Override
+//        public void eSet(final EStructuralFeature feature, final Object newValue) {
+//            adaptee.eSet(feature, newValue);
+//        }
+//
+//        @Override
+//        public boolean eIsSet(final EStructuralFeature feature) {
+//            return adaptee.eIsSet(feature);
+//        }
+//
+//        @Override
+//        public void eUnset(final EStructuralFeature feature) {
+//            adaptee.eUnset(feature);
+//        }
+//
+//        @Override
+//        public Object eInvoke(final EOperation operation, final EList<?> arguments) throws InvocationTargetException {
+//            return adaptee.eInvoke(operation, arguments);
+//        }
+//        
+//    }
+    
     private static Iterable<Diagnostic> recursivelyCollectErrors(final Resource resource) {
         return recursivelyCollectErrors(resource, new ArrayList<>(), new HashSet<>());
     }
@@ -362,17 +646,14 @@ public final class ProtelisLoader {
     }
 
     private static void recursivelyInitFunctions(final Module module,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun) {
-        recursivelyInitFunctions(module, nameToFun, funToFun, new HashSet<>(), true);
+            final Map<FunctionDef, FunctionDefinition> nameToFun) {
+        recursivelyInitFunctions(module, nameToFun, new HashSet<>());
     }
 
     private static void recursivelyInitFunctions(
             final Module module,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun,
-            final Set<Module> completed,
-            final boolean initPrivate) {
+            final Map<FunctionDef, FunctionDefinition> nameToFun,
+            final Set<Module> completed) {
         if (!completed.contains(module)) {
             completed.add(module);
             /*
@@ -381,283 +662,300 @@ public final class ProtelisLoader {
             final EList<Import> imports = module.getProtelisImport();
             for (int i = imports.size() - 1; i >= 0; i--) {
                 final Import protelisImport = imports.get(i);
-                recursivelyInitFunctions(protelisImport.getModule(), nameToFun, funToFun, completed, false);
+                recursivelyInitFunctions(protelisImport.getModule(), nameToFun, completed);
             }
             /*
              * Init local functions
              */
-            final Stream<FunctionDef> fds = module.getDefinitions().parallelStream();
-            fds.filter(fd -> initPrivate || fd.isPublic()).forEachOrdered(fd -> {
-                final String fname = fd.getName();
-                final String fullName = module.getName() + ":" + fname;
-                final FasterString ffname = new FasterString(fname);
-                final FasterString ffullName = new FasterString(fullName);
-                final FunctionDefinition def = new FunctionDefinition(ffullName, extractArgs(fd));
-                nameToFun.put(ffullName, def);
-                nameToFun.put(ffname, def);
-                funToFun.put(fd, def);
-            });
+            nameToFun.putAll(module.getDefinitions().parallelStream().collect(Collectors.toMap(
+                    Function.identity(),
+                    fd -> new FunctionDefinition(Optional.ofNullable(module.getName()).orElse("") + fd.getName(), extractArgs(fd)))));
+//            final Stream<FunctionDef> fds = module.getDefinitions().parallelStream();
+//            fds.forEachOrdered(fd -> {
+//                final String fname = fd.getName();
+//                final String fullName = module.getName() + ":" + fname;
+//                final FunctionDefinition def = new FunctionDefinition(fullName, extractArgs(fd));
+//                nameToFun.put(fd, def);
+//            });
         }
     }
 
-    private static <T> AnnotatedTree<?> parseBlock(
-            final Block e,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun,
-            final AtomicInteger id) {
-        final AnnotatedTree<?> first = parseStatement(e.getFirst(), nameToFun, funToFun, id);
-        Block next = e.getOthers();
-        final List<AnnotatedTree<?>> statements = new LinkedList<>();
-        statements.add(first);
-        for (; next != null; next = next.getOthers()) {
-            statements.add(parseStatement(next.getFirst(), nameToFun, funToFun, id));
-        }
-        return new All(statements);
-    }
+//    private static <T> AnnotatedTree<?> parseBlock(
+//            final Block e,
+//            final Map<FasterString, FunctionDefinition> nameToFun,
+//            final Map<FunctionDef, FunctionDefinition> funToFun,
+//            final AtomicInteger id) {
+//        final AnnotatedTree<?> first = parseStatement(e.getFirst(), nameToFun, funToFun, id);
+//        Block next = e.getOthers();
+//        final List<AnnotatedTree<?>> statements = new LinkedList<>();
+//        statements.add(first);
+//        for (; next != null; next = next.getOthers()) {
+//            statements.add(parseStatement(next.getFirst(), nameToFun, funToFun, id));
+//        }
+//        return new All(statements);
+//    }
 
-    private static <T> AnnotatedTree<?> parseStatement(
-            final Statement e,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun,
-            final AtomicInteger id) {
-        if (e instanceof Expression) {
-            return parseExpression((Expression) e, nameToFun, funToFun, id);
-        }
-        if (e instanceof Declaration || e instanceof Assignment) {
-            String name;
-            final boolean isAssignment = e.getName().equals(ASSIGNMENT_NAME);
-            if (isAssignment) {
-                name = ((Assignment) e).getRefVar().getName();
-            } else {
-                name = e.getName();
-            }
-            return new CreateVar(name, parseExpression(e.getRight(), nameToFun, funToFun, id), !isAssignment);
-        }
-        throw new NotImplementedException("Implement support for nodes of type: " + e.getClass());
-    }
+//    private static <T> AnnotatedTree<?> parseStatement(
+//            final Statement e,
+//            final Map<FasterString, FunctionDefinition> nameToFun,
+//            final Map<FunctionDef, FunctionDefinition> funToFun,
+//            final AtomicInteger id) {
+//        if (e instanceof Expression) {
+//            return parseExpression((Expression) e, nameToFun, funToFun, id);
+//        }
+//        if (e instanceof VarDef) {
+//            /*
+//             * Let
+//             */
+//            return new CreateVar((VarDef) e, parseExpression(e.getRight(), nameToFun, funToFun, id), true);
+//        }
+//        if (e instanceof Declaration || e instanceof Assignment) {
+//            String name;
+//            final boolean isAssignment = e.getName().equals(ASSIGNMENT_NAME);
+//            if (isAssignment) {
+//                name = ((Assignment) e).getRefVar().getName();
+//            } else {
+//                name = e.getName();
+//            }
+//            return new CreateVar(name, parseExpression(e.getRight(), nameToFun, funToFun, id), !isAssignment);
+//        }
+//        throw new NotImplementedException("Implement support for nodes of type: " + e.getClass());
+//    }
 
-    private static MethodCall parseMethod(
-            final JvmOperation jvmOp,
-            final List<Expression> args,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun,
-            final AtomicInteger id) {
-        final List<AnnotatedTree<?>> arguments = parseArgs(args, nameToFun, funToFun, id);
-        final String classname = jvmOp.getDeclaringType().getQualifiedName();
-        try {
-            return new MethodCall(jvmOp, arguments);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Class " + classname + " could not be found in classpath.");
-        } catch (SecurityException e) {
-            throw new IllegalStateException("Class " + classname + " could not be loaded due to security permissions.");
-        } catch (Error e) {
-            throw new IllegalStateException("An error occured while loading class " + classname + ".");
-        }
+//    private static MethodCall parseMethod(
+//            final JvmOperation jvmOp,
+//            final List<Expression> args,
+//            final Map<FasterString, FunctionDefinition> nameToFun,
+//            final Map<FunctionDef, FunctionDefinition> funToFun,
+//            final AtomicInteger id) {
+//        final List<AnnotatedTree<?>> arguments = parseArgs(args, nameToFun, funToFun, id);
+//        final String classname = jvmOp.getDeclaringType().getQualifiedName();
+//        try {
+//            return new MethodCall(jvmOp, arguments);
+//        } catch (ClassNotFoundException e) {
+//            throw new IllegalStateException("Class " + classname + " could not be found in classpath.");
+//        } catch (SecurityException e) {
+//            throw new IllegalStateException("Class " + classname + " could not be loaded due to security permissions.");
+//        } catch (Error e) {
+//            throw new IllegalStateException("An error occured while loading class " + classname + ".");
+//        }
+//
+//    }
+//
+//    private static FunctionCall parseFunction(
+//            final FunctionDef f,
+//            final List<Expression> args,
+//            final Map<FasterString, FunctionDefinition> nameToFun,
+//            final Map<FunctionDef, FunctionDefinition> funToFun,
+//            final AtomicInteger id) {
+//        final FunctionDefinition fun = funToFun.get(f);
+//        Objects.requireNonNull(fun);
+//        final List<AnnotatedTree<?>> arguments = parseArgs(args, nameToFun, funToFun, id);
+//        return new FunctionCall(fun, arguments);
+//    }
+//
+//    private static List<AnnotatedTree<?>> parseArgs(final List<Expression> args,
+//            final Map<FasterString, FunctionDefinition> nameToFun, final Map<FunctionDef, FunctionDefinition> funToFun,
+//            final AtomicInteger id) {
+//        return args.stream().map(e -> parseExpression(e, nameToFun, funToFun, id)).collect(Collectors.toList());
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private static <T> AnnotatedTree<?> parseExpression(
+//            final Expression e,
+//            final Map<FasterString, FunctionDefinition> nameToFun,
+//            final Map<FunctionDef, FunctionDefinition> funToFun,
+//            final AtomicInteger id) {
+//        if (e instanceof DoubleVal) {
+//            return new NumericConstant(((DoubleVal) e).getVal());
+//        }
+//        if (e instanceof StringVal) {
+//            return new Constant<>(((StringVal) e).getVal());
+//        }
+//        if (e instanceof BooleanVal) {
+//            return new Constant<>(((BooleanVal) e).isVal());
+//        }
+//        if (e instanceof TupleVal) {
+//            final Function<Expression, AnnotatedTree<?>> f = (exp) -> parseExpression(exp, nameToFun, funToFun, id);
+//            final List<Expression> expr = extractArgs((TupleVal) e);
+//            final Stream<AnnotatedTree<?>> treestr = expr.stream().map(f);
+//            final AnnotatedTree<?>[] args = treestr.toArray((i) -> new AnnotatedTree[i]);
+//            return new CreateTuple(args);
+//        }
+//        if (e instanceof VarUse) {
+//            return new Variable(e.getReference());
+//        }
+//        if (e == null) {
+//            throw new IllegalArgumentException("null expression, this is a bug.");
+//        }
+//        final Optional<EObject> ref = Optional.ofNullable(e.getReference());
+//        final String name = e.getName();
+//        if (name == null) {
+//            if (ref.isPresent()) {
+//                /*
+//                 * Function or method call
+//                 */
+//                final EObject eRef = ref.get();
+//                if (eRef instanceof JvmOperation) {
+//                    final JvmOperation m = (JvmOperation) eRef;
+//                    return parseMethod(m, extractArgs(e), nameToFun, funToFun, id);
+//                } else if (eRef instanceof FunctionDef) {
+//                    final FunctionDef fun = (FunctionDef) eRef;
+//                    return parseFunction(fun, extractArgs(e), nameToFun, funToFun, id);
+//                } else {
+//                    throw new IllegalStateException(
+//                            "I do not know how I should interpret a call to a "
+//                            + eRef.getClass().getSimpleName() + " object.");
+//                }
+//            }
+//            /*
+//             * Envelope: recurse in
+//             */
+//            final EObject val = e.getV();
+//            return parseExpression((Expression) val, nameToFun, funToFun, id);
+//        }
+//        if (BINARY_OPERATORS.contains(name) && e.getLeft() != null && e.getRight() != null) {
+//            return new BinaryOp(name, parseExpression(e.getLeft(), nameToFun, funToFun, id),
+//                    parseExpression(e.getRight(), nameToFun, funToFun, id));
+//        }
+//        if (UNARY_OPERATORS.contains(name) && e.getLeft() == null && e.getRight() != null) {
+//            return new UnaryOp(name, parseExpression(e.getRight(), nameToFun, funToFun, id));
+//        }
+//        if (name.equals(REP_NAME)) {
+//            final RepInitialize ri = e.getInit();
+//            final VarDef x = ri.getX();
+//            return new RepCall<>(x,
+//                    parseExpression(ri.getW(), nameToFun, funToFun, id),
+//                    parseBlock(e.getBody(), nameToFun, funToFun, id));
+//        }
+//        if (name.equals(IF_NAME)) {
+//            final AnnotatedTree<Boolean> cond = (AnnotatedTree<Boolean>)
+//                parseExpression(e.getCond(), nameToFun, funToFun, id);
+//            final AnnotatedTree<T> then = (AnnotatedTree<T>) parseBlock(e.getThen(), nameToFun, funToFun, id);
+//            final AnnotatedTree<T> elze = (AnnotatedTree<T>) parseBlock(e.getElse(), nameToFun, funToFun, id);
+//            return new If<>(cond, then, elze);
+//        }
+//        if (name.equals(PI_NAME)) {
+//            return new Constant<>(Math.PI);
+//        }
+//        if (name.equals(E_NAME)) {
+//            return new Constant<>(Math.E);
+//        }
+//        if (name.equals(SELF_NAME)) {
+//            return new Self();
+//        }
+//        if (name.equals(ENV_NAME)) {
+//            return new Env();
+//        }
+//        if (name.equals(NBR_NAME)) {
+//            return new NBRCall(parseExpression(e.getArg(), nameToFun, funToFun, id));
+//        }
+//        if (name.equals(ALIGNED_MAP)) {
+//            final AnnotatedTree<Field> arg = (AnnotatedTree<Field>)
+//                parseExpression(e.getArg(), nameToFun, funToFun, id);
+//            final AnnotatedTree<FunctionDefinition> cond = (AnnotatedTree<FunctionDefinition>)
+//                parseExpression(e.getCond(), nameToFun, funToFun, id);
+//            final AnnotatedTree<FunctionDefinition> op = (AnnotatedTree<FunctionDefinition>)
+//                parseExpression(e.getOp(), nameToFun, funToFun, id);
+//            final AnnotatedTree<?> def = parseExpression(e.getDefault(), nameToFun, funToFun, id);
+//            return new AlignedMap(arg, cond, op, def);
+//        }
+//        if (name.equals(LAMBDA_NAME)) {
+//            final FunctionDefinition lambda = new FunctionDefinition("l$" + id.getAndIncrement(),
+//                    extractArgsFromLambda(e));
+//            final AnnotatedTree<?> body = parseBlock(e.getBody(), nameToFun, funToFun, id);
+//            lambda.setBody(body);
+//            return new Constant<>(lambda);
+//        }
+//        if (name.equals(EVAL_NAME)) {
+//            final AnnotatedTree<?> arg = parseExpression(e.getArg(), nameToFun, funToFun, id);
+//            return new Eval(arg);
+//        }
+//        if (name.equals(DOT_NAME)) {
+//            final AnnotatedTree<?> target = parseExpression(e.getLeft(), nameToFun, funToFun, id);
+//            final List<AnnotatedTree<?>> args = parseArgs(extractArgs(e), nameToFun, funToFun, id);
+//            return new DotOperator(e.getMethodName(), target, args);
+//        }
+//        if (name.equals(MUX_NAME)) {
+//            final AnnotatedTree<?> cond = parseExpression(e.getCond(), nameToFun, funToFun, id);
+//            final AnnotatedTree<?> then = parseBlock(e.getThen(), nameToFun, funToFun, id);
+//            final AnnotatedTree<?> elze = parseBlock(e.getElse(), nameToFun, funToFun, id);
+//            return new TernaryOp(MUX_NAME, cond, then, elze);
+//        }
+//        if (name.equals(ASSIGNMENT_NAME)) {
+//            return new CreateVar(e.getRefVar(), parseExpression(e.getRight(), nameToFun, funToFun, id), false);
+//        }
+//        if (name.startsWith(HOOD_NAME)) {
+//            assert e.getDefault() != null;
+//            assert e.getArg() != null;
+//            final AnnotatedTree<?> defVal = parseExpression(e.getDefault(), nameToFun, funToFun, id);
+//            final AnnotatedTree<Field> target = (AnnotatedTree<Field>) parseExpression(e.getArg(), nameToFun, funToFun, id);
+//            final boolean inclusive = !name.equals(HOOD_NAME);
+//            if (ref.isPresent()) {
+//                final EObject eRef = ref.get();
+//                if (eRef instanceof JvmOperation) {
+//                    final JvmOperation fun = (JvmOperation) eRef;
+//                    try {
+//                        return new GenericHoodCall(inclusive, fun, defVal, target);
+//                    } catch (ClassNotFoundException e1) {
+//                        L.error("No class in the classpath can be found for " + fun);
+//                        throw new IllegalStateException(fun + " unavailable in the classpath.");
+//                    }
+//                } else {
+//                    assert eRef instanceof FunctionDef;
+//                    final AnnotatedTree<FunctionDefinition> fun = new Constant<>(funToFun.get((FunctionDef) eRef));
+//                    return new GenericHoodCall(inclusive, fun, defVal, target);
+//                }
+//            } else {
+//                /*
+//                 * Lambda
+//                 */
+//                assert e.getOp() != null;
+//                final AnnotatedTree<FunctionDefinition> fun = (AnnotatedTree<FunctionDefinition>)
+//                        parseExpression(e.getOp(), nameToFun, funToFun, id);
+//                return new GenericHoodCall(inclusive, fun, defVal, target);
+//            }
+//        }
+//        if (name.endsWith(HOOD_END)) {
+//            final String op = name.replace(HOOD_END, "");
+//            final HoodOp hop = HoodOp.get(op);
+//            if (hop == null) {
+//                throw new UnsupportedOperationException("Unsupported hood operation: " + op);
+//            }
+//            final AnnotatedTree<Field> arg = (AnnotatedTree<Field>)
+//                    parseExpression(e.getArg(), nameToFun, funToFun, id);
+//            return new HoodCall(arg, hop, e.isInclusive());
+//        }
+//        throw new UnsupportedOperationException(
+//                "Unsupported operation: " + (e.getName() != null ? e.getName() : "Unknown"));
+//    }
 
-    }
+//    private static List<Expression> extractArgs(final Expression e) {
+//        return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
+//    }
 
-    private static FunctionCall parseFunction(
-            final FunctionDef f,
-            final List<Expression> args,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun,
-            final AtomicInteger id) {
-        final FunctionDefinition fun = funToFun.get(f);
-        Objects.requireNonNull(fun);
-        final List<AnnotatedTree<?>> arguments = parseArgs(args, nameToFun, funToFun, id);
-        return new FunctionCall(fun, arguments);
-    }
+//    private static List<Expression> extractArgs(final TupleVal e) {
+//        return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
+//    }
 
-    private static List<AnnotatedTree<?>> parseArgs(final List<Expression> args,
-            final Map<FasterString, FunctionDefinition> nameToFun, final Map<FunctionDef, FunctionDefinition> funToFun,
-            final AtomicInteger id) {
-        return args.stream().map(e -> parseExpression(e, nameToFun, funToFun, id)).collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> AnnotatedTree<?> parseExpression(
-            final Expression e,
-            final Map<FasterString, FunctionDefinition> nameToFun,
-            final Map<FunctionDef, FunctionDefinition> funToFun,
-            final AtomicInteger id) {
-        if (e instanceof DoubleVal) {
-            return new NumericConstant(((DoubleVal) e).getVal());
-        }
-        if (e instanceof StringVal) {
-            return new Constant<>(((StringVal) e).getVal());
-        }
-        if (e instanceof BooleanVal) {
-            return new Constant<>(((BooleanVal) e).isVal());
-        }
-        if (e instanceof TupleVal) {
-            final Function<Expression, AnnotatedTree<?>> f = (exp) -> parseExpression(exp, nameToFun, funToFun, id);
-            final List<Expression> expr = extractArgs((TupleVal) e);
-            final Stream<AnnotatedTree<?>> treestr = expr.stream().map(f);
-            final AnnotatedTree<?>[] args = treestr.toArray((i) -> new AnnotatedTree[i]);
-            return new CreateTuple(args);
-        }
-        if (e instanceof VAR) {
-            return new Variable(((VAR) e).getName());
-        }
-        if (e == null) {
-            throw new IllegalArgumentException("null expression, this is a bug.");
-        }
-        final Optional<EObject> ref = Optional.ofNullable(e.getReference());
-        final String name = e.getName();
-        if (name == null) {
-            if (ref.isPresent()) {
-                /*
-                 * Function or method call
-                 */
-                final EObject eRef = ref.get();
-                if (eRef instanceof JvmOperation) {
-                    final JvmOperation m = (JvmOperation) eRef;
-                    return parseMethod(m, extractArgs(e), nameToFun, funToFun, id);
-                } else if (eRef instanceof FunctionDef) {
-                    final FunctionDef fun = (FunctionDef) eRef;
-                    return parseFunction(fun, extractArgs(e), nameToFun, funToFun, id);
-                } else {
-                    throw new IllegalStateException(
-                            "I do not know how I should interpret a call to a "
-                            + eRef.getClass().getSimpleName() + " object.");
-                }
-            }
-            /*
-             * Envelope: recurse in
-             */
-            final EObject val = e.getV();
-            return parseExpression((Expression) val, nameToFun, funToFun, id);
-        }
-        if (BINARY_OPERATORS.contains(name) && e.getLeft() != null && e.getRight() != null) {
-            return new BinaryOp(name, parseExpression(e.getLeft(), nameToFun, funToFun, id),
-                    parseExpression(e.getRight(), nameToFun, funToFun, id));
-        }
-        if (UNARY_OPERATORS.contains(name) && e.getLeft() == null && e.getRight() != null) {
-            return new UnaryOp(name, parseExpression(e.getRight(), nameToFun, funToFun, id));
-        }
-        if (name.equals(REP_NAME)) {
-            final RepInitialize ri = e.getInit().getArgs().get(0);
-            final String x = ri.getX().getName();
-            return new RepCall<>(
-                    new FasterString(x),
-                    parseExpression(ri.getW(), nameToFun, funToFun, id),
-                    parseBlock(e.getBody(), nameToFun, funToFun, id));
-        }
-        if (name.equals(IF_NAME)) {
-            final AnnotatedTree<Boolean> cond = (AnnotatedTree<Boolean>)
-                parseExpression(e.getCond(), nameToFun, funToFun, id);
-            final AnnotatedTree<T> then = (AnnotatedTree<T>) parseBlock(e.getThen(), nameToFun, funToFun, id);
-            final AnnotatedTree<T> elze = (AnnotatedTree<T>) parseBlock(e.getElse(), nameToFun, funToFun, id);
-            return new If<>(cond, then, elze);
-        }
-        if (name.equals(PI_NAME)) {
-            return new Constant<>(Math.PI);
-        }
-        if (name.equals(E_NAME)) {
-            return new Constant<>(Math.E);
-        }
-        if (name.equals(SELF_NAME)) {
-            return new Self();
-        }
-        if (name.equals(ENV_NAME)) {
-            return new Env();
-        }
-        if (name.equals(NBR_NAME)) {
-            return new NBRCall(parseExpression(e.getArg(), nameToFun, funToFun, id));
-        }
-        if (name.equals(ALIGNED_MAP)) {
-            final AnnotatedTree<Field> arg = (AnnotatedTree<Field>)
-                parseExpression(e.getArg(), nameToFun, funToFun, id);
-            final AnnotatedTree<FunctionDefinition> cond = (AnnotatedTree<FunctionDefinition>)
-                parseExpression(e.getCond(), nameToFun, funToFun, id);
-            final AnnotatedTree<FunctionDefinition> op = (AnnotatedTree<FunctionDefinition>)
-                parseExpression(e.getOp(), nameToFun, funToFun, id);
-            final AnnotatedTree<?> def = parseExpression(e.getDefault(), nameToFun, funToFun, id);
-            return new AlignedMap(arg, cond, op, def);
-        }
-        if (name.equals(LAMBDA_NAME)) {
-            final FunctionDefinition lambda = new FunctionDefinition("l$" + id.getAndIncrement(),
-                    extractArgsFromLambda(e));
-            final AnnotatedTree<?> body = parseBlock(e.getBody(), nameToFun, funToFun, id);
-            lambda.setBody(body);
-            return new Constant<>(lambda);
-        }
-        if (name.equals(EVAL_NAME)) {
-            final AnnotatedTree<?> arg = parseExpression(e.getArg(), nameToFun, funToFun, id);
-            return new Eval(arg);
-        }
-        if (name.equals(DOT_NAME)) {
-            final AnnotatedTree<?> target = parseExpression(e.getLeft(), nameToFun, funToFun, id);
-            final List<AnnotatedTree<?>> args = parseArgs(extractArgs(e), nameToFun, funToFun, id);
-            return new DotOperator(e.getMethodName(), target, args);
-        }
-        if (name.equals(MUX_NAME)) {
-            final AnnotatedTree<?> cond = parseExpression(e.getCond(), nameToFun, funToFun, id);
-            final AnnotatedTree<?> then = parseBlock(e.getThen(), nameToFun, funToFun, id);
-            final AnnotatedTree<?> elze = parseBlock(e.getElse(), nameToFun, funToFun, id);
-            return new TernaryOp(MUX_NAME, cond, then, elze);
-        }
-        if (name.startsWith(HOOD_NAME)) {
-            assert e.getDefault() != null;
-            assert e.getArg() != null;
-            final AnnotatedTree<?> defVal = parseExpression(e.getDefault(), nameToFun, funToFun, id);
-            final AnnotatedTree<Field> target = (AnnotatedTree<Field>) parseExpression(e.getArg(), nameToFun, funToFun, id);
-            final boolean inclusive = !name.equals(HOOD_NAME);
-            if (ref.isPresent()) {
-                final EObject eRef = ref.get();
-                if (eRef instanceof JvmOperation) {
-                    final JvmOperation fun = (JvmOperation) eRef;
-                    try {
-                        return new GenericHoodCall(inclusive, fun, defVal, target);
-                    } catch (ClassNotFoundException e1) {
-                        L.error("No class in the classpath can be found for " + fun);
-                        throw new IllegalStateException(fun + " unavailable in the classpath.");
-                    }
-                } else {
-                    assert eRef instanceof FunctionDef;
-                    final AnnotatedTree<FunctionDefinition> fun = new Constant<>(funToFun.get((FunctionDef) eRef));
-                    return new GenericHoodCall(inclusive, fun, defVal, target);
-                }
-            } else {
-                /*
-                 * Lambda
-                 */
-                assert e.getOp() != null;
-                final AnnotatedTree<FunctionDefinition> fun = (AnnotatedTree<FunctionDefinition>)
-                        parseExpression(e.getOp(), nameToFun, funToFun, id);
-                return new GenericHoodCall(inclusive, fun, defVal, target);
-            }
-        }
-        if (name.endsWith(HOOD_END)) {
-            final String op = name.replace(HOOD_END, "");
-            final HoodOp hop = HoodOp.get(op);
-            if (hop == null) {
-                throw new UnsupportedOperationException("Unsupported hood operation: " + op);
-            }
-            final AnnotatedTree<Field> arg = (AnnotatedTree<Field>)
-                    parseExpression(e.getArg(), nameToFun, funToFun, id);
-            return new HoodCall(arg, hop, e.isInclusive());
-        }
-        throw new UnsupportedOperationException(
-                "Unsupported operation: " + (e.getName() != null ? e.getName() : "Unknown"));
-    }
-
-    private static List<Expression> extractArgs(final Expression e) {
+    private static List<VarDef> extractArgs(final FunctionDef e) {
         return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
     }
 
-    private static List<Expression> extractArgs(final TupleVal e) {
-        return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
-    }
-
-    private static List<VAR> extractArgs(final FunctionDef e) {
-        return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
-    }
-
-    private static List<VAR> extractArgsFromLambda(final Expression e) {
-        return e.getLambdaArgs() != null && e.getLambdaArgs().getArgs() != null
-                ? e.getLambdaArgs().getArgs()
-                : Collections.emptyList();
-    }
+//    private static List<VarDef> extractArgsFromLambda(final Expression e) {
+//        final EObject args = e.getLambdaArgs();
+//        if (args != null) {
+//            if (args instanceof VarDef) {
+//                return Collections.unmodifiableList(Lists.newArrayList((VarDef) args));
+//            }
+//            if (args instanceof List) {
+//                return (List<VarDef>) args;
+//            }
+//        }
+//        return Collections.emptyList();
+//        return e.getLambdaArgs() != null && e.getLambdaArgs().getArgs() != null
+//                ? e.getLambdaArgs().getArgs()
+//                : Collections.emptyList();
+//    }
 
 }

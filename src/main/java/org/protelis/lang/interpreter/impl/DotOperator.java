@@ -11,6 +11,8 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.ReflectionUtils;

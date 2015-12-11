@@ -12,8 +12,10 @@
 package org.protelis.vm.impl;
 
 import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.Module;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
@@ -31,7 +33,7 @@ public class SimpleProgramImpl implements ProtelisProgram {
     private static final long serialVersionUID = -986976491484860840L;
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
     private final AnnotatedTree<?> prog;
-    private final Map<FasterString, FunctionDefinition> funs;
+    private final Map<EObject, FunctionDefinition> funs;
     private final FasterString name;
 
     /**
@@ -46,7 +48,7 @@ public class SimpleProgramImpl implements ProtelisProgram {
     public SimpleProgramImpl(
             final Module source,
             final AnnotatedTree<?> program,
-            final Map<FasterString, FunctionDefinition> functions) {
+            final Map<FunctionDef, FunctionDefinition> functions) {
         this(Optional.of(source).map(Module::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
     }
 
@@ -61,7 +63,7 @@ public class SimpleProgramImpl implements ProtelisProgram {
     public SimpleProgramImpl(
             final String pName,
             final AnnotatedTree<?> program,
-            final Map<FasterString, FunctionDefinition> functions) {
+            final Map<FunctionDef, FunctionDefinition> functions) {
         Objects.requireNonNull(pName);
         Objects.requireNonNull(program);
         Objects.requireNonNull(functions);
@@ -81,7 +83,7 @@ public class SimpleProgramImpl implements ProtelisProgram {
     }
 
     @Override
-    public Map<FasterString, FunctionDefinition> getNamedFunctions() {
+    public Map<EObject, FunctionDefinition> getNamedFunctions() {
         return funs;
     }
 

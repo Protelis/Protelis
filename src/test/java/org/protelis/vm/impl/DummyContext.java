@@ -23,6 +23,10 @@ public final class DummyContext extends AbstractExecutionContext {
     private final Random rng = new Random(0);
     private static final DeviceUID DUMMYUID = new DeviceUID() {
         private static final long serialVersionUID = 2306021805006825289L;
+        @Override
+        public String toString() {
+            return "DummyUID";
+        };
     };
 
     /**
@@ -50,6 +54,11 @@ public final class DummyContext extends AbstractExecutionContext {
     @Override
     protected AbstractExecutionContext instance() {
         return new DummyContext();
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()+hashCode();
     }
 
     /**

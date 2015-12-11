@@ -9,6 +9,7 @@
 package org.protelis.vm.util;
 
 import org.danilopianini.lang.util.FasterString;
+import org.eclipse.emf.ecore.EObject;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -22,15 +23,15 @@ import java.util.function.Function;
 public class StackImpl implements Stack {
 
     private static final long serialVersionUID = -7123279550264674313L;
-    private final Deque<Map<FasterString, Object>> stack = new LinkedList<>();
+    private final Deque<Map<EObject, Object>> stack = new LinkedList<>();
 
     /**
      * @param gamma
      *            Initial set of variables
      */
     @SuppressWarnings("unchecked")
-    public StackImpl(final Map<FasterString, ?> gamma) {
-        stack.push((Map<FasterString, Object>) gamma);
+    public StackImpl(final Map<EObject, ?> gamma) {
+        stack.push((Map<EObject, Object>) gamma);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class StackImpl implements Stack {
     }
 
     @Override
-    public Object put(final FasterString var, final Object val, final boolean canShadow) {
+    public Object put(final EObject var, final Object val, final boolean canShadow) {
         if (canShadow) {
             /*
              * Overrides the previous value only if it is at this depth in the
@@ -53,7 +54,7 @@ public class StackImpl implements Stack {
              * let c = 0; if(true) { let c = 1 } else { 1 } // c = 0
              * 
              */
-            Map<FasterString, Object> cur = stack.pop();
+            Map<EObject, Object> cur = stack.pop();
             if (cur == null) {
                 cur = new HashMap<>();
             }
@@ -71,8 +72,8 @@ public class StackImpl implements Stack {
         return stackOperation(varMap -> varMap.computeIfPresent(var, (k, v) -> val));
     }
 
-    private Object stackOperation(final Function<Map<FasterString, Object>, Object> op) {
-        for (final Map<FasterString, Object> varMap : stack) {
+    private Object stackOperation(final Function<Map<EObject, Object>, Object> op) {
+        for (final Map<EObject, Object> varMap : stack) {
             if (varMap != null) {
                 final Object res = op.apply(varMap);
                 if (res != null) {
@@ -84,7 +85,7 @@ public class StackImpl implements Stack {
     }
 
     @Override
-    public Object get(final FasterString var) {
+    public Object get(final EObject var) {
         return stackOperation(varMap -> varMap.get(var));
     }
 
@@ -94,8 +95,8 @@ public class StackImpl implements Stack {
     }
 
     @Override
-    public void putAll(final Map<FasterString, ?> map) {
-        Map<FasterString, Object> cur = stack.pop();
+    public void putAll(final Map<EObject, ?> map) {
+        Map<EObject, Object> cur = stack.pop();
         if (cur == null) {
             cur = new HashMap<>();
         }
