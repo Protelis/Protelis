@@ -8,7 +8,6 @@
  *******************************************************************************/
 package org.protelis.vm.util;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
@@ -17,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * Stack implementation used by the Protelis VM for tracking local variable
  * values during execution.
  */
-public interface Stack extends Serializable {
+public interface Stack {
 
     /**
      * Enter a new nested lexical scope.

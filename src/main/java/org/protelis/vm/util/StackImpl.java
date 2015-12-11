@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
  */
 public class StackImpl implements Stack {
 
-    private static final long serialVersionUID = -7123279550264674313L;
     private final Deque<Map<EObject, Object>> stack = new LinkedList<>();
 
     /**
