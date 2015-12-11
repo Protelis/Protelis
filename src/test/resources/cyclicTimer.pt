@@ -10,12 +10,12 @@ public def T(initial, zero, decay) {
 	}
 }
 
-public def cyclicTimer(length, dec) {
+public def cyclicTimer(length, decay) {
 	rep(left <- length) {
 		if(left == 0) {
 			length
 		} else {
-			T(length - 1, 0, (t) -> {t - dec})
+			T(length - 1, 0, (t) -> {t - decay})
 		}
 	} == length
 }
