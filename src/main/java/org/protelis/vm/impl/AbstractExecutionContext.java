@@ -17,7 +17,6 @@ import java.util.function.Function;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
-import org.danilopianini.lang.util.FasterString;
 import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;

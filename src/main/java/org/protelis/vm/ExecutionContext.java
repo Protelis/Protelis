@@ -11,16 +11,15 @@
  */
 package org.protelis.vm;
 
-import org.danilopianini.lang.util.FasterString;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import org.eclipse.emf.ecore.EObject;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.vm.util.CodePath;
-
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Interface between a ProtelisVM and environment in which it is executing. The

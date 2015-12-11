@@ -11,7 +11,6 @@ package org.protelis.vm.util;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.danilopianini.lang.util.FasterString;
 import org.eclipse.emf.ecore.EObject;
 
 /**
