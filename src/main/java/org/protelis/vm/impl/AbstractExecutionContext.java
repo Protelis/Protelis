@@ -10,6 +10,7 @@ package org.protelis.vm.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -17,10 +18,10 @@ import java.util.function.Function;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
-import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
@@ -47,7 +48,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final TByteList callStack = new TByteArrayList();
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
-    private Map<FasterString, ?> functions;
+    private Map<Reference, ?> functions;
     private Stack gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Object> toSend;
@@ -69,7 +70,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final void setAvailableFunctions(final Map<FasterString, FunctionDefinition> knownFunctions) {
+    public final void setAvailableFunctions(final Map<Reference, FunctionDefinition> knownFunctions) {
         functions = Collections.unmodifiableMap(knownFunctions);
     }
 
@@ -98,7 +99,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         callStack.add((byte) 1);
         env.setup();
         toSend = MAPMAKER.makeMap();
-        gamma = new StackImpl(new HashMap<>(functions));
+        gamma = new StackImpl(new LinkedHashMap<>(functions));
         theta = Collections.unmodifiableMap(nm.getNeighborState());
     }
 
@@ -117,12 +118,12 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final void putVariable(final FasterString name, final Object value, final boolean canShadow) {
+    public final void putVariable(final Reference name, final Object value, final boolean canShadow) {
         gamma.put(name, value, canShadow);
     }
 
     @Override
-    public final void putMultipleVariables(final Map<FasterString, ?> map) {
+    public final void putMultipleVariables(final Map<Reference, ?> map) {
         gamma.putAll(map);
     }
 
@@ -180,7 +181,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final Object getVariable(final FasterString name) {
+    public final Object getVariable(final Reference name) {
         return gamma.get(name);
     }
 
@@ -199,7 +200,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * 
      * @return Map from function name to function objects
      */
-    protected final Map<FasterString, ?> getFunctions() {
+    protected final Map<Reference, ?> getFunctions() {
         return functions;
     }
 

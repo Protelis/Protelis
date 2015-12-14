@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.danilopianini.lang.util.FasterString;
+import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -17,23 +17,15 @@ import org.protelis.vm.ExecutionContext;
 public class Variable extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -3739014755916345132L;
-    private final FasterString name;
+    private final Reference name;
 
     /**
-     * @param varName
+     * @param ref
      *            variable name
      */
-    public Variable(final FasterString varName) {
+    public Variable(final Reference ref) {
         super();
-        name = varName;
-    }
-
-    /**
-     * @param varName
-     *            variable name
-     */
-    public Variable(final String varName) {
-        this(new FasterString(varName));
+        name = ref;
     }
 
     @Override

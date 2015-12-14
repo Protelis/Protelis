@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Locale;
 
+import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.HoodOp;
@@ -35,6 +36,7 @@ public class HoodCall extends AbstractAnnotatedTree<Object> {
      */
     public HoodCall(final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
         super(arg);
+        LangUtils.requireNonNull(func);
         body = arg;
         function = func;
         inclusive = includeSelf;

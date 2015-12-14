@@ -1,0 +1,12 @@
+/*
+ * EXPECTED_RESULT: 1
+ */
+public def called(fun, arg) {
+	fun.apply(arg)
+}
+
+public def caller(arg) {
+	called((t) -> {t + arg}, 0)
+}
+
+caller(1)

@@ -8,11 +8,11 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.danilopianini.lang.util.FasterString;
-import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.vm.ExecutionContext;
-
 import java.util.List;
+
+import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.util.Reference;
+import org.protelis.vm.ExecutionContext;
 
 /**
  * "Repeat" state variable.
@@ -24,7 +24,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
     private static final long serialVersionUID = 8643287734245198408L;
     private static final byte W_BRANCH = 0;
     private static final byte A_BRANCH = 1;
-    private final FasterString xName;
+    private final Reference xName;
 
     /**
      * @param varName
@@ -34,7 +34,7 @@ public class RepCall<T> extends AbstractSATree<T, T> {
      * @param body
      *            body
      */
-    public RepCall(final FasterString varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
+    public RepCall(final Reference varName, final AnnotatedTree<?> w, final AnnotatedTree<?> body) {
         super(w, body);
         xName = varName;
     }

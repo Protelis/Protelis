@@ -8,23 +8,23 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.danilopianini.lang.util.FasterString;
-import org.protelis.lang.datatype.DeviceUID;
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.datatype.Tuple;
-import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.vm.ExecutionContext;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
+import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.util.Reference;
+import org.protelis.vm.ExecutionContext;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
@@ -37,7 +37,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
     private static final String APPLY = "apply";
     private static final byte FILTER_POS = -1;
     private static final byte RUN_POS = -2;
-    private static final FasterString CURFIELD = new FasterString("^CURFIELD^");
+    private static final Reference CURFIELD = new Reference(new Object());
     private final AnnotatedTree<Field> fgen;
     private final AnnotatedTree<FunctionDefinition> filterOp;
     private final AnnotatedTree<FunctionDefinition> runOp;
@@ -128,9 +128,9 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
          */
         Map<Object, Pair<DotOperator, DotOperator>> funmap = getSuperscript();
         if (funmap == null) {
-            funmap = new HashMap<>();
+            funmap = new LinkedHashMap<>();
         }
-        final Map<Object, Pair<DotOperator, DotOperator>> newFunmap = new HashMap<>(funmap.size());
+        final Map<Object, Pair<DotOperator, DotOperator>> newFunmap = new LinkedHashMap<>(funmap.size());
         setSuperscript(newFunmap);
         final List<Tuple> resl = new ArrayList<>(fieldKeys.size());
         for (final Entry<Object, Field> kf : fieldKeys.entrySet()) {
