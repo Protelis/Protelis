@@ -52,6 +52,8 @@ configurations {
 
 dependencies {
 
+
+    compile "commons-codec:commons-codec:$commonsCodecVersion"
     compile "commons-io:commons-io:$commonsIOVersion"
     compile "org.apache.commons:commons-math3:$math3Version"
     compile "net.sf.trove4j:trove4j:$trove4jVersion"
