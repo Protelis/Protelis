@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.protelis.lang.datatype.FunctionDefinition;
@@ -58,10 +59,11 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
 
     private DotOperator(final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         super(args);
+        Objects.requireNonNull(target);
         isApply = apply;
         assert isApply || name != null;
         methodName = apply ? APPLY : name;
-        left = target == null ? new Constant<>(null) : target;
+        left = target;
     }
 
     @Override
