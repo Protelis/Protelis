@@ -110,7 +110,7 @@ public class FunctionDefinition implements Serializable {
      * @return argument internal name
      */
     public Reference getArgumentByPosition(final int i) {
-        assert i > 0;
+        assert i >= 0;
         assert i < args.size();
         return args.get(i);
     }
