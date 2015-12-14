@@ -95,6 +95,7 @@ task aggregateJavadoc(type: Javadoc) {
     include '**/*.java'
     destinationDir file("$project.buildDir/docs/javadoc/")
     failOnError = false
+    options.charSet = 'UTF-8'
     options.showAll()
     options.addBooleanOption('nopackagediagram', true)
 	options.addStringOption('Xdoclint:none', '-quiet')
