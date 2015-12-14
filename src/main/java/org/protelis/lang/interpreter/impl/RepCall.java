@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.List;
 
+import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
@@ -59,6 +60,9 @@ public class RepCall<T> extends AbstractSATree<T, T> {
              */
             final AnnotatedTree<?> w = getBranch(W_BRANCH);
             w.evalInNewStackFrame(context, W_BRANCH);
+            @SuppressWarnings("unchecked")
+            final T init = (T) w.getAnnotation();
+            checkForFields(init);
             context.putVariable(xName, w.getAnnotation(), true);
         } else {
             context.putVariable(xName, getSuperscript(), true);
@@ -67,8 +71,16 @@ public class RepCall<T> extends AbstractSATree<T, T> {
         body.evalInNewStackFrame(context, A_BRANCH);
         @SuppressWarnings("unchecked")
         final T result = (T) body.getAnnotation();
+        checkForFields(result);
         setAnnotation(result);
         setSuperscript(result);
+    }
+
+    private static void checkForFields(final Object o) {
+        assert o != null;
+        if (o instanceof Field) {
+            throw new IllegalStateException("Rep can not get annotated with fields.");
+        }
     }
 
     @Override
