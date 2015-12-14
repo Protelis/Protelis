@@ -30,6 +30,8 @@ task wrapper(type: Wrapper) {
 
 // General configuration
 
+compileJava.options.encoding = 'UTF-8'
+
 jar {
     manifest {
         attributes 'Implementation-Title': artifactId, 'Implementation-Version': version
