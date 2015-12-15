@@ -69,13 +69,17 @@ public class GenericHoodCall extends AbstractAnnotatedTree<Object> {
             final boolean includeSelf,
             final JvmOperation fun,
             final AnnotatedTree<?> nullResult,
-            final AnnotatedTree<Field> arg) throws ClassNotFoundException {
+            final AnnotatedTree<Field> arg) {
         super(nullResult, arg);
         body = arg;
         empty = nullResult;
         inclusive = includeSelf;
         methodName = fun.getSimpleName();
-        clazz = Class.forName(fun.getDeclaringType().getQualifiedName());
+        try {
+            clazz = Class.forName(fun.getDeclaringType().getQualifiedName());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
         function = null;
     }
 

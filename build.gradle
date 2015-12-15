@@ -30,6 +30,8 @@ task wrapper(type: Wrapper) {
 
 // General configuration
 
+compileJava.options.encoding = 'UTF-8'
+
 jar {
     manifest {
         attributes 'Implementation-Title': artifactId, 'Implementation-Version': version
@@ -52,6 +54,8 @@ configurations {
 
 dependencies {
 
+
+    compile "commons-codec:commons-codec:$commonsCodecVersion"
     compile "commons-io:commons-io:$commonsIOVersion"
     compile "org.apache.commons:commons-math3:$math3Version"
     compile "net.sf.trove4j:trove4j:$trove4jVersion"
@@ -91,6 +95,8 @@ task aggregateJavadoc(type: Javadoc) {
     include '**/*.java'
     destinationDir file("$project.buildDir/docs/javadoc/")
     failOnError = false
+    options.charSet = 'UTF-8'
+    options.encoding = 'UTF-8'
     options.showAll()
     options.addBooleanOption('nopackagediagram', true)
 	options.addStringOption('Xdoclint:none', '-quiet')

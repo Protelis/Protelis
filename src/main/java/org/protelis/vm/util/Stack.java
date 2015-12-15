@@ -8,16 +8,15 @@
  *******************************************************************************/
 package org.protelis.vm.util;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.danilopianini.lang.util.FasterString;
+import org.protelis.lang.util.Reference;
 
 /**
  * Stack implementation used by the Protelis VM for tracking local variable
  * values during execution.
  */
-public interface Stack extends Serializable {
+public interface Stack {
 
     /**
      * Enter a new nested lexical scope.
@@ -43,7 +42,7 @@ public interface Stack extends Serializable {
      *            is always overwritten.
      * @return Value overwritten, or null if no value is overwritten
      */
-    Object put(FasterString var, Object val, boolean canShadow);
+    Object put(Reference var, Object val, boolean canShadow);
 
     /**
      * Bind a collection of variable/value pairs into the current lexical scope,
@@ -52,7 +51,7 @@ public interface Stack extends Serializable {
      * @param map
      *            Collection of variable/value pairs to be bound
      */
-    void putAll(Map<FasterString, ? extends Object> map);
+    void putAll(Map<Reference, ? extends Object> map);
 
     /**
      * Look up a variable in the stack.
@@ -62,6 +61,6 @@ public interface Stack extends Serializable {
      * @return Value of the variable in the innermost lexical scope where it
      *         exists, if bound; otherwise null.
      */
-    Object get(FasterString var);
+    Object get(Reference var);
 
 }
