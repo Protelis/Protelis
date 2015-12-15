@@ -102,6 +102,8 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Main entry-point class for loading/parsing Protelis programs.
  */
@@ -343,6 +345,7 @@ public final class ProtelisLoader {
                 .orElse(Collections.emptyList());
     }
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This enum is not meant to get Serialized")
     private enum Dispatch {
         ALIGNED_MAP((e, m) -> {
             final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
