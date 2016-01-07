@@ -255,7 +255,7 @@ public final class ProtelisLoader {
         try {
             r.load(in, xrs.getLoadOptions());
         } catch (IOException e) {
-            L.error("I/O error while reading in RAM: this must be tough.", e);
+            throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
         }
         return r;
     }
