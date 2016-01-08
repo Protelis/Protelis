@@ -157,6 +157,7 @@ public final class ProtelisLoader {
             }
             return parseURI(program);
         } catch (IOException e) {
+            L.debug("{} is not a URI that points to a resolvable resource, nor is classpath:/{}.pt", program, program);
             return parseAnonymousModule(program);
         }
     }
@@ -255,7 +256,7 @@ public final class ProtelisLoader {
         try {
             r.load(in, xrs.getLoadOptions());
         } catch (IOException e) {
-            L.error("I/O error while reading in RAM: this must be tough.", e);
+            throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
         }
         return r;
     }

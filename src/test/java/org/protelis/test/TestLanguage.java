@@ -319,6 +319,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test the ability to load a module by name.
+     */
+    @Test
+    public void testLoadModule01() {
+        assertNotNull(ProtelisLoader.parse("loadmodule01"));
+    }
+
+    /**
      * Test constants: -Infinity.
      */
     @Test
