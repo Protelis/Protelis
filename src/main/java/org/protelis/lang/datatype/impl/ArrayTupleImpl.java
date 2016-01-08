@@ -285,7 +285,7 @@ public class ArrayTupleImpl implements Tuple {
                 return fc.getAnnotation();
             }).orElse(defVal);
         }
-        throw new IllegalArgumentException("Reducing Function must take two parameters.");
+        throw new IllegalArgumentException("Reducing function must take two parameters.");
     }
 
     @Override
@@ -305,7 +305,7 @@ public class ArrayTupleImpl implements Tuple {
                         return fc.getAnnotation();
                     }).toArray());
         }
-        throw new IllegalArgumentException("Mapping Function must take one parameter.");
+        throw new IllegalArgumentException("Mapping function must take one parameter.");
     }
 
     @Override
@@ -329,7 +329,7 @@ public class ArrayTupleImpl implements Tuple {
                 }
             }).map(AnnotatedTree::getAnnotation).toArray());
         }
-        throw new IllegalArgumentException("Mapping Function must take one parameter.");
+        throw new IllegalArgumentException("Filtering function must take one parameter.");
     }
 
     @Override
