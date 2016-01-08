@@ -157,6 +157,7 @@ public final class ProtelisLoader {
             }
             return parseURI(program);
         } catch (IOException e) {
+            L.debug("{} is not a URI that points to a resolvable resource, nor is classpath:/{}.pt", program, program);
             return parseAnonymousModule(program);
         }
     }
