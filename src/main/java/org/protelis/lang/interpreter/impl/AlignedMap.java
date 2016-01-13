@@ -150,12 +150,12 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
             final List<AnnotatedTree<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(key));
             args.add(new Variable(CURFIELD));
-            context.putVariable(CURFIELD, value, true);
+            restricted.putVariable(CURFIELD, value, true);
             /*
              * Compute the code path: align on keys
              */
             final byte[] hash = FileUtilities.serializeObject((Serializable) key);
-            context.newCallStackFrame(hash);
+            restricted.newCallStackFrame(hash);
             /*
              * Compute functions if needed
              */
@@ -167,19 +167,19 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
              * Run the actual filtering and operation
              */
             final DotOperator fop = funs.getFirst();
-            context.newCallStackFrame(FILTER_POS);
+            restricted.newCallStackFrame(FILTER_POS);
             fop.eval(restricted);
-            context.returnFromCallFrame();
+            restricted.returnFromCallFrame();
             final Object cond = fop.getAnnotation();
             if (cond instanceof Boolean) {
                 if ((Boolean) cond) {
                     /*
                      * Filter passed, run operation.
                      */
-                    context.newCallStackFrame(RUN_POS);
+                    restricted.newCallStackFrame(RUN_POS);
                     final DotOperator rop = funs.getSecond();
                     rop.eval(restricted);
-                    context.returnFromCallFrame();
+                    restricted.returnFromCallFrame();
                     resl.add(Tuple.create(key, rop.getAnnotation()));
                     /*
                      * If both the key exists and the filter passes, save the
@@ -190,7 +190,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
             } else {
                 throw new IllegalStateException("Filter must return a Boolean, got " + cond.getClass());
             }
-            context.returnFromCallFrame();
+            restricted.returnFromCallFrame();
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
         setAnnotation(Tuple.create(resl));
