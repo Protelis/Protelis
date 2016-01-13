@@ -148,6 +148,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.theta = restricted;
         restrictedInstance.gamma = gamma;
         restrictedInstance.toSend = toSend;
+        restrictedInstance.callStack.addAll(callStack);
         return restrictedInstance;
     }
 
