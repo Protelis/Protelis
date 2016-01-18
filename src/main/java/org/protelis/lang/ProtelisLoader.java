@@ -451,7 +451,7 @@ public final class ProtelisLoader {
 
         @SuppressWarnings("unchecked")
         public static <T> AnnotatedTree<T> translate(final EObject o, final Map<Reference, FunctionDefinition> functions) {
-            return Arrays.stream(values())
+            final Optional<AnnotatedTree<T>> result = Arrays.stream(values())
                 .map(dispatch -> {
                     try {
                         return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));
@@ -461,8 +461,11 @@ public final class ProtelisLoader {
                 })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .findAny()
-                .get();
+                .findFirst();
+            if (result.isPresent()) {
+                return result.get();
+            }
+            throw new IllegalStateException(o + " could not be mapped to a Protelis interpreter entity.");
         }
 
     }
