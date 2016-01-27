@@ -221,15 +221,11 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the execution context
      */
     protected final void projectAndEval(final ExecutionContext context) {
-        forEachWithIndex(evalOp(context));
-    }
-
-    private static BiConsumer<Integer, ? super AnnotatedTree<?>> evalOp(final ExecutionContext context) {
-        return (i, branch) -> {
+        forEachWithIndex((i, branch) -> {
             context.newCallStackFrame(i.byteValue());
             branch.eval(context);
             context.returnFromCallFrame();
-        };
+        });
     }
 
     /**
