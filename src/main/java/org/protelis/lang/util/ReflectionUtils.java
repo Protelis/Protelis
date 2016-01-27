@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
@@ -145,11 +146,16 @@ public final class ReflectionUtils {
                     boolean compatible = true;
                     for (int i = 0; compatible && i < argClass.length; i++) {
                         final Class<?> expected = params[i];
-                        if (expected.isAssignableFrom(argClass[i])) {
+                        final Class<?> actual = argClass[i];
+                        if (expected.isAssignableFrom(actual)) {
                             /*
                              * No downcast required, there is compatibility
                              */
-                            p++;
+                            p += 3;
+                        } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
+                            p += computePointsForWrapper(expected, actual);
+                        } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
+                            p += computePointsForWrapper(actual, expected);
                         } else if (!PrimitiveUtils.classIsNumber(expected)) {
                             compatible = false;
                         }
@@ -170,6 +176,17 @@ public final class ReflectionUtils {
         }
         final String argType = Arrays.stream(argClass).collect(Collectors.toList()).toString();
         throw new NoSuchMethodError(methodName + "/" + argClass.length + argType + " does not exist in " + clazz + ".");
+    }
+
+    private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
+        final Class<?> wrapped = ClassUtils.primitiveToWrapper(primitive);
+        if (wrapped.equals(wrapper)) {
+            return 2;
+        }
+        if (wrapped.isAssignableFrom(wrapper)) {
+            return 1;
+        }
+        return 0;
     }
 
     /**
