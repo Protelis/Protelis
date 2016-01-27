@@ -182,7 +182,10 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void forEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
-        indexStream().forEachOrdered(i -> action.accept(i, getBranch(i)));
+        for (int i = 0; i < getBranchesNumber(); i++) {
+            action.accept(i, getBranch(i));
+        }
+//        indexStream().forEachOrdered(i -> action.accept(i, getBranch(i)));
     }
 
     /**
