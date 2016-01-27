@@ -172,7 +172,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void forEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.stream().forEach(action);
+        branches.forEach(action);
     }
 
     /**
