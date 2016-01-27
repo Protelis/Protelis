@@ -144,7 +144,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      * @return the current branches annotations
      */
     protected final Object[] getBranchesAnnotations() {
-        return branches.parallelStream().map(AnnotatedTree::getAnnotation).toArray();
+        final Object[] annotations = branches.toArray();
+        for (int i = 0; i < annotations.length; i++) {
+            annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
+        }
+        return annotations;
+//        return branches.parallelStream().map(AnnotatedTree::getAnnotation).toArray();
     }
 
     /**
