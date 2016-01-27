@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
@@ -142,20 +141,10 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * @return returns a stream containing the branches' annotations
+     * @return the current branches annotations
      */
-    protected Stream<?> getBranchesAnnotationStream() {
-        /*
-         * TODO: as soon as Javac fixes its terrible bug, switch this to:
-         * 
-         * return branches.stream().map(AnnotatedTree::getAnnotation);
-         */
-        final List<Object> res = new ArrayList<>(branches.size());
-        for (final AnnotatedTree<?> o : branches) {
-            res.add(o.getAnnotation());
-        }
-        return res.stream();
-        // return branches.stream().map(AnnotatedTree::getAnnotation);
+    protected final Object[] getBranchesAnnotations() {
+        return branches.parallelStream().map(AnnotatedTree::getAnnotation).toArray();
     }
 
     /**

@@ -112,8 +112,8 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
         projectAndEval(context);
         // Obtain target and arguments
         final Object target = ztatic ? null : getBranch(0).getAnnotation();
-        final Stream<?> s = getBranchesAnnotationStream();
-        final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
+        final Object[] s = getBranchesAnnotations();
+        final Object[] args = ztatic ? s : Arrays.copyOfRange(s, 1, s.length);
         setAnnotation(method == null
                 ? ReflectionUtils.invokeFieldable(clazz, methodName, target, args)
                 : ReflectionUtils.invokeFieldable(method, target, args));

@@ -10,7 +10,6 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -108,8 +107,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
             /*
              * Check everything for fields
              */
-            final Stream<?> argsstr = getBranchesAnnotationStream();
-            final Object[] args = argsstr.toArray();
+            final Object[] args = getBranchesAnnotations();
             setAnnotation(ReflectionUtils.invokeFieldable(target.getClass(), methodName, target, args));
         }
     }
