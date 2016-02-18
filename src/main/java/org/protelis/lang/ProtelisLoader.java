@@ -422,7 +422,7 @@ public final class ProtelisLoader {
             final AnnotatedTree<?> body = translate(l.getBody(), m);
             final String base = Base64.encodeBase64String(
                     Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
-            final FunctionDefinition lambda = new FunctionDefinition("λ" + base, toR(args));
+            final FunctionDefinition lambda = new FunctionDefinition("��" + base, toR(args));
             lambda.setBody(body);
             return new Constant<>(lambda);
         }),
@@ -455,6 +455,8 @@ public final class ProtelisLoader {
                 .map(dispatch -> {
                     try {
                         return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalArgumentException(e);
                     } catch (RuntimeException e) {
                         return Optional.<AnnotatedTree<T>>empty();
                     }
