@@ -10,7 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import java8.util.stream.Stream;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;

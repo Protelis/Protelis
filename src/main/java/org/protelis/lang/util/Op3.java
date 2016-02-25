@@ -12,6 +12,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
 import java.util.Arrays;
+import java8.util.J8Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +26,7 @@ import org.protelis.lang.datatype.Field;
 public enum Op3 {
 
     /**
-     * Functional mux.
+     * Functional mux.s
      */
     MUX("mux", Op3::mux);
 
@@ -78,7 +79,7 @@ public enum Op3 {
     public static Op3 getOp(final String name) {
         Op3 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;

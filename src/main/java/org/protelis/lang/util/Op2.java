@@ -11,6 +11,7 @@ package org.protelis.lang.util;
 import static org.protelis.lang.util.OpUtils.unsupported;
 
 import java.util.Arrays;
+import java8.util.J8Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java8.util.function.BiFunction;
@@ -118,7 +119,7 @@ public enum Op2 {
     public static Op2 getOp(final String name) {
         Op2 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;

@@ -13,19 +13,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java8.util.function.BiConsumer;
+import java8.util.function.Consumer;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;
+import java8.util.stream.Stream;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
+import static java8.util.stream.StreamSupport.stream;
+import static java8.util.stream.StreamSupport.parallelStream;;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -158,7 +158,8 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         for (final AnnotatedTree<?> o : branches) {
             res.add(o.getAnnotation());
         }
-        return  res.stream();
+        return stream(res);
+        
         // return branches.stream().map(AnnotatedTree::getAnnotation);
     }
 
@@ -176,7 +177,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void forEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.stream().forEach(action);
+        stream(branches).forEach(action);
     }
 
     /**
@@ -198,7 +199,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void parallelForEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.parallelStream().forEach(action);
+        parallelStream(branches).forEach(action);
     }
 
     /**
@@ -214,7 +215,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     private IntStream indexStream() {
-        return IntStream.range(0, getBranchesNumber());
+        return IntStreams.range(0, getBranchesNumber());
     }
 
     /**

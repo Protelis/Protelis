@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java8.util.function.UnaryOperator;
+import java8.util.J8Arrays;
 
 import org.protelis.lang.datatype.Field;
 
@@ -68,7 +69,7 @@ public enum Op1 {
     public static Op1 getOp(final String name) {
         Op1 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;
