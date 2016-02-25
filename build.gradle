@@ -69,6 +69,7 @@ dependencies {
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
 	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+	compile "net.sourceforge.streamsupport:streamsupport-flow:$streamVersion"
 	
     testCompile "junit:junit:$junitVersion"
 
