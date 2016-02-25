@@ -12,9 +12,19 @@ buildscript {
     }
     dependencies {
         classpath 'org.danilopianini:smartrrr:[0, 1['
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     }
 }
 apply plugin: 'org.danilopianini.smartrrr'
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+  jdk System.getenv("JAVA8_HOME")
+  oldJdk System.getenv("JAVA7_HOME")
+  javaVersion JavaVersion.VERSION_1_7
+  defaultMethods true
+  incremental true
+}
 
 substitutions {
 	substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
