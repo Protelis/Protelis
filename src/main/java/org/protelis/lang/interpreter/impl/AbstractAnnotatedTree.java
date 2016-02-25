@@ -17,11 +17,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
+
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -154,7 +158,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         for (final AnnotatedTree<?> o : branches) {
             res.add(o.getAnnotation());
         }
-        return res.stream();
+        return  res.stream();
         // return branches.stream().map(AnnotatedTree::getAnnotation);
     }
 

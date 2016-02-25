@@ -11,6 +11,7 @@ package org.protelis.lang.datatype.impl;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java8.util.Maps;
 
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DeviceUID;

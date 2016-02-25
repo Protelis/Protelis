@@ -16,10 +16,8 @@ import static org.apache.commons.math3.util.Pair.create;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+import java8.util.*;
+import java8.util.function.*;
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -151,7 +149,7 @@ public enum HoodOp {
      * @return the corresponding {@link HoodOp}
      */
     public static HoodOp get(final String reducer) {
-        return Arrays.stream(values()).filter(ho -> ho.name().equalsIgnoreCase(reducer)).findFirst().orElse(null);
+        return J8Arrays.stream(values()).filter(ho -> ho.name().equalsIgnoreCase(reducer)).findFirst().orElse(null);
     }
 
     /**

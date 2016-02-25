@@ -247,7 +247,7 @@ public class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple unwrap(final int i) {
-        return Tuple.create(Arrays.stream(arrayContents).map((o) -> {
+        return Tuple.create(J8Arrays.stream(arrayContents).map((o) -> {
             if (o instanceof Tuple) {
                 return ((Tuple) o).get(i);
             }
@@ -280,7 +280,7 @@ public class ArrayTupleImpl implements Tuple {
     public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 2) {
-            return Arrays.stream(arrayContents).reduce((first, second) -> {
+            return J8Arrays.stream(arrayContents).reduce((first, second) -> {
                 final FunctionCall fc = new FunctionCall(fun,
                         Lists.newArrayList(new Constant<>(first), new Constant<>(second)));
                 fc.eval(ctx);
@@ -299,7 +299,7 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getArgNumber() == 1) {
-            return Tuple.create(Arrays.stream(arrayContents)
+            return Tuple.create(J8Arrays.stream(arrayContents)
                     .map(Constant<Object>::new)
                     .map(elem -> {
                         final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
@@ -320,7 +320,7 @@ public class ArrayTupleImpl implements Tuple {
     public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 1) {
-            return Tuple.create(Arrays.stream(arrayContents).map(Constant<Object>::new).filter(elem -> {
+            return Tuple.create(J8Arrays.stream(arrayContents).map(Constant<Object>::new).filter(elem -> {
                 final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
                 fc.eval(ctx);
                 final Object outcome = fc.getAnnotation();
