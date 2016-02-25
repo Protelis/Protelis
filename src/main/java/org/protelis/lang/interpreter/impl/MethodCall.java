@@ -87,7 +87,8 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
             throw new IllegalArgumentException(clazz + "." + methodName + " expects " + parameterCount + "arguments."
                     + getBranches() + "was provided instead.");
         }
-        final List<Method> matches = methods.filter(m -> m.getParameterCount() == parameterCount)
+        //OLD m.getParameterCount()
+        final List<Method> matches = methods.filter(m -> m.getParameterTypes().length == parameterCount)
                 .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
         /*
          * Same name

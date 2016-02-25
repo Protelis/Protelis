@@ -11,7 +11,6 @@ package org.protelis.lang.util;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
-import java.util.Arrays;
 import java8.util.J8Arrays;
 import java.util.Map;
 import java.util.Optional;

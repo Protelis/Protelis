@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java8.util.Maps;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -35,6 +36,8 @@ import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
+
+import static java8.util.stream.StreamSupport.stream;
 
 /**
  * Partial implementation of ExecutionContext, containing functionality expected
@@ -162,13 +165,13 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
          * If there is a request to build a field, then it means this is a
          * nbr-like operation
          */
-        if (toSend.putIfAbsent(codePath, localValue) != null) {
+        if (Maps.putIfAbsent(toSend,codePath, localValue) != null) {
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path."
                     + "This is probably a bug in Protelis");
         }
         final Field res = Field.create(theta.size() + 1);
-        theta.entrySet().stream()
+        stream(theta.entrySet())
                 .map(e -> new Pair<>(e.getKey(), e.getValue().get(codePath)))
                 .filter(e -> e.getValue() != null)
                 /*

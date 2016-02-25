@@ -17,7 +17,8 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -478,7 +479,7 @@ public class TestLanguage {
      */
     @Test
     public void testRep01() {
-        testFileWithMultipleRuns("/rep01.pt", IntStream.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
+        testFileWithMultipleRuns("/rep01.pt", IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
     }
 
     /**
@@ -649,11 +650,11 @@ public class TestLanguage {
     }
 
     private static void testFileWithMultipleRuns(final String file, final int min, final int max) {
-        testFileWithMultipleRuns(file, IntStream.rangeClosed(min, max));
+        testFileWithMultipleRuns(file, IntStreams.rangeClosed(min, max));
     }
 
     private static void testFileWithMultipleRuns(final String file, final IntStream stream) {
-        stream.parallel().forEach(i -> {
+        stream.forEach(i -> {
             testFile(file, i);
         });
     }

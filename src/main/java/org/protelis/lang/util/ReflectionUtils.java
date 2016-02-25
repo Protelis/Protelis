@@ -113,7 +113,7 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
-        final List<Class<?>> argClass = Arrays.asList(args.stream()
+        final List<Class<?>> argClass = Arrays.asList(stream(args)
                 .map(Object::getClass)
                 .toArray(length -> new Class<?>[length]));
         try {
@@ -143,7 +143,8 @@ public final class ReflectionUtils {
             final Method[] candidates = clazz.getMethods();
             final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
             for (final Method m : candidates) {
-                if (m.getParameterCount() == argClass.length && methodName.equals(m.getName())) {
+            	//OLD m.getParameterCount()
+                if (m.getParameterTypes().length == argClass.length && methodName.equals(m.getName())) {
                     final Class<?>[] params = m.getParameterTypes();
                     int p = 0;
                     boolean compatible = true;

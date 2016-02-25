@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 
 import org.junit.Test;
 import org.protelis.vm.util.CodePath;
@@ -30,8 +30,8 @@ public class TestCodePath {
         final CodePath underTest = new CodePath(new TByteArrayList(input));
         final long[] res = underTest.asLongArray();
         for (int i = 0; i < input.length; i++) {
-            final int lidx = i / Long.BYTES;
-            final int midx = i % Long.BYTES;
+            final int lidx = i / (Long.SIZE/Byte.SIZE);
+            final int midx = i % (Long.SIZE/Byte.SIZE);
             assertEquals((byte) ((res[lidx] & MASKS[midx]) >>> (midx * 8)), input[i]);
         }
     }
@@ -42,7 +42,7 @@ public class TestCodePath {
     @Test
     public void test() {
         final Random rnd = new Random(0);
-        IntStream.range(0, 1000).forEach(i -> {
+        IntStreams.range(0, 1000).forEach(i -> {
             final byte[] test = new byte[i];
             for (int j = 0; j < test.length; j++) {
                 test[j] = (byte) rnd.nextInt();

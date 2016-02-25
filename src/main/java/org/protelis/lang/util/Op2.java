@@ -10,7 +10,6 @@ package org.protelis.lang.util;
 
 import static org.protelis.lang.util.OpUtils.unsupported;
 
-import java.util.Arrays;
 import java8.util.J8Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

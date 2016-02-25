@@ -14,7 +14,7 @@ package org.protelis.vm.impl;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java8.util.Optional;
 
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
