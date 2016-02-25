@@ -13,8 +13,8 @@ import static org.protelis.lang.util.OpUtils.unsupported;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
+import java8.util.function.BiFunction;
+import java8.util.function.BinaryOperator;
 
 import org.apache.commons.math3.util.FastMath;
 import org.protelis.lang.datatype.Field;

@@ -9,8 +9,8 @@
 package org.protelis.lang.datatype.impl;
 
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.BinaryOperator;
+import java8.util.Optional;
+import java8.util.function.*;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.HashUtils;

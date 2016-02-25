@@ -12,12 +12,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java8.util.J8Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java8.util.Maps;
 import java.util.Objects;
 import java8.util.Optional;
 import java.util.Set;
@@ -326,7 +328,7 @@ public final class ProtelisLoader {
          */
         final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
                 .collect(Collectors.toMap(ProtelisLoader::toR, nameToFun::get));
-        nameToFun.forEach((fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), refToFun)));
+        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), refToFun)));
         /*
          * Create the main program
          */
@@ -457,7 +459,7 @@ public final class ProtelisLoader {
 
         @SuppressWarnings("unchecked")
         public static <T> AnnotatedTree<T> translate(final EObject o, final Map<Reference, FunctionDefinition> functions) {
-            return Arrays.stream(values())
+            return J8Arrays.stream(values())
                 .map(dispatch -> {
                     try {
                         return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));

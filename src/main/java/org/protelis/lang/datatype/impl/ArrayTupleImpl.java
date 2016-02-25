@@ -9,12 +9,14 @@
 package org.protelis.lang.datatype.impl;
 
 import java.util.Arrays;
+import java8.util.*;
+import java8.util.function.BinaryOperator;
+import java8.util.function.Function;
+import java8.util.function.Predicate;
+
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.danilopianini.lang.HashUtils;
@@ -291,7 +293,7 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
         LangUtils.requireNonNull(defVal, fun);
-        return Arrays.stream(arrayContents).reduce(fun).orElse(defVal);
+        return J8Arrays.stream(arrayContents).reduce(fun).orElse(defVal);
     }
 
     @Override
@@ -311,7 +313,7 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final Function<Object, Object> fun) {
         Objects.requireNonNull(fun);
-        return Tuple.create(Arrays.stream(arrayContents).map(fun).toArray());
+        return Tuple.create(J8Arrays.stream(arrayContents).map(fun).toArray());
     }
 
     @Override
@@ -335,7 +337,7 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple filter(final Predicate<Object> fun) {
         Objects.requireNonNull(fun);
-        return Tuple.create(Arrays.stream(arrayContents).filter(fun).toArray());
+        return Tuple.create(J8Arrays.stream(arrayContents).filter(fun).toArray());
     }
 
     @Override

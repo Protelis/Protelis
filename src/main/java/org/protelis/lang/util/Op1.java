@@ -13,7 +13,7 @@ import static org.protelis.lang.util.OpUtils.unsupported;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.UnaryOperator;
+import java8.util.function.UnaryOperator;
 
 import org.protelis.lang.datatype.Field;
 

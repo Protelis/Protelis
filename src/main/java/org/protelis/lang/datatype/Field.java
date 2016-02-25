@@ -10,11 +10,8 @@ package org.protelis.lang.datatype;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
+import java8.util.function.*;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.impl.FieldMapImpl;

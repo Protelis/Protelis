@@ -10,9 +10,7 @@ package org.protelis.lang.datatype;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java8.util.function.*;
 
 import org.protelis.lang.datatype.impl.ArrayTupleImpl;
 import org.protelis.vm.ExecutionContext;
