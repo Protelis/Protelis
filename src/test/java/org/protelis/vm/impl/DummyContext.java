@@ -9,11 +9,12 @@
 package org.protelis.vm.impl;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
+
+import java8.util.stream.IntStreams;
 
 /**
  * A dummy Protelis VM to be used for testing.
@@ -69,7 +70,7 @@ public final class DummyContext extends AbstractExecutionContext {
      */
     public static Field makeTestField() {
         final Field res = DatatypeFactory.createField(100);
-        IntStream.range(0, 100).forEach(n -> res.addSample(
+        IntStreams.range(0, 100).forEach(n -> res.addSample(
                 new DeviceUID() {
                     private static final long serialVersionUID = 1L;
                 }, (double) n));
