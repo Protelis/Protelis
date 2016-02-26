@@ -18,6 +18,7 @@ import java8.util.function.BinaryOperator;
 
 import org.apache.commons.math3.util.FastMath;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +99,7 @@ public enum Op2 {
         final boolean bfield = b instanceof Field;
         final int[] fields = afield && bfield ? BOTH : afield ? LEFT : bfield ? RIGHT : NONE;
         if (fields.length > 0) {
-            return Field.apply(fun, fields, a, b);
+            return Fields.apply(fun, fields, a, b);
         }
         return fun.apply(a, b);
     }

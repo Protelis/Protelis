@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 
 /**
  * Collection of functions and helper methods for ternary syntactic operators.
@@ -25,7 +26,7 @@ import org.protelis.lang.datatype.Field;
 public enum Op3 {
 
     /**
-     * Functional mux.s
+     * Functional mux.
      */
     MUX("mux", Op3::mux);
 
@@ -60,7 +61,7 @@ public enum Op3 {
             }
         }
         if (idx.isPresent()) {
-            return Field.apply(fun, idx.get().toArray(), a, b, c);
+            return Fields.apply(fun, idx.get().toArray(), a, b, c);
         }
         return fun.apply(a, b, c);
     }

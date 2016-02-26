@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 
@@ -61,7 +62,7 @@ public class CreateTuple extends AbstractAnnotatedTree<Object> {
         if (fieldIndexes.isEmpty()) {
             setAnnotation(DatatypeFactory.createTuple(a));
         } else {
-            final Field res = Field.apply(DatatypeFactory::createTuple, fieldIndexes.toArray(), a);
+            final Field res = Fields.apply(DatatypeFactory::createTuple, fieldIndexes.toArray(), a);
             setAnnotation(res);
         }
     }

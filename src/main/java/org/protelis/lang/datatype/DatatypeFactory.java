@@ -33,19 +33,6 @@ public final class DatatypeFactory {
     }
 
     /**
-     * Create a Tuple with all elements initialized to the same value.
-     * 
-     * @param value
-     *            Value to which all elements will be initialized
-     * @param length
-     *            Size of the tuple
-     * @return a new tuple
-     */
-    public static Tuple fillTuple(final Object value, final int length) {
-        return new ArrayTupleImpl(value, length);
-    }
-
-    /**
      * @param defaultSize
      *            creates a new and empty {@link Field}, defaulting on the
      *            specified size

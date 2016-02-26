@@ -16,6 +16,7 @@ import java8.util.function.UnaryOperator;
 import java8.util.J8Arrays;
 
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 
 /**
  * Collection of functions and helper methods for unary operators.
@@ -48,7 +49,7 @@ public enum Op1 {
      */
     public Object run(final Object a) {
         if (a instanceof Field) {
-            return Field.applyWithSingleParam(fun, FIELDS, a);
+            return Fields.applyWithSingleParam(fun, FIELDS, a);
         }
         return fun.apply(a);
     }

@@ -29,6 +29,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,9 +144,8 @@ public final class ReflectionUtils {
             final Method[] candidates = clazz.getMethods();
             final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
             for (final Method m : candidates) {
-            	//OLD m.getParameterCount()
-                if (m.getParameterTypes().length == argClass.length && methodName.equals(m.getName())) {
-                    final Class<?>[] params = m.getParameterTypes();
+                final Class<?>[] params = m.getParameterTypes();
+                if (params.length == argClass.length && methodName.equals(m.getName())) {
                     int p = 0;
                     boolean compatible = true;
                     for (int i = 0; compatible && i < argClass.length; i++) {
@@ -254,7 +254,7 @@ public final class ReflectionUtils {
          */
         final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
         if (fieldTarget || fieldIndexes.length > 0) {
-            return Field.apply(
+            return Fields.apply(
                     (actualT, actualA) -> ReflectionUtils.invokeMethod(toInvoke, actualT, actualA),
                     fieldTarget,
                     fieldIndexes,

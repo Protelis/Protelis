@@ -21,6 +21,7 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.datatype.Tuples;
 
 import java8.util.J8Arrays;
 import java8.util.function.BiFunction;
@@ -198,7 +199,7 @@ public enum HoodOp {
         return f.reduceVals((a, b) -> {
                 final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.createTuple(a);
                 final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.createTuple(b);
-                return Tuple.union(at, bt);
+                return Tuples.union(at, bt);
             }, n, UNION.defs.apply(f));
     }
 
