@@ -19,6 +19,7 @@ import java.util.function.Function;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
@@ -170,7 +171,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
                     "This program has attempted to build a field twice with the same code path."
                     + "This is probably a bug in Protelis");
         }
-        final Field res = Field.create(theta.size() + 1);
+        final Field res = DatatypeFactory.createField(theta.size() + 1);
         stream(theta.entrySet())
                 .map(e -> new Pair<>(e.getKey(), e.getValue().get(codePath)))
                 .filter(e -> e.getValue() != null)

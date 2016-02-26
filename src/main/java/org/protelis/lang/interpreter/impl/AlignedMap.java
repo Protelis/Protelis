@@ -108,7 +108,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
                             // TODO: use getOrDefault
                             Field ref = fieldKeys.get(key);
                             if (ref == null) {
-                                ref = Field.create(map.size());
+                                ref = DatatypeFactory.createField(map.size());
                                 fieldKeys.put(key, ref);
                             }
                             ref.addSample(node, value);

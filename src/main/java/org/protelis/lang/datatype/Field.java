@@ -26,16 +26,6 @@ import java8.util.function.UnaryOperator;
 public interface Field extends Serializable {
 
     /**
-     * @param defaultSize
-     *            creates a new and empty {@link Field}, defaulting on the
-     *            specified size
-     * @return an empty {@link Field}
-     */
-    static Field create(int defaultSize) {
-        return new FieldMapImpl(defaultSize + 1, 1f);
-    }
-
-    /**
      * @param fun
      *            the {@link UnaryOperator} to apply
      * @param fields
@@ -144,7 +134,7 @@ public interface Field extends Serializable {
          * A consistency check may make sense here.
          */
         final Field refField = (Field) (fieldTarget ? target : args[fieldIndexes[0]]);
-        final Field result = create(refField.size());
+        final Field result = DatatypeFactory.createField(refField.size());
         for (final DeviceUID node : refField.nodeIterator()) {
             Object[] actualArgs = Arrays.copyOf(args, args.length);
             for (final int i : fieldIndexes) {
