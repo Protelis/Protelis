@@ -30,8 +30,8 @@ public class TestCodePath {
         final CodePath underTest = new CodePath(new TByteArrayList(input));
         final long[] res = underTest.asLongArray();
         for (int i = 0; i < input.length; i++) {
-            final int lidx = i / (Long.SIZE/Byte.SIZE);
-            final int midx = i % (Long.SIZE/Byte.SIZE);
+            final int lidx = i / (Long.SIZE / Byte.SIZE);
+            final int midx = i % (Long.SIZE / Byte.SIZE);
             assertEquals((byte) ((res[lidx] & MASKS[midx]) >>> (midx * 8)), input[i]);
         }
     }
