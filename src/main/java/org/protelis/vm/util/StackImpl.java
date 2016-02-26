@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java8.util.Maps;
-import java.util.function.Function;
+import java8.util.function.Function;
 
 import org.protelis.lang.util.Reference;
 
@@ -69,7 +69,7 @@ public class StackImpl implements Stack {
          * let c = 0; if(true) { c = 1 } else { 1 } // c = 1
          * 
          */
-        return stackOperation(varMap -> Maps.computeIfPresent(varMap,var, (k, v) -> val));
+        return stackOperation(varMap -> Maps.computeIfPresent(varMap, var, (k, v) -> val));
     }
 
     private Object stackOperation(final Function<Map<Reference, Object>, Object> op) {
