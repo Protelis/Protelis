@@ -44,7 +44,7 @@ public class FunctionDefinition implements Serializable {
         functionName = name;
         this.args = args;
         //final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES + Long.BYTES + 1);
-        final ByteBuffer bb = ByteBuffer.allocate((Integer.SIZE/Byte.SIZE + Long.SIZE/Byte.SIZE + 1));
+        final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE + Long.SIZE / Byte.SIZE + 1);
         bb.putInt(functionName.hashCode());
         bb.putLong(functionName.hash64());
         bb.put((byte) argNumber);
