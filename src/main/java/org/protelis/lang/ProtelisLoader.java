@@ -26,12 +26,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
 import java8.util.function.Functions;
+import java8.util.stream.Collectors;
+import java8.util.stream.RefStreams;
+import java8.util.stream.Stream;
+import java8.util.stream.StreamSupport;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java8.util.stream.Collectors;
-import java8.util.stream.Stream;
-import java8.util.stream.StreamSupport;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -107,8 +108,6 @@ import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import java8.util.stream.*;
 
 import static java8.util.stream.StreamSupport.stream;
 
