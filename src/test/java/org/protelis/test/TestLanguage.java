@@ -556,7 +556,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple01() {
-        final Tuple expectedResult = DatatypeFactory.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
+        final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
         testFileWithExplicitResult("/tuple01.pt", expectedResult);
     }
 
@@ -590,7 +590,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple05() {
-        final Tuple expectedResult = DatatypeFactory.create(new Object[] { 2.0, 2.0, 2.0 });
+        final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 2.0, 2.0, 2.0 });
         testFileWithExplicitResult("/tuple05.pt", expectedResult);
     }
 

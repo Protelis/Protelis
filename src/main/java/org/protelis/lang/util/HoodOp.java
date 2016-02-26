@@ -79,8 +79,8 @@ public enum HoodOp {
      * Union of values.
      */
     UNION(HoodOp::union,
-          DatatypeFactory::create,
-          of(create(Object.class, DatatypeFactory::create)),
+          DatatypeFactory::createTuple,
+          of(create(Object.class, DatatypeFactory::createTuple)),
           of());
 
     private final BiFunction<Field, DeviceUID, Object> function;
@@ -144,7 +144,7 @@ public enum HoodOp {
     private static Tuple cTup(final Object v, final int size) {
         final Object[] r = new Object[size];
         Arrays.fill(r, v);
-        return DatatypeFactory.create(r);
+        return DatatypeFactory.createTuple(r);
     }
 
     /**
@@ -196,8 +196,8 @@ public enum HoodOp {
 
     private static Object union(final Field f, final DeviceUID n) {
         return f.reduceVals((a, b) -> {
-                final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.create(a);
-                final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.create(b);
+                final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.createTuple(a);
+                final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.createTuple(b);
                 return Tuple.union(at, bt);
             }, n, UNION.defs.apply(f));
     }

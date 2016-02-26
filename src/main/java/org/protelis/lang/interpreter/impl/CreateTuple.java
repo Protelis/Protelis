@@ -59,9 +59,9 @@ public class CreateTuple extends AbstractAnnotatedTree<Object> {
             }
         });
         if (fieldIndexes.isEmpty()) {
-            setAnnotation(DatatypeFactory.create(a));
+            setAnnotation(DatatypeFactory.createTuple(a));
         } else {
-            final Field res = Field.apply(DatatypeFactory::create, fieldIndexes.toArray(), a);
+            final Field res = Field.apply(DatatypeFactory::createTuple, fieldIndexes.toArray(), a);
             setAnnotation(res);
         }
     }

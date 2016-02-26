@@ -258,7 +258,7 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
         for (int i = 0; i < max; i++) {
             res[i] = i < min ? fun.apply(t1.get(i), t2.get(i)) : big.get(i);
         }
-        return DatatypeFactory.create(res);
+        return DatatypeFactory.createTuple(res);
     }
 
     /**

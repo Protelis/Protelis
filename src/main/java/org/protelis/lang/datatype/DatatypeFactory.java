@@ -17,8 +17,8 @@ public final class DatatypeFactory {
      *            the elements
      * @return a new tuple
      */
-    public static Tuple create(final List<?> l) {
-        return create(l.toArray());
+    public static Tuple createTuple(final List<?> l) {
+        return createTuple(l.toArray());
     }
 
     /**
@@ -27,7 +27,7 @@ public final class DatatypeFactory {
      * @return a new tuple
      */
     @SafeVarargs
-    public static Tuple create(final Object... l) {
+    public static Tuple createTuple(final Object... l) {
         return new ArrayTupleImpl(l);
     }
 
@@ -40,7 +40,7 @@ public final class DatatypeFactory {
      *            Size of the tuple
      * @return a new tuple
      */
-    public static Tuple fill(final Object value, final int length) {
+    public static Tuple fillTuple(final Object value, final int length) {
         return new ArrayTupleImpl(value, length);
     }
 

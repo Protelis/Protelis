@@ -181,7 +181,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
                     final DotOperator rop = funs.getSecond();
                     rop.eval(restricted);
                     context.returnFromCallFrame();
-                    resl.add(DatatypeFactory.create(key, rop.getAnnotation()));
+                    resl.add(DatatypeFactory.createTuple(key, rop.getAnnotation()));
                     /*
                      * If both the key exists and the filter passes, save the
                      * state.
@@ -194,7 +194,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
             context.returnFromCallFrame();
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
-        setAnnotation(DatatypeFactory.create(resl));
+        setAnnotation(DatatypeFactory.createTuple(resl));
     }
 
     @Override
