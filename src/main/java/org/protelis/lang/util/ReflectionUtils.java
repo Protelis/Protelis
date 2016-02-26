@@ -8,20 +8,16 @@
  *******************************************************************************/
 package org.protelis.lang.util;
 
+import static java8.util.stream.StreamSupport.stream;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import java8.util.J8Arrays;
-import java8.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java8.util.stream.Collectors;
-import java8.util.stream.IntStreams;
-import java8.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -37,7 +33,11 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import static java8.util.stream.StreamSupport.stream;
+import java8.util.J8Arrays;
+import java8.util.Optional;
+import java8.util.stream.Collectors;
+import java8.util.stream.IntStreams;
+import java8.util.stream.Stream;
 
 /**
  * Utilities that make easier to cope with Java Reflection.

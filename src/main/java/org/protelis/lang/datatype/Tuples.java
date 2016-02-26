@@ -103,7 +103,7 @@ public final class Tuples {
      *            Size of the tuple
      * @return a new tuple
      */
-    public static Tuple fillTuple(final Object value, final int length) {
+    public static Tuple fill(final Object value, final int length) {
         return new ArrayTupleImpl(value, length);
     }
 

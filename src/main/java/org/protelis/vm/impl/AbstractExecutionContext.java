@@ -166,7 +166,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
          * If there is a request to build a field, then it means this is a
          * nbr-like operation
          */
-        if (Maps.putIfAbsent(toSend,codePath, localValue) != null) {
+        if (Maps.putIfAbsent(toSend, codePath, localValue) != null) {
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path."
                     + "This is probably a bug in Protelis");

@@ -9,15 +9,10 @@
 package org.protelis.lang.datatype;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import org.apache.commons.math3.util.Pair;
-import org.danilopianini.lang.TriFunction;
 
-import java8.util.function.BiFunction;
 import java8.util.function.BinaryOperator;
-import java8.util.function.Function;
-import java8.util.function.UnaryOperator;
 
 /**
  * A field is a function associating a collection of devices to values.
