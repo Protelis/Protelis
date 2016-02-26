@@ -13,7 +13,7 @@ import gnu.trove.list.array.TIntArrayList;
 
 import java8.util.J8Arrays;
 import java.util.Map;
-import java.util.Optional;
+import java8.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.danilopianini.lang.TriFunction;
