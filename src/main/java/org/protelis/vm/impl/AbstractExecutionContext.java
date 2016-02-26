@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java8.util.Maps;
 import java.util.Objects;
-import java.util.function.Function;
+import java8.util.function.Function;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.LangUtils;
