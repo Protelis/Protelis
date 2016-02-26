@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.protelis.lang.datatype.impl.ArrayTupleImpl;
 
+/**
+ * Static factory for Protelis data types.
+ */
 public final class DatatypeFactory {
 
     private DatatypeFactory() {
     }
-    
 
     /**
      * @param l
@@ -42,5 +44,4 @@ public final class DatatypeFactory {
         return new ArrayTupleImpl(value, length);
     }
 
-    
 }
