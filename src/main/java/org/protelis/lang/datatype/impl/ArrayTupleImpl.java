@@ -9,7 +9,8 @@
 package org.protelis.lang.datatype.impl;
 
 import java.util.Arrays;
-import java8.util.*;
+
+import java8.util.J8Arrays;
 import java8.util.function.BinaryOperator;
 import java8.util.function.Function;
 import java8.util.function.Predicate;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.danilopianini.lang.HashUtils;
 import org.danilopianini.lang.LangUtils;
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -247,7 +249,7 @@ public class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple unwrap(final int i) {
-        return Tuple.create(J8Arrays.stream(arrayContents).map((o) -> {
+        return DatatypeFactory.create(J8Arrays.stream(arrayContents).map((o) -> {
             if (o instanceof Tuple) {
                 return ((Tuple) o).get(i);
             }
@@ -273,7 +275,7 @@ public class ArrayTupleImpl implements Tuple {
         for (final Object o : t) {
             l.remove(o);
         }
-        return Tuple.create(l.toArray());
+        return DatatypeFactory.create(l.toArray());
     }
 
     @Override
@@ -299,7 +301,7 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getArgNumber() == 1) {
-            return Tuple.create(J8Arrays.stream(arrayContents)
+            return DatatypeFactory.create(J8Arrays.stream(arrayContents)
                     .map(Constant<Object>::new)
                     .map(elem -> {
                         final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
@@ -313,14 +315,14 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final Function<Object, Object> fun) {
         Objects.requireNonNull(fun);
-        return Tuple.create(J8Arrays.stream(arrayContents).map(fun).toArray());
+        return DatatypeFactory.create(J8Arrays.stream(arrayContents).map(fun).toArray());
     }
 
     @Override
     public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 1) {
-            return Tuple.create(J8Arrays.stream(arrayContents).map(Constant<Object>::new).filter(elem -> {
+            return DatatypeFactory.create(J8Arrays.stream(arrayContents).map(Constant<Object>::new).filter(elem -> {
                 final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
                 fc.eval(ctx);
                 final Object outcome = fc.getAnnotation();
@@ -337,7 +339,7 @@ public class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple filter(final Predicate<Object> fun) {
         Objects.requireNonNull(fun);
-        return Tuple.create(J8Arrays.stream(arrayContents).filter(fun).toArray());
+        return DatatypeFactory.create(J8Arrays.stream(arrayContents).filter(fun).toArray());
     }
 
     @Override

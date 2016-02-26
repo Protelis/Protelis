@@ -16,12 +16,16 @@ import static org.apache.commons.math3.util.Pair.create;
 
 import java.util.Arrays;
 import java.util.List;
-import java8.util.*;
-import java8.util.function.*;
 import org.apache.commons.math3.util.Pair;
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
+
+import java8.util.J8Arrays;
+import java8.util.function.BiFunction;
+import java8.util.function.Function;
+import java8.util.function.Supplier;
 
 /**
  * Collection of functions and helper methods for reducing fields into local
@@ -75,8 +79,8 @@ public enum HoodOp {
      * Union of values.
      */
     UNION(HoodOp::union,
-          Tuple::create,
-          of(create(Object.class, Tuple::create)),
+          DatatypeFactory::create,
+          of(create(Object.class, DatatypeFactory::create)),
           of());
 
     private final BiFunction<Field, DeviceUID, Object> function;
@@ -140,7 +144,7 @@ public enum HoodOp {
     private static Tuple cTup(final Object v, final int size) {
         final Object[] r = new Object[size];
         Arrays.fill(r, v);
-        return Tuple.create(r);
+        return DatatypeFactory.create(r);
     }
 
     /**
@@ -192,8 +196,8 @@ public enum HoodOp {
 
     private static Object union(final Field f, final DeviceUID n) {
         return f.reduceVals((a, b) -> {
-                final Tuple at = a instanceof Tuple ? (Tuple) a : Tuple.create(a);
-                final Tuple bt = b instanceof Tuple ? (Tuple) b : Tuple.create(b);
+                final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.create(a);
+                final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.create(b);
                 return Tuple.union(at, bt);
             }, n, UNION.defs.apply(f));
     }

@@ -26,6 +26,7 @@ import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
@@ -555,7 +556,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple01() {
-        final Tuple expectedResult = Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
+        final Tuple expectedResult = DatatypeFactory.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
         testFileWithExplicitResult("/tuple01.pt", expectedResult);
     }
 
@@ -589,7 +590,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple05() {
-        final Tuple expectedResult = Tuple.create(new Object[] { 2.0, 2.0, 2.0 });
+        final Tuple expectedResult = DatatypeFactory.create(new Object[] { 2.0, 2.0, 2.0 });
         testFileWithExplicitResult("/tuple05.pt", expectedResult);
     }
 

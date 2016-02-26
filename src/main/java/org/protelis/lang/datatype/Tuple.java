@@ -9,49 +9,18 @@
 package org.protelis.lang.datatype;
 
 import java.io.Serializable;
-import java.util.List;
-import java8.util.function.*;
 
-import org.protelis.lang.datatype.impl.ArrayTupleImpl;
 import org.protelis.vm.ExecutionContext;
+
+import java8.util.function.BinaryOperator;
+import java8.util.function.Function;
+import java8.util.function.Predicate;
 
 /**
  * Implementation of mathematical tuples as indexed objects T = [element0,
  * element1, element2 ...] .
  */
 public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple> {
-
-    /**
-     * @param l
-     *            the elements
-     * @return a new tuple
-     */
-    static Tuple create(final List<?> l) {
-        return create(l.toArray());
-    }
-
-    /**
-     * @param l
-     *            the elements
-     * @return a new tuple
-     */
-    @SafeVarargs
-    static Tuple create(Object... l) {
-        return new ArrayTupleImpl(l);
-    }
-
-    /**
-     * Create a Tuple with all elements initialized to the same value.
-     * 
-     * @param value
-     *            Value to which all elements will be initialized
-     * @param length
-     *            Size of the tuple
-     * @return a new tuple
-     */
-    static Tuple fill(Object value, int length) {
-        return new ArrayTupleImpl(value, length);
-    }
 
     /**
      * Add an element to the end of a tuple. Equivalent to insert(size,
@@ -289,7 +258,7 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
         for (int i = 0; i < max; i++) {
             res[i] = i < min ? fun.apply(t1.get(i), t2.get(i)) : big.get(i);
         }
-        return create(res);
+        return DatatypeFactory.create(res);
     }
 
     /**
