@@ -159,7 +159,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
             res.add(o.getAnnotation());
         }
         return stream(res);
-        
         // return branches.stream().map(AnnotatedTree::getAnnotation);
     }
 
