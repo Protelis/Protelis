@@ -89,7 +89,7 @@ public class CodePath implements Serializable {
             hash = tempHash;
         } else {
             final Hasher hashGen = HASH_FUNCTION.newHasher(size);
-            path = new long[(stack.size() - 1) / (Long.SIZE/Byte.SIZE) + 1];
+            path = new long[(stack.size() - 1) / (Long.SIZE / Byte.SIZE) + 1];
             /*
              * Here, we run across all the bytes, and we do two operations at
              * the same time:
@@ -103,7 +103,7 @@ public class CodePath implements Serializable {
             for (int i = 0; i < stack.size(); i++) {
                 final byte b = stack.get(i);
                 hashGen.putByte(b);
-                path[i / (Long.SIZE/Byte.SIZE)] |= (b & LONG_MASK) << (BITS_PER_BYTE * (i % (Long.SIZE/Byte.SIZE)));
+                path[i / (Long.SIZE / Byte.SIZE)] |= (b & LONG_MASK) << (BITS_PER_BYTE * (i % (Long.SIZE / Byte.SIZE)));
             }
             hash = hashGen.hash().asInt();
         }
