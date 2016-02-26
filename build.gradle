@@ -19,7 +19,6 @@ apply plugin: 'org.danilopianini.smartrrr'
 apply plugin: 'me.tatarka.retrolambda'
 
 retrolambda {
-  oldJdk "/usr/lib/jvm/java-7-openjdk/"
   javaVersion JavaVersion.VERSION_1_7
   defaultMethods true
   incremental true
