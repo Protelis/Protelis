@@ -111,7 +111,7 @@ public final class ReflectionUtils {
      */
     public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
         final List<Class<?>> argClass = Arrays.asList(args.stream()
-                .map(Object::getClass)
+                .map(arg -> arg instanceof Field ? ((Field) arg).getExpectedType() : arg.getClass())
                 .toArray(length -> new Class<?>[length]));
         try {
             return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, argClass));
@@ -149,14 +149,17 @@ public final class ReflectionUtils {
                         final Class<?> actual = argClass[i];
                         if (expected.isAssignableFrom(actual)) {
                             /*
-                             * No downcast required, there is compatibility
+                             * No downcast nor coercion required, there is compatibility
                              */
                             p += 3;
                         } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
                             p += computePointsForWrapper(expected, actual);
                         } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
                             p += computePointsForWrapper(actual, expected);
-                        } else if (!PrimitiveUtils.classIsNumber(expected)) {
+                        } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
+                            /*
+                             * At least one is not a number: conversion with precision loss does not apply.
+                             */
                             compatible = false;
                         }
                     }
