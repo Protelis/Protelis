@@ -105,7 +105,8 @@ public final class ReflectionUtils {
      * @param methodName
      *            the method to be invoked
      * @param args
-     *            the arguments for the method
+     *            the arguments for the method. If a {@link Field} is passed,
+     *            then the expected type of the field is used.
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
