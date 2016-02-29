@@ -209,6 +209,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test hood with a generated field.
+     */
+//    @Test
+//    public void testGenericHood07() {
+//        testFile("/genericHood07.pt");
+//    }
+
+    /**
      * Test simple use of apply.
      */
     @Test
@@ -555,6 +563,14 @@ public class TestLanguage {
     @Test
     public void testLoadFromModuleName02() {
         testFileWithExplicitResult("protelis:test:circular02", 1d);
+    }
+
+    /**
+     * Test loading from a module name from a nested package.
+     */
+    @Test
+    public void testLoadFromModuleName03() {
+        assertNotNull(ProtelisLoader.parse("replicatedgossip"));
     }
 
     /**
