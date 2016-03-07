@@ -60,7 +60,7 @@ dependencies {
     compile "org.apache.commons:commons-math3:$math3Version"
     compile "net.sf.trove4j:trove4j:$trove4jVersion"
     compile "com.google.guava:guava:$guavaVersion"
-	compile "org.apache.commons:commons-lang3:$lang3Version"
+    compile "org.apache.commons:commons-lang3:$lang3Version"
     compile "org.danilopianini:javalib-java7:$javalib7Version"
     compile "org.danilopianini:javalib:$javalibVersion"
     compile "org.springframework:spring-core:$springVersion"
