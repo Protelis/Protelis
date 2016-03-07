@@ -17,8 +17,8 @@ buildscript {
 apply plugin: 'org.danilopianini.smartrrr'
 
 substitutions {
-	substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
-	substitute 'com.google.guava:guava' up_to '14.0.1' with 'com.google.guava:guava-jdk5' at '+'
+    substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
+    substitute 'com.google.guava:guava' up_to '14.0.1' with 'com.google.guava:guava-jdk5' at '+'
 }
 
 sourceCompatibility = 1.8
@@ -68,7 +68,7 @@ dependencies {
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
-	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+    compile "com.google.code.findbugs:findbugs:$findBugsVersion"
 	
     testCompile "junit:junit:$junitVersion"
 
@@ -89,7 +89,7 @@ dependencies {
 // Javadoc Configuration
 
 task aggregateJavadoc(type: Javadoc) {
-	source configurations.doc.collect { zipTree(it) }
+    source configurations.doc.collect { zipTree(it) }
     source sourceSets.main.allJava
     classpath = sourceSets.main.output + sourceSets.main.compileClasspath
     include '**/*.java'
@@ -99,7 +99,7 @@ task aggregateJavadoc(type: Javadoc) {
     options.encoding = 'UTF-8'
     options.showAll()
     options.addBooleanOption('nopackagediagram', true)
-	options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('Xdoclint:none', '-quiet')
     configure(options) {
         windowTitle "$projectLongName version $project.version Javadoc API"
         docTitle "$projectLongName $project.version reference API"
