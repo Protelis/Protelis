@@ -8,19 +8,23 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import static java8.util.stream.StreamSupport.parallelStream;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java8.util.function.BiConsumer;
+import java8.util.function.Consumer;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -149,7 +153,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
             annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
         }
         return annotations;
-//        return branches.parallelStream().map(AnnotatedTree::getAnnotation).toArray();
     }
 
     /**
@@ -166,7 +169,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void forEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.forEach(action);
+        for (final AnnotatedTree<?> subProgram: branches) {
+            action.accept(subProgram);
+        }
     }
 
     /**
@@ -179,7 +184,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         for (int i = 0; i < getBranchesNumber(); i++) {
             action.accept(i, getBranch(i));
         }
-//        indexStream().forEachOrdered(i -> action.accept(i, getBranch(i)));
     }
 
     /**
@@ -191,7 +195,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void parallelForEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.parallelStream().forEach(action);
+        parallelStream(branches).forEach(action);
     }
 
     /**
@@ -207,7 +211,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     private IntStream indexStream() {
-        return IntStream.range(0, getBranchesNumber());
+        return IntStreams.range(0, getBranchesNumber());
     }
 
     /**

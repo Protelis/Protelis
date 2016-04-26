@@ -11,13 +11,14 @@ package org.protelis.lang.util;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
-import java.util.Arrays;
+import java8.util.J8Arrays;
 import java.util.Map;
-import java.util.Optional;
+import java8.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 
 /**
  * Collection of functions and helper methods for ternary syntactic operators.
@@ -60,7 +61,7 @@ public enum Op3 {
             }
         }
         if (idx.isPresent()) {
-            return Field.apply(fun, idx.get().toArray(), a, b, c);
+            return Fields.apply(fun, idx.get().toArray(), a, b, c);
         }
         return fun.apply(a, b, c);
     }
@@ -78,7 +79,7 @@ public enum Op3 {
     public static Op3 getOp(final String name) {
         Op3 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;

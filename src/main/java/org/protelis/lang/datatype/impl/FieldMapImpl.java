@@ -15,6 +15,8 @@ import java.util.Map;
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DeviceUID;
 
+import static java8.util.stream.StreamSupport.stream;
+
 /**
  * Field implementation based on neighbor/value pairs stored in a hash table.
  */
@@ -48,7 +50,7 @@ public class FieldMapImpl extends AbstractField {
 
     @Override
     public Iterable<Pair<DeviceUID, Object>> coupleIterator() {
-        return fieldContents.entrySet().stream()
+        return stream(fieldContents.entrySet())
                 .map(e -> new Pair<>(e.getKey(), e.getValue()))
                 .collect(() -> new ArrayList<>(size()), (a, e) -> a.add(e), (a1, a2) -> a1.addAll(a2));
     }

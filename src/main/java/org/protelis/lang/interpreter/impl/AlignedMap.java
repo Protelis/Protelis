@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
@@ -107,7 +108,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
                             // TODO: use getOrDefault
                             Field ref = fieldKeys.get(key);
                             if (ref == null) {
-                                ref = Field.create(map.size());
+                                ref = DatatypeFactory.createField(map.size());
                                 fieldKeys.put(key, ref);
                             }
                             ref.addSample(node, value);
@@ -180,7 +181,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
                     final DotOperator rop = funs.getSecond();
                     rop.eval(restricted);
                     restricted.returnFromCallFrame();
-                    resl.add(Tuple.create(key, rop.getAnnotation()));
+                    resl.add(DatatypeFactory.createTuple(key, rop.getAnnotation()));
                     /*
                      * If both the key exists and the filter passes, save the
                      * state.
@@ -193,7 +194,7 @@ public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, Dot
             restricted.returnFromCallFrame();
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
-        setAnnotation(Tuple.create(resl));
+        setAnnotation(DatatypeFactory.createTuple(resl));
     }
 
     @Override

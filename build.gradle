@@ -12,9 +12,17 @@ buildscript {
     }
     dependencies {
         classpath 'org.danilopianini:smartrrr:[0, 1['
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     }
 }
 apply plugin: 'org.danilopianini.smartrrr'
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+  javaVersion JavaVersion.VERSION_1_7
+  defaultMethods true
+  incremental true
+}
 
 substitutions {
     substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
@@ -69,7 +77,8 @@ dependencies {
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
     compile "com.google.code.findbugs:findbugs:$findBugsVersion"
-	
+    compile "net.sourceforge.streamsupport:streamsupport-flow:$streamVersion"
+
     testCompile "junit:junit:$junitVersion"
 
     testRuntime "ch.qos.logback:logback-classic:1.1.3"

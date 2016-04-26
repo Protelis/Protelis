@@ -17,7 +17,8 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -25,6 +26,7 @@ import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
@@ -494,7 +496,7 @@ public class TestLanguage {
      */
     @Test
     public void testRep01() {
-        testFileWithMultipleRuns("/rep01.pt", IntStream.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
+        testFileWithMultipleRuns("/rep01.pt", IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
     }
 
     /**
@@ -578,7 +580,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple01() {
-        final Tuple expectedResult = Tuple.create(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
+        final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
         testFileWithExplicitResult("/tuple01.pt", expectedResult);
     }
 
@@ -612,7 +614,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple05() {
-        final Tuple expectedResult = Tuple.create(new Object[] { 2.0, 2.0, 2.0 });
+        final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 2.0, 2.0, 2.0 });
         testFileWithExplicitResult("/tuple05.pt", expectedResult);
     }
 
@@ -673,11 +675,11 @@ public class TestLanguage {
     }
 
     private static void testFileWithMultipleRuns(final String file, final int min, final int max) {
-        testFileWithMultipleRuns(file, IntStream.rangeClosed(min, max));
+        testFileWithMultipleRuns(file, IntStreams.rangeClosed(min, max));
     }
 
     private static void testFileWithMultipleRuns(final String file, final IntStream stream) {
-        stream.parallel().forEach(i -> {
+        stream.forEach(i -> {
             testFile(file, i);
         });
     }

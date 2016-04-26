@@ -8,18 +8,16 @@
  *******************************************************************************/
 package org.protelis.lang.util;
 
+import static java8.util.stream.StreamSupport.stream;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
@@ -28,12 +26,19 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import java8.util.J8Arrays;
+import java8.util.Optional;
+import java8.util.stream.Collectors;
+import java8.util.stream.IntStreams;
+import java8.util.stream.Stream;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
@@ -111,7 +116,7 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
-        final List<Class<?>> argClass = Arrays.asList(args.stream()
+        final List<Class<?>> argClass = Arrays.asList(stream(args)
                 .map(arg -> arg instanceof Field ? ((Field) arg).getExpectedType() : arg.getClass())
                 .toArray(length -> new Class<?>[length]));
         try {
@@ -141,8 +146,8 @@ public final class ReflectionUtils {
             final Method[] candidates = clazz.getMethods();
             final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
             for (final Method m : candidates) {
-                if (m.getParameterCount() == argClass.length && methodName.equals(m.getName())) {
-                    final Class<?>[] params = m.getParameterTypes();
+                final Class<?>[] params = m.getParameterTypes();
+                if (params.length == argClass.length && methodName.equals(m.getName())) {
                     int p = 0;
                     boolean compatible = true;
                     for (int i = 0; compatible && i < argClass.length; i++) {
@@ -172,13 +177,13 @@ public final class ReflectionUtils {
             /*
              * Find best
              */
-            final Optional<Method> best = lm.stream().max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
+            final Optional<Method> best = stream(lm).max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
                     .map(Pair::getSecond);
             if (best.isPresent()) {
                 return best.get();
             }
         }
-        final String argType = Arrays.stream(argClass).collect(Collectors.toList()).toString();
+        final String argType = J8Arrays.stream(argClass).collect(Collectors.toList()).toString();
         throw new NoSuchMethodError(methodName + "/" + argClass.length + argType + " does not exist in " + clazz + ".");
     }
 
@@ -260,7 +265,7 @@ public final class ReflectionUtils {
             final Object target,
             final Object[] args) {
         final boolean fieldTarget = target instanceof Field;
-        Stream<Object> str = Arrays.stream(args).parallel();
+        Stream<Object> str = J8Arrays.stream(args).parallel();
         /*
          * Filter the fields
          */
@@ -270,7 +275,7 @@ public final class ReflectionUtils {
          */
         final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
         if (fieldTarget || fieldIndexes.length > 0) {
-            return Field.apply(
+            return Fields.apply(
                     (actualT, actualA) -> ReflectionUtils.invokeMethod(toInvoke, actualT, actualA),
                     fieldTarget,
                     fieldIndexes,
@@ -299,7 +304,7 @@ public final class ReflectionUtils {
              * Failure: maybe some cast was required?
              */
             final Class<?>[] params = method.getParameterTypes();
-            final Object[] actualArgs = IntStream.range(0, args.length).parallel().mapToObj(i -> {
+            final Object[] actualArgs = IntStreams.range(0, args.length).parallel().mapToObj(i -> {
                 final Class<?> expected = params[i];
                 final Object actual = args[i];
                 if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2010, 2015, Danilo Pianini and contributors
+s * Copyright (C) 2010, 2015, Danilo Pianini and contributors
  * listed in the project's build.gradle or pom.xml file.
  *
  * This file is part of Protelis, and is distributed under the terms of

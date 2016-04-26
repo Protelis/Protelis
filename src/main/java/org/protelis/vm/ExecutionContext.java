@@ -12,8 +12,8 @@
 package org.protelis.vm;
 
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java8.util.function.Function;
+import java8.util.function.Supplier;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
