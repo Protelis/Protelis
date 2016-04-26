@@ -1,11 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2014, 2015, Danilo Pianini and contributors
- * listed in the project's build.gradle or pom.xml file.
- *
- * This file is part of Protelis, and is distributed under the terms of
- * the GNU General Public License, with a linking exception, as described
- * in the file LICENSE.txt in this project's top directory.
- *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
 import java.io.IOException;
@@ -14,8 +6,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java8.util.stream.Collectors;
+
+import java8.util.J8Arrays;
+import java8.util.stream.Stream;
 
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -81,7 +75,7 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     private void extractMethod(final int parameterCount) {
-        Stream<Method> methods = Arrays.stream(clazz.getMethods());
+        Stream<Method> methods = J8Arrays.stream(clazz.getMethods());
         if (ztatic) {
             methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
         } else {
@@ -94,7 +88,8 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
             throw new IllegalArgumentException(clazz + "." + methodName + " expects " + parameterCount + "arguments."
                     + getBranches() + "was provided instead.");
         }
-        final List<Method> matches = methods.filter(m -> m.getParameterCount() == parameterCount)
+        //OLD m.getParameterCount()
+        final List<Method> matches = methods.filter(m -> m.getParameterTypes().length == parameterCount)
                 .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
         /*
          * Same name
@@ -112,8 +107,8 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
         projectAndEval(context);
         // Obtain target and arguments
         final Object target = ztatic ? null : getBranch(0).getAnnotation();
-        final Stream<?> s = getBranchesAnnotationStream();
-        final Object[] args = ztatic ? s.toArray() : s.skip(1).toArray();
+        final Object[] s = getBranchesAnnotations();
+        final Object[] args = ztatic ? s : Arrays.copyOfRange(s, 1, s.length);
         setAnnotation(method == null
                 ? ReflectionUtils.invokeFieldable(clazz, methodName, target, args)
                 : ReflectionUtils.invokeFieldable(method, target, args));

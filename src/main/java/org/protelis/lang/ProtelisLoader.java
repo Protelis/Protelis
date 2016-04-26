@@ -11,23 +11,28 @@ package org.protelis.lang;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java8.util.J8Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java8.util.Maps;
 import java.util.Objects;
-import java.util.Optional;
+import java8.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java8.util.function.BiFunction;
+import java8.util.function.Function;
+import java8.util.function.Functions;
+import java8.util.stream.Collectors;
+import java8.util.stream.RefStreams;
+import java8.util.stream.Stream;
+import java8.util.stream.StreamSupport;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -104,6 +109,8 @@ import com.google.inject.Injector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import static java8.util.stream.StreamSupport.stream;
+
 /**
  * Main entry-point class for loading/parsing Protelis programs.
  */
@@ -157,6 +164,7 @@ public final class ProtelisLoader {
             }
             return parseURI(program);
         } catch (IOException e) {
+            L.debug("{} is not a URI that points to a resolvable resource, nor is classpath:/{}.pt", program, program);
             return parseAnonymousModule(program);
         }
     }
@@ -255,7 +263,7 @@ public final class ProtelisLoader {
         try {
             r.load(in, xrs.getLoadOptions());
         } catch (IOException e) {
-            L.error("I/O error while reading in RAM: this must be tough.", e);
+            throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
         }
         return r;
     }
@@ -317,9 +325,9 @@ public final class ProtelisLoader {
          * may contain lambdas, lambdas are named using processing order, as a
          * consequence function bodies must be evaluated sequentially.
          */
-        final Map<Reference, FunctionDefinition> refToFun = nameToFun.keySet().stream()
+        final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
                 .collect(Collectors.toMap(ProtelisLoader::toR, nameToFun::get));
-        nameToFun.forEach((fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), refToFun)));
+        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), refToFun)));
         /*
          * Create the main program
          */
@@ -329,7 +337,7 @@ public final class ProtelisLoader {
     private static <E> Stream<E> flatten(
             final E target,
             final Function<? super E, ? extends Stream<? extends E>> extractor) {
-        return Stream.concat(Stream.of(target), extractor.apply(target).flatMap(el -> flatten(el, extractor)));
+        return RefStreams.concat(RefStreams.of(target), extractor.apply(target).flatMap(el -> flatten(el, extractor)));
     }
 
     private static List<AnnotatedTree<?>> callArgs(final Call call, final Map<Reference, FunctionDefinition> env) {
@@ -339,7 +347,7 @@ public final class ProtelisLoader {
     private static List<AnnotatedTree<?>> exprListArgs(final ExprList l, final Map<Reference, FunctionDefinition> env) {
         return Optional.ofNullable(l)
                 .map(ExprList::getArgs)
-                .map(List::stream)
+                .map(StreamSupport::stream)
                 .map(s -> s.map(e -> Dispatch.translate(e, env)))
                 .map(s -> s.collect(Collectors.<AnnotatedTree<?>>toList()))
                 .orElse(Collections.emptyList());
@@ -357,7 +365,7 @@ public final class ProtelisLoader {
         }),
         ASSIGNMENT((e, m) -> new CreateVar(toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
         BLOCK((e, m) -> new All(
-                flatten((Block) e, b -> b.getOthers() == null ? Stream.empty() : Stream.<Block>of(b.getOthers()))
+                flatten((Block) e, b -> b.getOthers() == null ? RefStreams.empty() : RefStreams.<Block>of(b.getOthers()))
                 .map(b -> b.getFirst())
                 .map(s -> translate(s, m))
                 .collect(Collectors.toList()))),
@@ -421,7 +429,7 @@ public final class ProtelisLoader {
             final AnnotatedTree<?> body = translate(l.getBody(), m);
             final String base = Base64.encodeBase64String(
                     Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
-            final FunctionDefinition lambda = new FunctionDefinition("λ" + base, toR(args));
+            final FunctionDefinition lambda = new FunctionDefinition("��" + base, toR(args));
             lambda.setBody(body);
             return new Constant<>(lambda);
         }),
@@ -450,18 +458,24 @@ public final class ProtelisLoader {
 
         @SuppressWarnings("unchecked")
         public static <T> AnnotatedTree<T> translate(final EObject o, final Map<Reference, FunctionDefinition> functions) {
-            return Arrays.stream(values())
+            final Optional<AnnotatedTree<T>> result = J8Arrays.stream(values())
                 .map(dispatch -> {
                     try {
                         return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));
+                    } catch (final IllegalArgumentException e) {
+                        L.debug("Illegal argument " + dispatch, e);
+                        throw new IllegalArgumentException(e);
                     } catch (RuntimeException e) {
                         return Optional.<AnnotatedTree<T>>empty();
                     }
                 })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .findAny()
-                .get();
+                .findFirst();
+            if (result.isPresent()) {
+                return result.get();
+            }
+            throw new IllegalStateException(o + " could not be mapped to a Protelis interpreter entity.");
         }
 
     }
@@ -515,9 +529,9 @@ public final class ProtelisLoader {
             /*
              * Init local functions
              */
-            nameToFun.putAll(module.getDefinitions().stream()
+            nameToFun.putAll(stream(module.getDefinitions())
                 .collect(Collectors.toMap(
-                    Function.identity(),
+                    Functions.identity(),
                     fd -> new FunctionDefinition(
                             new FasterString(Optional.ofNullable(module.getName()).orElse("") + fd.getName()),
                             toR(extractArgs(fd))
@@ -536,7 +550,7 @@ public final class ProtelisLoader {
     }
 
     private static List<Reference> toR(final List<?> l) {
-        return l.stream().map(Reference::new).collect(Collectors.toList());
+        return stream(l).map(Reference::new).collect(Collectors.toList());
     }
 
 }

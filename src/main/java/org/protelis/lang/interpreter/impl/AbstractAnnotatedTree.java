@@ -8,20 +8,23 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import static java8.util.stream.StreamSupport.parallelStream;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java8.util.function.BiConsumer;
+import java8.util.function.Consumer;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -142,20 +145,14 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * @return returns a stream containing the branches' annotations
+     * @return the current branches annotations
      */
-    protected Stream<?> getBranchesAnnotationStream() {
-        /*
-         * TODO: as soon as Javac fixes its terrible bug, switch this to:
-         * 
-         * return branches.stream().map(AnnotatedTree::getAnnotation);
-         */
-        final List<Object> res = new ArrayList<>(branches.size());
-        for (final AnnotatedTree<?> o : branches) {
-            res.add(o.getAnnotation());
+    protected final Object[] getBranchesAnnotations() {
+        final Object[] annotations = branches.toArray();
+        for (int i = 0; i < annotations.length; i++) {
+            annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
         }
-        return res.stream();
-        // return branches.stream().map(AnnotatedTree::getAnnotation);
+        return annotations;
     }
 
     /**
@@ -172,7 +169,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void forEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.stream().forEach(action);
+        for (final AnnotatedTree<?> subProgram: branches) {
+            action.accept(subProgram);
+        }
     }
 
     /**
@@ -182,7 +181,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void forEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
-        indexStream().forEachOrdered(i -> action.accept(i, getBranch(i)));
+        for (int i = 0; i < getBranchesNumber(); i++) {
+            action.accept(i, getBranch(i));
+        }
     }
 
     /**
@@ -194,7 +195,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the Consumer to execute
      */
     protected final void parallelForEach(final Consumer<? super AnnotatedTree<?>> action) {
-        branches.parallelStream().forEach(action);
+        parallelStream(branches).forEach(action);
     }
 
     /**
@@ -210,7 +211,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     private IntStream indexStream() {
-        return IntStream.range(0, getBranchesNumber());
+        return IntStreams.range(0, getBranchesNumber());
     }
 
     /**
@@ -221,15 +222,11 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      *            the execution context
      */
     protected final void projectAndEval(final ExecutionContext context) {
-        forEachWithIndex(evalOp(context));
-    }
-
-    private static BiConsumer<Integer, ? super AnnotatedTree<?>> evalOp(final ExecutionContext context) {
-        return (i, branch) -> {
+        forEachWithIndex((i, branch) -> {
             context.newCallStackFrame(i.byteValue());
             branch.eval(context);
             context.returnFromCallFrame();
-        };
+        });
     }
 
     /**

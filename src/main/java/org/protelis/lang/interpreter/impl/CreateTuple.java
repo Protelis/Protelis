@@ -8,15 +8,16 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
-
 import java.util.List;
 
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.vm.ExecutionContext;
+
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 
 /**
  * Construct a Tuple.
@@ -59,9 +60,9 @@ public class CreateTuple extends AbstractAnnotatedTree<Object> {
             }
         });
         if (fieldIndexes.isEmpty()) {
-            setAnnotation(Tuple.create(a));
+            setAnnotation(DatatypeFactory.createTuple(a));
         } else {
-            final Field res = Field.apply(Tuple::create, fieldIndexes.toArray(), a);
+            final Field res = Fields.apply(DatatypeFactory::createTuple, fieldIndexes.toArray(), a);
             setAnnotation(res);
         }
     }

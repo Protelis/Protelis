@@ -1,0 +1,9 @@
+module naivegossip
+
+public def gossip(gossipfun, null) {
+	rep(x <- null) {
+		hoodPlusSelf((a, b) -> {gossipfun.apply(a, b)}, null, nbr(x))
+	}
+}
+
+

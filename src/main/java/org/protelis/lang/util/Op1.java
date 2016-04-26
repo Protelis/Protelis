@@ -10,12 +10,13 @@ package org.protelis.lang.util;
 
 import static org.protelis.lang.util.OpUtils.unsupported;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.UnaryOperator;
+import java8.util.function.UnaryOperator;
+import java8.util.J8Arrays;
 
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 
 /**
  * Collection of functions and helper methods for unary operators.
@@ -48,7 +49,7 @@ public enum Op1 {
      */
     public Object run(final Object a) {
         if (a instanceof Field) {
-            return Field.applyWithSingleParam(fun, FIELDS, a);
+            return Fields.applyWithSingleParam(fun, FIELDS, a);
         }
         return fun.apply(a);
     }
@@ -68,7 +69,7 @@ public enum Op1 {
     public static Op1 getOp(final String name) {
         Op1 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;

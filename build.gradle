@@ -12,13 +12,21 @@ buildscript {
     }
     dependencies {
         classpath 'org.danilopianini:smartrrr:[0, 1['
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     }
 }
 apply plugin: 'org.danilopianini.smartrrr'
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+  javaVersion JavaVersion.VERSION_1_7
+  defaultMethods true
+  incremental true
+}
 
 substitutions {
-	substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
-	substitute 'com.google.guava:guava' up_to '14.0.1' with 'com.google.guava:guava-jdk5' at '+'
+    substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
+    substitute 'com.google.guava:guava' up_to '14.0.1' with 'com.google.guava:guava-jdk5' at '+'
 }
 
 sourceCompatibility = 1.8
@@ -60,7 +68,7 @@ dependencies {
     compile "org.apache.commons:commons-math3:$math3Version"
     compile "net.sf.trove4j:trove4j:$trove4jVersion"
     compile "com.google.guava:guava:$guavaVersion"
-	compile "org.apache.commons:commons-lang3:$lang3Version"
+    compile "org.apache.commons:commons-lang3:$lang3Version"
     compile "org.danilopianini:javalib-java7:$javalib7Version"
     compile "org.danilopianini:javalib:$javalibVersion"
     compile "org.springframework:spring-core:$springVersion"
@@ -68,8 +76,9 @@ dependencies {
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
-	compile "com.google.code.findbugs:findbugs:$findBugsVersion"
-	
+    compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+    compile "net.sourceforge.streamsupport:streamsupport-flow:$streamVersion"
+
     testCompile "junit:junit:$junitVersion"
 
     testRuntime "ch.qos.logback:logback-classic:1.1.3"
@@ -89,7 +98,7 @@ dependencies {
 // Javadoc Configuration
 
 task aggregateJavadoc(type: Javadoc) {
-	source configurations.doc.collect { zipTree(it) }
+    source configurations.doc.collect { zipTree(it) }
     source sourceSets.main.allJava
     classpath = sourceSets.main.output + sourceSets.main.compileClasspath
     include '**/*.java'
@@ -99,7 +108,7 @@ task aggregateJavadoc(type: Javadoc) {
     options.encoding = 'UTF-8'
     options.showAll()
     options.addBooleanOption('nopackagediagram', true)
-	options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('Xdoclint:none', '-quiet')
     configure(options) {
         windowTitle "$projectLongName version $project.version Javadoc API"
         docTitle "$projectLongName $project.version reference API"
