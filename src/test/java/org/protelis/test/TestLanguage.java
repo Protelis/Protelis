@@ -627,6 +627,16 @@ public class TestLanguage {
     }
 
     /**
+     * Test the tuple arithmetic.
+     */
+    @Test
+    public void testTupleArithmetic() {
+        testFile("/tuple06.pt");
+        testFile("/tuple07.pt");
+        testFile("/tuple08.pt");
+    }
+
+    /**
      * Test the Tuple.map method.
      */
     @Test
