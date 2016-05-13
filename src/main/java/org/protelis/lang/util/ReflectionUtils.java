@@ -37,7 +37,6 @@ import com.google.common.cache.LoadingCache;
 import java8.util.J8Arrays;
 import java8.util.Optional;
 import java8.util.stream.Collectors;
-import java8.util.stream.IntStreams;
 import java8.util.stream.Stream;
 
 /**
@@ -304,16 +303,15 @@ public final class ReflectionUtils {
              * Failure: maybe some cast was required?
              */
             final Class<?>[] params = method.getParameterTypes();
-            final Object[] actualArgs = IntStreams.range(0, args.length).parallel().mapToObj(i -> {
+            for (int i = 0; i < params.length; i++) {
                 final Class<?> expected = params[i];
                 final Object actual = args[i];
                 if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
-                    return PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
+                    args[i] = PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
                 }
-                return actual;
-            }).toArray();
+            }
             try {
-                return method.invoke(target, actualArgs);
+                return method.invoke(target, args);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 L.error("Error invoking method", e);
                 throw new IllegalStateException(

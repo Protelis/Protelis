@@ -73,48 +73,47 @@ The project has been developed using Eclipse, and can be easily imported in such
 
 #### Recommended configuration
 * Download [the latest Eclipse for Java SE developers][eclipse]. Arch Linux users can use the package extra/eclipse-java, which is rather up-to-date.
-* Install the Gradle plug-in
-	* In Eclipse, click Help -> Eclipse Marketplace...
-	* In the search form enter "gradle", then press Enter
-	* One of the retrieved entries should be "Gradle IDE Pack", click Install
-	* Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
-* Install the FindBugs plug-in
-	* In Eclipse, click Help -> Eclipse Marketplace...
-	* In the search form enter "findbugs", then press Enter
-	* One of the retrieved entries should be "FindBugs Eclipse Plugin", click Install
-	* Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
-* Install the PMD plug-in
-	* **Do not** install eclipse-pmd from the Eclipse Marketplace
-	* In Eclipse, click Help -> Install New Software
-	* In the text field labelled "Work with:", enter: https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site-latest/
-	* Press Enter
-	* PMD for Eclipse 4 will appear in the plugin list. Select it and click Next.
-	* Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
-* Install the Checkstyle plug-in
-	* In Eclipse, click Help -> Eclipse Marketplace...
-	* In the search form enter "checkstyle", then press Enter
-	* One of the retrieved entries should be "Checkstyle Plug-in" with a written icon whose text is "eclipse-cs", click Install
-	* Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
+  * The minimum version required for a smooth import is Eclipse Mars.1, which integrates Gradle Buildship
+  * Previous Eclipse versions are okay, provided that the Gradle Buildship plugin is installed
+* Install the code quality plugins:
+  * In Eclipse, click Help -> Eclipse Marketplace...
+  * In the search form enter "findbugs", then press Enter
+  * One of the retrieved entries should be "FindBugs Eclipse Plugin", click Install
+  * Click "< Install More"
+  * In the search form enter "pmd", then press Enter
+  * One of the retrieved entries should be "pmd-eclipse-plugin". **Do not** confuse it with eclipse-pmd. click Install
+  * In the search form enter "checkstyle", then press Enter
+  * One of the retrieved entries should be "Checkstyle Plug-in" with a written icon whose text is "eclipse-cs", click Install
+  * Click "Install Now >"
+  * Wait for Eclipse to resolve all the features
+  * Click "Confirm >"
+  * Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
 
 
 #### Import Procedure
-* Open Eclipse
-* Click File -> Import -> Git -> Projects from Git -> Next
-* Clone URI -> Next
-* Paste `git@github.com:Protelis/Protelis.git` as URI -> Next -> Next
-* Select the directory where you want to clone the repository. Beware that it **does not** point to the current Eclipse workspace by default
-* Next -> Next -> Finish
-* The project will appear in your projects list.
-* Right click on the project, select Gradle -> Refresh Dependencies. If the option is disabled, do first Gradle -> Enable Dependency Management and then try again.
-* Checkstyle, PMD and FindBugs should be pre-configured. **Do not** run Gradle -> Refresh all, because that would delete the automatic invocation of the code checkers.
-	* If you have not noticed the warning above and you have deleted our Eclipse configuration, assuming that you have not committed your changes, you can recover it by using ```git checkout HEAD .settings/edu.umd.cs.findbugs.core.prefs .settings/org.eclipse.jdt.core.prefs .pmd .checkstyle .project .classpath```
-	* If you also have committed the changes to those files, run the same command substituting ``HEAD`` with the latest commit from us.
+* Install git on your system, if you haven't yet
+* Pull up a terminal, and `cd` to the folder where you want the project to be cloned (presumably, your Eclipse workspace)
+* Clone the project with `git clone git@github.com:Protelis/Protelis.git`
+  * If you are a Windows user, you might find easier to import via HTTPS: `git clone https://github.com/Protelis/Protelis.git`
+* Click File -> Import -> Gradle -> Gradle Project -> Next
+* Select the project root directory.
+* Next
+* Make sure that "Gradle wrapper (recommended)" is selected
+* Next
+* Wait for Eclipse to scan the project.
+* Finish
+* When (and if) asked about the existing Eclipse configuration, select "Keep" (so that all the default development options are imported)
+* The projects will appear in your projects list.
+* Checkstyle, PMD and FindBugs should be pre-configured.
+* If you get errors due to missing dependencies, right click on the project, select Gradle -> Refresh Gradle Project.
 
 ### Developing the project
 Contributions to this project are welcome.  To ensure that your contribution is incorporated quickly, we request that you follow the following coding best practices:
 
-1. Commit often. Do not send pull requests with a single giant commit adding or changing massive amounts at once, as this is likely to have conflicts with otehr work. Split your work into multiple commits and request a merge to the main line often.
-2. Do not introduce low quality code. All new code should comply with checker rules (which are quite strict) and should not introduce other warnings.  Resolution of existing warnings (if any are currently present) is very welcome.
+0. We use [git flow](https://github.com/nvie/gitflow), so if you write new features, please do so in a separate `feature-` branch.
+0. We recommend forking the project, developing your stuff, then contributing back via pull request directly from GitHub
+0. Commit often. Do not send pull requests with a single giant commit adding or changing the massive amounts at once, as this is likely to have conflicts with other work. Split it in multiple commits and request a merge to the main line often.
+0. Do not introduce low quality code. All new code should comply with checker rules (which are quite strict) and should not introduce other warnings. Resolution of existing warnings (if any are currently present) is very welcome.
 
 
 #### Building the project

@@ -8,29 +8,18 @@
  *******************************************************************************/
 package org.protelis.lang;
 
+import static java8.util.stream.StreamSupport.stream;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java8.util.J8Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java8.util.Maps;
 import java.util.Objects;
-import java8.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java8.util.function.BiFunction;
-import java8.util.function.Function;
-import java8.util.function.Functions;
-import java8.util.stream.Collectors;
-import java8.util.stream.RefStreams;
-import java8.util.stream.Stream;
-import java8.util.stream.StreamSupport;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +33,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.common.types.JvmOperation;
-import org.eclipse.xtext.diagnostics.AbstractDiagnostic;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
@@ -108,8 +96,16 @@ import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import static java8.util.stream.StreamSupport.stream;
+import java8.util.J8Arrays;
+import java8.util.Maps;
+import java8.util.Optional;
+import java8.util.function.BiFunction;
+import java8.util.function.Function;
+import java8.util.function.Functions;
+import java8.util.stream.Collectors;
+import java8.util.stream.RefStreams;
+import java8.util.stream.Stream;
+import java8.util.stream.StreamSupport;
 
 /**
  * Main entry-point class for loading/parsing Protelis programs.
@@ -117,7 +113,6 @@ import static java8.util.stream.StreamSupport.stream;
 public final class ProtelisLoader {
 
     private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
-    private static final AtomicInteger IDGEN = new AtomicInteger();
     private static final XtextResourceSet XTEXT = createResourceSet();
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
     private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+",
@@ -250,22 +245,26 @@ public final class ProtelisLoader {
      * @return a dummy:/ resource that can be used to interpret the program
      */
     public static Resource resourceFromString(final String program) {
-        final XtextResourceSet xrs = XTEXT;
-        InputStream in = new StringInputStream(program);
-        try {
-            loadStringResources(xrs, in);
-        } catch (IOException e) {
-            L.error("Couldn't get resources associated with anonymous program", e);
+        final URI uri = URI.createURI("dummy:/protelis-generated-program-"
+        + Hashing.sha512().hashString(program, StandardCharsets.UTF_8)
+        + ".pt");
+        synchronized (XTEXT) {
+            Resource r = XTEXT.getResource(uri, false);
+            if (r == null) {
+                try (final InputStream in = new StringInputStream(program)) {
+                    loadStringResources(XTEXT, in);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Couldn't get resources associated with anonymous program", e);
+                }
+                r = XTEXT.createResource(uri);
+                try (final InputStream in = new StringInputStream(program)) {
+                    r.load(in, XTEXT.getLoadOptions());
+                } catch (IOException e) {
+                    throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
+                }
+            }
+            return r;
         }
-        final URI uri = URI.createURI("dummy:/protelis-generated-program-" + IDGEN.getAndIncrement() + ".pt");
-        final Resource r = xrs.createResource(uri);
-        in = new StringInputStream(program);
-        try {
-            r.load(in, xrs.getLoadOptions());
-        } catch (IOException e) {
-            throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
-        }
-        return r;
     }
 
     private static void loadStringResources(final XtextResourceSet target, final InputStream is) throws IOException {
@@ -298,12 +297,20 @@ public final class ProtelisLoader {
     public static ProtelisProgram parse(final Resource resource) {
         Objects.requireNonNull(resource);
         if (!resource.getErrors().isEmpty()) {
+            final StringBuilder sb = new StringBuilder("The Protelis program cannot be created because of the following errors:\n");
             for (final Diagnostic d : recursivelyCollectErrors(resource)) {
-                final AbstractDiagnostic ad = (AbstractDiagnostic) d;
-                final String place = ad.getUriToProblem().toString().split("#")[0];
-                L.error("Error in " + place + " at line " + d.getLine() + ": " + d.getMessage());
+                final String place = d.getLocation().toString().split("#")[0];
+                sb.append("Error in ");
+                sb.append(place);
+                sb.append(" at line ");
+                sb.append(d.getLine());
+                sb.append(", column ");
+                sb.append(d.getColumn());
+                sb.append(": ");
+                sb.append(d.getMessage());
+                sb.append('\n');
             }
-            throw new IllegalArgumentException("Protelis program cannot run because it has errors.");
+            throw new IllegalArgumentException(sb.toString());
         }
         final Module root = (Module) resource.getContents().get(0);
         assert root != null;
@@ -480,32 +487,42 @@ public final class ProtelisLoader {
 
     }
 
-    private static Iterable<Diagnostic> recursivelyCollectErrors(final Resource resource) {
-        return recursivelyCollectErrors(resource, new ArrayList<>(), new HashSet<>());
+    private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {
+        return StreamSupport.parallelStream(resource.getResourceSet().getResources())
+                .map(Resource::getErrors)
+                .filter(err -> !err.isEmpty())
+                .flatMap(StreamSupport::stream)
+                .collect(Collectors.toList());
     }
 
-    private static Iterable<Diagnostic> recursivelyCollectErrors(
-            final Resource resource,
-            final List<Diagnostic> errors,
-            final Set<Resource> completed) {
-        /*
-         * Mark as visited
-         */
-        completed.add(resource);
-        /*
-         * Walk linked resources
-         */
-        for (final Resource r : resource.getResourceSet().getResources()) {
-            if (!completed.contains(r)) {
-                recursivelyCollectErrors(r, errors, completed);
-            }
-        }
-        /*
-         * Add local errors (last, so that the "deeper" errors are listed first)
-         */
-        errors.addAll(resource.getErrors());
-        return errors;
-    }
+    /*
+     * Comment out, substitute with a faster linear scan.
+     * Reason: the Protelis resource set for a whole JVM is a singleton!
+     * (the XTEXT field)
+     * 
+     */
+//    private static Iterable<Diagnostic> recursivelyCollectErrors(
+//            final Resource resource,
+//            final Collection<Diagnostic> errors,
+//            final Set<URI> completed) {
+//        /*
+//         * Mark as visited
+//         */
+//        completed.add(resource.getURI());
+//        /*
+//         * Walk linked resources
+//         */
+//        for (final Resource r : resource.getResourceSet().getResources()) {
+//            if (!completed.contains(r.getURI())) {
+//                recursivelyCollectErrors(r, errors, completed);
+//            }
+//        }
+//        /*
+//         * Add local errors (last, so that the "deeper" errors are listed first)
+//         */
+//        errors.addAll(resource.getErrors());
+//        return errors;
+//    }
 
     private static void recursivelyInitFunctions(final Module module,
             final Map<FunctionDef, FunctionDefinition> nameToFun) {

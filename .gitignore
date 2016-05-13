@@ -3,3 +3,4 @@
 /.gradle/
 /src-gen/
 *.directory
+gradle.prefs
