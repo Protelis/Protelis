@@ -299,13 +299,26 @@ public final class ProtelisLoader {
         if (!resource.getErrors().isEmpty()) {
             final StringBuilder sb = new StringBuilder("The Protelis program cannot be created because of the following errors:\n");
             for (final Diagnostic d : recursivelyCollectErrors(resource)) {
-                final String place = d.getLocation().toString().split("#")[0];
-                sb.append("Error in ");
-                sb.append(place);
-                sb.append(" at line ");
-                sb.append(d.getLine());
-                sb.append(", column ");
-                sb.append(d.getColumn());
+                sb.append("Error");
+                if (d.getLocation() != null) {
+                    final String place = d.getLocation().toString().split("#")[0];
+                    sb.append(" in ");
+                    sb.append(place);
+                }
+                try {
+                    final int line = d.getLine();
+                    sb.append(", line ");
+                    sb.append(line);
+                } catch (final UnsupportedOperationException e) { // NOPMD 
+                    // The line information is not available
+                }
+                try {
+                    final int column = d.getColumn();
+                    sb.append(", column ");
+                    sb.append(column);
+                } catch (final UnsupportedOperationException e) { // NOPMD 
+                    // The column information is not available
+                }
                 sb.append(": ");
                 sb.append(d.getMessage());
                 sb.append('\n');
