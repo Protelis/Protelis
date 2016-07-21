@@ -154,7 +154,8 @@ public final class ProtelisLoader {
      */
     public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
         try {
-            if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
+            if (REGEX_PROTELIS_MODULE.matcher(Objects.requireNonNull(program, "The Protelis Program can not be null"))
+                    .matches()) {
                 return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
             }
             return parseURI(program);
@@ -375,110 +376,137 @@ public final class ProtelisLoader {
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This enum is not meant to get Serialized")
     private enum Dispatch {
-        ALIGNED_MAP((e, m) -> {
-            final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
-            return new AlignedMap(
-                translate(alMap.getArg(), m),
-                translate(alMap.getCond(), m),
-                translate(alMap.getOp(), m),
-                translate(alMap.getDefault(), m));
-        }),
-        ASSIGNMENT((e, m) -> new CreateVar(toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
-        BLOCK((e, m) -> new All(
+        ALIGNED_MAP(org.protelis.parser.protelis.AlignedMap.class,
+            (e, m) -> {
+                final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
+                return new AlignedMap(
+                    translate(alMap.getArg(), m),
+                    translate(alMap.getCond(), m),
+                    translate(alMap.getOp(), m),
+                    translate(alMap.getDefault(), m));
+            }),
+        ASSIGNMENT(Assignment.class,
+            (e, m) -> new CreateVar(toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
+        BLOCK(Block.class,
+            (e, m) -> new All(
                 flatten((Block) e, b -> b.getOthers() == null ? RefStreams.empty() : RefStreams.<Block>of(b.getOthers()))
                 .map(b -> b.getFirst())
                 .map(s -> translate(s, m))
                 .collect(Collectors.toList()))),
-        BOOLEAN((e, m) -> new Constant<>(((BooleanVal) e).isVal())),
-        BUILTIN_HOOD((e, m) -> {
-            final BuiltinHoodOp hood = (BuiltinHoodOp) e;
-            return new HoodCall(
-                    translate(hood.getArg(), m),
-                    HoodOp.get(hood.getName().replace(HOOD_END, "")),
-                    hood.isInclusive());
-        }),
-        CALL_METHOD((e, m) -> new MethodCall((JvmOperation) ((Call) e).getReference(), callArgs((Call) e, m))),
-        CALL_FUNCTION((e, m) -> new FunctionCall(m.get(toR(((Call) e).getReference())), callArgs((Call) e, m))),
-        DECLARATION((e, m) -> new CreateVar(toR(e), translate(((VarDef) e).getRight(), m), true)),
-        DOUBLE((e, m) -> new Constant<>(((DoubleVal) e).getVal())),
-        E((e, m) -> e instanceof org.protelis.parser.protelis.E ? new Constant<>(Math.E) : null),
-        ENV((e, m) -> e instanceof org.protelis.parser.protelis.Env ? new Env() : null),
-        EVAL((e, m) -> new Eval(translate(((org.protelis.parser.protelis.Eval) e).getArg(), m))),
-        EXPRESSION((e, m) -> {
-            final Expression exp = (Expression) e;
-            if (exp.getMethodName() != null) {
-                return new DotOperator(exp.getMethodName(), translate(exp.getLeft(), m), exprListArgs(exp.getArgs(), m));
-            }
-            if (exp.getV() != null) {
-                return translate(exp.getV(), m);
-            }
-            if (exp.getLeft() == null) {
-                return new UnaryOp(exp.getName(), translate(exp.getRight(), m));
-            }
-            if (exp.getRight() == null) {
-                return new UnaryOp(exp.getName(), translate(exp.getLeft(), m));
-            }
-            return new BinaryOp(exp.getName(), translate(exp.getLeft(), m), translate(exp.getRight(), m));
-        }),
-        GENERIC_HOOD((e, m) -> {
-            final GenericHood hood = (GenericHood) e;
-            final boolean inclusive = hood.getName().length() > 4;
-            final AnnotatedTree<?> nullResult = translate(hood.getDefault(), m);
-            final AnnotatedTree<Field> field = translate(hood.getArg(), m);
-            final EObject ref = hood.getReference();
-            if (hood.getReference() == null) {
-                return new GenericHoodCall(inclusive, translate(hood.getOp(), m), nullResult, field);
-            }
-            if (ref instanceof JvmOperation) {
-                return new GenericHoodCall(inclusive, (JvmOperation) ref, nullResult, field);
-            }
-            return new GenericHoodCall(inclusive, new Constant<>(m.get(toR(hood.getReference()))), nullResult, field);
-        }),
-        IF((e, m) -> {
-            final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
-            return new If<>(translate(ifop.getCond(), m),
-                    translate(ifop.getThen(), m),
-                    translate(ifop.getElse(), m));
-        }),
-        LAMBDA((e, m) -> {
-            final Lambda l = (Lambda) e;
-            final EObject argobj = l.getArgs();
-            final List<VarDef> args = argobj == null ? Collections.emptyList()
-                    : argobj instanceof VarDef ? Lists.newArrayList((VarDef) l.getArgs())
-                    : ((VarDefList) argobj).getArgs();
-            final AnnotatedTree<?> body = translate(l.getBody(), m);
-            final String base = Base64.encodeBase64String(
-                    Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
-            final FunctionDefinition lambda = new FunctionDefinition("��" + base, toR(args));
-            lambda.setBody(body);
-            return new Constant<>(lambda);
-        }),
-        MUX((e, m) -> {
-            final Mux mux = (Mux) e;
-            return new TernaryOp(mux.getName(),
-                    translate(mux.getCond(), m),
-                    translate(mux.getThen(), m),
-                    translate(mux.getElse(), m));
-        }),
-        NBR((e, m) -> new NBRCall(translate(((NBR) e).getArg(), m))),
-        PI((e, m) -> e instanceof Pi ? new Constant<>(Math.PI) : null),
-        REP((e, m) -> new RepCall<>(toR(((Rep) e).getInit().getX()),
-                    translate(((Rep) e).getInit().getW(), m),
-                    translate(((Rep) e).getBody(), m))),
-        SELF((e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self() : null),
-        STRING((e, m) -> new Constant<>(((StringVal) e).getVal())),
-        TUPLE((e, m) -> new CreateTuple(exprListArgs(((TupleVal) e).getArgs(), m))),
-        VARIABLE((e, m) -> new Variable(toR(((VarUse) e).getReference())));
+        BOOLEAN(BooleanVal.class,
+                (e, m) -> new Constant<>(((BooleanVal) e).isVal())),
+        BUILTIN_HOOD(BuiltinHoodOp.class,
+            (e, m) -> {
+                final BuiltinHoodOp hood = (BuiltinHoodOp) e;
+                return new HoodCall(
+                        translate(hood.getArg(), m),
+                        HoodOp.get(hood.getName().replace(HOOD_END, "")),
+                        hood.isInclusive());
+            }),
+        CALL_METHOD(Call.class,
+            (e, m) -> new MethodCall((JvmOperation) ((Call) e).getReference(), callArgs((Call) e, m))),
+        CALL_FUNCTION(Call.class,
+            (e, m) -> new FunctionCall(m.get(toR(((Call) e).getReference())), callArgs((Call) e, m))),
+        DECLARATION(VarDef.class,
+            (e, m) -> new CreateVar(toR(e), translate(((VarDef) e).getRight(), m), true)),
+        DOUBLE(DoubleVal.class,
+            (e, m) -> new Constant<>(((DoubleVal) e).getVal())),
+        E(org.protelis.parser.protelis.E.class,
+            (e, m) -> new Constant<>(Math.E)),
+        ENV(org.protelis.parser.protelis.Env.class,
+            (e, m) -> new Env()),
+        EVAL(org.protelis.parser.protelis.Eval.class,
+            (e, m) -> new Eval(translate(((org.protelis.parser.protelis.Eval) e).getArg(), m))),
+        EXPRESSION(Expression.class,
+            (e, m) -> {
+                final Expression exp = (Expression) e;
+                if (exp.getMethodName() != null) {
+                    return new DotOperator(exp.getMethodName(), translate(exp.getLeft(), m), exprListArgs(exp.getArgs(), m));
+                }
+                if (exp.getV() != null) {
+                    return translate(exp.getV(), m);
+                }
+                if (exp.getLeft() == null) {
+                    return new UnaryOp(exp.getName(), translate(exp.getRight(), m));
+                }
+                if (exp.getRight() == null) {
+                    return new UnaryOp(exp.getName(), translate(exp.getLeft(), m));
+                }
+                return new BinaryOp(exp.getName(), translate(exp.getLeft(), m), translate(exp.getRight(), m));
+            }),
+        GENERIC_HOOD(GenericHood.class,
+            (e, m) -> {
+                final GenericHood hood = (GenericHood) e;
+                final boolean inclusive = hood.getName().length() > 4;
+                final AnnotatedTree<?> nullResult = translate(hood.getDefault(), m);
+                final AnnotatedTree<Field> field = translate(hood.getArg(), m);
+                final EObject ref = hood.getReference();
+                if (hood.getReference() == null) {
+                    return new GenericHoodCall(inclusive, translate(hood.getOp(), m), nullResult, field);
+                }
+                if (ref instanceof JvmOperation) {
+                    return new GenericHoodCall(inclusive, (JvmOperation) ref, nullResult, field);
+                }
+                return new GenericHoodCall(inclusive, new Constant<>(m.get(toR(hood.getReference()))), nullResult, field);
+            }),
+        IF(org.protelis.parser.protelis.If.class,
+            (e, m) -> {
+                final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
+                return new If<>(translate(ifop.getCond(), m),
+                        translate(ifop.getThen(), m),
+                        translate(ifop.getElse(), m));
+            }),
+        LAMBDA(Lambda.class,
+            (e, m) -> {
+                final Lambda l = (Lambda) e;
+                final EObject argobj = l.getArgs();
+                final List<VarDef> args = argobj == null ? Collections.emptyList()
+                        : argobj instanceof VarDef ? Lists.newArrayList((VarDef) l.getArgs())
+                        : ((VarDefList) argobj).getArgs();
+                final AnnotatedTree<?> body = translate(l.getBody(), m);
+                final String base = Base64.encodeBase64String(
+                        Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
+                final FunctionDefinition lambda = new FunctionDefinition("��" + base, toR(args));
+                lambda.setBody(body);
+                return new Constant<>(lambda);
+            }),
+        MUX(Mux.class,
+            (e, m) -> {
+                final Mux mux = (Mux) e;
+                return new TernaryOp(mux.getName(),
+                        translate(mux.getCond(), m),
+                        translate(mux.getThen(), m),
+                        translate(mux.getElse(), m));
+            }),
+        NBR(NBR.class,
+            (e, m) -> new NBRCall(translate(((NBR) e).getArg(), m))),
+        PI(Pi.class,
+            (e, m) -> new Constant<>(Math.PI)),
+        REP(Rep.class,
+            (e, m) -> new RepCall<>(toR(((Rep) e).getInit().getX()),
+                translate(((Rep) e).getInit().getW(), m),
+                translate(((Rep) e).getBody(), m))),
+        SELF(org.protelis.parser.protelis.Self.class,
+            (e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self() : null),
+        STRING(StringVal.class,
+            (e, m) -> new Constant<>(((StringVal) e).getVal())),
+        TUPLE(TupleVal.class,
+            (e, m) -> new CreateTuple(exprListArgs(((TupleVal) e).getArgs(), m))),
+        VARIABLE(VarUse.class,
+            (e, m) -> new Variable(toR(((VarUse) e).getReference())));
 
         private BiFunction<EObject, Map<Reference, FunctionDefinition>, AnnotatedTree<?>> translator;
+        private Class<? extends EObject> type;
 
-        Dispatch(final BiFunction<EObject, Map<Reference, FunctionDefinition>, AnnotatedTree<?>> translator) {
+        Dispatch(final Class<? extends EObject> type, final BiFunction<EObject, Map<Reference, FunctionDefinition>, AnnotatedTree<?>> translator) {
             this.translator = translator;
+            this.type = type;
         }
 
         @SuppressWarnings("unchecked")
         public static <T> AnnotatedTree<T> translate(final EObject o, final Map<Reference, FunctionDefinition> functions) {
             final Optional<AnnotatedTree<T>> result = J8Arrays.stream(values())
+                .filter(dispatch -> dispatch.type.isAssignableFrom(o.getClass()))
                 .map(dispatch -> {
                     try {
                         return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));

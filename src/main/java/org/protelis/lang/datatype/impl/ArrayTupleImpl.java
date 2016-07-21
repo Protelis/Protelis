@@ -79,7 +79,29 @@ public class ArrayTupleImpl implements Tuple {
 
     @Override
     public Object get(final int i) {
-        return arrayContents[(int) i];
+        return arrayContents[i];
+    }
+
+    /**
+     * Compatibility method to speed up calls made using doubles.
+     * 
+     * @param i
+     *            the element position (will be floored to int)
+     * @return the i-th element
+     */
+    public Object get(final double i) {
+        return get((int) i);
+    }
+
+    /**
+     * Compatibility method to speed up calls made using doubles.
+     * 
+     * @param i
+     *            the element position (will be floored to int)
+     * @return the i-th element
+     */
+    public Object get(final Double i) {
+        return get(i.intValue());
     }
 
     @Override
@@ -302,12 +324,13 @@ public class ArrayTupleImpl implements Tuple {
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getArgNumber() == 1) {
             return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents)
-                    .map(Constant<Object>::new)
-                    .map(elem -> {
-                        final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
-                        fc.eval(ctx);
-                        return fc.getAnnotation();
-                    }).toArray());
+                .map(Constant<Object>::new)
+                .map(elem -> {
+                    final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
+                    fc.eval(ctx);
+                    return fc.getAnnotation();
+                })
+                .toArray());
         }
         throw new IllegalArgumentException("Mapping function must take one parameter.");
     }
@@ -322,16 +345,20 @@ public class ArrayTupleImpl implements Tuple {
     public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 1) {
-            return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents).map(Constant<Object>::new).filter(elem -> {
-                final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
-                fc.eval(ctx);
-                final Object outcome = fc.getAnnotation();
-                if (outcome instanceof Boolean) {
-                    return (Boolean) outcome;
-                } else {
-                    throw new IllegalArgumentException("Filtering function must return a boolean.");
-                }
-            }).map(AnnotatedTree::getAnnotation).toArray());
+            return DatatypeFactory
+                    .createTuple(J8Arrays.stream(arrayContents)
+                        .map(Constant<Object>::new)
+                        .filter(elem -> {
+                            final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
+                            fc.eval(ctx);
+                            final Object outcome = fc.getAnnotation();
+                            if (outcome instanceof Boolean) {
+                                return (Boolean) outcome;
+                            } else {
+                                throw new IllegalArgumentException("Filtering function must return a boolean.");
+                            }
+                        })
+                        .map(AnnotatedTree::getAnnotation).toArray());
         }
         throw new IllegalArgumentException("Filtering function must take one parameter.");
     }

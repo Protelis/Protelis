@@ -417,6 +417,14 @@ public class TestLanguage {
     }
 
     /**
+     * Ensure that doubles are converted to int if needed.
+     */
+    @Test
+    public void testMethod07() {
+        testFile("/method07.pt");
+    }
+
+    /**
      * Test showing that when unqualified imported Protelis method names
      * conflict, first imported shadows later imports.
      */
