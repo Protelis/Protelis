@@ -374,4 +374,25 @@ public class ArrayTupleImpl implements Tuple {
         return insert(0, element);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Tuple sort() {
+        final Object[] newArray = Arrays.copyOf(arrayContents, arrayContents.length);
+        Arrays.sort(newArray, (a, b) -> {
+            if (a instanceof Comparable && b instanceof Comparable) {
+                try {
+                    return ((Comparable<Object>) a).compareTo((Comparable<?>) b);
+                } catch (RuntimeException e) {
+                    return compareLexicographically(a, b);
+                }
+            }
+            return compareLexicographically(a, b);
+        });
+        return DatatypeFactory.createTuple(newArray);
+    }
+
+    private static int compareLexicographically(final Object a, final Object b) {
+        return a.toString().compareTo(b.toString());
+    }
+
 }

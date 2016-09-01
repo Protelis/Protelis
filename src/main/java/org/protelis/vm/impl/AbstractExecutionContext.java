@@ -52,7 +52,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final TByteList callStack = new TByteArrayList();
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
-    private Map<Reference, ?> functions;
+    private Map<Reference, ?> functions = Collections.emptyMap();
     private Stack gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Object> toSend;
