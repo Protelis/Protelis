@@ -11,12 +11,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.danilopianini:smartrrr:[0, 1['
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
         classpath 'org.ajoberstar:grgit:1.1.0'
     }
 }
-apply plugin: 'org.danilopianini.smartrrr'
 
 ext {
     def vfile = new File("${projectDir}/version.info")
@@ -38,11 +36,6 @@ retrolambda {
   javaVersion JavaVersion.VERSION_1_7
   defaultMethods true
   incremental true
-}
-
-substitutions {
-    substitute 'asm:asm' up_to '+' with 'org.ow2.asm:asm' at '+'
-    substitute 'com.google.guava:guava' up_to '14.0.1' with 'com.google.guava:guava-jdk5' at '+'
 }
 
 sourceCompatibility = 1.8
@@ -72,6 +65,7 @@ configurations {
     }
     compile {
         exclude module: 'org.eclipse.xtext.dependencies'
+        exclude group: 'asm', module: 'asm'
     }
     doclet
 }
