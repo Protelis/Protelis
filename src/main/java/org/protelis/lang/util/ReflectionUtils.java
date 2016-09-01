@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -33,11 +32,11 @@ import org.slf4j.LoggerFactory;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
-import java8.util.J8Arrays;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import java8.util.Optional;
-import java8.util.stream.Collectors;
-import java8.util.stream.Stream;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
@@ -115,14 +114,33 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
-        final List<Class<?>> argClass = Arrays.asList(stream(args)
-                .map(arg -> arg instanceof Field ? ((Field) arg).getExpectedType() : arg.getClass())
-                .toArray(length -> new Class<?>[length]));
+        final List<Class<?>> originalClasses = new ArrayList<>(args.size());
+        final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
+        boolean atLeastOneField = false;
+        for (final Object arg: args) {
+            final Class<?> argClass = arg.getClass();
+            if (arg instanceof Field) {
+                fieldedClasses.add(((Field) arg).getExpectedType());
+                atLeastOneField = true;
+            } else {
+                fieldedClasses.add(argClass);
+            }
+            originalClasses.add(argClass);
+        }
         try {
-            return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, argClass));
-        } catch (ExecutionException e) {
-            throw new NoSuchMethodError(methodName + "/" + args.size() + argClass + " does not exist in " + clazz
-                    + ". You tried to invoke it with arguments " + args);
+            return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, originalClasses));
+        } catch (UncheckedExecutionException | ExecutionException outerException) {
+            if (atLeastOneField) {
+                try {
+                    return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, fieldedClasses));
+                } catch (ExecutionException e) {
+                    throw new NoSuchMethodError("No" + methodName + originalClasses
+                            + " nor " + methodName + fieldedClasses + " exist in " + clazz
+                            + ".\nYou tried to invoke it with arguments " + args);
+                }
+            }
+            throw new NoSuchMethodError(methodName + originalClasses + " does not exist in " + clazz
+                    + ".\nYou tried to invoke it with arguments " + args);
         }
     }
 
@@ -182,8 +200,7 @@ public final class ReflectionUtils {
                 return best.get();
             }
         }
-        final String argType = J8Arrays.stream(argClass).collect(Collectors.toList()).toString();
-        throw new NoSuchMethodError(methodName + "/" + argClass.length + argType + " does not exist in " + clazz + ".");
+        throw new IllegalStateException();
     }
 
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
@@ -263,21 +280,23 @@ public final class ReflectionUtils {
             final Method toInvoke,
             final Object target,
             final Object[] args) {
+        final Class<?>[] expectedArgs = toInvoke.getParameterTypes();
+        if (expectedArgs.length != args.length) {
+            throw new IllegalArgumentException("Number of parameters of " + toInvoke
+                    + " does not match the provided array " + Arrays.toString(args));
+        }
         final boolean fieldTarget = target instanceof Field;
-        Stream<Object> str = J8Arrays.stream(args).parallel();
-        /*
-         * Filter the fields
-         */
-        str = str.filter(o -> Field.class.isAssignableFrom(o.getClass()));
-        /*
-         * Store their indexes
-         */
-        final int[] fieldIndexes = str.mapToInt(o -> ArrayUtils.indexOf(args, o)).toArray();
-        if (fieldTarget || fieldIndexes.length > 0) {
+        final TIntList fieldIndexes = new TIntArrayList(args.length);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof Field && !Field.class.isAssignableFrom(expectedArgs[i])) {
+                fieldIndexes.add(i);
+            }
+        }
+        if (fieldTarget || fieldIndexes.size() > 0) {
             return Fields.apply(
                     (actualT, actualA) -> ReflectionUtils.invokeMethod(toInvoke, actualT, actualA),
                     fieldTarget,
-                    fieldIndexes,
+                    fieldIndexes.toArray(),
                     target,
                     args);
         }
