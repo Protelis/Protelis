@@ -91,12 +91,17 @@ public abstract class AbstractField implements Field {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("[ ");
+        final StringBuilder sb = new StringBuilder("{");
         for (final Pair<DeviceUID, Object> entry : coupleIterator()) {
-            sb.append(entry);
-            sb.append(' ');
+            sb.append(entry.getKey());
+            sb.append(':');
+            sb.append(entry.getValue());
+            sb.append(", ");
         }
-        sb.append(']');
+        if (!isEmpty()) {
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        sb.append('}');
         return sb.toString();
     }
 
