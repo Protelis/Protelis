@@ -18,14 +18,19 @@ buildscript {
 }
 apply plugin: 'org.danilopianini.smartrrr'
 
-apply plugin: 'application'
 ext {
-    git = org.ajoberstar.grgit.Grgit.open("${projectDir}")
-    branch = git.branch.current.name
-    if (!branch.equals("master") || !branch.contains("release")) {
-        project.version = "${project.version}-${branch}-${git.head().abbreviatedId}"
+    def vfile = new File("${projectDir}/version.info")
+    try {
+        git = org.ajoberstar.grgit.Grgit.open("${projectDir}")
+        branch = git.branch.current.name
+        if (!branch.equals("master") || !branch.contains("release")) {
+            project.version = "${project.version}-${branch}-${git.head().abbreviatedId}"
+        }
+        vfile.text = project.version
+    } catch (Exception ex) {
+        println("No Git repository info available, falling back to file")
+        project.version = vfile.text
     }
-    println(project.version)
 }
 
 apply plugin: 'me.tatarka.retrolambda'
