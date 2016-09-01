@@ -251,13 +251,19 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Tuple filter(ExecutionContext ctx, FunctionDefinition fun);
 
     /**
-     * Given a tuple and a {@link Predicate}, returns a new tuple containing only the
-     * elements that match the predicate.
+     * Given a tuple and a {@link Predicate}, returns a new tuple containing
+     * only the elements that match the predicate.
      * 
      * @param fun
      *            the {@link Predicate}
-     * @return a new tuple containing only the elements that match the {@link Predicate}
+     * @return a new tuple containing only the elements that match the
+     *         {@link Predicate}
      */
     Tuple filter(Predicate<Object> fun);
+
+    /**
+     * @return a sorted version of this tuple
+     */
+    Tuple sort();
 
 }
