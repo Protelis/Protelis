@@ -21,7 +21,7 @@ ext {
     try {
         git = org.ajoberstar.grgit.Grgit.open("${projectDir}")
         branch = git.branch.current.name
-        if (!branch.equals("master") || !branch.contains("release")) {
+        if (!(branch.equals("master") || branch.contains("release"))) {
             project.version = "${project.version}-${branch}-${git.head().abbreviatedId}"
         }
         vfile.text = project.version
