@@ -13,11 +13,22 @@ buildscript {
     dependencies {
         classpath 'org.danilopianini:smartrrr:[0, 1['
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+        classpath 'org.ajoberstar:grgit:1.1.0'
     }
 }
 apply plugin: 'org.danilopianini.smartrrr'
-apply plugin: 'me.tatarka.retrolambda'
 
+apply plugin: 'application'
+ext {
+    git = org.ajoberstar.grgit.Grgit.open("${projectDir}")
+    branch = git.branch.current.name
+    if (!branch.equals("master") || !branch.contains("release")) {
+        project.version = "${project.version}-${branch}-${git.head().abbreviatedId}"
+    }
+    println(project.version)
+}
+
+apply plugin: 'me.tatarka.retrolambda'
 retrolambda {
   javaVersion JavaVersion.VERSION_1_7
   defaultMethods true
