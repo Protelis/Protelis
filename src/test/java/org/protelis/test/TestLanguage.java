@@ -14,13 +14,11 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java8.util.stream.IntStream;
-import java8.util.stream.IntStreams;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
@@ -31,6 +29,9 @@ import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
 import org.protelis.vm.impl.DummyContext;
+
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 
 /**
  * Main collection of tests for the Protelis language and VM.
@@ -714,7 +715,7 @@ public class TestLanguage {
         final Object execResult = runProgram(file, runs);
         final InputStream is = TestLanguage.class.getResourceAsStream(file);
         try {
-            final String test = IOUtils.toString(is, Charsets.UTF_8);
+            final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final Matcher extractor = EXTRACT_RESULT.matcher(test);
             if (extractor.find()) {
                 String result = extractor.group(ML_NAME);
