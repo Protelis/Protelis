@@ -26,17 +26,17 @@ public final class MyDummyContext extends AbstractExecutionContext implements De
 
     private static final long serialVersionUID = 1L;
     private final Random rng = new Random(0);
-    private final Long nodeId;
+    private final DeviceUID nodeId;
     private final Map<String, Object> properties;
 
-    public MyDummyContext(final Long nodeId, final MyDummyNetworkManager nm) {
-        this(nodeId, nm, null);
+    public MyDummyContext(final DeviceUID id, final MyDummyNetworkManager nm) {
+        this(id, nm, null);
     }
 
     /**
      *
      */
-    public MyDummyContext(final long nodeId, final MyDummyNetworkManager nm, final Map<String, Object> properties) {
+    public MyDummyContext(final DeviceUID nodeId, final MyDummyNetworkManager nm, final Map<String, Object> properties) {
         super(new SimpleExecutionEnvironment(), nm);
         this.nodeId = nodeId;
         this.properties = properties;
@@ -45,18 +45,6 @@ public final class MyDummyContext extends AbstractExecutionContext implements De
             final ExecutionEnvironment ex = getExecutionEnvironment();
             properties.keySet().forEach(k -> ex.put(k, properties.get(k)));
         }
-    }
-
-    @Override
-    public DeviceUID getDeviceUID() {
-        return new DeviceUID() {
-            private static final long serialVersionUID = 2306021805006825289L;
-
-            @Override
-            public String toString() {
-                return nodeId + "";
-            };
-        };
     }
 
     @Override
@@ -72,10 +60,6 @@ public final class MyDummyContext extends AbstractExecutionContext implements De
     @Override
     protected AbstractExecutionContext instance() {
         return new MyDummyContext(nodeId, (MyDummyNetworkManager) getNetworkManager(), properties);
-    }
-
-    public P2D getDevicePosition() {
-        return new P2D(0.0, nodeId.doubleValue());
     }
 
     @Override
@@ -94,6 +78,11 @@ public final class MyDummyContext extends AbstractExecutionContext implements De
             private static final long serialVersionUID = 1L;
         }, (double) n));
         return res;
+    }
+
+    @Override
+    public DeviceUID getDeviceUID() {
+        return nodeId;
     }
 
 }

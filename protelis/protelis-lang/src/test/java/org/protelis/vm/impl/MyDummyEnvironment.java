@@ -1,39 +1,29 @@
 package org.protelis.vm.impl;
 
 import java.util.Map;
-import java.util.stream.LongStream;
 
 import org.protelis.lang.datatype.DeviceUID;
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
+import org.protelis.vm.util.CodePath;
 
 import com.google.common.collect.MapMaker;
-
-import java8.util.function.Function;
 
 /**
  * 
  *
  */
 public class MyDummyEnvironment {
-    enum LinkingRule {
+    public enum LinkingRule {
         NONE, ALL, STAR, LINE
     };
 
     private static final MapMaker MAPMAKER = new MapMaker();
     private final int nodeNumber;
     private final LinkingRule rule;
+    private Map<Long, MyDeviceUID> ids;
     private final Map<Long, AbstractExecutionContext> nodes;
-
-    /**
-     * 
-     */
-    public MyDummyEnvironment() {
-        this(10, LinkingRule.LINE);
-    }
+    public Map<DeviceUID, Map<CodePath, Object>> contents;
 
     /**
      * 
@@ -43,6 +33,7 @@ public class MyDummyEnvironment {
      */
     protected MyDummyEnvironment(final int nodeNumber, final LinkingRule rule) {
         nodes = MAPMAKER.makeMap();
+        contents = MAPMAKER.makeMap();
         this.nodeNumber = nodeNumber;
         this.rule = rule;
     }
@@ -58,38 +49,12 @@ public class MyDummyEnvironment {
     }
 
     public void setup() {
+        ids = MAPMAKER.makeMap();
         for (long i = 0; i < nodeNumber; i++) {
-            nodes.put(i, new MyDummyContext(i, new MyDummyNetworkManager(this, i)));
+            MyDeviceUID id = new MyDeviceUID(i);
+            ids.put(i, id);
+            nodes.put(i, new MyDummyContext(id, new MyDummyNetworkManager(id, this)));
         }
-    }
-
-    /**
-     * 
-     * @param n
-     * @return
-     */
-    protected Map<Long, AbstractExecutionContext> getNeighborhood(final long n) {
-        final Map<Long, AbstractExecutionContext> res = MAPMAKER.makeMap();
-        switch (rule) {
-        case NONE:
-            break;
-        case ALL:
-            LongStream.rangeClosed(2, nodeNumber).forEach(v -> res.put(v + 1, nodes.get(v + 1)));
-            break;
-        case STAR:
-            if (n == 1) {
-                LongStream.rangeClosed(2, nodeNumber).forEach(v -> res.put(v + 1, nodes.get(v + 1)));
-            }
-            break;
-        case LINE:
-            if (n < nodeNumber) {
-                res.put(n + 1, nodes.get(n + 1));
-            }
-            break;
-        default:
-            break;
-        }
-        return res;
     }
 
     public ExecutionContext getNode(final long nodeId) {
@@ -106,5 +71,44 @@ public class MyDummyEnvironment {
             ctxs[i] = nodes.get(i.longValue());
         }
         return ctxs;
+    }
+
+    public Map<DeviceUID, Map<CodePath, Object>> getNeighborhood(DeviceUID id) {
+        long n = ((MyDeviceUID) id).getId();
+
+        final Map<DeviceUID, Map<CodePath, Object>> res = MAPMAKER.makeMap();
+        switch (rule) {
+        case NONE:
+            break;
+        // case ALL:
+        // LongStream.rangeClosed(2, nodeNumber).forEach(v -> res.put(v + 1,
+        // contents.get(v + 1)));
+        // break;
+        // case STAR:
+        // if (n == 1) {
+        // LongStream.rangeClosed(2, nodeNumber).forEach(v -> res.put(v + 1,
+        // contents.get(v + 1)));
+        // }
+        // break;
+        case LINE:
+            if (n < nodeNumber - 1) {
+                DeviceUID i = ids.get(n + 1);
+                if (contents.get(i) != null)
+                    res.put(i, contents.get(i));
+            }
+            if (n > 0) {
+                DeviceUID i = ids.get(n - 1);
+                if (contents.get(i) != null)
+                    res.put(i, contents.get(i));
+            }
+            break;
+        default:
+            break;
+        }
+        return res;
+    }
+
+    public void putContent(DeviceUID id, Map<CodePath, Object> toSend) {
+        contents.put(id, toSend);
     }
 }
