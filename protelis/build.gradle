@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
+    }
+}
+
+allprojects {
+    apply plugin: 'org.danilopianini.build-commons'
+    configurations {
+        compile {
+            exclude module: 'org.eclipse.xtext.dependencies'
+            exclude group: 'asm', module: 'asm'
+        }
+        all*.exclude group: 'org.eclipse.xtext', module: 'org.eclipse.xtext.dependencies'
+    }
+    dependencies {
+        compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+        compile "org.apache.commons:commons-math3:$math3Version"
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+
+        runtime "ch.qos.logback:logback-classic:$logbackVersion"
+
+        testCompile "junit:junit:$junitVersion"
+
+        testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+
+        doclet "org.jboss.apiviz:apiviz:$apivizVersion"
+    }
+
+}
+
+subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}
+
+/*
+ * Running a task on the parent project implies running the same task first on any subproject
+ */
+tasks.each { task ->
+    subprojects.each { subproject ->
+        def subtask = subproject.tasks.findByPath("${task.name}")
+        if (subtask != null) {
+            task.dependsOn(subtask)
+        }
+    }
+}
+
+dependencies {
+    compile subprojects
+}
+
+javadoc {
+    dependsOn subprojects.javadoc
+    source subprojects.javadoc.source
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-redist'
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+defaultTasks 'clean', 'build', 'check', 'javadoc', 'assemble', 'install', 'projectReport', 'buildDashboard', 'fatJar'
