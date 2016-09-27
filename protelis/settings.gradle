@@ -1,3 +1,4 @@
 include(
-    'protelis-interpreter'
+    'protelis-interpreter',
+    'protelis-lang'
 )

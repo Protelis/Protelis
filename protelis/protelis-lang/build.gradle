@@ -1,0 +1,6 @@
+dependencies {
+    compile (
+        project(':protelis-interpreter')
+    )
+}
+

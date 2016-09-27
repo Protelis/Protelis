@@ -1,0 +1,49 @@
+module protelis:lang:time
+
+import java.lang.Math.min
+import java.lang.Math.max
+
+/*
+ * Timer
+ * initial: initial value of the timer
+ * zero: lower boundary of the timer
+ * decay: timer decrease its value according to this function
+ */
+public def T(initial, zero, decay) {
+	rep(v <- initial) {
+		min(initial, max(zero, decay.apply(v)))
+	}
+}
+
+
+public def delayFunction(initial, decay, function) {
+	if (T(initial, 0, (t) -> {t - decay}) <= 0) {
+		function.apply()
+	} else {
+		NaN
+	}
+}
+
+/*
+ * Cyclic timer
+ * length: duration of the each cycle
+ * decay: decay rate
+ */
+public def cyclicTimer(length, decay) {
+	rep(left <- length) {
+		if(left == 0) {
+			length
+		} else {
+			T(length, 0, (t) -> {t - decay})
+		}
+	} == length
+}
+
+public def cyclicFunction(length, decay, function) {
+	if (cyclicTimer(length, decay)) {
+		function.apply()
+	} else {
+		NaN
+	}
+}
+
