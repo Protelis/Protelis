@@ -10,9 +10,6 @@ import org.protelis.vm.util.CodePath;
 
 import com.google.common.collect.MapMaker;
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 /**
  * Dummy environment for testing purpose.
  */
@@ -23,7 +20,7 @@ public class TestEnvironment {
     private static final MapMaker MAPMAKER = new MapMaker();
     private final int deviceNumber;
     private final AbstractLinkingStrategy rule;
-    private final TIntObjectMap<AbstractExecutionContext> nodes;
+    private final AbstractExecutionContext[] executionContexts;
     private final Map<DeviceUID, Map<CodePath, Object>> contents;
 
     /**
@@ -34,7 +31,7 @@ public class TestEnvironment {
      *            rule to link the devices together
      */
     protected TestEnvironment(final int deviceNumber, final AbstractLinkingStrategy rule) {
-        nodes = new TIntObjectHashMap<AbstractExecutionContext>();
+        executionContexts = new AbstractExecutionContext[deviceNumber];
         contents = MAPMAKER.makeMap();
         this.deviceNumber = deviceNumber;
         this.rule = rule;
@@ -67,7 +64,7 @@ public class TestEnvironment {
     private void setup() {
         for (int i = 0; i < deviceNumber; i++) {
             MyDeviceUID id = new MyDeviceUID(i);
-            nodes.put(i, new TestContext(id, new TestNetworkManager(id, this)));
+            executionContexts[i] = new TestContext(id, new TestNetworkManager(id, this));
         }
     }
 
@@ -76,8 +73,8 @@ public class TestEnvironment {
      *            device id
      * @return the device with the given id
      */
-    public ExecutionContext getNode(final Integer deviceId) {
-        return nodes.get(deviceId);
+    public ExecutionContext getExecutionContext(final Integer deviceId) {
+        return executionContexts[deviceId];
     }
 
     /**
@@ -85,19 +82,15 @@ public class TestEnvironment {
      *            device id
      * @return the environment of the device with the given id
      */
-    public ExecutionEnvironment getNodeEnvironment(final Integer deviceId) {
-        return nodes.get(deviceId).getExecutionEnvironment();
+    public ExecutionEnvironment getExecutionEnvironment(final Integer deviceId) {
+        return executionContexts[deviceId].getExecutionEnvironment();
     }
 
     /**
      * @return all the execution contexts
      */
     public ExecutionContext[] getExecutionContexts() {
-        ExecutionContext[] ctxs = new ExecutionContext[deviceNumber];
-        for (int i = 0; i < deviceNumber; i++) {
-            ctxs[i] = nodes.get(i);
-        }
-        return ctxs;
+        return executionContexts;
     }
 
     /**
