@@ -10,6 +10,9 @@ import org.protelis.vm.util.CodePath;
 
 import com.google.common.collect.MapMaker;
 
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 /**
  * Dummy environment for testing purpose.
  */
@@ -20,7 +23,7 @@ public class TestEnvironment {
     private static final MapMaker MAPMAKER = new MapMaker();
     private final int deviceNumber;
     private final AbstractLinkingStrategy rule;
-    private final Map<Integer, AbstractExecutionContext> nodes;
+    private final TIntObjectMap<AbstractExecutionContext> nodes;
     private final Map<DeviceUID, Map<CodePath, Object>> contents;
 
     /**
@@ -31,7 +34,7 @@ public class TestEnvironment {
      *            rule to link the devices together
      */
     protected TestEnvironment(final int deviceNumber, final AbstractLinkingStrategy rule) {
-        nodes = MAPMAKER.makeMap();
+        nodes = new TIntObjectHashMap<AbstractExecutionContext>();
         contents = MAPMAKER.makeMap();
         this.deviceNumber = deviceNumber;
         this.rule = rule;
