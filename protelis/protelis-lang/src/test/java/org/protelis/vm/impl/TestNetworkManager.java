@@ -19,14 +19,19 @@ import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 
 /**
- * DummyNetworkManager2.
- *
+ * A dummy network manager with test purpose.
  */
-public class MyDummyNetworkManager implements NetworkManager {
-    private final MyDummyEnvironment env;
+public class TestNetworkManager implements NetworkManager {
+    private final TestEnvironment env;
     private final DeviceUID id;
-    
-    public MyDummyNetworkManager(DeviceUID id, MyDummyEnvironment env) {
+
+    /**
+     * @param id
+     *            device id
+     * @param env
+     *            environment
+     */
+    public TestNetworkManager(final DeviceUID id, final TestEnvironment env) {
         this.id = id;
         this.env = env;
     }

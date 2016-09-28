@@ -1,6 +1,7 @@
 package org.protelis.vm.impl;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.ExecutionContext;
@@ -10,105 +11,107 @@ import org.protelis.vm.util.CodePath;
 import com.google.common.collect.MapMaker;
 
 /**
- * 
- *
+ * Dummy environment for testing purpose.
  */
-public class MyDummyEnvironment {
-    public enum LinkingRule {
-        NONE, ALL, STAR, LINE
-    };
-
+public class TestEnvironment {
+    /**
+     * A builder of {@link ConcurrentMap}.
+     */
     private static final MapMaker MAPMAKER = new MapMaker();
-    private final int nodeNumber;
-    private final LinkingRule rule;
-    private Map<Long, MyDeviceUID> ids;
-    private final Map<Long, AbstractExecutionContext> nodes;
-    public Map<DeviceUID, Map<CodePath, Object>> contents;
+    private final int deviceNumber;
+    private final AbstractLinkingStrategy rule;
+    private final Map<Integer, AbstractExecutionContext> nodes;
+    private final Map<DeviceUID, Map<CodePath, Object>> contents;
 
     /**
      * 
-     * @param nodeNumber
+     * @param deviceNumber
+     *            number of devices
      * @param rule
-     * @param defaultValue
+     *            rule to link the devices together
      */
-    protected MyDummyEnvironment(final int nodeNumber, final LinkingRule rule) {
+    protected TestEnvironment(final int deviceNumber, final AbstractLinkingStrategy rule) {
         nodes = MAPMAKER.makeMap();
         contents = MAPMAKER.makeMap();
-        this.nodeNumber = nodeNumber;
+        this.deviceNumber = deviceNumber;
         this.rule = rule;
     }
 
-    public static MyDummyEnvironment build() {
-        return build(100, LinkingRule.LINE);
+    /**
+     * Build a default environment with 10 devices in a line.
+     * 
+     * @return environment with 10 devices in a line
+     */
+    public static TestEnvironment build() {
+        return build(10, new LinkingLine());
     }
 
-    public static MyDummyEnvironment build(final int nodeNumber, LinkingRule rule) {
-        MyDummyEnvironment env = new MyDummyEnvironment(nodeNumber, rule);
+    /**
+     * Build the given environment.
+     * 
+     * @param deviceNumber
+     *            number of devices
+     * @param rule
+     *            linking rule
+     * @return new environment
+     */
+    public static TestEnvironment build(final int deviceNumber, final AbstractLinkingStrategy rule) {
+        TestEnvironment env = new TestEnvironment(deviceNumber, rule);
         env.setup();
         return env;
     }
 
-    public void setup() {
-        ids = MAPMAKER.makeMap();
-        for (long i = 0; i < nodeNumber; i++) {
+    private void setup() {
+        for (int i = 0; i < deviceNumber; i++) {
             MyDeviceUID id = new MyDeviceUID(i);
-            ids.put(i, id);
-            nodes.put(i, new MyDummyContext(id, new MyDummyNetworkManager(id, this)));
+            nodes.put(i, new TestContext(id, new TestNetworkManager(id, this)));
         }
     }
 
-    public ExecutionContext getNode(final long nodeId) {
-        return nodes.get(nodeId);
+    /**
+     * @param deviceId device id
+     * @return the device with the given id
+     */
+    public ExecutionContext getNode(final Integer deviceId) {
+        return nodes.get(deviceId);
     }
 
-    public ExecutionEnvironment getNodeEnvironment(final long nodeId) {
-        return nodes.get(nodeId).getExecutionEnvironment();
+    /**
+     * @param deviceId
+     *            device id
+     * @return the environment of the device with the given id
+     */
+    public ExecutionEnvironment getNodeEnvironment(final Integer deviceId) {
+        return nodes.get(deviceId).getExecutionEnvironment();
     }
 
+    /**
+     * @return all the execution contexts
+     */
     public ExecutionContext[] getExecutionContexts() {
-        ExecutionContext[] ctxs = new ExecutionContext[nodeNumber];
-        for (Integer i = 0; i < nodeNumber; i++) {
-            ctxs[i] = nodes.get(i.longValue());
+        ExecutionContext[] ctxs = new ExecutionContext[deviceNumber];
+        for (int i = 0; i < deviceNumber; i++) {
+            ctxs[i] = nodes.get(i);
         }
         return ctxs;
     }
 
-    public Map<DeviceUID, Map<CodePath, Object>> getNeighborhood(DeviceUID id) {
-        long n = ((MyDeviceUID) id).getId();
-
-        final Map<DeviceUID, Map<CodePath, Object>> res = MAPMAKER.makeMap();
-        switch (rule) {
-        case NONE:
-            break;
-        // case ALL:
-        // LongStream.rangeClosed(2, nodeNumber).forEach(v -> res.put(v + 1,
-        // contents.get(v + 1)));
-        // break;
-        // case STAR:
-        // if (n == 1) {
-        // LongStream.rangeClosed(2, nodeNumber).forEach(v -> res.put(v + 1,
-        // contents.get(v + 1)));
-        // }
-        // break;
-        case LINE:
-            if (n < nodeNumber - 1) {
-                DeviceUID i = ids.get(n + 1);
-                if (contents.get(i) != null)
-                    res.put(i, contents.get(i));
-            }
-            if (n > 0) {
-                DeviceUID i = ids.get(n - 1);
-                if (contents.get(i) != null)
-                    res.put(i, contents.get(i));
-            }
-            break;
-        default:
-            break;
-        }
-        return res;
+    /**
+     * @param deviceId
+     *            device id
+     * @return neighborhood of the device with the given id
+     */
+    public Map<DeviceUID, Map<CodePath, Object>> getNeighborhood(final DeviceUID deviceId) {
+        return rule.getNeighbors(deviceId, contents);
     }
 
-    public void putContent(DeviceUID id, Map<CodePath, Object> toSend) {
+    /**
+     * @param id
+     *            device which wants to add new information
+     * @param toSend
+     *            information to be added
+     */
+    public void putContent(final DeviceUID id, final Map<CodePath, Object> toSend) {
         contents.put(id, toSend);
     }
 }

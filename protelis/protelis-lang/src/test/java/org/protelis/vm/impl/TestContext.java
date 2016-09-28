@@ -20,27 +20,36 @@ import java8.util.stream.IntStreams;
 
 /**
  * A dummy Protelis VM to be used for testing.
- *
  */
-public final class MyDummyContext extends AbstractExecutionContext implements DeviceUID {
+public final class TestContext extends AbstractExecutionContext implements DeviceUID {
 
     private static final long serialVersionUID = 1L;
     private final Random rng = new Random(0);
     private final DeviceUID nodeId;
     private final Map<String, Object> properties;
 
-    public MyDummyContext(final DeviceUID id, final MyDummyNetworkManager nm) {
+    /**
+     * @param id
+     *            device id
+     * @param nm
+     *            dummy network manager
+     */
+    public TestContext(final DeviceUID id, final TestNetworkManager nm) {
         this(id, nm, null);
     }
 
     /**
-     *
+     * @param id
+     *            device id
+     * @param nm
+     *            dummy network manager
+     * @param properties
+     *            set default properties for each device environment
      */
-    public MyDummyContext(final DeviceUID nodeId, final MyDummyNetworkManager nm, final Map<String, Object> properties) {
+    public TestContext(final DeviceUID id, final TestNetworkManager nm, final Map<String, Object> properties) {
         super(new SimpleExecutionEnvironment(), nm);
-        this.nodeId = nodeId;
+        this.nodeId = id;
         this.properties = properties;
-
         if (properties != null) {
             final ExecutionEnvironment ex = getExecutionEnvironment();
             properties.keySet().forEach(k -> ex.put(k, properties.get(k)));
@@ -59,7 +68,7 @@ public final class MyDummyContext extends AbstractExecutionContext implements De
 
     @Override
     protected AbstractExecutionContext instance() {
-        return new MyDummyContext(nodeId, (MyDummyNetworkManager) getNetworkManager(), properties);
+        return new TestContext(nodeId, (TestNetworkManager) getNetworkManager(), properties);
     }
 
     @Override

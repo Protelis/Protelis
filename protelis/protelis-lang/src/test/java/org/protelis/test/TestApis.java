@@ -19,8 +19,10 @@ import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
-import org.protelis.vm.impl.MyDummyEnvironment;
-import org.protelis.vm.impl.MyDummyEnvironment.LinkingRule;
+import org.protelis.vm.impl.LinkingLine;
+import org.protelis.vm.impl.LinkingNone;
+import org.protelis.vm.impl.LinkingStar;
+import org.protelis.vm.impl.TestEnvironment;
 
 /**
  * Main collection of tests for the Protelis language and VM.
@@ -36,22 +38,31 @@ public class TestApis {
     private static final int MIN_CYCLE_NUM = 1;
     private static final int MAX_CYCLE_NUM = 100;
 
-    /**
-     * Test distance to.
-     */
-    /*
-     * @Test public void testDistanceTo() { final MyDummyEnvironment env =
-     * MyDummyEnvironment.build(); env.getNodeEnvironment(1).put("source",
-     * true); testFileWithExplicitResult("distanceTo", 1, 0, MAX_CYCLE_NUM,
-     * env.getExecutionContexts()); }
-     */
 
     @Test
-    public void testNeighborhood() {
-        final MyDummyEnvironment env = MyDummyEnvironment.build(3, LinkingRule.LINE);
+    public void testNeighborhood0() {
+        final TestEnvironment env = TestEnvironment.build(3, new LinkingNone());
+        testFileWithExplicitResult("neighborhood", new Double[] { 0.0, 0.0, 0.0 }, env.getExecutionContexts());
+    }
+    
+    @Test
+    public void testNeighborhood1() {
+        final TestEnvironment env = TestEnvironment.build(3, new LinkingLine());
         testFileWithExplicitResult("neighborhood", new Double[] { 1.0, 2.0, 1.0 }, env.getExecutionContexts());
     }
 
+    @Test
+    public void testNeighborhood2() {
+        final TestEnvironment env = TestEnvironment.build(1, new LinkingLine());
+        testFileWithExplicitResult("neighborhood", new Double[] { 0.0 }, env.getExecutionContexts());
+    }
+    
+    @Test
+    public void testNeighborhood3() {
+        final TestEnvironment env = TestEnvironment.build(3, new LinkingStar());
+        testFileWithExplicitResult("neighborhood", new Double[] { 2.0, 1.0, 1.0 }, env.getExecutionContexts());
+    }
+    
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
