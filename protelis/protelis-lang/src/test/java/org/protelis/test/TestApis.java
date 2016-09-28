@@ -63,6 +63,12 @@ public class TestApis {
         testFileWithExplicitResult("neighborhood", new Double[] { 2.0, 1.0, 1.0 }, env.getExecutionContexts());
     }
     
+    @Test
+    public void testNeighborhood4() {
+        final TestEnvironment env = TestEnvironment.build(1, new LinkingStar());
+        testFileWithExplicitResult("neighborhood", new Double[] { 0.0 }, env.getExecutionContexts());
+    }
+    
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
