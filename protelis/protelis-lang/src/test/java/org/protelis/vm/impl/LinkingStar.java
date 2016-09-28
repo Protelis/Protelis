@@ -17,7 +17,7 @@ public class LinkingStar extends AbstractLinkingStrategy {
         final int n = ((TestDeviceUID) id).getId();
         final Map<DeviceUID, Map<CodePath, Object>> res = MAPMAKER.makeMap();
         if (n == 0) {
-            IntStream.range(1, allDevices.size()).forEachOrdered(i -> {
+            IntStream.range(1, allDevices.size()).forEach(i -> {
                 DeviceUID child = new MyDeviceUID(i);
                 if (allDevices.get(child) != null) {
                     res.put(child, allDevices.get(child));
