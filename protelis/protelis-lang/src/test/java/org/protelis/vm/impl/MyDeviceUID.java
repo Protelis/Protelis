@@ -1,12 +1,18 @@
 package org.protelis.vm.impl;
 
-import org.protelis.lang.datatype.DeviceUID;
-
-public class MyDeviceUID implements DeviceUID {
+/**
+ * {@link TestDeviceUID} implementation.
+ */
+public class MyDeviceUID implements TestDeviceUID {
     private static final long serialVersionUID = 1L;
-    private long id;
+    private final Integer id;
 
-    public MyDeviceUID(long id) {
+    /**
+     * 
+     * @param id
+     *            device id
+     */
+    public MyDeviceUID(final Integer id) {
         this.id = id;
     }
 
@@ -15,7 +21,20 @@ public class MyDeviceUID implements DeviceUID {
         return id + "";
     }
 
-    public long getId() {
+    /**
+     * @return return the UID as an {@link Integer}
+     */
+    public Integer getId() {
         return id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return id == ((MyDeviceUID) obj).getId();
     }
 }
