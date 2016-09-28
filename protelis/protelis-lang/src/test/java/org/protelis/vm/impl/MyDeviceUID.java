@@ -18,7 +18,7 @@ public class MyDeviceUID implements TestDeviceUID {
 
     @Override
     public String toString() {
-        return id + "";
+        return id.toString();
     }
 
     /**
