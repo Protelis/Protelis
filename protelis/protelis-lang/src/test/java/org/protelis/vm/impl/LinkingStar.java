@@ -7,7 +7,7 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.util.CodePath;
 
 /**
- * Device are linked with respect to star topology where `Device 0` is the root.
+ * Devices are linked with respect to a star topology where `Device 0` is the root.
  */
 public class LinkingStar extends AbstractLinkingStrategy {
 
