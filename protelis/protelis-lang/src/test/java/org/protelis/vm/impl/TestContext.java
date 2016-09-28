@@ -56,6 +56,7 @@ public final class TestContext extends AbstractExecutionContext implements Devic
         }
     }
 
+    // TODO: System.currentTimeMillis() / 1000d is not reproducible 
     @Override
     public Number getCurrentTime() {
         return System.currentTimeMillis() / 1000d;
@@ -79,7 +80,7 @@ public final class TestContext extends AbstractExecutionContext implements Devic
     /**
      * Test utility.
      * 
-     * @return a field with populated with numbers from 0 to 99
+     * @return a field populated with numbers from 0 to 99
      */
     public static Field makeTestField() {
         final Field res = DatatypeFactory.createField(100);

@@ -69,7 +69,8 @@ public class TestEnvironment {
     }
 
     /**
-     * @param deviceId device id
+     * @param deviceId
+     *            device id
      * @return the device with the given id
      */
     public ExecutionContext getNode(final Integer deviceId) {
