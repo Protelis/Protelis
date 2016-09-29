@@ -75,6 +75,14 @@ public class TestApis {
         final TestEnvironment env = TestEnvironment.build(3, new LinkingLine());
         testFileWithExplicitResult("nbrRange", new Double[] { 1.0, 1.0, 1.0 }, env.getExecutionContexts());
     }
+    
+    @Test
+    public void testDistanceTo() {
+        final TestEnvironment env = TestEnvironment.build(3, new LinkingLine());
+        testFileWithExplicitResult("distanceTo", new Double[] { 0.0, 1.0, 2.0 }, env.getExecutionContexts());
+    }
+    
+    
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
