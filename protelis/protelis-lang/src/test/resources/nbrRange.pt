@@ -1,0 +1,4 @@
+module nbrRange
+
+minHood(self.nbrRange())
+//self.nbrRange()
