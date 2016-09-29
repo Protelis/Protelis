@@ -53,7 +53,7 @@ public final class TestContext extends AbstractExecutionContext implements Devic
      *            device position
      */
     public TestContext(final DeviceUID id, final TestEnvironment env, final TestNetworkManager nm,
-                    final Double[] position) {
+            final Double[] position) {
         this(id, env, nm, null, position);
     }
 
@@ -70,7 +70,7 @@ public final class TestContext extends AbstractExecutionContext implements Devic
      *            virtual position of the device
      */
     public TestContext(final DeviceUID id, final TestEnvironment env, final TestNetworkManager nm,
-                    final Map<String, Object> properties, final Double[] position) {
+            final Map<String, Object> properties, final Double[] position) {
         super(new SimpleExecutionEnvironment(), nm);
         this.deviceId = id;
         this.properties = properties;
@@ -103,19 +103,6 @@ public final class TestContext extends AbstractExecutionContext implements Devic
         return getClass().getSimpleName() + hashCode();
     }
 
-    /**
-     * Test utility.
-     * 
-     * @return a field populated with numbers from 0 to 99
-     */
-    public static Field makeTestField() {
-        final Field res = DatatypeFactory.createField(100);
-        IntStreams.range(0, 100).forEach(n -> res.addSample(new DeviceUID() {
-            private static final long serialVersionUID = 1L;
-        }, (double) n));
-        return res;
-    }
-
     @Override
     public DeviceUID getDeviceUID() {
         return deviceId;
@@ -123,13 +110,31 @@ public final class TestContext extends AbstractExecutionContext implements Devic
 
     @Override
     public Field nbrRange() {
+//        SpatiallyEmbeddedContext[] neighs = env.getLinkingStrategy().getNeighborsContext(deviceId,
+//                env.getActiveExecutionContexts());
         SpatiallyEmbeddedContext[] neighs = env.getLinkingStrategy().getNeighborsContext(deviceId,
-                        env.getExecutionContexts());
+                env.getExecutionContexts());
         final Field r = DatatypeFactory.createField(neighs.length);
         IntStreams.range(0, neighs.length).forEach(n -> {
-            r.addSample(neighs[n].getDeviceUID(), distanceTo(((TestContext) neighs[n]).getDevicePosition()));
+            if (neighs[n] != null) {
+                r.addSample(neighs[n].getDeviceUID(), distanceTo(((TestContext) neighs[n]).getDevicePosition()));
+            }
         });
+        r.addSample(deviceId, 0.0);
         return r;
+
+        // final ProtelisProgram program =
+        // ProtelisLoader.parseAnonymousModule("nbr(self.getDevicePosition())");
+        // final ProtelisVM vm = new ProtelisVM(program, new
+        // TestContext(deviceId, env, (TestNetworkManager) getNetworkManager(),
+        // properties, position));
+        // vm.runCycle();
+        // final Field nbrRes = (Field) vm.getCurrentValue();
+        // final Field res = DatatypeFactory.createField(nbrRes.size());
+        // nbrRes.coupleIterator().forEach(p -> {
+        // res.addSample(p.getFirst(), distanceTo((Double[]) p.getValue()));
+        // });
+        // return res;
     }
 
     /**

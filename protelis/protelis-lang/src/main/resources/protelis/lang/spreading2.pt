@@ -1,79 +1,23 @@
 module protelis:lang:spreading2
 
-/*
- * Gradcast algorithm
- * source: boolean value representing whether the node is a gradient source
- * initial: initial value
- * metric: the gradient is estimated with respect to this distance function
- * accumulate: values are accumulated with respect to this function
- */
 public def G(source, initial, metric, accumulate) {
 	rep(distanceValue <- [Infinity, initial]) {
 		mux(source) {
-			// If the node is a source then G return a 0 potential
-			// and the initial value
 			[0, initial]
 		} else {
-			// The other node potentials are requested
 			let ndv = nbr(distanceValue);
-			// G returns the value related to the minimum potential
-			minHood([
-				// potential estimation
+			minHood ([
 				ndv.get(0) + metric.apply(),
-				// values estimation
 				accumulate.apply(ndv.get(1))
 			])
 		}
-	}.get(1) // return the accumulated value
+	}.get(1) 
 }
 
-/*
- * Field of distances between the current and the other nodes
- */
 public def nbrRange() {
 	self.nbrRange()
 }
 
-public def nbrRangeHop() { 1 }
-
-
-/*
- * Distance between the current and the source nodes 
- */
 public def distanceTo(source) {
-	distanceTo2(source, nbrRange)	
-}
-
-/*
- * Distance between the current and the source nodes 
- */
-public def distanceTo2(source, metric) {
-	// v: other node distances from the source
-	// v + nbrRange(): 
-	//   other node distances from the source + distance of the current node from the formers
-	G(source, 0, nbrRange, (v) -> {v + metric.apply()})
-}
-
-// distance of the source from the destination
-public def distance(source, dest) { 
-	distance2(source, dest, nbrRange)
-}
-
-// distance of the source from the destination
-public def distance2(source, dest, metric) { 
-    rep (distanceValue <- [Infinity, Infinity]) { //;; computing a field of pairs (distance,value)
-        mux (source) { 
-            [ 0, distanceTo2(dest, metric) ]
-        } else { 
-            //;; propagating as a gradient, using for first component of the pair
-            minHood ([nbr(distanceValue).get(0) + metric.apply(), nbr (distanceValue).get(1)])
-        }
-    }.get(1) //;; returning the second component of the pair
-}
-
-/*
- * Broadcast a given value from a source within a spanning tree
- */
-public def broadcast(source, value) {
-	G(source, value, nbrRange, v -> {v})
+	G(source, 0, nbrRange, (v) -> {v + nbrRange()})
 }

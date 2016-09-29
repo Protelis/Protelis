@@ -1,0 +1,3 @@
+rep(distanceValue <- 123) {
+    minHood (self.nbrRange() + nbr(distanceValue) + self.nbrRange())
+}

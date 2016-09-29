@@ -40,7 +40,7 @@ public class LinkingLine extends AbstractLinkingStrategy {
                     final SpatiallyEmbeddedContext[] allContexts) {
         final int n = ((TestDeviceUID) id).getId();
         if (n == 0) {
-            return allContexts.length > 0 ? new SpatiallyEmbeddedContext[] { allContexts[1] }
+            return allContexts.length > 1 ? new SpatiallyEmbeddedContext[] { allContexts[1] }
                             : new SpatiallyEmbeddedContext[] {};
         } else if (n < allContexts.length - 1) {
             return new SpatiallyEmbeddedContext[] { allContexts[n - 1], allContexts[n + 1] };
