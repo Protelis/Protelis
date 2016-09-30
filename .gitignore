@@ -5,3 +5,4 @@ build/
 *.directory
 gradle.prefs
 version.info
+.metadata/
