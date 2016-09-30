@@ -11,12 +11,13 @@ package org.protelis.vm.impl;
 import java.util.Map;
 import java.util.Random;
 
+import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.vm.ExecutionEnvironment;
-
-import java8.util.stream.IntStreams;
+import org.protelis.vm.ProtelisProgram;
+import org.protelis.vm.ProtelisVM;
 
 /**
  * A dummy Protelis VM to be used for testing.
@@ -110,24 +111,25 @@ public final class TestContext extends AbstractExecutionContext implements Devic
 
     @Override
     public Field nbrRange() {
-//        SpatiallyEmbeddedContext[] neighs = env.getLinkingStrategy().getNeighborsContext(deviceId,
-//                env.getActiveExecutionContexts());
-        SpatiallyEmbeddedContext[] neighs = env.getLinkingStrategy().getNeighborsContext(deviceId,
-                env.getExecutionContexts());
-        final Field r = DatatypeFactory.createField(neighs.length);
-        IntStreams.range(0, neighs.length).forEach(n -> {
-            if (neighs[n] != null) {
-                r.addSample(neighs[n].getDeviceUID(), distanceTo(((TestContext) neighs[n]).getDevicePosition()));
-            }
-        });
-        r.addSample(deviceId, 0.0);
-        return r;
+        // SpatiallyEmbeddedContext[] neighs =
+        // env.getLinkingStrategy().getNeighborsContext(deviceId,
+        // env.getActiveExecutionContexts());
+        // SpatiallyEmbeddedContext[] neighs =
+        // env.getLinkingStrategy().getNeighborsContext(deviceId,
+        // env.getExecutionContexts());
+        // final Field r = DatatypeFactory.createField(neighs.length);
+        // IntStreams.range(0, neighs.length).forEach(n -> {
+        // if (neighs[n] != null) {
+        // r.addSample(neighs[n].getDeviceUID(), distanceTo(((TestContext)
+        // neighs[n]).getDevicePosition()));
+        // }
+        // });
+        // r.addSample(deviceId, 0.0);
+        // return r;
 
         // final ProtelisProgram program =
         // ProtelisLoader.parseAnonymousModule("nbr(self.getDevicePosition())");
-        // final ProtelisVM vm = new ProtelisVM(program, new
-        // TestContext(deviceId, env, (TestNetworkManager) getNetworkManager(),
-        // properties, position));
+        // final ProtelisVM vm = new ProtelisVM(program, instance());
         // vm.runCycle();
         // final Field nbrRes = (Field) vm.getCurrentValue();
         // final Field res = DatatypeFactory.createField(nbrRes.size());
@@ -135,6 +137,7 @@ public final class TestContext extends AbstractExecutionContext implements Devic
         // res.addSample(p.getFirst(), distanceTo((Double[]) p.getValue()));
         // });
         // return res;
+        return buildField(position -> distanceTo(position), position);
     }
 
     /**
