@@ -1,0 +1,4 @@
+module distanceTo
+import protelis:lang:spreading2
+
+distanceTo(env.has("source"))
