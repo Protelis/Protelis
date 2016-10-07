@@ -1,9 +1,5 @@
-module neighborhood
-
-def neighborhood() {
+() -> {
     rep(c <- 0) {
         sumHood(nbr(1))
     }
-}
-
-neighborhood()
+}.apply()

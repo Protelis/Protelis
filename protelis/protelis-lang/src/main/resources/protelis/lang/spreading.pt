@@ -31,7 +31,7 @@ public def G(source, initial, metric, accumulate) {
  * Field of distances between the current and the other nodes
  */
 public def nbrRange() {
-	nbr(self.getDevicePosition()).getDistanceTo(self.getDevicePosition())
+	self.nbrRange()
 }
 
 public def nbrRangeHop() { 1 }
