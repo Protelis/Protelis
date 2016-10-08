@@ -1,2 +1,15 @@
 module protelis:lang:core
-public def identity(v) { v } 
+
+public def identity(a) { a } 
+
+public def or(a, b) {
+	a || b
+}
+
+public def and(a, b) {
+	a && b
+}
+
+public def not(a) {
+	!a
+}
