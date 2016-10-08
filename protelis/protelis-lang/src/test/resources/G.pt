@@ -1,0 +1,4 @@
+import protelis:lang:spreading
+import protelis:lang:core
+
+G(env.has("source"), self.getDeviceUID().toString(), nbrRange, identity)
