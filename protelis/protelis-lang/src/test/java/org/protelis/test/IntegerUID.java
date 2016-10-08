@@ -7,7 +7,12 @@ public class IntegerUID implements DeviceUID {
     private static final long serialVersionUID = 7168671027263227202L;
     private final int uid;
 
-    IntegerUID(final int uid) {
+    /**
+     * 
+     * @param uid
+     *            universal id
+     */
+    public IntegerUID(final int uid) {
         this.uid = uid;
     }
 
