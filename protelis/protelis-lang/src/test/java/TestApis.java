@@ -1,7 +1,12 @@
 import static org.junit.Assert.assertArrayEquals;
 
+import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
+import org.protelis.test.Results;
 import org.protelis.test.SimulationTest;
+import org.protelis.test.TestConfig;
 
 /**
  * Testing Protelis core libraries.
@@ -65,6 +70,14 @@ public class TestApis {
      * Test G.pt.
      */
     @Test
+    public void testG1() {
+        test(Results.GTC);
+    }
+
+    /**
+     * Test distance.pt.
+     */
+    @Test
     public void testDistance() {
         SimulationTest sim = new SimulationTest("distance", MAX_CYCLE_NUM, 3, 4, 1);
         sim.setProperty(0, "source", true);
@@ -104,12 +117,45 @@ public class TestApis {
         testFileWithExplicitResult(new SimulationTest("cyclictimer", 7, 1, 1, 1).getResults(), Results.CYCLICTIMER2);
     }
 
+    /**
+     * Test C.pt.
+     */
+    @Test
+    public void testC() {
+        SimulationTest sim = new SimulationTest("C", MAX_CYCLE_NUM, 4, 4, 1);
+        IntStream.range(0, 16).forEach(i -> sim.setProperty(i, "n", i));
+        sim.setProperty(5, "source", true);
+        testFileWithExplicitResult(sim.getResults(), Results.C);
+    }
+
+    /**
+     * Test gossip_ever.pt.
+     */
+    @Test
+    public void testGossipEver() {
+        test(Results.GOSSIP_EVER);
+    }
+
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
 
     private void testFileWithExplicitResult(final Object[] simulationResult, final Object[] result) {
         assertArrayEquals(result, simulationResult);
+    }
+
+    private void test(final TestConfig testConfig) {
+        SimulationTest sim = new SimulationTest(testConfig.getFileName(), testConfig.getMaxRound(),
+                        testConfig.getExpectedResult()[0].length, testConfig.getExpectedResult().length,
+                        testConfig.getDistance());
+        for (Triple<Integer, String, Object> t : testConfig.getProperties()) {
+            if (t.getLeft() == TestConfig.ALL) {
+                sim.setPropertyToAll(t.getMiddle(), t.getRight());
+            } else {
+                sim.setProperty(t.getLeft(), t.getMiddle(), t.getRight());
+            }
+        }
+        assertArrayEquals(testConfig.getExpectedResult(), sim.getResults());
     }
 
 }

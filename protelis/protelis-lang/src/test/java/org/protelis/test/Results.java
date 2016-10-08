@@ -1,9 +1,10 @@
-import org.protelis.test.IntegerUID;
+package org.protelis.test;
 
 /**
  * Well known results of the tests.
  */
 public final class Results {
+
     private Results() {
     }
 
@@ -11,6 +12,16 @@ public final class Results {
      * FOO value.
      */
     public static final String FOO = "foo";
+
+    /**
+     * Each device considers only his adjacent devices as neighbors.
+     */
+    public static final int MANHATTAN_BLOCK = 1;
+
+    /**
+     * Number of round to be executed.
+     */
+    public static final int EXECUTION_ROUND = 100;
 
     /**
      * 4x3 squared matrix made of FOO values.
@@ -52,6 +63,13 @@ public final class Results {
     };
 
     /**
+     * G.pt test configuration.
+     */
+    public static final TestConfig GTC = TestConfig.create("G")
+                    .setProperties("source", true, 0, 3, 12, 15)
+                    .setExpectedResult(G);
+
+    /**
      * distance.pt result.
      */
     public static final Object[][] DISTANCE = {
@@ -75,4 +93,33 @@ public final class Results {
      * cyclictimer.pt result.
      */
     public static final Object[] CYCLICTIMER2 = { false };
+
+    /**
+     * C.pt result.
+     * Distances from the source
+     * | 2 | 1 | 2 | 3 |
+     * | 1 | x | 1 | 2 |
+     * | 2 | 1 | 2 | 3 |
+     * | 3 | 2 | 3 | 4 |
+     */
+    public static final Object[][] C = {
+                    { 0.0, 3,  2,  3 },
+                    { 4, 120, 19, 10 },
+                    { 20, 22, 21,  11 },
+                    { 12, 13, 29,  15 }
+    };
+
+    /**
+     * gossip_ever.pt test configuration.
+     */
+    public static final TestConfig GOSSIP_EVER = TestConfig.create("gossipEver")
+                    .setProperties("temperature", 10)
+                    .setProperties("temperature", 21, 0)
+                    .setExpectedResult(new Object[][] {
+                        {true, true, true, true},
+                        {true, true, true, true},
+                        {true, true, true, true},
+                        {true, true, true, true}
+                    });
+
 }

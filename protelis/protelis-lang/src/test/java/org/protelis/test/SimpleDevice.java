@@ -1,5 +1,7 @@
 package org.protelis.test;
 
+import java.util.Random;
+
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
@@ -13,6 +15,7 @@ import org.protelis.vm.impl.SimpleExecutionEnvironment;
  * ProtelisVM and a network interface.
  */
 public class SimpleDevice extends AbstractExecutionContext implements SpatiallyEmbeddedDevice {
+    private final Random r;
     /** Device numerical identifier */
     private final IntegerUID uid;
     /** The Protelis VM to be executed by the device */
@@ -33,7 +36,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
         super(new SimpleExecutionEnvironment(), new CachingNetworkManager());
         this.uid = new IntegerUID(uid);
         this.position = position;
-
+        r = new Random(0);
         // Finish making the new device and add it to our collection
         vm = new ProtelisVM(program, this);
     }
@@ -47,6 +50,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
     private SimpleDevice(final IntegerUID uid) {
         super(new SimpleExecutionEnvironment(), new CachingNetworkManager());
         this.uid = uid;
+        r = new Random(0);
         vm = null;
     }
 
@@ -127,7 +131,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
      */
     @Override
     public double nextRandomDouble() {
-        return Math.random();
+        return r.nextDouble();
     }
 
     @Override

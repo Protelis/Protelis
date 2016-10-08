@@ -179,4 +179,18 @@ public class SimulationTest {
             }
         }
     }
+
+    /**
+     * Set a property for the given device.
+     * 
+     * @param key
+     *            property key
+     * @param value
+     *            property value
+     */
+    public void setPropertyToAll(final String key, final Object value) {
+        for (SimpleDevice d : devices) {
+            d.getExecutionEnvironment().put(key, value);
+        }
+    }
 }
