@@ -60,4 +60,19 @@ public final class Results {
                     { 5.0, 5.0, 5.0 },
                     { 5.0, 5.0, 5.0 }
     };
+
+    /**
+     * T.pt result.
+     */
+    public static final Object[] T = { 0.0 };
+
+    /**
+     * cyclictimer.pt result.
+     */
+    public static final Object[] CYCLICTIMER1 = { true };
+
+    /**
+     * cyclictimer.pt result.
+     */
+    public static final Object[] CYCLICTIMER2 = { false };
 }

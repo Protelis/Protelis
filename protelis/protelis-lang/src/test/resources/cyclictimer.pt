@@ -1,0 +1,2 @@
+import protelis:lang:time
+cyclicTimer(5, 1)

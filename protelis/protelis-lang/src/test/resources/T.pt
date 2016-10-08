@@ -1,0 +1,2 @@
+import protelis:lang:time
+T(5, 0, (v) -> { v - 1 })

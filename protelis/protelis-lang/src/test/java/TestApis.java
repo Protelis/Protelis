@@ -72,6 +72,38 @@ public class TestApis {
         testFileWithExplicitResult(sim.getResults(), Results.DISTANCE);
     }
 
+    /**
+     * Test T function.
+     */
+    @Test
+    public void testT() {
+        testFileWithExplicitResult(new SimulationTest("T", MAX_CYCLE_NUM, 1, 1, 1).getResults(), Results.T);
+    }
+
+    /**
+     * Test cyclicTimer function.
+     */
+    @Test
+    public void testCyclicTimer1() {
+        testFileWithExplicitResult(new SimulationTest("cyclictimer", 5, 1, 1, 1).getResults(), Results.CYCLICTIMER2);
+    }
+
+    /**
+     * Test cyclicTimer function.
+     */
+    @Test
+    public void testCyclicTimer2() {
+        testFileWithExplicitResult(new SimulationTest("cyclictimer", 6, 1, 1, 1).getResults(), Results.CYCLICTIMER1);
+    }
+
+    /**
+     * Test cyclicTimer function.
+     */
+    @Test
+    public void testCyclicTimer3() {
+        testFileWithExplicitResult(new SimulationTest("cyclictimer", 7, 1, 1, 1).getResults(), Results.CYCLICTIMER2);
+    }
+
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
