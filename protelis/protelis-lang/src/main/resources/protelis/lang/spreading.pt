@@ -77,3 +77,12 @@ public def distance2(source, dest, metric) {
 public def broadcast(source, value) {
 	G(source, value, nbrRange, v -> {v})
 }
+
+/**
+ * "gossip" algorithm that computes whether any location has ever experienced a given condition
+ */
+public def gossip_ever(a) {
+	rep (ever <- false) {
+		a || anyHood (nbr (ever))		
+	}
+}
