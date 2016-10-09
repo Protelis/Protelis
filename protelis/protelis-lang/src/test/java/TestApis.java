@@ -103,6 +103,22 @@ public class TestApis {
     }
 
     /**
+     * Test limitedMemory function.
+     */
+    @Test
+    public void testLimitedMemory1() {
+        test(Results.LIMITED_MEMORY1);
+    }
+
+    /**
+     * Test limitedMemory function.
+     */
+    @Test
+    public void testLimitedMemory2() {
+        test(Results.LIMITED_MEMORY2);
+    }
+
+    /**
      * Test C.pt.
      */
     @Test

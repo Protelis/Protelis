@@ -47,3 +47,13 @@ public def cyclicFunction(length, decay, function) {
 	}
 }
 
+//public def limitedMemory(value, timeout, dt) {
+//	T([timeout, value], [0, false], (t) -> {[t.get(0) - dt, t.get(1)]}).get(1)
+//}
+
+/**
+ * Hold `value` until a specified `timeout`. Return `false` when `T` returns 0.
+ */
+public def limitedMemory(value, timeout, dt) {
+	if (T(timeout, 0, (t) -> {t - dt}) == 0) { false } else { value }
+}

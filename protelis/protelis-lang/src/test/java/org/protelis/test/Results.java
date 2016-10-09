@@ -149,6 +149,26 @@ public final class Results {
     );
 
     /**
+     * limitedMemory.pt result.
+     */
+    public static final TestConfig LIMITED_MEMORY1 = TestConfig.create("limitedMemory", 4)
+                    .setProperties("value", FOO)
+                    .setProperties("timeout", 5)
+                    .setProperties("decay", 1)
+                    .setExpectedResult(new Object[][] {{ FOO }}
+    );
+
+    /**
+     * limitedMemory.pt result.
+     */
+    public static final TestConfig LIMITED_MEMORY2 = TestConfig.create("limitedMemory", 5)
+                    .setProperties("value", FOO)
+                    .setProperties("timeout", 5)
+                    .setProperties("decay", 1)
+                    .setExpectedResult(new Object[][] {{ false }}
+    );
+
+    /**
      * C.pt result.
      * Distances from the source
      * | 2 | 1 | 2 | 3 |
