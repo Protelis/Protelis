@@ -51,6 +51,19 @@ public final class Results {
     );
 
     /**
+     * obstacle.pt result.
+     */
+    public static final TestConfig OBSTACLE = TestConfig.create("obstacle")
+                    .setProperties("source", true, 3)
+                    .setProperties("obstacle", true, 1, 4)
+                    .setExpectedResult(new Object[][] {
+                        { 1.0,  Double.POSITIVE_INFINITY,    5.0 },
+                        { 0.0,  Double.POSITIVE_INFINITY,    4.0 },
+                        { 1.0,  2.0,                         3.0 }
+                    }
+    );
+
+    /**
      * nbrRange.pt result.
      */
     public static final TestConfig NBRRANGE = TestConfig.create("nbrRange")

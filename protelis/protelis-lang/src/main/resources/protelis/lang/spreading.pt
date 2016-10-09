@@ -86,3 +86,11 @@ public def gossip_ever(a) {
 		a || anyHood (nbr (ever))		
 	}
 }
+
+/**
+ * Distance to devices where "source" is `true`, while avoiding devices where "obstacle" is `true`
+ */
+public def distanceTo_avoiding_obstacle(source, obstacle) {
+	if (obstacle) { Infinity }
+	else { distanceTo(source) }
+}

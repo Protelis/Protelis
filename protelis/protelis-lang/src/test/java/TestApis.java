@@ -31,6 +31,14 @@ public class TestApis {
     }
 
     /**
+     * Test distanceTo with obstacle.
+     */
+    @Test
+    public void testDistanceToWithObstacle() {
+        test(Results.OBSTACLE);
+    }
+
+    /**
      * Test broadcast function.
      */
     @Test
