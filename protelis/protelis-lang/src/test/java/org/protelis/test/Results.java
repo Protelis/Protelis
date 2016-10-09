@@ -191,13 +191,32 @@ public final class Results {
      * | 2 | 1 | 2 | 3 |
      * | 3 | 2 | 3 | 4 |
      */
-    public static final TestConfig SUMMARIZE = TestConfig.create("summarize").setProperties("n", 1)
+    public static final TestConfig SUMMARIZE = TestConfig.create("summarize")
+                    .setProperties("n", 1)
                     .setProperties("source", true, 5)
                     .setExpectedResult(new Object[][] { 
                                     { DC, DC, DC, DC },
                                     { DC, 16.0, DC, DC },
                                     { DC, DC, DC, DC },
                                     { DC, DC, DC, DC } 
+    });
+
+    /**
+     * opinionFeedback.pt result.
+     * | X | A | B | X |
+     * | A | A | B | B |
+     * | C | C | D | D |
+     * | X | C | D | X |
+     */
+    public static final TestConfig OPINION_FEEDBACK = TestConfig.create("opinionFeedback")
+                    .setProperties("acts", true, 0, 3, 12, 15)
+                    .setProperties("feedback", 1)
+                    .setProperties("feedback", 0, 0, 5, 9, 10, 14, 15) // override the previous feedbacks
+                    .setExpectedResult(new Object[][] { 
+                                    { 2.0, DC, DC, 4.0 },
+                                    { DC, DC, DC, DC },
+                                    { DC, DC, DC, DC },
+                                    { 3.0, DC, DC, 1.0 } 
     });
 
     /**

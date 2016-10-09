@@ -143,11 +143,19 @@ public class TestApis {
     }
 
     /**
-     * Test gossip_ever.pt.
+     * Test gossipEver.pt.
      */
     @Test
     public void testGossipEver() {
         test(Results.GOSSIP_EVER);
+    }
+
+    /**
+     * Test opinionFeedback.pt.
+     */
+    @Test
+    public void testOpinionFeedback() {
+        test(Results.OPINION_FEEDBACK);
     }
 
     /*
