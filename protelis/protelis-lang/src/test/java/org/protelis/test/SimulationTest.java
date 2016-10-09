@@ -108,7 +108,7 @@ public class SimulationTest {
         // Execute one cycle at each device
         for (SimpleDevice d : devices) {
             d.getVM().runCycle();
-            System.out.println(d.getVM().getCurrentValue());
+            // System.out.println(d.getVM().getCurrentValue());
         }
         // Update network connectivity
         updateNetwork();
@@ -153,7 +153,7 @@ public class SimulationTest {
         int round = 0;
         while (round < executionRound) {
             round++;
-            System.out.println(round + " ----");
+            // System.out.println(round + " ----");
             synchronousUpdate();
         }
 
