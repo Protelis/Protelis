@@ -195,12 +195,21 @@ public def channel2(source, destination, obstacle, width) {
 }
 
 /**
+ * Consensus.
+ * 
+ * Return type: (num, f) -> num
+ */
+public def consensus(init, f) {
+ 	rep (val <- init) {
+ 		val + f.apply(sumHood(nbr(val) - val))
+ 	}	
+} 
+
+/**
  * Laplacian consensus.
  * 
  * Return type: (num, num) -> num.
  */
  public def laplacianConsensus(init, epsilon) {
- 	rep (val <- init) {
- 		val + epsilon * sumHood(nbr(val) - val)
- 	}
+ 	consensus(init, (v) -> {epsilon * v})
  }
