@@ -127,6 +127,14 @@ public class TestApis {
     }
 
     /**
+     * Test TFilter function.
+     */
+    @Test
+    public void testTFilter() {
+        test(Results.TFILTER);
+    }
+
+    /**
      * Test summarize.pt.
      */
     @Test

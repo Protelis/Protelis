@@ -177,6 +177,13 @@ public final class Results {
     );
 
     /**
+     * tfilter.pt result.
+     */
+    public static final TestConfig TFILTER = TestConfig.create("tfilter", 1)
+                    .setExpectedResult(new Object[][] {{ 0.0 }}
+    );
+
+    /**
      * summarize.pt result.
      * Distances from the source
      * | 2 | 1 | 2 | 3 |
