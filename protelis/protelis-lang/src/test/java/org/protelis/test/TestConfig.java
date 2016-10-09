@@ -1,5 +1,6 @@
 package org.protelis.test;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public final class TestConfig {
      */
     public static final int ALL = -1;
     private List<Triple<Integer, String, Object>> properties;
-    private Object[][] result;
+    private List<Pair<Position, Object[][]>> r;
     private int maxRound, distance;
     private String fileName;
 
@@ -43,11 +44,27 @@ public final class TestConfig {
     /**
      * @return result of the simulation
      */
-    public Object[][] getExpectedResult() {
-        if (result == null) {
+    public Object[] getExpectedResult() {
+        if (r.size() == 0) {
             throw new IllegalArgumentException("Expected result is null");
         }
-        return result;
+        List<Object> res = new LinkedList<>();
+        for (Pair<Position, Object[][]> group : r) {
+            for (Object object : matrixToArray(group.getRight())) {
+                res.add(object);
+            }
+        }
+        return res.toArray();
+    }
+
+    /**
+     * @return result of the simulation
+     */
+    public List<Pair<Position, Object[][]>> getExpectedResultGroups() {
+        if (r.size() == 0) {
+            throw new IllegalArgumentException("Expected result is null");
+        }
+        return r;
     }
 
     /**
@@ -100,59 +117,85 @@ public final class TestConfig {
         return this;
     }
 
+    private Object[] matrixToArray(final Object[][] result) {
+        List<Object> res = new LinkedList<>();
+
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
+                res.add(result[i][j]);
+            }
+        }
+        return res.toArray();
+    }
+
     /**
      * 
      * @param result
-     *            expected result
+     *            expected result as grid
      * @return test configuration
      */
     public TestConfig setExpectedResult(final Object[][] result) {
-        this.result = result;
+        r = new LinkedList<>();
+        return addExpectedResult(Position.fromVector(0.0, 0.0, 0.0), result);
+    }
+
+    /**
+     * @param groupStartingPosition
+     *            starting position
+     * @param result
+     *            expected result as grid
+     * @return test configuration
+     */
+    public TestConfig addExpectedResult(final Position groupStartingPosition, final Object[][] result) {
+        r.add(Pair.of(groupStartingPosition, result));
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    private Integer addProperty(final Integer index, final Object value) {
-        int idx = index;
-        if (value instanceof Object[]) {
-            Object[] array = (Object[]) value;
-            for (int i = 0; i < array.length; i++) {
-                idx = addProperty(idx, array[i]);
-            }
-        } else {
-            Pair<String, Object> p = (Pair<String, Object>) value;
-            properties.add(Triple.of(index, p.getLeft(), p.getRight()));
-        }
-        return idx++;
-    }
+    // @SuppressWarnings("unchecked")
+    // private Integer addProperty(final Integer index, final Object value) {
+    // int idx = index;
+    // if (value instanceof Object[]) {
+    // Object[] array = (Object[]) value;
+    // for (int i = 0; i < array.length; i++) {
+    // idx = addProperty(idx, array[i]);
+    // }
+    // } else {
+    // Pair<String, Object> p = (Pair<String, Object>) value;
+    // properties.add(Triple.of(index, p.getLeft(), p.getRight()));
+    // }
+    // return idx++;
+    // }
 
     private void setUp(final String fileName, final int maxRound, final int distance, final Object[][] result) {
-        this.result = result;
+        if (result != null)
+            setExpectedResult(result);
         this.maxRound = maxRound;
         this.distance = distance;
         this.fileName = fileName;
     }
 
-    /**
-     * Test configuration.
-     * 
-     * @param fileName
-     *            file to be tested
-     * @param maxRound
-     *            number of execution round
-     * @param distance
-     *            distance under which devices are considered neighbors
-     * @param properties
-     *            environment's properties
-     * @param result
-     *            expected simulation result
-     */
-    public TestConfig(final String fileName, final int maxRound, final int distance, final Object[] properties,
-                    final Object[][] result) {
-        this.properties = new LinkedList<>();
-        addProperty(0, properties);
-        setUp(fileName, maxRound, distance, result);
-    }
+    // /**
+    // * Test configuration.
+    // *
+    // * @param fileName
+    // * file to be tested
+    // * @param maxRound
+    // * number of execution round
+    // * @param distance
+    // * distance under which devices are considered neighbors
+    // * @param properties
+    // * environment's properties
+    // * @param result
+    // * expected simulation result
+    // */
+    // public TestConfig(final String fileName, final int maxRound, final int
+    // distance, final Object[] properties,
+    // final Object[][] result) {
+    // this.properties = new LinkedList<>();
+    // r = new LinkedList<>();
+    // addProperty(0, properties);
+    // setUp(fileName, maxRound, distance, result);
+    // }
 
     /**
      * Test configuration.
@@ -170,11 +213,7 @@ public final class TestConfig {
      */
     public TestConfig(final String fileName, final int maxRound, final int distance,
                     final Triple<Integer, String, Object>[] properties, final Object[][] result) {
-        this.properties = new LinkedList<>();
-        for (Triple<Integer, String, Object> t : properties) {
-            this.properties.add(t);
-        }
-        setUp(fileName, maxRound, distance, result);
+        this(fileName, maxRound, distance, Arrays.asList(properties), result);
     }
 
     /**
@@ -194,6 +233,7 @@ public final class TestConfig {
     public TestConfig(final String fileName, final int maxRound, final int distance,
                     final List<Triple<Integer, String, Object>> properties, final Object[][] result) {
         this.properties = properties;
+        r = new LinkedList<>();
         setUp(fileName, maxRound, distance, result);
     }
 
@@ -208,8 +248,7 @@ public final class TestConfig {
      *            distance under which devices are considered neighbors
      */
     public TestConfig(final String fileName, final int maxRound, final int distance) {
-        this.properties = new LinkedList<>();
-        setUp(fileName, maxRound, distance, null);
+        this(fileName, maxRound, distance, new LinkedList<>(), null);
     }
 
     /**
@@ -262,25 +301,26 @@ public final class TestConfig {
         return new TestConfig(fileName, maxRound, distance, res, result);
     }
 
-    /**
-     * Test configuration.
-     * 
-     * @param fileName
-     *            file to be tested
-     * @param maxRound
-     *            number of execution round
-     * @param distance
-     *            distance under which devices are considered neighbors
-     * @param properties
-     *            environment's properties
-     * @param result
-     *            expected simulation result
-     * @return new test configuration
-     */
-    public static TestConfig create(final String fileName, final int maxRound, final int distance,
-                    final Object[] properties, final Object[][] result) {
-        return new TestConfig(fileName, maxRound, distance, properties, result);
-    }
+    // /**
+    // * Test configuration.
+    // *
+    // * @param fileName
+    // * file to be tested
+    // * @param maxRound
+    // * number of execution round
+    // * @param distance
+    // * distance under which devices are considered neighbors
+    // * @param properties
+    // * environment's properties
+    // * @param result
+    // * expected simulation result
+    // * @return new test configuration
+    // */
+    // public static TestConfig create(final String fileName, final int
+    // maxRound, final int distance,
+    // final Object[] properties, final Object[][] result) {
+    // return new TestConfig(fileName, maxRound, distance, properties, result);
+    // }
 
     /**
      * 
@@ -312,6 +352,23 @@ public final class TestConfig {
      */
     public static TestConfig create(final String fileName) {
         return new TestConfig(fileName, Results.EXECUTION_ROUND, Results.MANHATTAN_BLOCK);
+    }
+
+    /**
+     * 
+     * Test configuration with default settings.
+     * 
+     * distance = {@link Results}.MANHATTAN_BLOCK
+     * 
+     * @param maxRound
+     *            number of execution round
+     * 
+     * @param fileName
+     *            file to be tested
+     * @return new test configuration
+     */
+    public static TestConfig create(final String fileName, final int maxRound) {
+        return new TestConfig(fileName, maxRound, Results.MANHATTAN_BLOCK);
     }
 
 }

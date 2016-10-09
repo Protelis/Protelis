@@ -1,9 +1,10 @@
+
 import static org.junit.Assert.assertArrayEquals;
 
-import java.util.stream.IntStream;
-
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
+import org.protelis.test.Position;
 import org.protelis.test.Results;
 import org.protelis.test.SimulationTest;
 import org.protelis.test.TestConfig;
@@ -13,15 +14,12 @@ import org.protelis.test.TestConfig;
  */
 public class TestApis {
 
-    private static final int MAX_CYCLE_NUM = 100;
-
     /**
      * Test the number of neighbors of each device.
      */
     @Test
     public void testNeighborhood() {
-        testFileWithExplicitResult(new SimulationTest("neighborhood", MAX_CYCLE_NUM, 3, 3, 1).getResults(),
-                        Results.NEIGHBORHOOD);
+        test(Results.NEIGHBORHOOD);
     }
 
     /**
@@ -29,9 +27,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceTo() {
-        SimulationTest sim = new SimulationTest("distanceTo", MAX_CYCLE_NUM, 3, 1, 1);
-        sim.setProperty(0, "source", true);
-        testFileWithExplicitResult(sim.getResults(), new Double[] { 0.0, 1.0, 2.0 });
+        test(Results.DISTANCETO);
     }
 
     /**
@@ -39,9 +35,7 @@ public class TestApis {
      */
     @Test
     public void testBroadcast() {
-        SimulationTest sim = new SimulationTest("broadcast", MAX_CYCLE_NUM, 3, 4, 1);
-        sim.setProperty(0, "source", true);
-        testFileWithExplicitResult(sim.getResults(), Results.BROADCAST);
+        test(Results.BROADCAST);
     }
 
     /**
@@ -49,8 +43,7 @@ public class TestApis {
      */
     @Test
     public void testNbrRange() {
-        testFileWithExplicitResult(new SimulationTest("nbrRange", MAX_CYCLE_NUM, 2, 1, 1).getResults(),
-                        Results.NBRRANGE);
+        test(Results.NBRRANGE);
     }
 
     /**
@@ -58,20 +51,7 @@ public class TestApis {
      */
     @Test
     public void testG() {
-        SimulationTest sim = new SimulationTest("G", MAX_CYCLE_NUM, 4, 4, 1);
-        sim.setProperty(0, "source", true);
-        sim.setProperty(3, "source", true);
-        sim.setProperty(12, "source", true);
-        sim.setProperty(15, "source", true);
-        testFileWithExplicitResult(sim.getResults(), Results.G);
-    }
-
-    /**
-     * Test G.pt.
-     */
-    @Test
-    public void testG1() {
-        test(Results.GTC);
+        test(Results.G);
     }
 
     /**
@@ -79,10 +59,7 @@ public class TestApis {
      */
     @Test
     public void testDistance() {
-        SimulationTest sim = new SimulationTest("distance", MAX_CYCLE_NUM, 3, 4, 1);
-        sim.setProperty(0, "source", true);
-        sim.setProperty(11, "destination", true);
-        testFileWithExplicitResult(sim.getResults(), Results.DISTANCE);
+        test(Results.DISTANCE);
     }
 
     /**
@@ -90,7 +67,7 @@ public class TestApis {
      */
     @Test
     public void testT() {
-        testFileWithExplicitResult(new SimulationTest("T", MAX_CYCLE_NUM, 1, 1, 1).getResults(), Results.T);
+        test(Results.T);
     }
 
     /**
@@ -98,7 +75,7 @@ public class TestApis {
      */
     @Test
     public void testCyclicTimer1() {
-        testFileWithExplicitResult(new SimulationTest("cyclictimer", 5, 1, 1, 1).getResults(), Results.CYCLICTIMER2);
+        test(Results.CYCLICTIMER1);
     }
 
     /**
@@ -106,7 +83,7 @@ public class TestApis {
      */
     @Test
     public void testCyclicTimer2() {
-        testFileWithExplicitResult(new SimulationTest("cyclictimer", 6, 1, 1, 1).getResults(), Results.CYCLICTIMER1);
+        test(Results.CYCLICTIMER2);
     }
 
     /**
@@ -114,7 +91,7 @@ public class TestApis {
      */
     @Test
     public void testCyclicTimer3() {
-        testFileWithExplicitResult(new SimulationTest("cyclictimer", 7, 1, 1, 1).getResults(), Results.CYCLICTIMER2);
+        test(Results.CYCLICTIMER3);
     }
 
     /**
@@ -122,10 +99,7 @@ public class TestApis {
      */
     @Test
     public void testC() {
-        SimulationTest sim = new SimulationTest("C", MAX_CYCLE_NUM, 4, 4, 1);
-        IntStream.range(0, 16).forEach(i -> sim.setProperty(i, "n", i));
-        sim.setProperty(5, "source", true);
-        testFileWithExplicitResult(sim.getResults(), Results.C);
+        test(Results.C);
     }
 
     /**
@@ -140,14 +114,14 @@ public class TestApis {
      * From this point the rest of the file is not tests, but utility methods
      */
 
-    private void testFileWithExplicitResult(final Object[] simulationResult, final Object[] result) {
-        assertArrayEquals(result, simulationResult);
-    }
-
     private void test(final TestConfig testConfig) {
         SimulationTest sim = new SimulationTest(testConfig.getFileName(), testConfig.getMaxRound(),
-                        testConfig.getExpectedResult()[0].length, testConfig.getExpectedResult().length,
                         testConfig.getDistance());
+        for (Pair<Position, Object[][]> group : testConfig.getExpectedResultGroups()) {
+            Object[][] g = group.getRight();
+            sim.addGroup(Pair.of(group.getLeft(), Pair.of(g[0].length, g.length)));
+        }
+        sim.createNetwork();
         for (Triple<Integer, String, Object> t : testConfig.getProperties()) {
             if (t.getLeft() == TestConfig.ALL) {
                 sim.setPropertyToAll(t.getMiddle(), t.getRight());

@@ -3,10 +3,12 @@ package org.protelis.test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.util.CodePath;
@@ -25,7 +27,9 @@ public class SimulationTest {
     private final Map<SimpleDevice, Set<SimpleDevice>> network = new HashMap<>();
     // private final Globe EARTH = new Earth();
     private final double communicationRange;
-    private final int maxRun, width, height;
+    private final int executionRound;
+    private final List<Pair<Position, Pair<Integer, Integer>>> deviceGroups;
+    private final String programName;
 
     /**
      * Test.
@@ -34,60 +38,62 @@ public class SimulationTest {
      *            program name
      * @param maxRun
      *            number of rounds to be executed
-     * @param width
-     *            devices per row
-     * @param height
-     *            devices per column
      * @param communicationRange
      *            range under which two devices are considered neighbors
      */
-    public SimulationTest(final String programName, final int maxRun, final int width, final int height,
-                    final double communicationRange) {
+    public SimulationTest(final String programName, final int maxRun, final double communicationRange) {
+        this.programName = programName;
         this.communicationRange = communicationRange;
-        this.maxRun = maxRun;
-        this.width = width;
-        this.height = height;
-        createNetwork(programName, width, height);
+        this.executionRound = maxRun;
+        this.deviceGroups = new LinkedList<>();
+    }
+
+    /**
+     * Add a new group of devices to this simulation.
+     * 
+     * @param group
+     *            group to be added
+     * @return this simulation
+     */
+    public SimulationTest addGroup(final Pair<Position, Pair<Integer, Integer>> group) {
+        deviceGroups.add(group);
+        return this;
     }
 
     /**
      * Create an N x N grid of devices, each running the inducated program.
-     * 
-     * @param program
-     *            program name
-     * @param width
-     *            number of devices per row
-     * @param height
-     *            number of devices per column
      */
-    private void createNetwork(final String protelisModuleName, final int width, final int height) {
-        final int leaderId = 5; // should have neighbors 1, 4, 6, 9
-
-        SimpleDevice[][] cache = new SimpleDevice[width][height];
+    public void createNetwork() {
+        // final int leaderId = 5; // should have neighbors 1, 4, 6, 9
+        // SimpleDevice[][] cache = new SimpleDevice[width][height];
         // Create devices
-        for (int i = 0; i < width; i++) {
+        for (Pair<Position, Pair<Integer, Integer>> g : deviceGroups) {
+            int width = g.getRight().getLeft(), height = g.getRight().getRight();
+            double x = g.getLeft().getX(), y = g.getLeft().getY();
             for (int j = 0; j < height; j++) {
-                int id = j * width + i;
-                Position pos = Position.fromVector(0.0 + (i * 1), 0.0 + (j * 1), 0.0);
+                for (int i = 0; i < width; i++) {
+                    Position pos = Position.fromVector(x + (i * 1), y + (j * 1), 0.0);
 
-                // Parse a new copy of the program for each device:
-                // it will be marked up with values as the interpreter runs
-                ProtelisProgram program = ProtelisLoader.parse(protelisModuleName);
+                    // Parse a new copy of the program for each device:
+                    // it will be marked up with values as the interpreter runs
+                    ProtelisProgram program = ProtelisLoader.parse(programName);
 
-                // Create the device
-                SimpleDevice executionContext = new SimpleDevice(program, id, pos);
-                devices.add(executionContext);
+                    // Create the device
+                    SimpleDevice executionContext = new SimpleDevice(program, devices.size(), pos);
+                    devices.add(executionContext);
 
-                // Mark the leader
-                if (id == leaderId) {
-                    executionContext.getExecutionEnvironment().put("leader", true);
+                    // Mark the leader
+                    // if (id == leaderId) {
+                    // executionContext.getExecutionEnvironment().put("leader",
+                    // true);
+                    // }
+                    // Remember the devices in a grid, for later setting up the
+                    // network
+                    // cache[i][j] = executionContext;
+
+                    // Create holders for network information
+                    network.put(executionContext, new HashSet<>());
                 }
-                // Remember the devices in a grid, for later setting up the
-                // network
-                cache[i][j] = executionContext;
-
-                // Create holders for network information
-                network.put(executionContext, new HashSet<>());
             }
         }
 
@@ -102,6 +108,7 @@ public class SimulationTest {
         // Execute one cycle at each device
         for (SimpleDevice d : devices) {
             d.getVM().runCycle();
+            System.out.println(d.getVM().getCurrentValue());
         }
         // Update network connectivity
         updateNetwork();
@@ -144,21 +151,29 @@ public class SimulationTest {
      */
     public Object[] getResults() {
         int round = 0;
-        while (round < maxRun) {
+        while (round < executionRound) {
             round++;
+            System.out.println(round + " ----");
             synchronousUpdate();
         }
 
-        if (height > 1) {
-            Object[][] res = new Object[height][width];
-            for (SimpleDevice d : devices) {
-                int id = ((IntegerUID) d.getDeviceUID()).getUID();
-                res[id / width][id % width] = d.getVM().getCurrentValue();
-            }
-            return res;
-        } else {
-            return devices.stream().map(d -> d.getVM().getCurrentValue()).toArray();
+        // if (height > 1) {
+        // Object[][] res = new Object[height][width];
+        // for (SimpleDevice d : devices) {
+        // int id = ((IntegerUID) d.getDeviceUID()).getUID();
+        // res[id / width][id % width] = d.getVM().getCurrentValue();
+        // }
+        // return res;
+        // } else {
+
+        List<Object> res = new LinkedList<>();
+        for (SimpleDevice d : devices) {
+            res.add(d.getVM().getCurrentValue());
         }
+        return res.toArray();
+        // return devices.stream().map(d ->
+        // d.getVM().getCurrentValue()).toArray();
+        // }
     }
 
     /**
@@ -175,9 +190,10 @@ public class SimulationTest {
         for (SimpleDevice d : devices) {
             if (d.getDeviceUID().toString().equals(id + "")) {
                 d.getExecutionEnvironment().put(key, value);
-                break;
+                return;
             }
         }
+        throw new IllegalArgumentException("Device " + id + " not found");
     }
 
     /**

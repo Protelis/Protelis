@@ -7,6 +7,30 @@ public class Position {
     private final Double x, y, z;
 
     /**
+     * 
+     * @return x
+     */
+    public Double getX() {
+        return x;
+    }
+
+    /**
+     * 
+     * @return y
+     */
+    public Double getY() {
+        return y;
+    }
+
+    /**
+     * 
+     * @return z
+     */
+    public Double getZ() {
+        return z;
+    }
+
+    /**
      * Create a new position in space.
      * 
      * @param x
@@ -49,6 +73,18 @@ public class Position {
      */
     public static Position fromVector(final Double x, final Double y, final Double z) {
         return new Position(x, y, z);
+    }
+
+    /**
+     * 
+     * @param x
+     *            x
+     * @param y
+     *            y
+     * @return a new position
+     */
+    public static Position fromVector(final Double x, final Double y) {
+        return new Position(x, y, 0);
     }
 
     /**

@@ -24,75 +24,116 @@ public final class Results {
     public static final int EXECUTION_ROUND = 100;
 
     /**
-     * 4x3 squared matrix made of FOO values.
+     * broadcast.pt test. 4x3 squared matrix made of FOO values.
      */
-    public static final Object[][] BROADCAST = { 
-                    { FOO, FOO, FOO }, 
-                    { FOO, FOO, FOO }, 
-                    { FOO, FOO, FOO },
-                    { FOO, FOO, FOO } 
-    };
+    public static final TestConfig BROADCAST = TestConfig.create("broadcast")
+                    .setProperties("source", true, 0)
+                    .setExpectedResult(new Object[][]{
+                        { FOO, FOO, FOO }, 
+                        { FOO, FOO, FOO }, 
+                        { FOO, FOO, FOO },
+                        { FOO, FOO, FOO } 
+                    }
+    );
+
+    /**
+     * distance.pt result.
+     */
+    public static final TestConfig DISTANCETO = TestConfig.create("distanceTo")
+                    .setProperties("source", true, 3)
+                    .setExpectedResult(new Object[][] {
+                        { 1.0, 2.0, 3.0 },
+                        { 0.0, 1.0, 2.0 },
+                        { 1.0, 2.0, 3.0 },
+                        { 2.0, 3.0, 4.0 },
+                        { 3.0, 4.0, 5.0 }
+                    }
+    );
 
     /**
      * nbrRange.pt result.
      */
-    public static final Object[] NBRRANGE = { 1.0, 1.0 };
+    public static final TestConfig NBRRANGE = TestConfig.create("nbrRange")
+                    .setExpectedResult(new Object[][]{{ 1.0, 1.0 }}
+    );
 
     /**
      * neighborhood.pt result.
      */
-    public static final Object[][] NEIGHBORHOOD = { 
-                    { 2.0, 3.0, 2.0 }, 
-                    { 3.0, 4.0, 3.0 }, 
-                    { 2.0, 3.0, 2.0 } 
-    };
+    public static final TestConfig NEIGHBORHOOD = TestConfig.create("neighborhood")
+                    .setExpectedResult(new Object[][]{
+                        { 2.0, 3.0, 2.0 }, 
+                        { 3.0, 4.0, 3.0 }, 
+                        { 2.0, 3.0, 2.0 } 
+                    }
+    );
 
     private static final String S0 = new IntegerUID(0).toString(), 
                     S3 = new IntegerUID(3).toString(), 
                     S12 = new IntegerUID(12).toString(), 
                     S15 = new IntegerUID(15).toString();
-
-    /**
-     * G.pt result.
-     */
-    public static final Object[][] G = {
-                    { S0, S0, S3, S3 },
-                    { S0, S0, S3, S3 },
-                    { S12, S12, S15, S15 },
-                    { S12, S12, S15, S15 }
-    };
-
     /**
      * G.pt test configuration.
      */
-    public static final TestConfig GTC = TestConfig.create("G")
+    public static final TestConfig G = TestConfig.create("G")
                     .setProperties("source", true, 0, 3, 12, 15)
-                    .setExpectedResult(G);
+                    .setExpectedResult(new Object[][]{
+                        { S0, S0, S3, S3 },
+                        { S0, S0, S3, S3 },
+                        { S12, S12, S15, S15 },
+                        { S12, S12, S15, S15 }
+                    }
+    );
 
     /**
      * distance.pt result.
      */
-    public static final Object[][] DISTANCE = {
-                    { 5.0, 5.0, 5.0 },
-                    { 5.0, 5.0, 5.0 },
-                    { 5.0, 5.0, 5.0 },
-                    { 5.0, 5.0, 5.0 }
-    };
+    public static final TestConfig DISTANCE = TestConfig.create("distance")
+                    .setProperties("source", true, 0)
+                    .setProperties("destination", true, 11)
+                    .setExpectedResult(new Object[][] {
+                        { 5.0, 5.0, 5.0 },
+                        { 5.0, 5.0, 5.0 },
+                        { 5.0, 5.0, 5.0 },
+                        { 5.0, 5.0, 5.0 }
+                    }
+    );
 
     /**
      * T.pt result.
      */
-    public static final Object[] T = { 0.0 };
+    public static final TestConfig T = TestConfig.create("T", 6)
+                    .setProperties("n", 5)
+                    .setProperties("decay", 1)
+                    .setExpectedResult(new Object[][] {{ 0.0 }}
+    );
 
     /**
      * cyclictimer.pt result.
      */
-    public static final Object[] CYCLICTIMER1 = { true };
+    public static final TestConfig CYCLICTIMER1 = TestConfig.create("cyclicTimer", 5)
+                    .setProperties("n", 5)
+                    .setProperties("decay", 1)
+                    .setExpectedResult(new Object[][] {{ false }}
+    );
 
     /**
      * cyclictimer.pt result.
      */
-    public static final Object[] CYCLICTIMER2 = { false };
+    public static final TestConfig CYCLICTIMER2 = TestConfig.create("cyclicTimer", 6)
+                    .setProperties("n", 5)
+                    .setProperties("decay", 1)
+                    .setExpectedResult(new Object[][] {{ true }}
+    );
+
+    /**
+     * cyclictimer.pt result.
+     */
+    public static final TestConfig CYCLICTIMER3 = TestConfig.create("cyclicTimer", 7)
+                    .setProperties("n", 5)
+                    .setProperties("decay", 1)
+                    .setExpectedResult(new Object[][] {{ false }}
+    );
 
     /**
      * C.pt result.
@@ -102,24 +143,27 @@ public final class Results {
      * | 2 | 1 | 2 | 3 |
      * | 3 | 2 | 3 | 4 |
      */
-    public static final Object[][] C = {
-                    { 0.0, 3,  2,  3 },
-                    { 4, 120, 19, 10 },
-                    { 20, 22, 21,  11 },
-                    { 12, 13, 29,  15 }
-    };
-
+    public static final TestConfig C = TestConfig.create("C")
+                    .setProperties("n", 1)
+                    .setProperties("source", true, 5)
+                    .setExpectedResult(new Object[][] {
+                        { 0.0, 3,  2,  3 },
+                        { 4, 120, 19, 10 },
+                        { 20, 22, 21,  11 },
+                        { 12, 13, 29,  15 }
+    });
     /**
      * gossip_ever.pt test configuration.
      */
     public static final TestConfig GOSSIP_EVER = TestConfig.create("gossipEver")
                     .setProperties("temperature", 10)
                     .setProperties("temperature", 21, 0)
-                    .setExpectedResult(new Object[][] {
-                        {true, true, true, true},
-                        {true, true, true, true},
-                        {true, true, true, true},
-                        {true, true, true, true}
+                    .addExpectedResult(Position.fromVector(0.0, 0.0), new Object[][] {
+                        {true, true}, 
+                        {true, true},
+                    }).addExpectedResult(Position.fromVector(10.0, 10.0), new Object[][] {
+                        {false, false}, 
+                        {false, false},
                     });
 
 }
