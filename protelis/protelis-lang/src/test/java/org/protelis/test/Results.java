@@ -169,21 +169,21 @@ public final class Results {
     );
 
     /**
-     * C.pt result.
+     * summarize.pt result.
      * Distances from the source
      * | 2 | 1 | 2 | 3 |
      * | 1 | x | 1 | 2 |
      * | 2 | 1 | 2 | 3 |
      * | 3 | 2 | 3 | 4 |
      */
-    public static final TestConfig C = TestConfig.create("C")
+    public static final TestConfig SUMMARIZE = TestConfig.create("summarize")
                     .setProperties("n", 1)
                     .setProperties("source", true, 5)
                     .setExpectedResult(new Object[][] {
-                        { 0.0, 3,  2,  3 },
-                        { 4, 120, 19, 10 },
-                        { 20, 22, 21,  11 },
-                        { 12, 13, 29,  15 }
+                        { 1.0, 4.0,  2.0,  1.0 },
+                        { 3.0, 16.0, 6.0, 1.0 },
+                        { 2.0, 2.0, 4.0,  2.0 },
+                        { 1.0, 1.0, 1.0,  1.0 }
     });
     /**
      * gossip_ever.pt test configuration.

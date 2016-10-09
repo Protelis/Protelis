@@ -119,11 +119,11 @@ public class TestApis {
     }
 
     /**
-     * Test C.pt.
+     * Test summarize.pt.
      */
     @Test
-    public void testC() {
-        test(Results.C);
+    public void testSummarize() {
+        test(Results.SUMMARIZE);
     }
 
     /**
