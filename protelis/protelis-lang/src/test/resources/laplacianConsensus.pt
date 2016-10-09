@@ -1,0 +1,2 @@
+import protelis:lang:spreading
+laplacianConsensus(env.get("foo"), env.get("epsilon"))

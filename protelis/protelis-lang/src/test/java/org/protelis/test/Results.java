@@ -139,6 +139,21 @@ public final class Results {
     );
 
     /**
+     * laplacianConsensus.pt result.
+     */
+    public static final TestConfig LAPLACIAN_CONSENSUS = TestConfig.create("laplacianConsensus", 2, 1.5)
+                    .setProperties("foo", 0)
+                    .setProperties("foo", 1, 0, 2, 4, 6, 8, 10) // this overrides the previous
+                    .setProperties("epsilon", 0.1)
+                    .setExpectedResult(new Object[][] {
+                        { 0.8, 0.3, 0.8 },
+                        { 0.3, 0.6, 0.3 },
+                        { 0.7, 0.4, 0.7 },
+                        { 0.2, 0.7, 0.2 }
+                    }
+    );
+
+    /**
      * channel.pt result.
      */
     public static final TestConfig CHANNEL = TestConfig.create("channel", EXECUTION_ROUND, 1.5)

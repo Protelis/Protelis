@@ -1,7 +1,7 @@
 
-
-
 import static org.junit.Assert.assertArrayEquals;
+
+import java.util.Arrays;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -161,6 +161,14 @@ public class TestApis {
     }
 
     /**
+     * Test laplacianConsensus.pt.
+     */
+    @Test
+    public void testLaplacianConsensus() {
+        testDoubles(Results.LAPLACIAN_CONSENSUS, 0.01);
+    }
+
+    /**
      * Test voronoiPartitioning.pt.
      */
     @Test
@@ -188,7 +196,7 @@ public class TestApis {
      * From this point the rest of the file is not tests, but utility methods
      */
 
-    private void test(final TestConfig testConfig) {
+    private Pair<Object[], Object[]> setTest(final TestConfig testConfig) {
         SimulationTest sim = new SimulationTest(testConfig.getFileName(), testConfig.getMaxRound(),
                         testConfig.getDistance());
         for (Pair<Position, Object[][]> group : testConfig.getExpectedResultGroups()) {
@@ -209,7 +217,23 @@ public class TestApis {
                 simRes[i] = TestConfig.DC;
             }
         }
-        assertArrayEquals(res, simRes);
+        return Pair.of(res, simRes);
+    }
+
+    private void test(final TestConfig testConfig) {
+        Pair<Object[], Object[]> res = setTest(testConfig);
+        assertArrayEquals(res.getLeft(), res.getRight());
+    }
+
+    private void testDoubles(final TestConfig testConfig, final double delta) {
+        Pair<Object[], Object[]> res = setTest(testConfig);
+        Object[] left = res.getLeft(), right = res.getRight();
+        double[] l = new double[left.length], r = new double[right.length];
+        for (int i = 0; i < l.length; i++) {
+            l[i] = (double) left[i];
+            r[i] = (double) right[i];
+        }
+        assertArrayEquals(l, r, delta);
     }
 
 }

@@ -106,7 +106,7 @@ public def distanceTo_avoiding_obstacle(source, obstacle) {
 /**  
  * Voronoi partitioning. 
  * 
- * (bool, num) -> num
+ * Return type: (bool, num) -> num.
  * 
  * Computing a Voronoi partition is an operation that is frequently useful in 
  * distributed systems. Given an initial set of “seed” devices, a Voronoi 
@@ -128,7 +128,7 @@ public def distanceTo_avoiding_obstacle(source, obstacle) {
  /**
   * Channel pattern.
   * 
-  * (bool, bool, bool, num) -> num
+  * Return type: (bool, bool, bool, num) -> num.
   * 
   * Dynamically computes distributed routes between regions of a network, and 
   * dynamically adapts to shape and changes of the network topology. Examples 
@@ -152,7 +152,7 @@ public def channel(source, destination, obstacle, thr, width) {
 /**
  * Shortest path.
  * 
- * (bool, bool) -> bool
+ * Return type: (bool, bool) -> bool.
  * 
  * Dynamically computes the shortest route between regions of a network, and 
  * dynamically adapts to shape and changes of the network topology. The “shortest path” 
@@ -179,6 +179,13 @@ public def shortestPath(source, destination) {
 	}
 }
 
+/**
+ * Channel pattern.
+ * 
+ * Return type: (bool, bool, bool, num) -> num.
+ * 
+ * Channel pattern which relies on 'shortestPath' function.
+ */
 public def channel2(source, destination, obstacle, width) {
   	if (obstacle) { 
   		false
@@ -186,3 +193,14 @@ public def channel2(source, destination, obstacle, width) {
   		distanceTo(shortestPath(source, destination)) <= width
   	} 
 }
+
+/**
+ * Laplacian consensus.
+ * 
+ * Return type: (num, num) -> num.
+ */
+ public def laplacianConsensus(init, epsilon) {
+ 	rep (val <- init) {
+ 		val + epsilon * sumHood(nbr(val) - val)
+ 	}
+ }
