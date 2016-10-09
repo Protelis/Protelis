@@ -139,27 +139,53 @@ public final class Results {
     );
 
     /**
-     * distance.pt result.
+     * channel.pt result.
      */
-    public static final TestConfig CHANNEL = TestConfig.create("channel", EXECUTION_ROUND, 1.9)
+    public static final TestConfig CHANNEL = TestConfig.create("channel", EXECUTION_ROUND, 1.5)
                     .setProperties("source", true, 13)
                     .setProperties("destination", true, 16)
                     .setProperties("obstacle", true, 3, 9, 15, 21)
                     .setProperties("width", 1)
-                    .setProperties("thr", 1)
+                    .setProperties("thr", 0.1)
                     .setExpectedResult(new Object[][] {
                       // 00, 01, 02, 03, 04, 05, 
                         { F,  F,  F,  O,  F,  F },
                       // 06, 07, 08, 09, 10, 11, 
-                        { F,  S,  T,  O,  T,  F },
+                        { F,  T,  F,  O,  T,  F },
                       // 12, 13, 14, 15, 16, 17, 
-                        { T,  T,  T,  O,  D,  T },
+                        { T,  S,  T,  O,  D,  T },
                       // 18, 19, 20, 21, 22, 23, 
-                        { T,  T,  T,  O,  T,  T },
+                        { F,  T,  T,  O,  T,  T },
                       // 24, 25, 26, 27, 28, 29, 
-                        { F,  T,  T,  T,  T,  T },
-                      // 30, 31, 32, 33, 34, 35, 
                         { F,  F,  T,  T,  T,  F },
+                      // 30, 31, 32, 33, 34, 35, 
+                        { F,  F,  F,  T,  F,  F },
+                      // 36, 37, 38, 39, 40, 41,
+                        { F,  F,  F,  F,  F,  F }
+                    }
+    );
+
+    /**
+     * channel2.pt result.
+     */
+    public static final TestConfig CHANNEL2 = TestConfig.create("channel2", EXECUTION_ROUND, 1.5)
+                    .setProperties("source", true, 13)
+                    .setProperties("destination", true, 16)
+                    .setProperties("obstacle", true, 3, 9, 15, 21)
+                    .setProperties("width", 1)
+                    .setExpectedResult(new Object[][] {
+                      // 00, 01, 02, 03, 04, 05, 
+                        { F,  F,  F,  O,  T,  F },
+                      // 06, 07, 08, 09, 10, 11, 
+                        { F,  T,  F,  O,  T,  T },
+                      // 12, 13, 14, 15, 16, 17, 
+                        { T,  S,  T,  O,  D,  T },
+                      // 18, 19, 20, 21, 22, 23, 
+                        { F,  T,  T,  O,  T,  T },
+                      // 24, 25, 26, 27, 28, 29, 
+                        { F,  F,  T,  T,  T,  F },
+                      // 30, 31, 32, 33, 34, 35, 
+                        { F,  F,  F,  T,  F,  F },
                       // 36, 37, 38, 39, 40, 41,
                         { F,  F,  F,  F,  F,  F }
                     }

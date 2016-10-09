@@ -1,5 +1,6 @@
 
 
+
 import static org.junit.Assert.assertArrayEquals;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -173,6 +174,14 @@ public class TestApis {
     @Test
     public void testChannel() {
         test(Results.CHANNEL);
+    }
+
+    /**
+     * Test channel2.pt.
+     */
+    @Test
+    public void testChannel2() {
+        test(Results.CHANNEL2);
     }
 
     /*

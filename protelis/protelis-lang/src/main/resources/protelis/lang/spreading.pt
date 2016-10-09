@@ -148,3 +148,41 @@ public def channel(source, destination, obstacle, thr, width) {
   		}
   	} 
 }
+
+/**
+ * Shortest path.
+ * 
+ * (bool, bool) -> bool
+ * 
+ * Dynamically computes the shortest route between regions of a network, and 
+ * dynamically adapts to shape and changes of the network topology. The “shortest path” 
+ * is a Boolean field that is true for devices near the shortest route from a given 
+ * (distributed) source to a (distributed) destination.
+ */
+public def shortestPath(source, destination) {
+	rep (path <- false) {
+		mux (source) {
+			true
+		} else {
+			// any device on the shortest path
+			anyHood(
+				// check whether a neigh is on the shortest path AND the current device is in the shortest path
+				nbr (path) && 
+					(distanceTo(destination) == nbr( // if my distance is the same as the collected one
+						minHood( // get the closest distance
+							nbr(distanceTo(destination)) // get the neighbors distances from the destination
+						)
+					)
+				)
+			)
+		}
+	}
+}
+
+public def channel2(source, destination, obstacle, width) {
+  	if (obstacle) { 
+  		false
+  	} else { 
+  		distanceTo(shortestPath(source, destination)) <= width
+  	} 
+}
