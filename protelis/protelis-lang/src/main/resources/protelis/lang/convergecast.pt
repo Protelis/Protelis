@@ -1,5 +1,5 @@
 module protelis:lang:convergecast
-
+import protelis:lang:spreading
 /*
  * Find the parent node following the maximum decrease in potential
  */
@@ -43,4 +43,8 @@ public def C(potential, accumulate, local, null) {
 			)
 		)
 	}	
+}
+
+public def summarize(sink, accumulate, local, null) {
+	C(distanceTo(sink), accumulate, local, null)
 }
