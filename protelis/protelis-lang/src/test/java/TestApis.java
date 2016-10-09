@@ -55,6 +55,14 @@ public class TestApis {
     }
 
     /**
+     * Test addRange.
+     */
+    @Test
+    public void testAddRange() {
+        test(Results.ADDRANGE);
+    }
+
+    /**
      * Test G.pt.
      */
     @Test

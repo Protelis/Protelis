@@ -71,6 +71,14 @@ public final class Results {
     );
 
     /**
+     * addRange.pt result.
+     */
+    public static final TestConfig ADDRANGE = TestConfig.create("addRange")
+                    .setProperties("n", 1)
+                    .setExpectedResult(new Object[][]{{ 2.0, 2.0 }}
+    );
+
+    /**
      * neighborhood.pt result.
      */
     public static final TestConfig NEIGHBORHOOD = TestConfig.create("neighborhood")

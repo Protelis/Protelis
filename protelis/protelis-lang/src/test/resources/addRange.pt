@@ -1,0 +1,2 @@
+import protelis:lang:spreading
+minHood(addRange(env.get("n")))

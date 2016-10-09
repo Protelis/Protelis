@@ -34,6 +34,10 @@ public def nbrRange() {
 	self.nbrRange()
 }
 
+public def addRange(v) {
+	v + nbrRange()
+}
+
 public def nbrRangeHop() { 1 }
 
 
