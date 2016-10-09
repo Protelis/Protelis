@@ -98,3 +98,24 @@ public def distanceTo_avoiding_obstacle(source, obstacle) {
 	if (obstacle) { Infinity }
 	else { distanceTo(source) }
 }
+
+/**  
+ * Voronoi partitioning. 
+ * 
+ * Computing a Voronoi partition is an operation that is frequently useful in 
+ * distributed systems. Given an initial set of “seed” devices, a Voronoi 
+ * partition assigns each device to the partition of the nearest seed (by some 
+ * not necessarily Euclidean metric), effectively breaking the network up into
+ *  “zones of influence” around key elements.
+ * 
+ * (bool, num) -> num
+ */
+ public def voronoiPatitioning(seed, id) {
+ 	rep (partition <- [Infinity, 0]) {
+ 		mux (seed) {
+ 			[0, id]
+ 		} else {
+ 			minHood (nbr ([distanceTo(seed), partition.get(1)]))
+ 		}
+ 	}.get(1)
+ }

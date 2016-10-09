@@ -158,6 +158,14 @@ public class TestApis {
         test(Results.OPINION_FEEDBACK);
     }
 
+    /**
+     * Test voronoiPartitioning.pt.
+     */
+    @Test
+    public void testVoronoiPartitioning() {
+        test(Results.VORONOI_PARTITIONING);
+    }
+
     /*
      * From this point the rest of the file is not tests, but utility methods
      */

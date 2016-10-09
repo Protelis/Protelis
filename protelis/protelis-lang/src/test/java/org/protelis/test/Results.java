@@ -107,6 +107,19 @@ public final class Results {
     );
 
     /**
+     * voronoiPartitioning.pt test configuration.
+     */
+    public static final TestConfig VORONOI_PARTITIONING = TestConfig.create("voronoiPartitioning")
+                    .setProperties("seed", true, 0, 3, 12, 15)
+                    .setExpectedResult(new Object[][]{
+                        { S0, S0, S3, S3 },
+                        { S0, S0, S3, S3 },
+                        { S12, S12, S15, S15 },
+                        { S12, S12, S15, S15 }
+                    }
+    );
+
+    /**
      * distance.pt result.
      */
     public static final TestConfig DISTANCE = TestConfig.create("distance")
