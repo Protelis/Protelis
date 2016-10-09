@@ -22,7 +22,8 @@ public final class TestConfig {
     public static final String DC = "dontcare!";
     private List<Triple<Integer, String, Object>> properties;
     private List<Pair<Position, Object[][]>> r;
-    private int maxRound, distance;
+    private int maxRound;
+    private Double distance;
     private String fileName;
 
     /**
@@ -42,7 +43,7 @@ public final class TestConfig {
     /**
      * @return distance
      */
-    public int getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
@@ -171,9 +172,10 @@ public final class TestConfig {
     // return idx++;
     // }
 
-    private void setUp(final String fileName, final int maxRound, final int distance, final Object[][] result) {
-        if (result != null)
+    private void setUp(final String fileName, final int maxRound, final Double distance, final Object[][] result) {
+        if (result != null) {
             setExpectedResult(result);
+        }
         this.maxRound = maxRound;
         this.distance = distance;
         this.fileName = fileName;
@@ -216,7 +218,7 @@ public final class TestConfig {
      * @param result
      *            expected simulation result
      */
-    public TestConfig(final String fileName, final int maxRound, final int distance,
+    public TestConfig(final String fileName, final int maxRound, final Double distance,
                     final Triple<Integer, String, Object>[] properties, final Object[][] result) {
         this(fileName, maxRound, distance, Arrays.asList(properties), result);
     }
@@ -235,7 +237,7 @@ public final class TestConfig {
      * @param result
      *            expected simulation result
      */
-    public TestConfig(final String fileName, final int maxRound, final int distance,
+    public TestConfig(final String fileName, final int maxRound, final Double distance,
                     final List<Triple<Integer, String, Object>> properties, final Object[][] result) {
         this.properties = properties;
         r = new LinkedList<>();
@@ -252,7 +254,7 @@ public final class TestConfig {
      * @param distance
      *            distance under which devices are considered neighbors
      */
-    public TestConfig(final String fileName, final int maxRound, final int distance) {
+    public TestConfig(final String fileName, final int maxRound, final Double distance) {
         this(fileName, maxRound, distance, new LinkedList<>(), null);
     }
 
@@ -271,7 +273,7 @@ public final class TestConfig {
      *            expected simulation result
      * @return new test configuration
      */
-    public static TestConfig create(final String fileName, final int maxRound, final int distance,
+    public static TestConfig create(final String fileName, final int maxRound, final Double distance,
                     final Triple<Integer[], String, Object>[] properties, final Object[][] result) {
         List<Triple<Integer, String, Object>> res = new LinkedList<>();
         for (Triple<Integer[], String, Object> outer : properties) {
@@ -297,7 +299,7 @@ public final class TestConfig {
      *            expected simulation result
      * @return new test configuration
      */
-    public static TestConfig create(final String fileName, final int maxRound, final int distance,
+    public static TestConfig create(final String fileName, final int maxRound, final Double distance,
                     final Triple<Integer[], String, Object> properties, final Object[][] result) {
         List<Triple<Integer, String, Object>> res = new LinkedList<>();
         for (Integer id : properties.getLeft()) {
@@ -322,7 +324,7 @@ public final class TestConfig {
     // * @return new test configuration
     // */
     // public static TestConfig create(final String fileName, final int
-    // maxRound, final int distance,
+    // maxRound, final Double distance,
     // final Object[] properties, final Object[][] result) {
     // return new TestConfig(fileName, maxRound, distance, properties, result);
     // }
@@ -339,7 +341,7 @@ public final class TestConfig {
      *            distance under which devices are considered neighbors
      * @return new test configuration
      */
-    public static TestConfig create(final String fileName, final int maxRound, final int distance) {
+    public static TestConfig create(final String fileName, final int maxRound, final double distance) {
         return new TestConfig(fileName, maxRound, distance);
     }
 

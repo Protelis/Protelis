@@ -1,0 +1,2 @@
+import protelis:lang:spreading
+channel(env.has("source"), env.has("destination"), env.has("obstacle"), env.get("thr"), env.get("width"))

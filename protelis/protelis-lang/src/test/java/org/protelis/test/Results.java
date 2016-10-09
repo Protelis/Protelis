@@ -13,10 +13,15 @@ public final class Results {
      */
     public static final String FOO = "foo";
     private static final String DC = TestConfig.DC;
+    private static final Boolean S = true;
+    private static final Boolean D = true;
+    private static final Boolean F = false;
+    private static final Boolean T = true;
+    private static final Boolean O = false;
     /**
      * Each device considers only his adjacent devices as neighbors.
      */
-    public static final int MANHATTAN_BLOCK = 1;
+    public static final Double MANHATTAN_BLOCK = 1.0;
 
     /**
      * Number of round to be executed.
@@ -134,9 +139,36 @@ public final class Results {
     );
 
     /**
+     * distance.pt result.
+     */
+    public static final TestConfig CHANNEL = TestConfig.create("channel", EXECUTION_ROUND, 1.9)
+                    .setProperties("source", true, 13)
+                    .setProperties("destination", true, 16)
+                    .setProperties("obstacle", true, 3, 9, 15, 21)
+                    .setProperties("width", 1)
+                    .setProperties("thr", 1)
+                    .setExpectedResult(new Object[][] {
+                      // 00, 01, 02, 03, 04, 05, 
+                        { F,  F,  F,  O,  F,  F },
+                      // 06, 07, 08, 09, 10, 11, 
+                        { F,  S,  T,  O,  T,  F },
+                      // 12, 13, 14, 15, 16, 17, 
+                        { T,  T,  T,  O,  D,  T },
+                      // 18, 19, 20, 21, 22, 23, 
+                        { T,  T,  T,  O,  T,  T },
+                      // 24, 25, 26, 27, 28, 29, 
+                        { F,  T,  T,  T,  T,  T },
+                      // 30, 31, 32, 33, 34, 35, 
+                        { F,  F,  T,  T,  T,  F },
+                      // 36, 37, 38, 39, 40, 41,
+                        { F,  F,  F,  F,  F,  F }
+                    }
+    );
+
+    /**
      * T.pt result.
      */
-    public static final TestConfig T = TestConfig.create("T", 6)
+    public static final TestConfig TFUN = TestConfig.create("T", 6)
                     .setProperties("n", 5)
                     .setProperties("decay", 1)
                     .setExpectedResult(new Object[][] {{ 0.0 }}

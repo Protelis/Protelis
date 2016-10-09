@@ -49,7 +49,7 @@ public def distanceTo(source) {
 }
 
 /*
- * Distance between the current and the source nodes 
+ * Shortest distance between the current and the nearest source node
  */
 public def distanceTo2(source, metric) {
 	// v: other node distances from the source
@@ -58,7 +58,11 @@ public def distanceTo2(source, metric) {
 	G(source, 0, nbrRange, (v) -> {v + metric.apply()})
 }
 
-// distance of the source from the destination
+/**
+ * Shortest path between source and destionation nodes.
+ * 
+ * (bool, bool) -> num
+ */
 public def distance(source, dest) { 
 	distance2(source, dest, nbrRange)
 }
@@ -102,13 +106,13 @@ public def distanceTo_avoiding_obstacle(source, obstacle) {
 /**  
  * Voronoi partitioning. 
  * 
+ * (bool, num) -> num
+ * 
  * Computing a Voronoi partition is an operation that is frequently useful in 
  * distributed systems. Given an initial set of “seed” devices, a Voronoi 
  * partition assigns each device to the partition of the nearest seed (by some 
  * not necessarily Euclidean metric), effectively breaking the network up into
  *  “zones of influence” around key elements.
- * 
- * (bool, num) -> num
  */
  public def voronoiPatitioning(seed, id) {
  	rep (partition <- [Infinity, 0]) {
@@ -119,3 +123,28 @@ public def distanceTo_avoiding_obstacle(source, obstacle) {
  		}
  	}.get(1)
  }
+ 
+  
+ /**
+  * Channel pattern.
+  * 
+  * (bool, bool, bool, num) -> num
+  * 
+  * Dynamically computes distributed routes between regions of a network, and 
+  * dynamically adapts to shape and changes of the network topology. Examples 
+  * of its use include long-range reliable communications, or advanced crowd 
+  * steering applications in pervasive computing. The “channel” is a Boolean 
+  * field that is true for devices near the shortest route from a given 
+  * (distributed) source to a (distributed) destination.
+  */
+public def channel(source, destination, obstacle, thr, width) {
+  	if (obstacle) { 
+  		false
+  	} else { 
+  		let d = distance(source, destination);
+  		if (d == Infinity) { false }
+  		else {
+  			distanceTo(distanceTo(source) + distanceTo(destination) <=  d + thr) <= width
+  		}
+  	} 
+}

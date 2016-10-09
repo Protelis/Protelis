@@ -1,14 +1,10 @@
-
+package org.protelis.test;
 
 import static org.junit.Assert.assertArrayEquals;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
-import org.protelis.test.Position;
-import org.protelis.test.Results;
-import org.protelis.test.SimulationTest;
-import org.protelis.test.TestConfig;
 
 /**
  * Testing Protelis core libraries.
