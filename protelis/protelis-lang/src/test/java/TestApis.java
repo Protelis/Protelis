@@ -153,7 +153,13 @@ public class TestApis {
                 sim.setProperty(t.getLeft(), t.getMiddle(), t.getRight());
             }
         }
-        assertArrayEquals(testConfig.getExpectedResult(), sim.getResults());
+        Object[] res = testConfig.getExpectedResult(), simRes = sim.getResults();
+        for (int i = 0; i < res.length; i++) {
+            if (res[i].equals(TestConfig.DC)) {
+                simRes[i] = TestConfig.DC;
+            }
+        }
+        assertArrayEquals(res, simRes);
     }
 
 }

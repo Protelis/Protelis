@@ -15,6 +15,11 @@ public final class TestConfig {
      * Id that represent all the devices.
      */
     public static final int ALL = -1;
+    /**
+     * Use this constant when you want to skip a value from testing (as it might
+     * be platform dependent).
+     */
+    public static final String DC = "dontcare!";
     private List<Triple<Integer, String, Object>> properties;
     private List<Pair<Position, Object[][]>> r;
     private int maxRound, distance;
