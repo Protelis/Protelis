@@ -143,6 +143,14 @@ public class TestApis {
     }
 
     /**
+     * Test C.pt.
+     */
+    @Test
+    public void testC() {
+        test(Results.C);
+    }
+
+    /**
      * Test CMultisum.pt.
      */
     @Test

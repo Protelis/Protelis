@@ -47,7 +47,7 @@ public def C(potential, accumulate, local, null) {
 }
 
 public def summarize (sink, accumulate, local, null) {
-	C(distanceTo(sink), accumulate, local, null)
+	broadcast(sink, C(distanceTo(sink), accumulate, local, null))
 }
 
 public def opinion_feedback (acts, feedback) {

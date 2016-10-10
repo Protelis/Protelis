@@ -306,6 +306,19 @@ public final class Results {
     };
 
     /**
+     * C.pt result.
+     * Distances from the source
+     * | 2 | 1 | 2 | 3 |
+     * | 1 | x | 1 | 2 |
+     * | 2 | 1 | 2 | 3 |
+     * | 3 | 2 | 3 | 4 |
+     */
+    public static final TestConfig C = TestConfig.create("C")
+                    .setProperties("n", 1)
+                    .setProperties("source", true, 5)
+                    .setExpectedResult(C_RESULT);
+
+    /**
      * summarize.pt result.
      * Distances from the source
      * | 2 | 1 | 2 | 3 |
@@ -316,7 +329,12 @@ public final class Results {
     public static final TestConfig SUMMARIZE = TestConfig.create("summarize")
                     .setProperties("n", 1)
                     .setProperties("source", true, 5)
-                    .setExpectedResult(C_RESULT);
+                    .setExpectedResult(new Object[][] { 
+                        { 16.0, 16.0, 16.0, 16.0 }, 
+                        { 16.0, 16.0, 16.0, 16.0 },
+                        { 16.0, 16.0, 16.0, 16.0 },
+                        { 16.0, 16.0, 16.0, 16.0 }
+                    });
 
     /**
      * Cmultisum.pt result.
