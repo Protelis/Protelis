@@ -13,3 +13,14 @@ public def and(a, b) {
 public def not(a) {
 	!a
 }
+
+/**
+ * Low pass filter.
+ * 
+ * Return type: (num, num) -> num.
+ */
+public def exponentialFilter(signal, a) {
+	rep (v <- signal) {
+		signal * a + v * (1 - a)
+	}
+}
