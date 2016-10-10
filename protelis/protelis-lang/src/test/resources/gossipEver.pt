@@ -1,2 +1,2 @@
 import protelis:lang:spreading
-gossip_ever(env.get("temperature") > 20)
+gossipEver(env.get("temperature") > 20)

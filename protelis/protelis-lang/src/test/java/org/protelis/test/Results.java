@@ -56,6 +56,21 @@ public final class Results {
     );
 
     /**
+     * boundedSpreading.pt result.
+     */
+    public static final TestConfig BOUNDED_SPREADING = TestConfig.create("boundedSpreading", EXECUTION_ROUND, 1.9)
+                    .setProperties("source", true, 3)
+                    .setProperties("region", true, 0, 1, 3, 4, 5, 6)
+                    .setExpectedResult(new Object[][] {
+                        { 1.0, 1.41, Double.NaN },
+                        { 0.0, 1.00, 2.0 },
+                        { 1.0, Double.NaN, Double.NaN },
+                        { Double.NaN, Double.NaN, Double.NaN },
+                        { Double.NaN, Double.NaN, Double.NaN }
+                    }
+    );
+    
+    /**
      * obstacle.pt result.
      */
     public static final TestConfig OBSTACLE = TestConfig.create("obstacle")
@@ -269,6 +284,13 @@ public final class Results {
                     .setExpectedResult(new Object[][] {{ 0.0 }}
     );
 
+    private static final Object[][] C_RESULT = new Object[][] { 
+        { DC, DC, DC, DC }, 
+        { DC, 16.0, DC, DC },
+        { DC, DC, DC, DC },
+        { DC, DC, DC, DC }
+    };
+
     /**
      * summarize.pt result.
      * Distances from the source
@@ -280,12 +302,17 @@ public final class Results {
     public static final TestConfig SUMMARIZE = TestConfig.create("summarize")
                     .setProperties("n", 1)
                     .setProperties("source", true, 5)
-                    .setExpectedResult(new Object[][] { 
-                                    { DC, DC, DC, DC },
-                                    { DC, 16.0, DC, DC },
-                                    { DC, DC, DC, DC },
-                                    { DC, DC, DC, DC } 
-    });
+                    .setExpectedResult(C_RESULT);
+
+    /**
+     * Cmultisum.pt result.
+     * 
+     * Must be the same as C.
+     */
+    public static final TestConfig CMULTISUM = TestConfig.create("Cmultisum")
+                    .setProperties("n", 1)
+                    .setProperties("source", true, 5)
+                    .setExpectedResult(C_RESULT);
 
     /**
      * opinionFeedback.pt result.

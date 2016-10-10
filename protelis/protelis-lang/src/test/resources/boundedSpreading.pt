@@ -1,0 +1,4 @@
+import protelis:lang:spreading
+boundSpreading(env.has("region"), () -> {
+	distanceTo(env.has("source"))
+}, NaN)

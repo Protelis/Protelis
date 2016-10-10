@@ -89,9 +89,20 @@ public def broadcast(source, value) {
 /**
  * "gossip" algorithm that computes whether any location has ever experienced a given condition
  */
-public def gossip_ever(a) {
+public def gossipEver(a) {
 	rep (ever <- false) {
 		a || anyHood (nbr (ever))		
+	}
+}
+
+/**
+ * Constrain the spreading of the 'f'.
+ */
+public def boundSpreading(region, f, null) {
+	if (region) {
+		f.apply()
+	} else {
+		null
 	}
 }
 

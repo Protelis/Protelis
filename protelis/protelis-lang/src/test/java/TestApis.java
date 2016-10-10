@@ -1,8 +1,6 @@
 
 import static org.junit.Assert.assertArrayEquals;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
@@ -142,6 +140,22 @@ public class TestApis {
     @Test
     public void testSummarize() {
         test(Results.SUMMARIZE);
+    }
+
+    /**
+     * Test CMultisum.pt.
+     */
+    @Test
+    public void testCMultisum() {
+        test(Results.CMULTISUM);
+    }
+
+    /**
+     * Test boundedSpreading.pt.
+     */
+    @Test
+    public void testBoundedSpreading() {
+        testDoubles(Results.BOUNDED_SPREADING, 0.01);
     }
 
     /**
