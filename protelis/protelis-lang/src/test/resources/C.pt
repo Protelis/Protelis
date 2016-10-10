@@ -1,0 +1,3 @@
+import protelis:lang:convergecast
+import protelis:lang:spreading
+C(distanceTo(env.has("source")), (a, b) -> { a + b }, env.get("n"), 0)
