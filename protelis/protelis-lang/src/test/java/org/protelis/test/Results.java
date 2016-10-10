@@ -58,7 +58,7 @@ public final class Results {
     /**
      * boundedSpreading.pt result.
      */
-    public static final TestConfig BOUNDED_SPREADING = TestConfig.create("boundedSpreading", EXECUTION_ROUND, 1.9)
+    public static final TestConfig BOUNDED_SPREADING = TestConfig.create("boundedSpreading", EXECUTION_ROUND, 1.5)
                     .setProperties("source", true, 3)
                     .setProperties("region", true, 0, 1, 3, 4, 5, 6)
                     .setExpectedResult(new Object[][] {
@@ -69,7 +69,21 @@ public final class Results {
                         { Double.NaN, Double.NaN, Double.NaN }
                     }
     );
-    
+
+    /**
+     * gossip.pt result.
+     */
+    public static final TestConfig GOSSIP = TestConfig.create("gossip", EXECUTION_ROUND, 1.5)
+                    .setProperties("n", 3)
+                    .setProperties("n", 1, 0)
+                    .setProperties("n", 2, 5)
+                    .setExpectedResult(new Object[][] {
+                        { 1, 1, 1 },
+                        { 1, 1, 1 },
+                        { 1, 1, 1 }
+                    }
+    );
+
     /**
      * obstacle.pt result.
      */

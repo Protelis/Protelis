@@ -87,7 +87,20 @@ public def broadcast(source, value) {
 }
 
 /**
- * "gossip" algorithm that computes whether any location has ever experienced a given condition
+ * Gossip.
+ * 
+ * f must be idempotent.
+ */
+public def gossip(value, f) {
+	rep (v <- value) {
+		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
+	}
+}
+
+/**
+ * Gossip ever.
+ * 
+ * Gossip whether any location has ever experienced a given condition.
  */
 public def gossipEver(a) {
 	rep (ever <- false) {

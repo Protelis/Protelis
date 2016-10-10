@@ -151,6 +151,14 @@ public class TestApis {
     }
 
     /**
+     * Test gossip.pt.
+     */
+    @Test
+    public void testGossip() {
+        test(Results.GOSSIP);
+    }
+
+    /**
      * Test boundedSpreading.pt.
      */
     @Test
