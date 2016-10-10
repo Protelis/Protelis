@@ -12,7 +12,7 @@ public final class Results {
      * FOO value.
      */
     public static final String FOO = "foo";
-    private static final String DC = TestConfig.DC;
+    private static final Double DC = TestConfig.DC;
     private static final Boolean S = true;
     private static final Boolean D = true;
     private static final Boolean F = false;

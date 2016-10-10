@@ -19,7 +19,7 @@ public final class TestConfig {
      * Use this constant when you want to skip a value from testing (as it might
      * be platform dependent).
      */
-    public static final String DC = "dontcare!";
+    public static final Double DC = 1.0 * Integer.MAX_VALUE;
     private List<Triple<Integer, String, Object>> properties;
     private List<Pair<Position, Object[][]>> r;
     private int maxRound;

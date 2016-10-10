@@ -14,6 +14,8 @@ import org.protelis.test.TestConfig;
  */
 public class TestApis {
 
+    private static final double DELTA_2 = 0.01;
+
     /**
      * Test the number of neighbors of each device.
      */
@@ -27,7 +29,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceTo() {
-        test(Results.DISTANCETO);
+        testDoubles(Results.DISTANCETO, DELTA_2);
     }
 
     /**
@@ -35,7 +37,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceToWithObstacle() {
-        test(Results.OBSTACLE);
+        testDoubles(Results.OBSTACLE, DELTA_2);
     }
 
     /**
@@ -51,7 +53,7 @@ public class TestApis {
      */
     @Test
     public void testNbrRange() {
-        test(Results.NBRRANGE);
+        testDoubles(Results.NBRRANGE, DELTA_2);
     }
 
     /**
@@ -59,7 +61,7 @@ public class TestApis {
      */
     @Test
     public void testAddRange() {
-        test(Results.ADDRANGE);
+        testDoubles(Results.ADDRANGE, DELTA_2);
     }
 
     /**
@@ -75,7 +77,7 @@ public class TestApis {
      */
     @Test
     public void testDistance() {
-        test(Results.DISTANCE);
+        testDoubles(Results.DISTANCE, DELTA_2);
     }
 
     /**
@@ -147,7 +149,7 @@ public class TestApis {
      */
     @Test
     public void testC() {
-        test(Results.C);
+        testDoubles(Results.C, DELTA_2);
     }
 
     /**
@@ -155,7 +157,7 @@ public class TestApis {
      */
     @Test
     public void testCMultisum() {
-        test(Results.CMULTISUM);
+        testDoubles(Results.CMULTISUM, DELTA_2);
     }
 
     /**
@@ -171,7 +173,7 @@ public class TestApis {
      */
     @Test
     public void testBoundedSpreading() {
-        testDoubles(Results.BOUNDED_SPREADING, 0.01);
+        testDoubles(Results.BOUNDED_SPREADING, DELTA_2);
     }
 
     /**
@@ -195,7 +197,7 @@ public class TestApis {
      */
     @Test
     public void testLaplacianConsensus() {
-        testDoubles(Results.LAPLACIAN_CONSENSUS, 0.01);
+        testDoubles(Results.LAPLACIAN_CONSENSUS, DELTA_2);
     }
 
     /**
