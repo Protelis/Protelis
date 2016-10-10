@@ -46,10 +46,40 @@ public def C(potential, accumulate, local, null) {
 	}	
 }
 
-public def summarize(sink, accumulate, local, null) {
+public def summarize (sink, accumulate, local, null) {
 	C(distanceTo(sink), accumulate, local, null)
 }
 
-public def opinion_feedback(acts, feedback) {
+public def opinion_feedback (acts, feedback) {
 	Tfilter(C(G(acts, 0, nbrRange, addRange), (a,b) -> { a + b }, feedback, 0))
+}
+
+/**
+ * Cmultisum.
+ * 
+ * Return type: (num, any) -> any.
+ * 
+ * C  collects  values  over  a  spanning  tree;  even  small  perturbations
+ * can  cause  loss  or  duplication  of  values  with
+ * major transient impact on its result. When the accumulation
+ * operation for C is either idempotent (e.g., logical and, or)
+ * or  separable  (e.g.,  summation),  this  can  be  mitigated  by
+ * using all paths down the potential function rather than just
+ * one. Can implement  any  other  idempotent  or  separable  function.
+ */
+public def Cmultisum (potential, local) {
+	NaN
+// 	rep (v <- local) {
+// 		local + 
+// 			sumHood (
+// 				mux (potential >= nbr (potential)) { 
+//	 				0
+//	 			} else {
+//	 				nbr (v / sumHood (
+//	 					(nbr (potential).map((v) -> { if (v < potential) {1} else {0} }) )
+//	 						
+//	 				))
+//	 			}
+// 			)
+// 	}
 }
