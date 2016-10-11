@@ -104,10 +104,12 @@ public class SimulationTest {
     /**
      * Execute every device once, then deliver updates to all neighbors.
      */
-    private void synchronousUpdate() {
+    private Object[] synchronousUpdate() {
         // Execute one cycle at each device
+        List<Object> res = new LinkedList<>();
         for (SimpleDevice d : devices) {
             d.getVM().runCycle();
+            res.add(d.getVM().getCurrentValue());
             // System.out.println(d.getVM().getCurrentValue());
         }
         // Update network connectivity
@@ -120,6 +122,7 @@ public class SimulationTest {
                 dst.accessNetworkManager().receiveFromNeighbor(src.getDeviceUID(), message);
             }
         }
+        return res.toArray();
     }
 
     /**

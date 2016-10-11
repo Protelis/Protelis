@@ -18,6 +18,7 @@ public final class Results {
     private static final Boolean F = false;
     private static final Boolean T = true;
     private static final Boolean O = false;
+    private static final double NAN = Double.NaN;
     /**
      * Each device considers only his adjacent devices as neighbors.
      */
@@ -62,11 +63,26 @@ public final class Results {
                     .setProperties("source", true, 3)
                     .setProperties("region", true, 0, 1, 3, 4, 5, 6)
                     .setExpectedResult(new Object[][] {
-                        { 1.0, 1.41, Double.NaN },
-                        { 0.0, 1.00, 2.0 },
-                        { 1.0, Double.NaN, Double.NaN },
-                        { Double.NaN, Double.NaN, Double.NaN },
-                        { Double.NaN, Double.NaN, Double.NaN }
+                        { 1.0, 1.41, NAN },
+                        { 0.0, 1.0, 2.0 },
+                        { 1.0, NAN, NAN },
+                        { NAN, NAN, NAN },
+                        { NAN, NAN, NAN }
+                    }
+    );
+
+    /**
+     * constrainSpreading.pt result.
+     */
+    public static final TestConfig CONSTRAIN_SPREADING = TestConfig.create("constrainSpreading", EXECUTION_ROUND, 1.5)
+                    .setProperties("source", true, 5)
+                    .setProperties("range", 2)
+                    .setExpectedResult(new Object[][] {
+                        { 1.0, 1.0, 1.0, NAN },
+                        { 1.0, 1.0, 1.0, NAN },
+                        { 1.0, 1.0, 1.0, NAN },
+                        { NAN, NAN, NAN, NAN },
+                        { NAN, NAN, NAN, NAN}
                     }
     );
 
@@ -74,13 +90,13 @@ public final class Results {
      * gossip.pt result.
      */
     public static final TestConfig GOSSIP = TestConfig.create("gossip", EXECUTION_ROUND, 1.5)
-                    .setProperties("n", 3)
-                    .setProperties("n", 1, 0)
-                    .setProperties("n", 2, 5)
+                    .setProperties("n", 3.0)
+                    .setProperties("n", 1.0, 0)
+                    .setProperties("n", 2.0, 5)
                     .setExpectedResult(new Object[][] {
-                        { 1, 1, 1 },
-                        { 1, 1, 1 },
-                        { 1, 1, 1 }
+                        { 1.0, 1.0, 1.0 },
+                        { 1.0, 1.0, 1.0 },
+                        { 1.0, 1.0, 1.0 }
                     }
     );
 

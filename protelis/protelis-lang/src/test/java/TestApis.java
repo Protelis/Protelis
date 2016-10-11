@@ -29,7 +29,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceTo() {
-        testDoubles(Results.DISTANCETO, DELTA_2);
+        test(Results.DISTANCETO, DELTA_2);
     }
 
     /**
@@ -37,7 +37,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceToWithObstacle() {
-        testDoubles(Results.OBSTACLE, DELTA_2);
+        test(Results.OBSTACLE, DELTA_2);
     }
 
     /**
@@ -53,7 +53,7 @@ public class TestApis {
      */
     @Test
     public void testNbrRange() {
-        testDoubles(Results.NBRRANGE, DELTA_2);
+        test(Results.NBRRANGE, DELTA_2);
     }
 
     /**
@@ -61,7 +61,7 @@ public class TestApis {
      */
     @Test
     public void testAddRange() {
-        testDoubles(Results.ADDRANGE, DELTA_2);
+        test(Results.ADDRANGE, DELTA_2);
     }
 
     /**
@@ -77,7 +77,7 @@ public class TestApis {
      */
     @Test
     public void testDistance() {
-        testDoubles(Results.DISTANCE, DELTA_2);
+        test(Results.DISTANCE, DELTA_2);
     }
 
     /**
@@ -149,16 +149,16 @@ public class TestApis {
      */
     @Test
     public void testC() {
-        testDoubles(Results.C, DELTA_2);
+        test(Results.C, DELTA_2);
     }
 
-    /**
-     * Test CMultisum.pt.
-     */
-    @Test
-    public void testCMultisum() {
-        testDoubles(Results.CMULTISUM, DELTA_2);
-    }
+//    /**
+//     * Test CMultisum.pt.
+//     */
+//    @Test
+//    public void testCMultisum() {
+//        testDoubles(Results.CMULTISUM, DELTA_2);
+//    }
 
     /**
      * Test gossip.pt.
@@ -173,7 +173,15 @@ public class TestApis {
      */
     @Test
     public void testBoundedSpreading() {
-        testDoubles(Results.BOUNDED_SPREADING, DELTA_2);
+        test(Results.BOUNDED_SPREADING, DELTA_2);
+    }
+
+    /**
+     * Test constrainSpreading.pt.
+     */
+    @Test
+    public void testConstrainSpreading() {
+        test(Results.CONSTRAIN_SPREADING);
     }
 
     /**
@@ -197,7 +205,7 @@ public class TestApis {
      */
     @Test
     public void testLaplacianConsensus() {
-        testDoubles(Results.LAPLACIAN_CONSENSUS, DELTA_2);
+        test(Results.LAPLACIAN_CONSENSUS, DELTA_2);
     }
 
     /**
@@ -228,9 +236,8 @@ public class TestApis {
      * From this point the rest of the file is not tests, but utility methods
      */
 
-    private Pair<Object[], Object[]> setTest(final TestConfig testConfig) {
-        SimulationTest sim = new SimulationTest(testConfig.getFileName(), testConfig.getMaxRound(),
-                        testConfig.getDistance());
+    private static Triple<SimulationTest, Object[], Object[]> setTest(final TestConfig testConfig, final int round) {
+        SimulationTest sim = new SimulationTest(testConfig.getFileName(), round, testConfig.getDistance());
         for (Pair<Position, Object[][]> group : testConfig.getExpectedResultGroups()) {
             Object[][] g = group.getRight();
             sim.addGroup(Pair.of(group.getLeft(), Pair.of(g[0].length, g.length)));
@@ -249,23 +256,70 @@ public class TestApis {
                 simRes[i] = TestConfig.DC;
             }
         }
-        return Pair.of(res, simRes);
+        return Triple.of(sim, res, simRes);
     }
 
-    private void test(final TestConfig testConfig) {
-        Pair<Object[], Object[]> res = setTest(testConfig);
-        assertArrayEquals(res.getLeft(), res.getRight());
+    private static Pair<double[], double[]> setTestDouble(final TestConfig testConfig, final int round) {
+        Triple<SimulationTest, Object[], Object[]> res = setTest(testConfig, testConfig.getMaxRound());
+        return convert(res.getMiddle(), res.getRight());
     }
 
-    private void testDoubles(final TestConfig testConfig, final double delta) {
-        Pair<Object[], Object[]> res = setTest(testConfig);
-        Object[] left = res.getLeft(), right = res.getRight();
+    private static Pair<double[], double[]> convert(final Object[] left, final Object[] right) {
         double[] l = new double[left.length], r = new double[right.length];
         for (int i = 0; i < l.length; i++) {
             l[i] = (double) left[i];
             r[i] = (double) right[i];
         }
-        assertArrayEquals(l, r, delta);
+        return Pair.of(l, r);
     }
 
+    private static void test(final TestConfig testConfig) {
+        Triple<SimulationTest, Object[], Object[]> res = setTest(testConfig, testConfig.getMaxRound());
+        assertArrayEquals(res.getMiddle(), res.getRight());
+    }
+
+    private static void test(final TestConfig testConfig, final double delta) {
+        Pair<double[], double[]> res = setTestDouble(testConfig, testConfig.getMaxRound());
+        assertArrayEquals(res.getLeft(), res.getRight(), delta);
+    }
+
+//    private static final String SL_NAME = "singleLineComment";
+//    private static final String ML_NAME = "multilineComment";
+//    private static final String EXPECTED = "EXPECTED_RESULT:";
+//    private static final Pattern EXTRACT_RESULT = Pattern.compile(//
+//                    ".*?" + EXPECTED + "\\s*(?<" + ML_NAME + ">.*?)\\s*\\*\\/" + "|" //
+//                                    + "\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", //
+//                    Pattern.DOTALL);
+//    private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
+//
+//    private static void testFileWithMultipleRuns(final TestConfig tc, final int min, final int max) {
+//        IntStreams.rangeClosed(min, max).forEach(i -> {
+//            testFile(tc, i);
+//        });
+//    }
+//
+//    private static void testFile(final TestConfig tc, final int runs) {
+//        final Triple<SimulationTest, Object[], Object[]> res = setTest(tc, runs);
+//        final Object[] execResult = res.getRight();
+//        final InputStream is = TestApis.class.getResourceAsStream("/" + tc.getFileName() + ".pt");
+//        try {
+//            final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
+//            final Matcher extractor = EXTRACT_RESULT.matcher(test);
+//            if (extractor.find()) {
+//                String result = extractor.group(ML_NAME);
+//                if (result == null) {
+//                    result = extractor.group(SL_NAME);
+//                }
+//                final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
+//                final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
+//                vm.runCycle();
+//                assertEquals(vm.getCurrentValue(),
+//                                execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult);
+//            } else {
+//                fail("Your test does not include the expected result");
+//            }
+//        } catch (IOException e) {
+//            fail(LangUtils.stackTraceToString(e));
+//        }
+//    }
 }
