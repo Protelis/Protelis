@@ -1,5 +1,5 @@
 module protelis:lang:spreading
-
+import java.lang.Math.or
 /*
  * Gradcast algorithm
  * source: boolean value representing whether the node is a gradient source
@@ -253,3 +253,12 @@ public def consensus(init, f) {
  public def laplacianConsensus(init, epsilon) {
  	consensus(init, (v) -> {epsilon * v})
  }
+ 
+/**
+ * Forecast obstacles along a path to the source.
+ * 
+ * Return type: (bool, bool) -> bool.
+ */ 
+public def forecastObstacle(source, obstacle) {
+	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
+}

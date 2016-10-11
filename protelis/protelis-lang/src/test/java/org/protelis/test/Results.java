@@ -134,6 +134,19 @@ public final class Results {
     );
 
     /**
+     * forecastObstacle.pt result.
+     */
+    public static final TestConfig FORECAST_OBSTACLE = TestConfig.create("forecastObstacle")
+                    .setProperties("source", true, 0)
+                    .setProperties("obstacle", true, 2)
+                    .setExpectedResult(new Object[][] {
+                        { T, T, T, F },
+                        { F, F, F, F },
+                        { F, F, F, F }
+                    }
+    );
+
+    /**
      * nbrRange.pt result.
      */
     public static final TestConfig NBRRANGE = TestConfig.create("nbrRange")

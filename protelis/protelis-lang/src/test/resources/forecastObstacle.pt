@@ -1,0 +1,2 @@
+import protelis:lang:spreading
+forecastObstacle(env.has("source"), env.has("obstacle"))

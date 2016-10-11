@@ -1,3 +1,2 @@
-module distanceTo
 import protelis:lang:spreading
 distanceTo(env.has("source"))

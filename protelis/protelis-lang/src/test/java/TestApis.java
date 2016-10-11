@@ -1,6 +1,4 @@
-
 import static org.junit.Assert.assertArrayEquals;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
@@ -38,6 +36,14 @@ public class TestApis {
     @Test
     public void testDistanceToWithObstacle() {
         test(Results.OBSTACLE, DELTA_2);
+    }
+
+    /**
+     * Test forecastObstacle.
+     */
+    @Test
+    public void testForecastObstacle() {
+        test(Results.FORECAST_OBSTACLE, DELTA_2);
     }
 
     /**
