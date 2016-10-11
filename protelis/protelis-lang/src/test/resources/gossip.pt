@@ -1,3 +1,4 @@
 import java.lang.Math.min
 import protelis:lang:spreading
-gossip(env.get("n"), (a, b) -> { min(a, b) })
+Gossip(env.get("n"), (a, b) -> { min(a, b) })
+//gossip(env.get("n"), (a, b) -> { min(a, b) })
