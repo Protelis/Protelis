@@ -45,17 +45,17 @@ public def nbrRangeHop() { 1 }
  * Distance between the current and the source nodes 
  */
 public def distanceTo(source) {
-	distanceTo2(source, nbrRange)	
+	distanceToWithMetric(source, nbrRange)	
 }
 
 /*
  * Shortest distance between the current and the nearest source node
  */
-public def distanceTo2(source, metric) {
+public def distanceToWithMetric(source, metric) {
 	// v: other node distances from the source
 	// v + nbrRange(): 
 	//   other node distances from the source + distance of the current node from the formers
-	G(source, 0, nbrRange, (v) -> {v + metric.apply()})
+	G(source, 0, metric, (v) -> {v + metric.apply()})
 }
 
 /**
@@ -64,14 +64,14 @@ public def distanceTo2(source, metric) {
  * (bool, bool) -> num
  */
 public def distance(source, dest) { 
-	distance2(source, dest, nbrRange)
+	distanceWithMetric(source, dest, nbrRange)
 }
 
 // distance of the source from the destination
-public def distance2(source, dest, metric) { 
+public def distanceWithMetric(source, dest, metric) { 
     rep (distanceValue <- [Infinity, Infinity]) { //;; computing a field of pairs (distance,value)
         mux (source) { 
-            [ 0, distanceTo2(dest, metric) ]
+            [ 0, distanceToWithMetric(dest, metric) ]
         } else { 
             //;; propagating as a gradient, using for first component of the pair
             minHood ([nbr(distanceValue).get(0) + metric.apply(), nbr (distanceValue).get(1)])
@@ -86,6 +86,7 @@ public def broadcast(source, value) {
 	G(source, value, nbrRange, v -> {v})
 }
 
+//TODO gossip with g
 /**
  * Gossip.
  * 
@@ -95,6 +96,10 @@ public def gossip(value, f) {
 	rep (v <- value) {
 		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
 	}
+}
+
+public def Gossip(value, f) {
+	G(false, value, nbrRange, (v) -> { f.apply(v, value) })
 }
 
 /**
@@ -120,9 +125,20 @@ public def boundSpreading(region, f, null) {
 }
 
 /**
+ * Constrain the spreading of the 'f' within devices closer than 'meter' to the source.
+ */
+public def constrainSpreading(source, meter, f, null) {
+	if (distanceTo(source) < meter) {
+		f.apply()
+	} else {
+		null
+	}
+}
+
+/**
  * Distance to devices where "source" is `true`, while avoiding devices where "obstacle" is `true`
  */
-public def distanceTo_avoiding_obstacle(source, obstacle) {
+public def distanceToAvoidObstacle(source, obstacle) {
 	if (obstacle) { Infinity }
 	else { distanceTo(source) }
 }
