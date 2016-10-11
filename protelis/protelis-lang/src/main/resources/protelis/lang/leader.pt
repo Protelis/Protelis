@@ -1,0 +1,53 @@
+module protelis:lang:leader
+import protelis:lang:spreading
+
+/**
+ * S. 
+ * 
+ * Devices compete against one another to become local “leaders,”
+ * resulting  in  a  random  Voronoi  partition  with  a  characteristic
+ * component size 'grain'.
+ */
+ public def S(grain, metric) {
+	breakUsingUids(randomUid(), grain, metric)
+}
+
+/**
+ * Pair a random value to the device's id
+ */
+def randomUid() {
+	rep(v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
+		[v.get(0), v.get(1)]	
+	}
+}
+
+def breakUsingUids(uid, grain, metric) {
+	// Return true if the current device is leader of the partition. Lead = current leader
+	uid == 
+		rep(lead <- uid) {
+			distanceCompetition(G(uid == lead, 0, metric, (v) -> { v + metric.apply() }), lead, uid, grain, metric)
+		}
+}
+
+def distanceCompetition(d, lead, uid, grain, metric) {
+	mux(d > grain) { 
+		// Device is far. Propose its id
+		uid 
+	} else {
+		mux(d >= (0.5 * grain)) {
+			// Nearest neighbor in the second half (outer side) of the region. Do not challenge at all
+			Infinity 
+		} else {
+			// Challenge for this partition
+			minHood(
+				mux(nbr(d) + metric.apply() >= 0.5 * grain) { 
+					// Device in the second half (outer side) of the region. Do not challenge at all
+					Infinity
+				} else {
+					// Suggest the uid with the lowest random number
+					nbr(lead)
+				}
+			)
+		}
+	}	
+}
