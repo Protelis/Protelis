@@ -1,0 +1,3 @@
+import java.lang.Math.min
+import protelis:lang:spreading
+constrainSpreading(env.has("source"), env.get("range"), () -> { 1.0 }, NaN)
