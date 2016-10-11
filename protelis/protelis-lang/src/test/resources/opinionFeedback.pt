@@ -1,2 +1,2 @@
 import protelis:lang:convergecast
-opinion_feedback(env.has("acts"), env.get("feedback"))
+opinionFeedback(env.has("acts"), env.get("feedback"))

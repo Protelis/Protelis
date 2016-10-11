@@ -86,6 +86,12 @@ public final class Results {
                     }
     );
 
+    private static final Object[][] GOSSIP_RESULT = new Object[][] {
+        { 1.0, 1.0, 1.0 },
+        { 1.0, 1.0, 1.0 },
+        { 1.0, 1.0, 1.0 }
+    };
+
     /**
      * gossip.pt result.
      */
@@ -93,12 +99,26 @@ public final class Results {
                     .setProperties("n", 3.0)
                     .setProperties("n", 1.0, 0)
                     .setProperties("n", 2.0, 5)
-                    .setExpectedResult(new Object[][] {
-                        { 1.0, 1.0, 1.0 },
-                        { 1.0, 1.0, 1.0 },
-                        { 1.0, 1.0, 1.0 }
-                    }
-    );
+                    .setExpectedResult(GOSSIP_RESULT);
+
+    /**
+     * gossip2.pt result.
+     */
+    public static final TestConfig GOSSIP2 = TestConfig.create("gossip2", EXECUTION_ROUND, 1.5)
+                    .setProperties("n", 3.0)
+                    .setProperties("n", 1.0, 0)
+                    .setProperties("n", 2.0, 5)
+                    .setExpectedResult(GOSSIP_RESULT);
+
+    /**
+     * gossip3.pt result.
+     */
+    public static final TestConfig GOSSIP3 = TestConfig.create("gossip3", EXECUTION_ROUND, 1.5)
+                    .setProperties("n", 3.0)
+                    .setProperties("n", 1.0, 0)
+                    .setProperties("sink", true, 0)
+                    .setProperties("n", 2.0, 5)
+                    .setExpectedResult(GOSSIP_RESULT);
 
     /**
      * obstacle.pt result.

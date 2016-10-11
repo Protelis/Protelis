@@ -152,13 +152,13 @@ public class TestApis {
         test(Results.C, DELTA_2);
     }
 
-//    /**
-//     * Test CMultisum.pt.
-//     */
-//    @Test
-//    public void testCMultisum() {
-//        testDoubles(Results.CMULTISUM, DELTA_2);
-//    }
+    // /**
+    // * Test CMultisum.pt.
+    // */
+    // @Test
+    // public void testCMultisum() {
+    // testDoubles(Results.CMULTISUM, DELTA_2);
+    // }
 
     /**
      * Test gossip.pt.
@@ -166,6 +166,22 @@ public class TestApis {
     @Test
     public void testGossip() {
         test(Results.GOSSIP);
+    }
+
+    /**
+     * Test gossip2.pt.
+     */
+    @Test
+    public void testGossip2() {
+        test(Results.GOSSIP2);
+    }
+
+    /**
+     * Test gossip3.pt.
+     */
+    @Test
+    public void testGossip3() {
+        test(Results.GOSSIP3);
     }
 
     /**
@@ -283,43 +299,48 @@ public class TestApis {
         assertArrayEquals(res.getLeft(), res.getRight(), delta);
     }
 
-//    private static final String SL_NAME = "singleLineComment";
-//    private static final String ML_NAME = "multilineComment";
-//    private static final String EXPECTED = "EXPECTED_RESULT:";
-//    private static final Pattern EXTRACT_RESULT = Pattern.compile(//
-//                    ".*?" + EXPECTED + "\\s*(?<" + ML_NAME + ">.*?)\\s*\\*\\/" + "|" //
-//                                    + "\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", //
-//                    Pattern.DOTALL);
-//    private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
-//
-//    private static void testFileWithMultipleRuns(final TestConfig tc, final int min, final int max) {
-//        IntStreams.rangeClosed(min, max).forEach(i -> {
-//            testFile(tc, i);
-//        });
-//    }
-//
-//    private static void testFile(final TestConfig tc, final int runs) {
-//        final Triple<SimulationTest, Object[], Object[]> res = setTest(tc, runs);
-//        final Object[] execResult = res.getRight();
-//        final InputStream is = TestApis.class.getResourceAsStream("/" + tc.getFileName() + ".pt");
-//        try {
-//            final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
-//            final Matcher extractor = EXTRACT_RESULT.matcher(test);
-//            if (extractor.find()) {
-//                String result = extractor.group(ML_NAME);
-//                if (result == null) {
-//                    result = extractor.group(SL_NAME);
-//                }
-//                final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
-//                final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
-//                vm.runCycle();
-//                assertEquals(vm.getCurrentValue(),
-//                                execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult);
-//            } else {
-//                fail("Your test does not include the expected result");
-//            }
-//        } catch (IOException e) {
-//            fail(LangUtils.stackTraceToString(e));
-//        }
-//    }
+    // private static final String SL_NAME = "singleLineComment";
+    // private static final String ML_NAME = "multilineComment";
+    // private static final String EXPECTED = "EXPECTED_RESULT:";
+    // private static final Pattern EXTRACT_RESULT = Pattern.compile(//
+    // ".*?" + EXPECTED + "\\s*(?<" + ML_NAME + ">.*?)\\s*\\*\\/" + "|" //
+    // + "\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", //
+    // Pattern.DOTALL);
+    // private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
+    //
+    // private static void testFileWithMultipleRuns(final TestConfig tc, final
+    // int min, final int max) {
+    // IntStreams.rangeClosed(min, max).forEach(i -> {
+    // testFile(tc, i);
+    // });
+    // }
+    //
+    // private static void testFile(final TestConfig tc, final int runs) {
+    // final Triple<SimulationTest, Object[], Object[]> res = setTest(tc, runs);
+    // final Object[] execResult = res.getRight();
+    // final InputStream is = TestApis.class.getResourceAsStream("/" +
+    // tc.getFileName() + ".pt");
+    // try {
+    // final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
+    // final Matcher extractor = EXTRACT_RESULT.matcher(test);
+    // if (extractor.find()) {
+    // String result = extractor.group(ML_NAME);
+    // if (result == null) {
+    // result = extractor.group(SL_NAME);
+    // }
+    // final String toCheck =
+    // CYCLE.matcher(result).replaceAll(Integer.toString(runs));
+    // final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new
+    // DummyContext());
+    // vm.runCycle();
+    // assertEquals(vm.getCurrentValue(),
+    // execResult instanceof Number ? ((Number) execResult).doubleValue() :
+    // execResult);
+    // } else {
+    // fail("Your test does not include the expected result");
+    // }
+    // } catch (IOException e) {
+    // fail(LangUtils.stackTraceToString(e));
+    // }
+    // }
 }

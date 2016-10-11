@@ -1,6 +1,8 @@
 module protelis:lang:convergecast
 import protelis:lang:spreading
 import protelis:lang:time
+import protelis:lang:core 
+
 /*
  * Find the parent node following the maximum decrease in potential
  */
@@ -46,11 +48,38 @@ public def C(potential, accumulate, local, null) {
 	}	
 }
 
+/**
+ * Summarize.
+ * 
+ * Return type: (bool, f, num, num) -> num.
+ * 
+ * Broadcast the value accumulated by the source. Example: 
+ * 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
+ * devices in a region.
+ */
 public def summarize (sink, accumulate, local, null) {
 	broadcast(sink, C(distanceTo(sink), accumulate, local, null))
 }
 
-public def opinion_feedback (acts, feedback) {
+/**
+ * Average.
+ * 
+ * Return type: (bool, num) -> num.
+ * 
+ * Broadcast the average value.
+ */
+public def average(sink, value) {
+	summarize(sink, sum, value, 0) + summarize(sink, sum, 1, 0)
+}
+
+/**
+ * Gossip implemented with C.
+ */
+public def Cossip(sink, value, f) {
+	summarize(sink, f, value, value)	
+}
+
+public def opinionFeedback(acts, feedback) {
 	Tfilter(C(G(acts, 0, nbrRange, addRange), (a,b) -> { a + b }, feedback, 0))
 }
 
@@ -75,7 +104,7 @@ public def Cmultisum(potential, local) {
  				mux(potential >= nbr (potential)) { 
 	 				0
 	 			} else {
-	 				nbr (sumHood (mux(nbr (potential) < potential) {nbr(potential)} else {0}))
+	 				nbr (v / sumHood (mux(nbr (potential) < potential) {nbr(potential)} else {0}))
 	 			}
  			)
  	}
