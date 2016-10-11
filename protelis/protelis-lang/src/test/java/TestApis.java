@@ -38,13 +38,13 @@ public class TestApis {
         test(Results.OBSTACLE, DELTA_2);
     }
 
-    /**
-     * Test forecastObstacle.
-     */
-    @Test
-    public void testForecastObstacle() {
-        test(Results.FORECAST_OBSTACLE, DELTA_2);
-    }
+//    /**
+//     * Test forecastObstacle.
+//     */
+//    @Test
+//    public void testForecastObstacle() {
+//        test(Results.FORECAST_OBSTACLE, DELTA_2);
+//    }
 
     /**
      * Test broadcast function.
