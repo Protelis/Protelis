@@ -11,7 +11,7 @@ import protelis:lang:core
  * decay: timer decrease its value according to this function
  */
 public def T(initial, zero, decay) {
-	rep(v <- initial) {
+	rep(v <- initial) { // stateful. rep is initialized only the first time the function is invoked
 		min(initial, max(zero, decay.apply(v)))
 	}
 }
