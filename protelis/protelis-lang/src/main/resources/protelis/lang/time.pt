@@ -56,7 +56,23 @@ public def cyclicFunction(length, decay, function) {
  * Hold `value` until a specified `timeout`. Return `false` when `T` returns 0.
  */
 public def limitedMemory(value, timeout, dt) {
-	if (T(timeout, 0, (t) -> {t - dt}) == 0) { false } else { value }
+	if (T(timeout, 0, (t) -> {t - dt}) <= 0) { 
+		false
+	} else { 
+		value
+	}
+}
+
+public def timer(length, dt) {
+	T(length, 0, (t) -> {t - dt})
+}
+
+def recentEvent(event, timeout) {
+	if(event) { 
+		true
+	} else { 
+		timer(timeout) > 0
+	}
 }
 
 public def Tfilter(value) {
