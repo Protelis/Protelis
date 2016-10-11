@@ -2,5 +2,7 @@ dependencies {
     compile (
         project(':protelis-interpreter')
     )
+    // https://mvnrepository.com/artifact/it.unibo.alchemist/alchemist-loading
+	testCompile group: 'it.unibo.alchemist', name: 'alchemist-loading', version: '$alchemistLoadingVersion'
 }
 
