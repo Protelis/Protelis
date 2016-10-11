@@ -120,6 +120,15 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
         return System.currentTimeMillis();
     }
 
+    /**
+     * Return delta time.
+     * 
+     * @return delta time
+     */
+    public double dt() {
+        return 1;
+    }
+
     @Override
     protected AbstractExecutionContext instance() {
         return new SimpleDevice(uid);
