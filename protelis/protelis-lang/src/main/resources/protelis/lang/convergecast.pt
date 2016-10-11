@@ -67,19 +67,16 @@ public def opinion_feedback (acts, feedback) {
  * using all paths down the potential function rather than just
  * one. Can implement  any  other  idempotent  or  separable  function.
  */
-public def Cmultisum (potential, local) {
-	NaN
-// 	rep (v <- local) {
-// 		local + 
-// 			sumHood (
-// 				mux (potential >= nbr (potential)) { 
-//	 				0
-//	 			} else {
-//	 				nbr (v / sumHood (
-//	 					(nbr (potential).map((v) -> { if (v < potential) {1} else {0} }) )
-//	 						
-//	 				))
-//	 			}
-// 			)
-// 	}
+public def Cmultisum(potential, local) {
+//	NaN
+ 	rep(v <- local) {
+ 		local + 
+ 			sumHood(
+ 				mux(potential >= nbr (potential)) { 
+	 				0
+	 			} else {
+	 				nbr (sumHood (mux(nbr (potential) < potential) {nbr(potential)} else {0}))
+	 			}
+ 			)
+ 	}
 }
