@@ -1,0 +1,30 @@
+# result:
+#  {0 0.26, 1 0.26,
+#   2 0.26, 3 0.26}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: laplacianConsensus
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 1, 1, 1, 0, 0]
+    contents:
+      - molecule: foo
+        concentration: 0
+      - molecule: epsilon
+        concentration: 0.1
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: foo
+        concentration: 1
+    programs:
+      - *program
