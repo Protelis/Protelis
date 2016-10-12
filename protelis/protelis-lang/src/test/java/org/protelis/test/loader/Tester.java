@@ -86,8 +86,9 @@ public final class Tester {
                     assertEquals("Node" + pair.getLeft(), (double) Double.parseDouble(pair.getRight()),
                                     (double) singleNodeResult, DELTA);
                 } else if (singleNodeResult instanceof Boolean) {
-                    assertEquals("Node" + pair.getLeft(), (boolean) Boolean.parseBoolean(pair.getRight()),
-                                    (boolean) singleNodeResult);
+                    String v = pair.getRight();
+                    assertEquals("Node" + pair.getLeft(), (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
+                                    : v.equals("F") ? "false" : pair.getRight()), (boolean) singleNodeResult);
                 } else {
                     assertEquals("Node" + pair.getLeft(), pair.getRight(), singleNodeResult);
                 }
