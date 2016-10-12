@@ -30,7 +30,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceToWithObstacle() {
-        test("obstacle");
+        test("distanceToWithObstacle");
     }
 
     // /**
