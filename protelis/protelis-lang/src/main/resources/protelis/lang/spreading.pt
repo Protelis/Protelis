@@ -138,7 +138,7 @@ public def constrainSpreading(source, meter, f, null) {
 /**
  * Distance to devices where "source" is `true`, while avoiding devices where "obstacle" is `true`
  */
-public def distanceToAvoidObstacle(source, obstacle) {
+public def distanceToWithObstacle(source, obstacle) {
 	if (obstacle) { Infinity }
 	else { distanceTo(source) }
 }

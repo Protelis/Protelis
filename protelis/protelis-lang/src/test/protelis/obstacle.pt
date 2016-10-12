@@ -1,2 +1,0 @@
-import protelis:lang:spreading
-distanceToAvoidObstacle(env.has("source"), env.has("obstacle"))
