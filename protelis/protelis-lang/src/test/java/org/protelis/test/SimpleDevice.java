@@ -37,7 +37,6 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
         this.uid = new IntegerUID(uid);
         this.position = position;
         r = new Random(0);
-        // Finish making the new device and add it to our collection
         vm = new ProtelisVM(program, this);
     }
 
@@ -71,8 +70,6 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
         System.out.println(message);
     }
 
-    // private static final double EARTH_RADIUS = 6.371e6;
-
     /**
      * Move in a direction specified by the 3-tuple vector in meters Uses a
      * kludge vector in which +X = East, +Y = North.
@@ -81,14 +78,6 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
      *            move the device of the given vector
      */
     public void move(final Tuple vector) {
-        // double radius = EARTH_RADIUS + position.elevation;
-        // double degreesPerMeter = 360 / (2 * Math.PI * radius);
-        // double newLon = position.longitude.degrees + degreesPerMeter *
-        // (Double) vector.get(0);
-        // double newLat = position.latitude.degrees + degreesPerMeter *
-        // (Double) vector.get(1);
-        // double newElevation = position.elevation + (Double) vector.get(2);
-        // position = Position.fromDegrees(newLat, newLon, newElevation);
         position = position.addVector((Double) vector.get(0), (Double) vector.get(1), (Double) vector.get(2));
     }
 
