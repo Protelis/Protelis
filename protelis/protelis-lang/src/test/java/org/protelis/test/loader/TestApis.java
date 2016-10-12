@@ -187,8 +187,8 @@ public class TestApis {
      * Test boundedSpreading.pt.
      */
     @Test
-    public void testBoundedSpreading() {
-        test("boundedSpreading");
+    public void testBoundSpreading() {
+        test("boundSpreading");
     }
 
     /**

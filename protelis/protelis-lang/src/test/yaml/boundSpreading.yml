@@ -1,0 +1,32 @@
+# result:
+#  {0 0.0, 1 1.0,   2 foo,  3 foo,
+#   4 1.0, 5 1.41,  6 foo,  7 foo,
+#   8 2.0, 9 2.41, 10 foo, 11 foo}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: boundSpreading
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0, 0]
+    contents:
+      - in:
+          type: Rectangle
+          parameters: [-0.5, -0.5, 2, 3]
+        molecule: region
+        concentration: true
+      - in:
+          type: Rectangle
+          parameters: [-0.5, -0.5, 1, 1]
+        molecule: source
+        concentration: true
+    programs:
+      - *program
