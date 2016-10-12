@@ -76,6 +76,8 @@ public final class Tester {
         });
 
         final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
+        assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
+                        + simulationRes.values().size() + "]", expectedResult.size(), simulationRes.values().size());
         for (Pair<String, String> pair : expectedResult) {
             if (!pair.getRight().equals(DC)) {
                 Object singleNodeResult = simulationRes.get(pair.getLeft());
@@ -83,6 +85,9 @@ public final class Tester {
                 if (singleNodeResult instanceof Double) {
                     assertEquals("Node" + pair.getLeft(), (double) Double.parseDouble(pair.getRight()),
                                     (double) singleNodeResult, DELTA);
+                } else if (singleNodeResult instanceof Boolean) {
+                    assertEquals("Node" + pair.getLeft(), (boolean) Boolean.parseBoolean(pair.getRight()),
+                                    (boolean) singleNodeResult);
                 } else {
                     assertEquals("Node" + pair.getLeft(), pair.getRight(), singleNodeResult);
                 }
@@ -95,8 +100,10 @@ public final class Tester {
      * 
      * @param file
      *            file to bested
-     * @throws IOException 
-     * @throws InterruptedException 
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
      */
     public static void test(final String file) throws InterruptedException, IOException {
         test(file, EXAMPLE_RUNS);
@@ -109,8 +116,10 @@ public final class Tester {
      *            file to bested
      * @param exampleRuns
      *            number of runs
-     * @throws IOException 
-     * @throws InterruptedException 
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
      */
     public static void test(final String file, final int exampleRuns) throws InterruptedException, IOException {
         new Tester(file, exampleRuns);
