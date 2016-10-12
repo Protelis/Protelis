@@ -63,7 +63,7 @@ public def distanceToWithMetric(source, metric) {
  * 
  * (bool, bool) -> num
  */
-public def distance(source, dest) { 
+public def distanceBetween(source, dest) { 
 	distanceWithMetric(source, dest, nbrRange)
 }
 
@@ -181,7 +181,7 @@ public def channel(source, destination, obstacle, thr, width) {
   	if (obstacle) { 
   		false
   	} else { 
-  		let d = distance(source, destination);
+  		let d = distanceBetween(source, destination);
   		if (d == Infinity) { false }
   		else {
   			distanceTo(distanceTo(source) + distanceTo(destination) <=  d + thr) <= width

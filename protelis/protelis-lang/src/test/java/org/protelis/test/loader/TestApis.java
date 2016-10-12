@@ -1,5 +1,7 @@
 package org.protelis.test.loader;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 /**
@@ -72,11 +74,11 @@ public class TestApis {
     }
 
     /**
-     * Test distance.pt.
+     * Test distanceBetween.pt.
      */
     @Test
-    public void testDistance() {
-        test("distance");
+    public void testDistanceBetween() {
+        test("distanceBetween");
     }
 
     /**
@@ -256,6 +258,14 @@ public class TestApis {
     }
 
     private static void test(final String file, final int runs) {
-        Tester.test(file, runs);
+        try {
+            Tester.test(file, runs);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

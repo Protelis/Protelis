@@ -95,8 +95,10 @@ public final class Tester {
      * 
      * @param file
      *            file to bested
+     * @throws IOException 
+     * @throws InterruptedException 
      */
-    public static void test(final String file) {
+    public static void test(final String file) throws InterruptedException, IOException {
         test(file, EXAMPLE_RUNS);
     }
 
@@ -107,13 +109,11 @@ public final class Tester {
      *            file to bested
      * @param exampleRuns
      *            number of runs
+     * @throws IOException 
+     * @throws InterruptedException 
      */
-    public static void test(final String file, final int exampleRuns) {
-        try {
-            new Tester(file, exampleRuns);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    public static void test(final String file, final int exampleRuns) throws InterruptedException, IOException {
+        new Tester(file, exampleRuns);
     }
 
     /**

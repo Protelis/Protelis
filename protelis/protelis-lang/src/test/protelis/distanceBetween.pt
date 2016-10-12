@@ -1,0 +1,2 @@
+import protelis:lang:spreading
+distanceBetween(env.has("source"), env.has("destination"))
