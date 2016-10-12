@@ -1,7 +1,7 @@
 # result:
-#  {0 3.86, 1 3.86,  2 3.86,  3 3.86,
-#   4 3.86, 5 3.86,  6 3.86,  7 3.86,
-#   8 3.86, 9 3.86, 10 3.86, 11 3.86}
+#  {0 12.0, 1 12.0,  2 12.0,  3 12.0,
+#   4 12.0, 5 12.0,  6 12.0,  7 12.0,
+#   8 12.0, 9 12.0, 10 12.0, 11 12.0}
 
 incarnation: test
 
@@ -11,23 +11,19 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: distanceBetween
+    program: summarize
               
 displacements:
   - in:
       type: Grid
       parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
     contents:
+      - molecule: n
+        concentration: 1.0
       - in:
           type: Circle
           parameters: [0, 0, 0.5]
         molecule: source
-        concentration: true
-      
-      - in:
-          type: Circle
-          parameters: [3, 2, 0.5]
-        molecule: destination
         concentration: true
     programs:
       - *program

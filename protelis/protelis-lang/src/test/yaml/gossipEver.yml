@@ -1,8 +1,7 @@
 # result:
-#  {0 1.0, 1 1.0,  2 foo,  3 foo,
-#   4 1.0, 5 1.0,  6 foo,  7 foo,
-#   8 foo, 9 foo, 10 foo, 11 foo}
-
+#  {0 true,  1 true,  2 true,  3 true,
+#   4 true,  5 true,  6 true,  7 true,
+#   8 true,  9 true, 10 true, 11 true}
 incarnation: test
 
 network-model:
@@ -11,19 +10,19 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: constrainSpreading
+    program: gossipEver
               
 displacements:
   - in:
       type: Grid
       parameters: [0, 0, 3, 2, 1, 1, 0, 0]
     contents:
-      - molecule: range
-        concentration: 1.8
+      - molecule: temperature 
+        concentration: 10
       - in:
           type: Circle
           parameters: [0, 0, 0.5]
-        molecule: source
-        concentration: true
+        molecule: temperature
+        concentration: 26
     programs:
       - *program
