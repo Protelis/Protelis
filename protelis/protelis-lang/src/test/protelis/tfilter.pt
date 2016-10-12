@@ -1,2 +1,2 @@
 import protelis:lang:time
-Tfilter(0)
+Tfilter(env.get("n"))
