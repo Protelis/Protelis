@@ -1,4 +1,4 @@
-package org.protelis.test.loader;
+package org.protelis.test;
 
 import java.util.Objects;
 

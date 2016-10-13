@@ -6,14 +6,13 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE in the Alchemist distribution's top directory.
  */
-package org.protelis.test.loader;
+package org.protelis.test;
 
 import java.util.List;
 
 import org.apache.commons.math3.random.RandomGenerator;
 import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.ProtelisLoader;
-import org.protelis.test.CachingNetworkManager;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisVM;
 

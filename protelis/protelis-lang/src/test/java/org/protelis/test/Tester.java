@@ -1,4 +1,4 @@
-package org.protelis.test.loader;
+package org.protelis.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

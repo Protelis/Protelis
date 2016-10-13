@@ -1,73 +1,47 @@
 package org.protelis.test;
 
-import java.util.Random;
-
+import org.apache.commons.math3.random.RandomGenerator;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
-import org.protelis.vm.ProtelisProgram;
-import org.protelis.vm.ProtelisVM;
+import org.protelis.vm.NetworkManager;
 import org.protelis.vm.impl.AbstractExecutionContext;
-import org.protelis.vm.impl.SimpleExecutionEnvironment;
+
+import it.unibo.alchemist.model.interfaces.Environment;
+import it.unibo.alchemist.model.interfaces.Reaction;
 
 /**
  * A simple implementation of a Protelis-based device, encapsulating a
  * ProtelisVM and a network interface.
  */
 public class SimpleDevice extends AbstractExecutionContext implements SpatiallyEmbeddedDevice {
-    private final Random r;
-    /** Device numerical identifier */
-    private final IntegerUID uid;
-    /** The Protelis VM to be executed by the device */
-    private final ProtelisVM vm;
-    private Position position;
+    private final RandomGenerator r;
+    private final ProtelisNode node;
+    private final Environment<Object> env;
+    private final Reaction<Object> react;
+    private final NetworkManager netmgr;
 
     /**
-     * Standard constructor.
      * 
-     * @param program
-     *            program to be executed
-     * @param uid
-     *            universal identifier
-     * @param position
-     *            position
+     * @param environment
+     *            environment
+     * @param node
+     *            node
+     * @param reaction
+     *            reaction
+     * @param random
+     *            random
+     * @param netmgr
+     *            netmgr
      */
-    public SimpleDevice(final ProtelisProgram program, final int uid, final Position position) {
-        super(new SimpleExecutionEnvironment(), new CachingNetworkManager());
-        this.uid = new IntegerUID(uid);
-        this.position = position;
-        r = new Random(0);
-        vm = new ProtelisVM(program, this);
-    }
-
-    /**
-     * Internal-only lightweight constructor to support "instance"
-     * 
-     * @param uid
-     *            universal identifier
-     */
-    private SimpleDevice(final IntegerUID uid) {
-        super(new SimpleExecutionEnvironment(), new CachingNetworkManager());
-        this.uid = uid;
-        r = new Random(0);
-        vm = null;
-    }
-
-    /**
-     * @return virtual machine, to allow external execution triggering
-     */
-    public ProtelisVM getVM() {
-        return vm;
-    }
-
-    /**
-     * Test actuator that dumps a string message to the output.
-     * 
-     * @param message
-     *            to be announced
-     */
-    public void announce(final String message) {
-        System.out.println(message);
+    public SimpleDevice(final Environment<Object> environment, final ProtelisNode node, final Reaction<Object> reaction,
+                    final RandomGenerator random, final NetworkManager netmgr) {
+        super(node, netmgr);
+        r = random;
+        this.react = reaction;
+        this.env = environment;
+        this.netmgr = netmgr;
+        this.node = node;
     }
 
     /**
@@ -78,35 +52,18 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
      *            move the device of the given vector
      */
     public void move(final Tuple vector) {
-        position = position.addVector((Double) vector.get(0), (Double) vector.get(1), (Double) vector.get(2));
-    }
-
-    /**
-     * @return return the device position
-     */
-    public Position getPosition() {
-        return position;
-    }
-
-    /**
-     * Expose the network manager, to allow external simulation of network For
-     * real devices, the NetworkManager usually runs autonomously in its own
-     * thread(s).
-     * 
-     * @return network manager
-     */
-    public CachingNetworkManager accessNetworkManager() {
-        return (CachingNetworkManager) super.getNetworkManager();
+        // position = position.addVector((Double) vector.get(0), (Double)
+        // vector.get(1), (Double) vector.get(2));
     }
 
     @Override
     public DeviceUID getDeviceUID() {
-        return uid;
+        return node;
     }
 
     @Override
     public Number getCurrentTime() {
-        return System.currentTimeMillis();
+        return react.getTau().toDouble();
     }
 
     /**
@@ -120,7 +77,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
 
     @Override
     protected AbstractExecutionContext instance() {
-        return new SimpleDevice(uid);
+        return new SimpleDevice(env, node, react, r, netmgr);
     }
 
     /**
@@ -134,6 +91,6 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
 
     @Override
     public Field nbrRange() {
-        return buildField(position -> this.position.distanceTo(position), position);
+        return buildField(deviceUid -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) deviceUid), node);
     }
 }
