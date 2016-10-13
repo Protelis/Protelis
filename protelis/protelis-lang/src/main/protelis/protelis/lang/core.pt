@@ -22,6 +22,26 @@ public def diff(a, b) {
 	a - b
 }
 
+public def min(t1, t2) {
+	if(t1.compareTo(t2) < 0 ) {
+		t1
+	} else {
+		t2
+	}
+}
+
+public def max(t1, t2) {
+	if(t1.compareTo(t2) > 0 ) {
+		t1
+	} else {
+		t2
+	}
+}
+
+public def mean(local, field) {
+	(local + field) / 2
+}
+
 /**
  * Low pass filter.
  * 
@@ -30,5 +50,33 @@ public def diff(a, b) {
 public def exponentialFilter(signal, a) {
 	rep (v <- signal) {
 		signal * a + v * (1 - a)
+	}
+}
+
+/**
+ * Iterate over the elements of a tuple. Apply f to all the values satisfying filter. 
+ * Return default when tuple is empty.
+ */
+public def iterate(tuple, filter, f, default) {
+	if(tuple.size() > 0) {
+		if (filter.apply(tuple.get(0))) {
+			f.apply(tuple.get(0))
+		} else {
+			default
+		};
+		iterate(tuple.subTupleEnd(1), filter, f, default)
+	} else {
+		default
+	}
+}
+
+/**
+ * Reduce a tuple to a single value according to f.
+ */
+public def reduce(tuple, f) {
+	if (tuple.size() <= 1) {
+		tuple.get(0);
+	} else {
+		f.apply(tuple.get(0),reduce(tuple.subTupleEnd(1),f));
 	}
 }
