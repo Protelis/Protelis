@@ -1,5 +1,35 @@
 module protelis:lang:spreading
+import org.apache.commons.math3.util.FastMath.floor
 import protelis:lang:core
+
+def GPI(source, initial, density, integrand, nbrFun) {
+	if (density < 0) {
+		NaN
+	} else {
+		rep(distanceIntegral <- [Infinity, initial]) {
+			mux (source) {
+				[0, initial]
+			} else {
+				let range = nbrFun.apply();
+				minHood(
+					nbr(distanceIntegral) + [
+						range * mean(density, nbr(density)),
+						range * mean(integrand, nbr(integrand))
+					]
+				)
+			}
+		}.get(1)
+	}
+}
+
+def GPIdistanceTo(source) {
+	GPI(source, 0, if(env.has("obstacle")) {-1} else {1}, 1, nbrRange)
+}
+
+def GPIbroadcast(source, value) {
+	GPI(source, value, 1, 0, nbrRange)
+}
+
 /*
  * Gradcast algorithm
  * source: boolean value representing whether the node is a gradient source
@@ -28,20 +58,21 @@ public def G(source, initial, metric, accumulate) {
 }
 
 
-public def CRFgradient(source, initial, metric, accumulate, speed, dt) {
+public def CRFgradient(source, initial, metric, accumulate, speed, dt, latency) {
 	rep(distanceValue <- [Infinity, initial]) {
 		mux(source) {
 			[0, initial]
 		} else {
 			let old = distanceValue.get(0);
-			let cx = old + speed * dt;
-			if(nbr(cx) < old) {
-			let ndv = nbr(distanceValue);
-			let new = minHood([
-				ndv.get(0) + metric.apply(),
-				accumulate.apply(ndv.get(1))
-			])} else {
-				[distanceValue.get(0) + speed * dt, distanceValue.get(1)]
+			let cx = old + speed.apply(old) * (dt.apply() + latency.apply());
+			if(nbr(cx).get(0) + metric.apply() < old) {
+				let ndv = nbr(distanceValue);
+				minHood([
+					ndv.get(0) + metric.apply(),
+					accumulate.apply(ndv.get(1))
+				])
+			} else {
+				[cx, distanceValue.get(1)]
 			}
 		}
 	}.get(1)
@@ -246,6 +277,7 @@ public def channel2(source, destination, obstacle, width) {
  */
 public def consensus(init, f) {
  	rep (val <- init) {
+ 		// val + f.apply(sumHood PlusSelf(nbr(val) - val))
  		val + f.apply(sumHood(nbr(val) - val))
  	}	
 } 
@@ -267,3 +299,30 @@ public def consensus(init, f) {
 public def forecastObstacle(source, obstacle) {
 	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
 }
+
+def dominantValue(value) {
+	rep (tup <- [0, self.getDeviceUID(), value]) {
+		let local = floor(1 / self.nextRandomDouble());
+		let hoodmax = maxHood PlusSelf(nbr([tup.get(0) - 1, tup.get(1), tup.get(2)]));
+		let leader = hoodmax.get(1) == tup.get(1);
+		if (leader || local > hoodmax.get(0)) {
+			[max(local, hoodmax.get(0)), self.getDeviceUID(), value]
+		} else {
+			hoodmax
+		}
+	}
+	.get(2)
+}
+
+public def pldConsensus(intial, alpha, beta) {
+	rep (value <- intial) {
+		// regional dominant
+		alpha * dominantValue(value)
+		// blend incrementally with local
+		+ (1 - alpha) * value
+		// add laplacian differential
+		+ beta * sumHood PlusSelf(nbr(value) - value)
+	}
+}
+
+
