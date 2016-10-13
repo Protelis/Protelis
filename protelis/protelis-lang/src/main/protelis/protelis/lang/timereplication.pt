@@ -126,3 +126,71 @@ public def timeReplicated(process, replicates, duration, threshold, alpha) {
 		sum * (1 - alpha) / (1 - pow(alpha, filtered.size()))
 	}
 }
+
+public def tr(process, // function to be executed
+	default, maxTimePerProcess, processesMaxN 
+) {
+	rep(state <- [[], 0]) {
+		// newRep = nothing changes? 0: new replicate number
+		let newRep = sharedTimer(state.get(0), processesMaxN);
+		// newProc = nothing changes? []: [[processId, default]]
+		let newProc = if(newRep > 0) {
+			[[newRep, default]]
+		} else {
+			[] // nothing is changed
+		};
+		// add this process to the list of processes
+		let procs = state.get(0).mergeAfter(newProc);
+		procs = 
+			alignedMap(
+				// processes from my neighs and I
+				nbr(procs), 
+				// consider only the processer newer than processId (state.get(1))
+				(replicate, value) -> { replicate >= state.get(1) },
+				// execute the process
+				(replicate, value) -> { process.apply() },
+				// 
+				default
+			);
+		// keep only the newest k and update the state
+		procs = procs.subTupleEnd(max(0, procs.size() - processesMaxN));
+		// [ processes, smallest processId ]
+		[procs, procs.map((x) -> {x.get(0)}).fold(min)]
+	}
+}
+/**
+ * alignedMap simile a map reduce. si aspetta un field di duple in cui primo elemento sia id. 
+ * allinea la seconda parte della tupla usando la chiave
+ * costruisce una tupla di field. sono tutti allineati sull'id. funzioni hanno come primo arogmento la chiave
+ * secondo argomento, field di valori che matchavano il filtro (data la chiave)
+ */
+/**
+ * Return a new processId when timer expires
+ */
+public def sharedTimer(
+	procs, // active processes
+	maxTimePerProcess // maximum number of processes
+) {
+	let newReplicate = 0; // id of a new project which should be executed
+	rep(state <- [0, // highest process id
+		0 // reamining time
+	]) {
+		// max id between rep and processes
+		let maxID = max(state.get(0), procs.map((x)->{x.get(0)}).fold(max));
+		if(maxID > state.get(0)) {
+			// if a new process exists then add it
+			[maxID, maxTimePerProcess]
+		} else {
+			// a new process does not exist
+			if(state.get(1) <= 0) {
+				// time is expired. It's time to create a new id
+				newReplicate = maxID+1; 
+				[maxID + 1, maxTimePerProcess]
+			} else {
+				// no new process, time is not expired. decrease time
+				[state.get(0), state.get(1) - self.dt()]
+			}
+		}
+	};
+	newReplicate // Return zero if nothing changes, otherwise new replicate number
+}
