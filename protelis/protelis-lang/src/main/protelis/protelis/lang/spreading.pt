@@ -1,5 +1,5 @@
 module protelis:lang:spreading
-import java.lang.Math.or
+import protelis:lang:core
 /*
  * Gradcast algorithm
  * source: boolean value representing whether the node is a gradient source
@@ -27,6 +27,25 @@ public def G(source, initial, metric, accumulate) {
 	}.get(1) // return the accumulated value
 }
 
+
+public def CRFgradient(source, initial, metric, accumulate, speed, dt) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			[0, initial]
+		} else {
+			let old = distanceValue.get(0);
+			let cx = old + speed * dt;
+			if(nbr(cx) < old) {
+			let ndv = nbr(distanceValue);
+			let new = minHood([
+				ndv.get(0) + metric.apply(),
+				accumulate.apply(ndv.get(1))
+			])} else {
+				[distanceValue.get(0) + speed * dt, distanceValue.get(1)]
+			}
+		}
+	}.get(1)
+}
 /*
  * Field of distances between the current and the other nodes
  */
@@ -64,19 +83,12 @@ public def distanceToWithMetric(source, metric) {
  * (bool, bool) -> num
  */
 public def distanceBetween(source, dest) { 
-	distanceWithMetric(source, dest, nbrRange)
+	distanceBetweenWithMetric(source, dest, nbrRange)
 }
 
 // distance of the source from the destination
-public def distanceWithMetric(source, dest, metric) { 
-    rep (distanceValue <- [Infinity, Infinity]) { //;; computing a field of pairs (distance,value)
-        mux (source) { 
-            [ 0, distanceToWithMetric(dest, metric) ]
-        } else { 
-            //;; propagating as a gradient, using for first component of the pair
-            minHood ([nbr(distanceValue).get(0) + metric.apply(), nbr (distanceValue).get(1)])
-        }
-    }.get(1) //;; returning the second component of the pair
+public def distanceBetweenWithMetric(source, dest, metric) { 
+	G(source, distanceToWithMetric(dest, metric), metric, identity)
 }
 
 /*
@@ -86,7 +98,6 @@ public def broadcast(source, value) {
 	G(source, value, nbrRange, v -> {v})
 }
 
-//TODO gossip with g
 /**
  * Gossip.
  * 
