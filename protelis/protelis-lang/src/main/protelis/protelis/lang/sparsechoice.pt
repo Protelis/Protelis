@@ -1,4 +1,4 @@
-module protelis:lang:leader
+module protelis:lang:sparsechoice
 import protelis:lang:spreading
 
 /**
@@ -9,24 +9,24 @@ import protelis:lang:spreading
  * component size 'grain'.
  */
  public def S(grain, metric) {
-	breakUsingUids(randomUid(), grain, metric)
+	breakUsingUids(self.getDeviceUID(), grain, metric)
+//	breakUsingUids(randomUid(), grain, metric)
 }
 
-/**
- * Pair a random value to the device's id
- */
-def randomUid() {
-	rep(v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
-		[v.get(0), v.get(1)]	
-	}
-}
+///**
+// * Pair a random value to the device's id
+// */
+//def randomUid() {
+//	rep(v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
+//		[v.get(0), v.get(1)]	
+//	}
+//}
 
 def breakUsingUids(uid, grain, metric) {
 	// Return true if the current device is leader of the partition. Lead = current leader
-	uid == 
-		rep(lead <- uid) {
-			distanceCompetition(G(uid == lead, 0, metric, (v) -> { v + metric.apply() }), lead, uid, grain, metric)
-		}
+	rep(lead <- uid) {
+		distanceCompetition(G(uid == lead, 0, metric, (v) -> { v + metric.apply() }), lead, uid, grain, metric)
+	} == uid
 }
 
 def distanceCompetition(d, lead, uid, grain, metric) {
@@ -34,13 +34,14 @@ def distanceCompetition(d, lead, uid, grain, metric) {
 		// Device is far. Propose its id
 		uid 
 	} else {
-		mux(d >= (0.5 * grain)) {
+		let thr = 0.5 * grain;
+		mux(d >= thr) {
 			// Nearest neighbor in the second half (outer side) of the region. Do not challenge at all
 			Infinity 
 		} else {
 			// Challenge for this partition
 			minHood(
-				mux(nbr(d) + metric.apply() >= 0.5 * grain) { 
+				mux(nbr(d) + metric.apply() >= thr) { 
 					// Device in the second half (outer side) of the region. Do not challenge at all
 					Infinity
 				} else {
@@ -51,3 +52,4 @@ def distanceCompetition(d, lead, uid, grain, metric) {
 		}
 	}	
 }
+
