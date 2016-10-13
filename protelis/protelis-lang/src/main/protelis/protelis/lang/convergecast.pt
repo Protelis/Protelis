@@ -101,10 +101,10 @@ public def Cmultisum(potential, local) {
  	rep(v <- local) {
  		local + 
  			sumHood(
- 				mux(potential >= nbr (potential)) { 
+ 				mux(potential >= nbr(potential)) { 
 	 				0
 	 			} else {
-	 				nbr (v / sumHood (mux(nbr (potential) < potential) {nbr(potential)} else {0}))
+	 				nbr(v / sumHood(mux(nbr(potential) < potential) {1} else {0}))
 	 			}
  			)
  	}
