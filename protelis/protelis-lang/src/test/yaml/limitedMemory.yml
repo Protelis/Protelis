@@ -1,0 +1,28 @@
+# result:
+#  {1:[0 foo], 2:[0 foo], 3:[0 bar]}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: limitedMemory
+              
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    contents:
+      - molecule: value
+        concentration: foo
+      - molecule: nul
+        concentration: bar
+      - molecule: timeout
+        concentration: 3
+      - molecule: decay
+        concentration: 1
+    programs:
+      - *program
