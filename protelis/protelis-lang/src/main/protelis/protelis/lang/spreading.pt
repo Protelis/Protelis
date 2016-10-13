@@ -166,13 +166,7 @@ public def distanceToWithObstacle(source, obstacle) {
  *  “zones of influence” around key elements.
  */
  public def voronoiPatitioning(seed, id) {
- 	rep (partition <- [Infinity, 0]) {
- 		mux (seed) {
- 			[0, id]
- 		} else {
- 			minHood (nbr ([distanceTo(seed), partition.get(1)]))
- 		}
- 	}.get(1)
+ 	G(seed, id, nbrRange, identity)
  }
  
   
