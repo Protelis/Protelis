@@ -1,0 +1,128 @@
+module protelis:lang:timereplication
+import org.apache.commons.math3.util.FastMath.max
+import org.apache.commons.math3.util.FastMath.pow
+import org.apache.commons.math3.util.FastMath.floor
+import protelis:lang:time
+import protelis:lang:core
+
+public def sharedCyclicTimer(period) {
+	rep (clock <- 0) {
+		if(cyclicTimer(period, 1)) { // Here it could be nd() * parameter
+			clock + 1
+		} else {
+			clock
+		}
+	}
+}
+
+
+/*
+ * Returns an int, representing the current clock
+ */
+public def sharedCyclicTimer2(period, dt) {
+	rep(clock <- 0) {
+		let clockPerceived = maxHood(nbr(clock));
+		if (clockPerceived <= clock) {
+			/*
+			 * I'm currently as fast as the fastest device in the neighborhood,
+			 * so keep on counting time
+			 */
+			clock + if (cyclicTimer(period, dt)) { 1 } else { 0 }
+		} else {
+			/*
+			 * Someone else's faster, take his time, and restart counting
+			 */
+			clockPerceived
+		}
+	}
+}
+
+/*
+ * This function should return false if the clock is out of date (namely: no node in the network is still on that clock).
+ */
+public def isCurrent(currentClock, clock, persistence) {
+	currentClock - clock < max(1, persistence)
+}
+
+public def isNewClock(tuple, clock) {
+	tuple.filter(self, (inner) -> {clock(inner) == clock}).isEmpty()
+}
+
+public def clock(tuple) {
+	tuple.get(0)
+}
+
+public def networkDiameter() {
+	NaN
+}
+
+public def timeReplicated(process, replicates, duration, threshold, alpha) {
+	let diameter = networkDiameter();
+	let period = diameter * duration;
+	let clock = sharedCyclicTimer(period);
+	let default = NaN;
+	let prcs = rep(processes <- [[clock, [process, default]]]) {
+		/*
+		 * Add process if the clock is new
+		 */
+		if(isNewClock(processes, clock)) {
+			processes = processes.append([clock, [process, default]])
+		} else {0};
+		/*
+		 * Align on clock, execute process
+		 */
+		alignedMap(
+			nbr(processes),
+			/*
+			 * Filter out old processes. 
+			 */
+			 (pclock, processField) -> {isCurrent(clock, pclock, replicates)},
+			 /*
+			  * Here, processField should contain the same process for everybody. We just need to get one and run it.
+			  * The result must be a tuple of the form [process, processResult].
+			  */
+			 (clock, processField) -> {
+			 	let theProcess = hoodPlusSelf((p1, p2) -> {p1}, process, processField.get(0));
+			 	[theProcess, theProcess.apply()]
+			 },
+			 [process, default]
+		)
+		/*
+		 * The alignedMap outputs a [[clock0, [process0, result0]], [clock1, process1, result1], ...]
+		 * This tuple should get reduced.
+		 * The correct result to display is the last one which is stable for every node, namely the oldest
+		 * valid clock.
+		 * Valid filtering is already performed by alignedMap, so there is just a pick-the-minimum reduction to do.
+		 */
+	};
+	let maxclock = floor((rep(ct <- 0) {
+		rep (sync <- clock * period) {
+			if (clock * period > sync) {
+				ct = clock * period;
+			} else {
+				ct = ct + 1;
+				sync
+			}
+		};
+		ct // Number of rounds executed
+	} - threshold * diameter) / period);
+//	env.put("maxclock", maxclock);
+	let filtered = prcs.filter(self, t -> {clock(t) <= maxclock});
+	let sum = filtered
+		// The process clock
+		.map(self, t -> {
+//			let exp = clock(t) - max(0, maxclock - replicates + 1);
+			let exp = filtered.size() - 1 - maxclock + clock(t);
+//			env.put("************at - " + clock + "s=" + filtered.size() + ",c=" + clock(t), exp);
+			let val = t.get(1).get(1);
+			val * pow(alpha, exp)
+		}).reduce(self, default, (v1, v2) -> {v1 + v2});
+	if (alpha == 1) {
+		sum / filtered.size()
+	} else {
+		/*
+		 * the sum is divided by the geometric series value
+		 */
+		sum * (1 - alpha) / (1 - pow(alpha, filtered.size()))
+	}
+}
