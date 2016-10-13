@@ -8,7 +8,7 @@ import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
-import org.protelis.vm.impl.DummyContext;
+import org.protelis.vm.impl.SimpleContext;
 
 import com.google.common.collect.Lists;
 
@@ -135,7 +135,7 @@ public final class TestIncarnation implements Incarnation<Object> {
         try {
             final ProtelisProgram program = ProtelisLoader
                             .parse(Objects.requireNonNull(s, "The concentration can not be null."));
-            final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
+            final ProtelisVM vm = new ProtelisVM(program, new SimpleContext());
             vm.runCycle();
             return vm.getCurrentValue();
         } catch (IllegalArgumentException e) {
