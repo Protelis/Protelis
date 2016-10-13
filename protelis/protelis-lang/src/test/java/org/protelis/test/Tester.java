@@ -1,6 +1,7 @@
 package org.protelis.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -63,13 +64,17 @@ public final class Tester {
         final YamlLoader loader = new YamlLoader(test);
 
         if (min == -1 || max == -1) {
+            assertTrue(runs + " is an invalid number of runs", runs >= 0);
             final Environment<Object> env = loader.getWith(null);
             final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
             testSingleRun(runs, env, expectedResult);
         } else {
             final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
+            assertTrue(min + " is an invalid number of min runs", min >= 0);
+            assertTrue("max must be greater than min", max > min);
+            assertTrue("simulation runs [" + (max - min + 1) + "] != expected runs [" + expectedResult.keys().length
+                            + "]", max - min + 1 == expectedResult.keys().length);
             IntStreams.rangeClosed(min, max).forEach(n -> {
-                System.out.println("\n\n-------" + n);
                 final Environment<Object> env = loader.getWith(null);
                 testSingleRun(n, env, expectedResult.get(n));
             });
