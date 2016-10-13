@@ -1,2 +1,2 @@
 import protelis:lang:time
-limitedMemory(env.get("value"),env.get("timeout"),env.get("decay"))
+limitedMemory(env.get("value"), env.get("nul"), env.get("timeout"), env.get("decay"))
