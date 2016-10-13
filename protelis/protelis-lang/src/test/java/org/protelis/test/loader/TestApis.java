@@ -33,16 +33,16 @@ public class TestApis {
         test("distanceToWithObstacle");
     }
 
-    // /**
-    // * Test forecastObstacle.
-    // */
-    // @Test
-    // public void testForecastObstacle() {
-    // test(Results.FORECAST_OBSTACLE, DELTA_2);
-    // }
+    /**
+     * Test forecastObstacle.pt.
+     */
+    @Test
+    public void testForecastObstacle() {
+        test("forecastObstacle");
+    }
 
     /**
-     * Test broadcast function.
+     * Test broadcast.pt.
      */
     @Test
     public void testBroadcast() {
@@ -50,7 +50,7 @@ public class TestApis {
     }
 
     /**
-     * Test self.nbrRange.
+     * Test self.nbrRange().
      */
     @Test
     public void testNbrRange() {
@@ -58,7 +58,7 @@ public class TestApis {
     }
 
     /**
-     * Test addRange.
+     * Test addRange.pt.
      */
     @Test
     public void testAddRange() {
@@ -93,40 +93,15 @@ public class TestApis {
      * Test cyclicTimer function.
      */
     @Test
-    public void testCyclicTimer1() {
-        test("cyclickTimer");
+    public void testCyclicTimer() {
+        test("cyclicTimer", 1, 3);
     }
-
-    /**
-     * Test cyclicTimer function.
-     */
-    @Test
-    public void testCyclicTimer2() {
-        test("cyclickTimer");
-    }
-
-    /**
-     * Test cyclicTimer function.
-     */
-    @Test
-    public void testCyclicTimer3() {
-        test("cyclickTimer");
-    }
-
     /**
      * Test limitedMemory function.
      */
     @Test
-    public void testLimitedMemory1() {
-        test("limitedMemory");
-    }
-
-    /**
-     * Test limitedMemory function.
-     */
-    @Test
-    public void testLimitedMemory2() {
-        test("limitedMemory");
+    public void testLimitedMemory() {
+        test("limitedMemory", 1, 3);
     }
 
     /**
@@ -153,13 +128,13 @@ public class TestApis {
         test("C");
     }
 
-    // /**
-    // * Test CMultisum.pt.
-    // */
-    // @Test
-    // public void testCMultisum() {
-    // testDoubles(Results.CMULTISUM, DELTA_2);
-    // }
+    /**
+     * Test CMultisum.pt.
+     */
+    @Test
+    public void testCMultisum() {
+        test("Cmultisum");
+    }
 
     /**
      * Test gossip.pt.
@@ -268,4 +243,17 @@ public class TestApis {
             e.printStackTrace();
         }
     }
+
+    private static void test(final String file, final int min, final int max) {
+        try {
+            Tester.test(file, min, max);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 }

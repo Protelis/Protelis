@@ -18,17 +18,20 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import it.unibo.alchemist.core.implementations.Engine;
 import it.unibo.alchemist.core.implementations.Engine.StateCommand;
 import it.unibo.alchemist.core.interfaces.Simulation;
 import it.unibo.alchemist.loader.YamlLoader;
 import it.unibo.alchemist.model.interfaces.Environment;
+import java8.util.stream.IntStreams;
 
 /**
  * Test protelis simulations.
  */
 public final class Tester {
-    private static final String EXAMPLE = "example";
+    private static final String EXAMPLE = "/example.yml";
 
     private static final String DC = "$";
     /**
@@ -37,34 +40,54 @@ public final class Tester {
     public static final int EXAMPLE_RUNS = 1000;
     private static final double DELTA = 0.01;
 
-    /**
-     * @param file
-     *            file to be tested
-     * @throws InterruptedException
-     *             if interrupted
-     * @throws IOException
-     *             file not found
-     */
-    private Tester(final String file) throws InterruptedException, IOException {
-        this(file, EXAMPLE_RUNS);
+    private Tester() {
     }
 
     /**
+     * Run a test.
+     * 
      * @param file
      *            file to be tested
      * @param runs
      *            number of runs
-     * @throws InterruptedException
-     *             if interrupted
-     * @throws IOException
-     *             file not found
-     * 
+     * @param min
+     *            min runs
+     * @param max
+     *            max runs
+     * @exception IOException
+     *                fileNotFound
      */
-    private Tester(final String file, final int runs) throws InterruptedException, IOException {
+    public static void generalTest(final String file, final int runs, final int min, final int max) throws IOException {
         final InputStream is = Tester.class.getResourceAsStream("/" + file + ".yml");
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         final YamlLoader loader = new YamlLoader(test);
-        final Environment<Object> env = loader.getWith(null);
+
+        if (min == -1 || max == -1) {
+            final Environment<Object> env = loader.getWith(null);
+            final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
+            testSingleRun(runs, env, expectedResult);
+        } else {
+            final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
+            IntStreams.rangeClosed(min, max).forEach(n -> {
+                System.out.println("\n\n-------" + n);
+                final Environment<Object> env = loader.getWith(null);
+                testSingleRun(n, env, expectedResult.get(n));
+            });
+        }
+    }
+
+    /**
+     * Run a simulation until the given number of runs.
+     * 
+     * @param runs
+     *            number of runs
+     * @param env
+     *            environment
+     * @param expectedResult
+     *            expected result
+     */
+    public static void testSingleRun(final int runs, final Environment<Object> env,
+                    final List<Pair<String, String>> expectedResult) {
         final Simulation<Object> sim = new Engine<Object>(env, runs);
         sim.addCommand(new StateCommand<>().run().build());
         sim.run();
@@ -75,22 +98,21 @@ public final class Tester {
             System.out.println("[Node" + pNode.toString() + "]: " + pNode.get(RunProtelisProgram.RESULT));
         });
 
-        final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
         assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
                         + simulationRes.values().size() + "]", expectedResult.size(), simulationRes.values().size());
         for (Pair<String, String> pair : expectedResult) {
             if (!pair.getRight().equals(DC)) {
                 Object singleNodeResult = simulationRes.get(pair.getLeft());
                 assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
+                final String err = "[Runs:" + runs + ",Node" + pair.getLeft() + "]";
                 if (singleNodeResult instanceof Double) {
-                    assertEquals("Node" + pair.getLeft(), (double) Double.parseDouble(pair.getRight()),
-                                    (double) singleNodeResult, DELTA);
+                    assertEquals(err, (double) Double.parseDouble(pair.getRight()), (double) singleNodeResult, DELTA);
                 } else if (singleNodeResult instanceof Boolean) {
                     String v = pair.getRight();
-                    assertEquals("Node" + pair.getLeft(), (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
+                    assertEquals(err, (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
                                     : v.equals("F") ? "false" : pair.getRight()), (boolean) singleNodeResult);
                 } else {
-                    assertEquals("Node" + pair.getLeft(), pair.getRight(), singleNodeResult);
+                    assertEquals(err, pair.getRight(), singleNodeResult);
                 }
             }
         }
@@ -123,7 +145,25 @@ public final class Tester {
      *             InterruptedException
      */
     public static void test(final String file, final int exampleRuns) throws InterruptedException, IOException {
-        new Tester(file, exampleRuns);
+        generalTest(file, exampleRuns, -1, -1);
+    }
+
+    /**
+     * Test the given file.
+     * 
+     * @param file
+     *            file to bested
+     * @param min
+     *            min runs
+     * @param max
+     *            max runs
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void test(final String file, final int min, final int max) throws InterruptedException, IOException {
+        generalTest(file, -1, min, max);
     }
 
     /**
@@ -137,7 +177,10 @@ public final class Tester {
      *             file not found
      */
     public static void main(final String[] args) throws InterruptedException, IOException {
-        new Tester(EXAMPLE, EXAMPLE_RUNS);
+        InputStream is = Tester.class.getResourceAsStream(EXAMPLE);
+        final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
+        TestMatcher.getResult(test);
+        System.out.println("Done.");
     }
 
     /**
@@ -145,14 +188,17 @@ public final class Tester {
      */
     public static class TestMatcher {
         private static final String ML_NAME = "multilineComment";
+        private static final String ML_RUN = "multirun";
         private static final String EXPECTED = "result:";
+        private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
         private static final Pattern EXTRACT_RESULT = Pattern.compile(
                         ".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}", Pattern.DOTALL);
         /*
          * \s*\#?\r?\n?\s*([\d\w]+)\s+([\d\w\.]+)\s*,?\s*\r?\n?
          */
-        private static final Pattern RESULT_PATTERN = Pattern
-                        .compile("\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?");
+        private static final Pattern MULTI_RESULT_PATTERN = Pattern
+                        .compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?", Pattern.DOTALL);
+        private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
         static {
             InputStream is = Tester.class.getResourceAsStream("/example.yml");
@@ -170,21 +216,64 @@ public final class Tester {
          *            text to be matched
          * @return result
          */
-        public static List<Pair<String, String>> getResult(final String text) {
+        public static TIntObjectMap<List<Pair<String, String>>> getMultiRunResult(final String text) {
             assertFalse("Empty result", text.isEmpty());
-            final List<Pair<String, String>> res = new LinkedList<>();
+            final TIntObjectMap<List<Pair<String, String>>> res = new TIntObjectHashMap<>();
             final Matcher outer = EXTRACT_RESULT.matcher(text);
             if (outer.find()) {
                 String result = outer.group(ML_NAME);
-                final Matcher inner = RESULT_PATTERN.matcher(result);
-                while (inner.find()) {
-                    assertNotNull("There is no result", inner.group());
-                    res.add(Pair.of(inner.group(1), inner.group(2)));
+                final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
+                try {
+                    while (multiRun.find()) {
+                        System.out.println(multiRun.group());
+                        System.out.println(multiRun.group(1));
+                        System.out.println(multiRun.group(2));
+                        res.put(Integer.parseInt(multiRun.group(1)), getResultList(multiRun.group(2)));
+                    }
+                } catch (IllegalStateException e) {
+                    fail("This is not a multirun");
                 }
             } else {
                 fail("Your test does not include the expected result");
             }
             return res;
         }
+
+        /**
+         * 
+         * @param text
+         *            text to be matched
+         * @return result
+         */
+        public static List<Pair<String, String>> getResult(final String text) {
+            assertFalse("Empty result", text.isEmpty());
+            List<Pair<String, String>> res = new LinkedList<>();
+            final Matcher outer = EXTRACT_RESULT.matcher(text);
+            if (outer.find()) {
+                String result = outer.group(ML_NAME);
+                res = getResultList(result);
+            } else {
+                fail("Your test does not include the expected result");
+            }
+            return res;
+        }
+
+        /**
+         * 
+         * @param text
+         *            text
+         * @return result list
+         */
+        public static List<Pair<String, String>> getResultList(final String text) {
+            assertFalse("Empty result", text.isEmpty());
+            final List<Pair<String, String>> res = new LinkedList<>();
+            final Matcher inner = RESULT_PATTERN.matcher(text);
+            while (inner.find()) {
+                assertNotNull("There is no result", inner.group());
+                res.add(Pair.of(inner.group(1), inner.group(2)));
+            }
+            return res;
+        }
     }
+
 }
