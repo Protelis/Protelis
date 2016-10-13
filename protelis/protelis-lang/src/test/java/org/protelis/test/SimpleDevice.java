@@ -1,5 +1,6 @@
 package org.protelis.test;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -52,8 +53,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
      *            move the device of the given vector
      */
     public void move(final Tuple vector) {
-        // position = position.addVector((Double) vector.get(0), (Double)
-        // vector.get(1), (Double) vector.get(2));
+        throw new NotImplementedException("move is not supported at the moment");
     }
 
     @Override
