@@ -6,3 +6,12 @@ dependencies {
 	testCompile "it.unibo.alchemist:alchemist-loading:$alchemistLoadingVersion"
 }
 
+sourceSets {
+	test {
+	    resources {
+	        srcDir 'src/main/protelis'
+	        srcDir 'src/test/protelis'
+	        srcDir 'src/test/yaml'
+	    }
+	}
+}
