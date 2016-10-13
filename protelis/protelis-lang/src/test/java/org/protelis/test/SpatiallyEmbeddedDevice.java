@@ -9,7 +9,8 @@ import org.protelis.vm.ExecutionContext;
 public interface SpatiallyEmbeddedDevice extends ExecutionContext {
 
     /**
-     * Get the distance between the current device and its neighbors.
+     * Get the distance between the current device and its neighbors. Distance
+     * must be positive.
      * 
      * @return field of distances
      */
