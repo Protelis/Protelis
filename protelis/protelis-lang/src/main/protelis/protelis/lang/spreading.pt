@@ -57,26 +57,70 @@ public def G(source, initial, metric, accumulate) {
 	}.get(1) // return the accumulated value
 }
 
-
 public def CRFgradient(source, initial, metric, accumulate, speed, dt, latency) {
 	rep(distanceValue <- [Infinity, initial]) {
 		mux(source) {
 			[0, initial]
 		} else {
-			let old = distanceValue.get(0);
-			let cx = old + speed.apply(old) * (dt.apply() + latency.apply());
-			if(nbr(cx).get(0) + metric.apply() < old) {
-				let ndv = nbr(distanceValue);
-				minHood([
-					ndv.get(0) + metric.apply(),
-					accumulate.apply(ndv.get(1))
-				])
+			// previous gradient
+			let gx = distanceValue.get(0);
+			// apply triangle inequality
+			let ndv = nbr(distanceValue);
+			// c_x(y,t)
+			let cx = [
+				ndv.get(0) + metric.apply(),
+				accumulate.apply(ndv.get(1))
+			]; 
+			// c'_x(y,t)
+			let cx1 = [cx.get(0) 
+				+ speed.apply() // speed
+				* (dt.apply() + latency.apply()), 
+				cx.get(1)
+			];
+			if(sumHood(if(cx1.get(0) + metric.apply() < gx) { 1 } else { 0 }) > 0) {
+				minHood(cx)
 			} else {
-				[cx, distanceValue.get(1)]
+				[gx + speed.apply() * dt.apply(), distanceValue.get(1)]
 			}
 		}
 	}.get(1)
 }
+
+public def flexGradient(source, initial, metric, accumulate, epsilon, range, distortion) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			[0, initial]
+		} else {
+			// previous gradient
+			let gx = distanceValue.get(0);
+			let ndv = nbr(distanceValue);
+			// c'_x(y,t)
+			let cx1 = minHood([
+				ndv.get(0) + max(distortion * range, metric.apply()),
+				accumulate.apply(ndv.get(1))
+			]);
+			// s'_x
+			let sx1 = maxHood([
+				(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
+				ndv.get(0), // gy
+				max(distortion * range, metric.apply()),
+				ndv.get(1) // accumulated value
+			]);
+			if(max(range, 2*cx1.get(0)) < gx) {
+				cx1
+			} else {
+				if(sx1.get(0) > 1 + epsilon) {
+					[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
+				} else {
+					if(sx1.get(0) < 1 - epsilon) {
+						[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
+					} else { distanceValue }
+				}
+			}
+		}
+	}.get(1)
+}
+
 /*
  * Field of distances between the current and the other nodes
  */
