@@ -1,7 +1,0 @@
-// EXPECTED_RESULT: "5.05"
-
-import java.lang.Math.min
-
-let res = 5.0526541557.toString();
-let pos = res.indexOf(".");
-res.substring(0, min(pos + 3, res.length()))

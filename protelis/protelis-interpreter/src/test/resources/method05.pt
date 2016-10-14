@@ -1,5 +1,0 @@
-// EXPECTED_RESULT: true
-import java.lang.Math.sin
-import org.apache.commons.math3.util.FastMath.sin
-
-sin(3) == org::apache::commons::math3::util::FastMath::sin(3)

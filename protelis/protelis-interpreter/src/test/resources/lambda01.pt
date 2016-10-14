@@ -1,2 +1,0 @@
-// EXPECTED_RESULT: 2
-(x) -> {x + 1}.apply(1)

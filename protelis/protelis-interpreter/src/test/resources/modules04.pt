@@ -1,5 +1,0 @@
-// EXPECTED_RESULT: 1
-module modules04
-import protelis:test:circular02
-
-fun3()

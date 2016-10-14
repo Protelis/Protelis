@@ -1,8 +1,0 @@
-/*
- * This should throw an IllegalStateException
- */
-if(true){
-	nbr(1)
-} else {
-	0
-}

@@ -6,6 +6,7 @@ buildscript {
      classpath 'me.tatarka:gradle-retrolambda:3.2.4'
   }
 }
+
 apply from: 'maven.gradle'
 apply plugin: 'me.tatarka.retrolambda'
 retrolambda {

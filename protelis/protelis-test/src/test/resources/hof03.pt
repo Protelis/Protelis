@@ -1,0 +1,14 @@
+/*
+ * Make sure that each apply call bounds to a different instance of the function
+ * 
+ * EXPECTED_RESULT: $CYCLE
+ */
+def f(){
+	rep (x <- 0) {
+		x + 1
+	}
+}
+f.apply();
+f.apply();
+f.apply();
+f.apply()

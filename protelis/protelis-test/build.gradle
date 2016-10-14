@@ -19,4 +19,7 @@ dependencies {
         "it.unibo.alchemist:alchemist-loading:$alchemistLoadingVersion",
         "junit:junit:$junitVersion"
     )
+    testCompile(
+    	project(':protelis-interpreter')
+    )
 }

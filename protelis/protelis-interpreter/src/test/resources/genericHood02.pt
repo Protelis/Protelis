@@ -1,8 +1,0 @@
-/*
- * EXPECTED_RESULT: 1
- */
-import java.lang.Math.max
-def maxF(a, b) {
-    java::lang::Math::max(a, b)
-}
-hoodPlusSelf(maxF, 0, nbr(1));

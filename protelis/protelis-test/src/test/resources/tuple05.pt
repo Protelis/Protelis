@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: [2, 2, 2]
+import org.protelis.lang.datatype.Tuples.fill
+
+fill(2,3);

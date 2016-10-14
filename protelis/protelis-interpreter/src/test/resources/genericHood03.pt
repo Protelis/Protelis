@@ -1,5 +1,0 @@
-/*
- * EXPECTED_RESULT: 0
- */
-import java.lang.Math.min
-hoodPlusSelf(min, 10, nbr(0));

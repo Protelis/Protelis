@@ -1,0 +1,9 @@
+// EXPECTED_RESULT: true
+import protelis:test:truefunctions
+import protelis:test:wrongfunctions
+
+def one() {
+	true
+}
+
+one()

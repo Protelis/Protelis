@@ -1,0 +1,5 @@
+// EXPECTED_RESULT: 7
+env.put("foobar",3);
+env.put("baz",4);
+
+env.get("baz")+env.get("foobar");

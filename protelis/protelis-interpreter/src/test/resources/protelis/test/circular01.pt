@@ -1,8 +1,0 @@
-module protelis:test:circular01
-import protelis:test:circular02
-
-public def fun2() {
-	fun();
-}
-
-fun2()

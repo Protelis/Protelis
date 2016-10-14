@@ -1,5 +1,0 @@
-// EXPECTED_RESULT: 15.2
-def f(x, y){
-	x + y
-}
-f(12.2, 3)

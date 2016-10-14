@@ -1,2 +1,0 @@
-// EXPECTED_RESULT: [4, 2]
-[5, 4, 3, 2, 1].filter(self, (a) -> {a % 2 == 0})

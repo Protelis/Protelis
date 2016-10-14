@@ -1,9 +1,0 @@
-module replicatedgossip
-import java.lang.Math.min
-import timereplication
-import naivegossip
-timeReplicated(
-	() -> {gossip(min, -Infinity)},
-	10,
-	0.9
-)

@@ -1,5 +1,0 @@
-// EXPECTED_RESULT: [9, 2, 7, 4]
-let x1 = [1, 2, 3, 4];
-let x2 = x1.set(2, 7);
-let x3 = x2.set(0, 9);
-x3

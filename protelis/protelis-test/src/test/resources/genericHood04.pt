@@ -1,0 +1,10 @@
+/*
+ * EXPECTED_RESULT: 99
+ */
+import java.lang.Math.max
+import org.protelis.vm.impl.DummyContext.makeTestField
+
+def maxF(a, b) {
+    java::lang::Math::max(a, b)
+}
+hoodPlusSelf(maxF, 0, makeTestField());

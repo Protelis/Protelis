@@ -1,5 +1,0 @@
-/*
- * Exercise method-calls on field targets
- * EXPECTED_RESULT: 2
- */
-maxHood PlusSelf(nbr([1, 2, 3]).get(1));

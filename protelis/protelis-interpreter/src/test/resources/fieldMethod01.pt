@@ -1,7 +1,0 @@
-/*
- * Exercise method-calls on fields
- * EXPECTED_RESULT: 1
- */ 
-import java.lang.Math.cos
-
- maxHood PlusSelf(cos(nbr(0)))

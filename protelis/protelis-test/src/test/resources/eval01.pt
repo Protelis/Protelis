@@ -1,0 +1,4 @@
+/*
+ * EXPECTED_RESULT: 1
+ */
+eval("1")

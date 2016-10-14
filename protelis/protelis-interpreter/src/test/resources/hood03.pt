@@ -1,4 +1,0 @@
-/*
- * EXPECTED_RESULT: true
- */
-allHood(mux(nbr(true)) {false} else {false});

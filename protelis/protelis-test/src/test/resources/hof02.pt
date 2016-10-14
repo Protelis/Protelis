@@ -1,0 +1,7 @@
+// EXPECTED_RESULT: $CYCLE
+def f(){
+	rep (x <- 0) {
+		x + 1
+	}
+}
+f.apply()

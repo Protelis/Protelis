@@ -1,8 +1,0 @@
-def messyCounter(start, start2){
-	rep(val <- start) {
-		rep(val2 <- start2) {
-			(val + 1) * val2
-		}
-	}
-}
-messyCounter(0,1)

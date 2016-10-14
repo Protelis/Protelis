@@ -23,16 +23,21 @@ allprojects {
 
         runtime "ch.qos.logback:logback-classic:$logbackVersion"
 
-	    testCompile (
-	        project(':protelis-test'),
-	        "junit:junit:$junitVersion"
-	    )
+	    testCompile "junit:junit:$junitVersion"
 
         testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
 
         doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     }
 
+}
+
+configure(allprojects - project(':protelis-interpreter')) {
+	dependencies {
+		testCompile (
+		    project(':protelis-test')
+		)
+	}
 }
 
 subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}

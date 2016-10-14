@@ -1,5 +1,0 @@
-// EXPECTED_RESULT: 1
-module modules05
-import package2:test:crossref
-
-fun3()

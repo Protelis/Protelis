@@ -1,8 +1,0 @@
-// EXPECTED_RESULT: 1
-[5, 4, 3, 2, 1].reduce(self, Infinity, (a, b) -> {
-	if(a < b) {
-		a
-	} else {
-		b
-	}
-})
