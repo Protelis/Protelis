@@ -2,8 +2,6 @@ dependencies {
     compile (
         project(':protelis-interpreter')
     )
-    // https://mvnrepository.com/artifact/it.unibo.alchemist/alchemist-loading
-	testCompile "it.unibo.alchemist:alchemist-loading:$alchemistLoadingVersion"
 }
 
 sourceSets {

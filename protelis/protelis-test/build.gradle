@@ -1,0 +1,22 @@
+buildscript {
+  repositories {
+     mavenCentral()
+  }
+  dependencies {
+     classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+  }
+}
+apply plugin: 'me.tatarka.retrolambda'
+retrolambda {
+  javaVersion JavaVersion.VERSION_1_7
+  defaultMethods true
+  incremental true
+}
+dependencies {
+    compile (
+        project(':protelis-interpreter'),
+        // https://mvnrepository.com/artifact/it.unibo.alchemist/alchemist-loading
+        "it.unibo.alchemist:alchemist-loading:$alchemistLoadingVersion",
+        "junit:junit:$junitVersion"
+    )
+}
