@@ -1,2 +1,0 @@
-import protelis:lang:time
-cyclicTimer(env.get("n"), env.get("decay"))

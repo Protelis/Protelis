@@ -1,0 +1,4 @@
+import protelis:lang:spreading
+import protelis:lang:core
+
+flexGradient(env.has("source"), self.getDeviceUID().toString(), 1, 0.1, 2, nbrRange)
