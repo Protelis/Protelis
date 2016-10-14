@@ -2,7 +2,7 @@
 import java.io.IOException;
 
 import org.junit.Test;
-import org.protelis.test.Tester;
+import org.protelis.test.InfrastructureTester;
 
 /**
  * Testing Protelis core libraries.
@@ -238,12 +238,12 @@ public class TestApis {
      */
 
     private static void test(final String file) {
-        test(file, Tester.EXAMPLE_RUNS);
+        test(file, InfrastructureTester.EXAMPLE_RUNS);
     }
 
     private static void test(final String file, final int runs) {
         try {
-            Tester.test(file, runs);
+            InfrastructureTester.test(file, runs);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -255,7 +255,7 @@ public class TestApis {
 
     private static void test(final String file, final int min, final int max) {
         try {
-            Tester.test(file, min, max);
+            InfrastructureTester.test(file, min, max);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

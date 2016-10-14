@@ -1,4 +1,4 @@
-package org.protelis.test;
+package org.protelis.test.infrastructure;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.protelis.test.infrastructure.ProtelisNode;
+import org.protelis.test.infrastructure.RunProtelisProgram;
 
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -31,7 +33,7 @@ import java8.util.stream.IntStreams;
 /**
  * Test protelis simulations.
  */
-public final class Tester {
+public final class InfrastructureTester {
     private static final String EXAMPLE = "/example.yml";
 
     private static final String DC = "$";
@@ -41,7 +43,7 @@ public final class Tester {
     public static final int EXAMPLE_RUNS = 1000;
     private static final double DELTA = 0.01;
 
-    private Tester() {
+    private InfrastructureTester() {
     }
 
     /**
@@ -59,7 +61,7 @@ public final class Tester {
      *                fileNotFound
      */
     public static void generalTest(final String file, final int runs, final int min, final int max) throws IOException {
-        final InputStream is = Tester.class.getResourceAsStream("/" + file + ".yml");
+        final InputStream is = InfrastructureTester.class.getResourceAsStream("/" + file + ".yml");
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         final YamlLoader loader = new YamlLoader(test);
 
@@ -182,7 +184,7 @@ public final class Tester {
      *             file not found
      */
     public static void main(final String[] args) throws InterruptedException, IOException {
-        InputStream is = Tester.class.getResourceAsStream(EXAMPLE);
+        InputStream is = InfrastructureTester.class.getResourceAsStream(EXAMPLE);
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         TestMatcher.getResult(test);
         System.out.println("Done.");
@@ -206,7 +208,7 @@ public final class Tester {
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
         static {
-            InputStream is = Tester.class.getResourceAsStream("/example.yml");
+            InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
             try {
                 final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
                 assertNotNull(getResult(test));

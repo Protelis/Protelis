@@ -1,4 +1,4 @@
-package org.protelis.test;
+package org.protelis.test.infrastructure;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;

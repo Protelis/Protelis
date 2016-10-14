@@ -4,6 +4,7 @@ import protelis:lang:core
 
 def GPI(source, initial, density, integrand, nbrFun) {
 	if (density < 0) {
+		// is this the boundary?
 		NaN
 	} else {
 		rep(distanceIntegral <- [Infinity, initial]) {
@@ -13,7 +14,7 @@ def GPI(source, initial, density, integrand, nbrFun) {
 				let range = nbrFun.apply();
 				minHood(
 					nbr(distanceIntegral) + [
-						range * mean(density, nbr(density)),
+						range * mean(density, nbr(density)), // mean = (density + nbr(density)) / 2
 						range * mean(integrand, nbr(integrand))
 					]
 				)
@@ -22,8 +23,8 @@ def GPI(source, initial, density, integrand, nbrFun) {
 	}
 }
 
-def GPIdistanceTo(source) {
-	GPI(source, 0, if(env.has("obstacle")) {-1} else {1}, 1, nbrRange)
+def GPIdistanceTo(source, obstacle) {
+	GPI(source, 0, if(obstacle) {-1} else {1}, 1, nbrRange)
 }
 
 def GPIbroadcast(source, value) {
@@ -364,7 +365,7 @@ public def forecastObstacle(source, obstacle) {
 
 def dominantValue(value) {
 	rep (tup <- [0, self.getDeviceUID(), value]) {
-		let local = floor(1 / self.nextRandomDouble());
+		let local = floor(1 / self.nextRandomDouble()); // no matter what the network diameter is
 		let hoodmax = maxHood PlusSelf(nbr([tup.get(0) - 1, tup.get(1), tup.get(2)]));
 		let leader = hoodmax.get(1) == tup.get(1);
 		if (leader || local > hoodmax.get(0)) {

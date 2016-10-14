@@ -1,4 +1,4 @@
-package org.protelis.test;
+package org.protelis.test.infrastructure;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.vm.ExecutionContext;
