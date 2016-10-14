@@ -71,7 +71,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
      * 
      * @return delta time
      */
-    public double dt() {
+    public Number dt() {
         return 1;
     }
 
