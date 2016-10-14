@@ -25,12 +25,17 @@ public def delayFunction(initial, decay, function) {
 	}
 }
 
+
+public def cyclicTimer(length) {
+	cyclicTimerWithDecay(length, self.dt())
+}
+
 /*
  * Cyclic timer
  * length: duration of the each cycle
  * decay: decay rate
  */
-public def cyclicTimer(length, decay) {
+public def cyclicTimerWithDecay(length, decay) {
 	rep(left <- length) {
 		if(left == 0) {
 			length
@@ -41,7 +46,7 @@ public def cyclicTimer(length, decay) {
 }
 
 public def cyclicFunction(length, decay, function) {
-	if (cyclicTimer(length, decay)) {
+	if (cyclicTimerWithDecay(length, decay)) {
 		function.apply()
 	} else {
 		NaN
