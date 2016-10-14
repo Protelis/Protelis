@@ -93,29 +93,47 @@ public def flexGradient(source, initial, metric, accumulate, epsilon, range, dis
 		} else {
 			// previous gradient
 			let gx = distanceValue.get(0);
-			let ndv = nbr(distanceValue);
-			// c'_x(y,t)
-			let cx1 = minHood([
-				ndv.get(0) + max(distortion * range, metric.apply()),
-				accumulate.apply(ndv.get(1))
-			]);
-			// s'_x
-			let sx1 = maxHood([
-				(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
-				ndv.get(0), // gy
-				max(distortion * range, metric.apply()),
-				ndv.get(1) // accumulated value
-			]);
-			if(max(range, 2*cx1.get(0)) < gx) {
-				cx1
-			} else {
-				if(sx1.get(0) > 1 + epsilon) {
-					[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
+			
+			mux(gx != Infinity && gx != -Infinity) {
+				env.put("gx", gx);
+				let ndv = nbr(distanceValue);
+				// c'_x(y,t)
+				let cx1 = minHood([
+					ndv.get(0) + max(distortion * range, metric.apply()),
+					accumulate.apply(ndv.get(1))
+				]);
+				env.put("c'x", cx1);
+				// s'_x
+				let sx1 = maxHood([
+					(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
+					ndv.get(0), // gy
+					max(distortion * range, metric.apply()),
+					ndv.get(1) // accumulated value
+				]);
+				env.put("s'x", sx1);
+				if(max(range, 2*cx1.get(0)) < gx) {
+					env.put("step", 1);
+					cx1
 				} else {
-					if(sx1.get(0) < 1 - epsilon) {
-						[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
-					} else { distanceValue }
+					if(sx1.get(0) > 1 + epsilon) {
+						env.put("step", 2);
+						[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
+					} else {
+						if(sx1.get(0) < 1 - epsilon) {
+							env.put("step", 4);
+							[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
+						} else { env.put("step", 5); distanceValue }
+					}
 				}
+			} else {
+				env.put("gx is", gx);
+				let ndv = nbr(distanceValue);
+				let res = minHood([
+					ndv.get(0) + metric.apply(),
+					accumulate.apply(ndv.get(1))
+				]);
+				env.put("res", res);
+				res
 			}
 		}
 	}.get(1)

@@ -1,5 +1,4 @@
 
-
 import java.io.IOException;
 
 import org.junit.Test;
@@ -32,6 +31,14 @@ public class TestApis {
     @Test
     public void testDistanceToWithObstacle() {
         test("distanceToWithObstacle");
+    }
+
+    /**
+     * Test flexGradient.pt.
+     */
+    @Test
+    public void testFlexGradient() {
+        test("flexGradient");
     }
 
     /**
@@ -97,6 +104,7 @@ public class TestApis {
     public void testCyclicTimer() {
         test("cyclicTimer", 1, 3);
     }
+
     /**
      * Test limitedMemory function.
      */
