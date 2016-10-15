@@ -20,42 +20,84 @@ import org.protelis.vm.impl.SimpleContext;
 import java8.util.stream.IntStream;
 import java8.util.stream.IntStreams;
 
-public class ProgramTester {
-
+/**
+ * Test a protelis program.
+ */
+public final class ProgramTester {
+    private ProgramTester() {
+    }
 
     private static final String SL_NAME = "singleLineComment";
     private static final String ML_NAME = "multilineComment";
     private static final String EXPECTED = "EXPECTED_RESULT:";
-    private static final Pattern EXTRACT_RESULT = Pattern.compile(
-            ".*?" + EXPECTED + "\\s*(?<" + ML_NAME
-            + ">.*?)\\s*\\*\\/|\\/\\/\\s*" + EXPECTED + "\\s*(?<"
-            + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
+    private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*(?<" + ML_NAME
+                    + ">.*?)\\s*\\*\\/|\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
     private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
     private static final int MIN_CYCLE_NUM = 1;
     private static final int MAX_CYCLE_NUM = 100;
-    
+
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     * @param expectedResult
+     *            result
+     */
     public static void testFileWithExplicitResult(final String file, final Object expectedResult) {
         testFile(file, 1, expectedResult);
     }
 
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     */
     public static void testFile(final String file) {
         testFile(file, 1);
     }
 
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     */
     public static void testFileWithMultipleRuns(final String file) {
         testFileWithMultipleRuns(file, MIN_CYCLE_NUM, MAX_CYCLE_NUM);
     }
 
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     * @param min
+     *            min runs
+     * @param max
+     *            max runs
+     */
     public static void testFileWithMultipleRuns(final String file, final int min, final int max) {
         testFileWithMultipleRuns(file, IntStreams.rangeClosed(min, max));
     }
 
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     * @param stream
+     *            stream of run
+     */
     public static void testFileWithMultipleRuns(final String file, final IntStream stream) {
         stream.forEach(i -> {
             testFile(file, i);
         });
     }
 
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     * @param runs
+     *            number of runs
+     */
     public static void testFile(final String file, final int runs) {
         final Object execResult = runProgram(file, runs);
         final InputStream is = ProgramTester.class.getResourceAsStream(file);
@@ -70,9 +112,8 @@ public class ProgramTester {
                 final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
                 final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new SimpleContext());
                 vm.runCycle();
-                assertEquals(vm.getCurrentValue(), execResult instanceof Number
-                        ? ((Number) execResult).doubleValue()
-                        : execResult);
+                assertEquals(vm.getCurrentValue(),
+                                execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult);
             } else {
                 fail("Your test does not include the expected result");
             }
@@ -81,10 +122,27 @@ public class ProgramTester {
         }
     }
 
+    /**
+     * 
+     * @param file
+     *            file to be tested
+     * @param runs
+     *            number of runs
+     * @param expectedResult
+     *            expected result
+     */
     public static void testFile(final String file, final int runs, final Object expectedResult) {
         assertEquals(expectedResult, runProgram(file, runs));
     }
 
+    /**
+     * 
+     * @param s
+     *            program to run
+     * @param runs
+     *            number of runs
+     * @return program result
+     */
     public static Object runProgram(final String s, final int runs) {
         final ProtelisProgram program = ProtelisLoader.parse(s);
         try {
