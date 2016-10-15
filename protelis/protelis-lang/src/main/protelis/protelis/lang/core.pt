@@ -1,6 +1,12 @@
 module protelis:lang:core
 
-public def identity(a) { a } 
+public def identity(a) { 
+	a
+} 
+
+public def zero() {
+	0
+}
 
 public def or(a, b) {
 	a || b

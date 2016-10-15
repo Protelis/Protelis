@@ -272,6 +272,13 @@ public def constrainSpreading(source, meter, f, null) {
 }
 
 /**
+ * 
+ */
+public def vm(source, meter, f) {
+	constrainSpreading(source, meter, f, zero)
+}
+
+/**
  * Distance to devices where "source" is `true`, while avoiding devices where "obstacle" is `true`
  */
 public def distanceToWithObstacle(source, obstacle) {
