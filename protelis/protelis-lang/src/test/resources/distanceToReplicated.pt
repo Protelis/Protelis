@@ -1,0 +1,10 @@
+import protelis:lang:spreading
+import protelis:lang:timereplication
+
+timeReplicated(
+	() -> { distanceTo(env.has("source")) },
+	Infinity,
+	30,
+	3
+)
+

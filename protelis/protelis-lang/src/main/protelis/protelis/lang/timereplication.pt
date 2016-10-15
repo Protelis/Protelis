@@ -2,195 +2,64 @@ module protelis:lang:timereplication
 import org.apache.commons.math3.util.FastMath.max
 import org.apache.commons.math3.util.FastMath.pow
 import org.apache.commons.math3.util.FastMath.floor
-import protelis:lang:time
-import protelis:lang:core
-
-public def sharedCyclicTimer(period) {
-	rep (clock <- 0) {
-		if(cyclicTimer(period, 1)) { // Here it could be nd() * parameter
-			clock + 1
-		} else {
-			clock
-		}
-	}
-}
-
-
-/*
- * Returns an int, representing the current clock
- */
-public def sharedCyclicTimer2(period, dt) {
-	rep(clock <- 0) {
-		let clockPerceived = maxHood(nbr(clock));
-		if (clockPerceived <= clock) {
-			/*
-			 * I'm currently as fast as the fastest device in the neighborhood,
-			 * so keep on counting time
-			 */
-			clock + if (cyclicTimer(period, dt)) { 1 } else { 0 }
-		} else {
-			/*
-			 * Someone else's faster, take his time, and restart counting
-			 */
-			clockPerceived
-		}
-	}
-}
+import org.apache.commons.math3.util.FastMath.min
+import org.protelis.swarm.Process.*
+import protelis:lang:sharedTimer
 
 /*
  * This function should return false if the clock is out of date (namely: no node in the network is still on that clock).
  */
-public def isCurrent(currentClock, clock, persistence) {
-	currentClock - clock < max(1, persistence)
+def isCurrent(currentClock, clock, k) {
+	currentClock - clock < k
 }
 
-public def isNewClock(tuple, clock) {
-	tuple.filter(self, (inner) -> {clock(inner) == clock}).isEmpty()
+def isNewClock(processes, clock) {
+	processes
+		.map(self, process -> {process.pid()})
+		.filter(self, pid -> {clock == pid})
+		.isEmpty()
 }
 
-public def clock(tuple) {
+def clock(tuple) {
 	tuple.get(0)
 }
 
-public def networkDiameter() {
-	NaN
+def emptyProcess() {
+	rep (p <- newProcess(Infinity, () -> {"EMPTY"}, "EMPTY")) {
+		p
+	}
 }
 
-public def timeReplicated(process, replicates, duration, threshold, alpha) {
-	let diameter = networkDiameter();
-	let period = diameter * duration;
-	let clock = sharedCyclicTimer(period);
-	let default = NaN;
-	let prcs = rep(processes <- [[clock, [process, default]]]) {
+def alignedExecution(processes) {
+	alignedMap(
+		nbr(processes.map(self, p -> { [p.pid(), p] } )),
+		(pid, pField) -> { true },
+		(pid, pField) -> {
+			let p = hoodPlusSelf(
+				(a, b) -> {if(a.compareTo(b) < 0) {a} else {b}},
+				emptyProcess(),
+				pField
+			);
+			p.update(p.function().apply())
+		},
+		emptyProcess()
+	).map(self, tProc -> { tProc.get(1) } );
+}
+
+public def timeReplicated(process, default, p, k) {
+	let clock = sharedTimer(p, self.getDeltaTime());
+	rep(processes <- []) {
 		/*
 		 * Add process if the clock is new
 		 */
 		if(isNewClock(processes, clock)) {
-			processes = processes.append([clock, [process, default]])
+			processes = processes.append(newProcess(clock, process, default))
 		} else {0};
 		/*
 		 * Align on clock, execute process
 		 */
-		alignedMap(
-			nbr(processes),
-			/*
-			 * Filter out old processes. 
-			 */
-			 (pclock, processField) -> {isCurrent(clock, pclock, replicates)},
-			 /*
-			  * Here, processField should contain the same process for everybody. We just need to get one and run it.
-			  * The result must be a tuple of the form [process, processResult].
-			  */
-			 (clock, processField) -> {
-			 	let theProcess = hoodPlusSelf((p1, p2) -> {p1}, process, processField.get(0));
-			 	[theProcess, theProcess.apply()]
-			 },
-			 [process, default]
-		)
-		/*
-		 * The alignedMap outputs a [[clock0, [process0, result0]], [clock1, process1, result1], ...]
-		 * This tuple should get reduced.
-		 * The correct result to display is the last one which is stable for every node, namely the oldest
-		 * valid clock.
-		 * Valid filtering is already performed by alignedMap, so there is just a pick-the-minimum reduction to do.
-		 */
-	};
-	let maxclock = floor((rep(ct <- 0) {
-		rep (sync <- clock * period) {
-			if (clock * period > sync) {
-				ct = clock * period;
-			} else {
-				ct = ct + 1;
-				sync
-			}
-		};
-		ct // Number of rounds executed
-	} - threshold * diameter) / period);
-//	env.put("maxclock", maxclock);
-	let filtered = prcs.filter(self, t -> {clock(t) <= maxclock});
-	let sum = filtered
-		// The process clock
-		.map(self, t -> {
-//			let exp = clock(t) - max(0, maxclock - replicates + 1);
-			let exp = filtered.size() - 1 - maxclock + clock(t);
-//			env.put("************at - " + clock + "s=" + filtered.size() + ",c=" + clock(t), exp);
-			let val = t.get(1).get(1);
-			val * pow(alpha, exp)
-		}).reduce(self, default, (v1, v2) -> {v1 + v2});
-	if (alpha == 1) {
-		sum / filtered.size()
-	} else {
-		/*
-		 * the sum is divided by the geometric series value
-		 */
-		sum * (1 - alpha) / (1 - pow(alpha, filtered.size()))
+		alignedExecution(processes.filter(self, p -> {clock - p.pid() < k}))
 	}
-}
-
-public def tr(process, // function to be executed
-	default, maxTimePerProcess, processesMaxN 
-) {
-	rep(state <- [[], 0]) {
-		// newRep = nothing changes? 0: new replicate number
-		let newRep = sharedTimer(state.get(0), processesMaxN);
-		// newProc = nothing changes? []: [[processId, default]]
-		let newProc = if(newRep > 0) {
-			[[newRep, default]]
-		} else {
-			[] // nothing is changed
-		};
-		// add this process to the list of processes
-		let procs = state.get(0).mergeAfter(newProc);
-		procs = 
-			alignedMap(
-				// processes from my neighs and I
-				nbr(procs), 
-				// consider only the processer newer than processId (state.get(1))
-				(replicate, value) -> { replicate >= state.get(1) },
-				// execute the process
-				(replicate, value) -> { process.apply() },
-				// 
-				default
-			);
-		// keep only the newest k and update the state
-		procs = procs.subTupleEnd(max(0, procs.size() - processesMaxN));
-		// [ processes, smallest processId ]
-		[procs, procs.map((x) -> {x.get(0)}).fold(min)]
-	}
-}
-/**
- * alignedMap simile a map reduce. si aspetta un field di duple in cui primo elemento sia id. 
- * allinea la seconda parte della tupla usando la chiave
- * costruisce una tupla di field. sono tutti allineati sull'id. funzioni hanno come primo arogmento la chiave
- * secondo argomento, field di valori che matchavano il filtro (data la chiave)
- */
-/**
- * Return a new processId when timer expires
- */
-public def sharedTimer(
-	procs, // active processes
-	maxTimePerProcess // maximum number of processes
-) {
-	let newReplicate = 0; // id of a new project which should be executed
-	rep(state <- [0, // highest process id
-		0 // reamining time
-	]) {
-		// max id between rep and processes
-		let maxID = max(state.get(0), procs.map((x)->{x.get(0)}).fold(max));
-		if(maxID > state.get(0)) {
-			// if a new process exists then add it
-			[maxID, maxTimePerProcess]
-		} else {
-			// a new process does not exist
-			if(state.get(1) <= 0) {
-				// time is expired. It's time to create a new id
-				newReplicate = maxID+1; 
-				[maxID + 1, maxTimePerProcess]
-			} else {
-				// no new process, time is not expired. decrease time
-				[state.get(0), state.get(1) - self.dt()]
-			}
-		}
-	};
-	newReplicate // Return zero if nothing changes, otherwise new replicate number
+	.min(emptyProcess())
+	.result();
 }

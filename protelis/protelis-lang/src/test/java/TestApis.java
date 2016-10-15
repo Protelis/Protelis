@@ -257,6 +257,14 @@ public class TestApis {
         test("channel2");
     }
 
+    /**
+     * Test distanceToReplicated.pt.
+     */
+    @Test
+    public void testTimeReplication() {
+        test("distanceToReplicated");
+    }
+
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
@@ -283,7 +291,7 @@ public class TestApis {
         }
     }
 
-    private static void test(final String file, final  Object value) {
+    private static void test(final String file, final Object value) {
         try {
             InfrastructureTester.test(file, value);
         } catch (InterruptedException | IOException e) {
