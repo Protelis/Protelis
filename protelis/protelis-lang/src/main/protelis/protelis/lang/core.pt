@@ -1,49 +1,105 @@
 module protelis:lang:core
 
+/**
+ * Return type: (any) -> any.
+ * @param a value to be returned
+ * @return the same value
+ */
 public def identity(a) { 
 	a
 } 
 
+/**
+ * Return type: () -> num.
+ * @return 0
+ */
 public def zero() {
 	0
 }
 
+/**
+ * Return type: (bool, bool) -> bool.
+ * @param a first condition
+ * @param b second condition
+ * @return true if one of the conditions is true
+ */
 public def or(a, b) {
 	a || b
 }
 
+/**
+ * Return type: (bool, bool) -> bool.
+ * @param a first condition
+ * @param b second condition
+ * @return true if both the conditions are true
+ */
 public def and(a, b) {
 	a && b
 }
 
+/**
+ * Return type: (bool) -> bool.
+ * @param a condition
+ * @return negated condition
+ */
 public def not(a) {
 	!a
 }
 
+/**
+ * Return type: (num, num) -> num.
+ * @param a summand
+ * @param b summand
+ * @return sum of two fields
+ */
 public def sum(a, b) {
 	a + b
 }
 
+/**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return difference between two fields
+ */
 public def diff(a, b) {
 	a - b
 }
 
-public def min(t1, t2) {
-	if(t1.compareTo(t2) < 0 ) {
-		t1
+/**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return minimum between the two fields
+ */
+public def min(a, b) {
+	if(a.compareTo(b) < 0 ) {
+		a
 	} else {
-		t2
+		b
 	}
 }
 
-public def max(t1, t2) {
-	if(t1.compareTo(t2) > 0 ) {
-		t1
+/**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return maximum between the two fields
+ */
+public def max(a, b) {
+	if(a.compareTo(b) > 0 ) {
+		a
 	} else {
-		t2
+		b
 	}
 }
 
+/**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return mean the two fields
+ */
 public def mean(local, field) {
 	(local + field) / 2
 }
@@ -52,6 +108,9 @@ public def mean(local, field) {
  * Low pass filter.
  * 
  * Return type: (num, num) -> num.
+ * @param signal signal to be filtered
+ * @param a filter value
+ * @return low-pass filtered signal
  */
 public def exponentialFilter(signal, a) {
 	rep (v <- signal) {
@@ -60,8 +119,16 @@ public def exponentialFilter(signal, a) {
 }
 
 /**
- * Iterate over the elements of a tuple. Apply f to all the values satisfying filter. 
- * Return default when tuple is empty.
+ * Apply f to all the tuple elements satisfying the filtering condition. 
+ * Default is applied otherwise.
+ * 
+ * Return type: (tuple, f, f, any) -> any.
+ * @param tuple iterate over this tuple
+ * @param filter filtering condition
+ * @param f function to be applied
+ * @param default default value. Its type must be consistend with f's
+ * return type 
+ * @return value of the last iteration
  */
 public def iterate(tuple, filter, f, default) {
 	if(tuple.size() > 0) {
@@ -77,7 +144,12 @@ public def iterate(tuple, filter, f, default) {
 }
 
 /**
- * Reduce a tuple to a single value according to f.
+ * Reduce a tuple according to f.
+ * 
+ * Return type: (tuple, f) -> any.
+ * @param tuple tuple to be reduced
+ * @param f how to reduce the tuple
+ * @return reduced tuple
  */
 public def reduce(tuple, f) {
 	if (tuple.size() <= 1) {
