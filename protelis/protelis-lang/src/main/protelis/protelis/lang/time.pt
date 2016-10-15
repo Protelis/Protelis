@@ -69,10 +69,10 @@ public def limitedMemory(value, null, timeout, dt) {
 }
 
 public def timer(length) {
-	timerWithDt(length, self.dt())
+	timerWithDecay(length, self.dt())
 }
 
-public def timerWithDt(length, dt) {
+public def timerWithDecay(length, dt) {
 	T(length, 0, (t) -> {t - dt})
 }
 
