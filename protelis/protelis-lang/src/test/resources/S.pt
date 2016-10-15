@@ -1,0 +1,5 @@
+import protelis:lang:sparsechoice
+import protelis:lang:spreading
+import protelis:lang:core
+
+S(env.get("grain"), nbrRange)
