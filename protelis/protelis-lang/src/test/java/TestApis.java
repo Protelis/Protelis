@@ -118,7 +118,7 @@ public class TestApis {
      */
     @Test
     public void testCyclicTimer() {
-        test("cyclicTimer", 1, 3);
+        testMultirun("cyclicTimer");
     }
 
     /**
@@ -126,7 +126,7 @@ public class TestApis {
      */
     @Test
     public void testLimitedMemory() {
-        test("limitedMemory", 1, 3);
+        testMultirun("limitedMemory");
     }
 
     /**
@@ -269,9 +269,9 @@ public class TestApis {
         }
     }
 
-    private static void test(final String file, final int min, final int max) {
+    private static void testMultirun(final String file) {
         try {
-            InfrastructureTester.test(file, min, max);
+            InfrastructureTester.testMultirun(file);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -1,9 +1,9 @@
 package org.protelis.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -28,7 +28,6 @@ import it.unibo.alchemist.core.implementations.Engine.StateCommand;
 import it.unibo.alchemist.core.interfaces.Simulation;
 import it.unibo.alchemist.loader.YamlLoader;
 import it.unibo.alchemist.model.interfaces.Environment;
-import java8.util.stream.IntStreams;
 
 /**
  * Test protelis simulations.
@@ -48,38 +47,23 @@ public final class InfrastructureTester {
 
     /**
      * Run a test.
-     * 
-     * @param file
-     *            file to be tested
-     * @param runs
-     *            number of runs
-     * @param min
-     *            min runs
-     * @param max
-     *            max runs
-     * @exception IOException
-     *                fileNotFound
      */
-    public static void generalTest(final String file, final int runs, final int min, final int max) throws IOException {
+    private static void generalTest(final String file, final int runs, final boolean multirun) throws IOException {
         final InputStream is = InfrastructureTester.class.getResourceAsStream("/" + file + ".yml");
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         final YamlLoader loader = new YamlLoader(test);
 
-        if (min == -1 || max == -1) {
+        if (!multirun) {
             assertTrue(runs + " is an invalid number of runs", runs >= 0);
             final Environment<Object> env = loader.getWith(null);
             final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
             testSingleRun(runs, env, expectedResult);
         } else {
             final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
-            assertTrue(min + " is an invalid number of min runs", min >= 0);
-            assertTrue("max must be greater than min", max > min);
-            assertTrue("simulation runs [" + (max - min + 1) + "] != expected runs [" + expectedResult.keys().length
-                            + "]", max - min + 1 == expectedResult.keys().length);
-            IntStreams.rangeClosed(min, max).forEach(n -> {
+            for(int r: expectedResult.keys()) {
                 final Environment<Object> env = loader.getWith(null);
-                testSingleRun(n, env, expectedResult.get(n));
-            });
+                testSingleRun(r, env, expectedResult.get(r));
+            }
         }
     }
 
@@ -152,7 +136,7 @@ public final class InfrastructureTester {
      *             InterruptedException
      */
     public static void test(final String file, final int exampleRuns) throws InterruptedException, IOException {
-        generalTest(file, exampleRuns, -1, -1);
+        generalTest(file, exampleRuns, false);
     }
 
     /**
@@ -169,8 +153,8 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void test(final String file, final int min, final int max) throws InterruptedException, IOException {
-        generalTest(file, -1, min, max);
+    public static void testMultirun(final String file) throws InterruptedException, IOException {
+        generalTest(file, -1, true);
     }
 
     /**
