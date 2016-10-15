@@ -114,6 +114,14 @@ public class TestApis {
     }
 
     /**
+     * Test S function.
+     */
+    @Test
+    public void testS() {
+        test("S", true);
+    }
+
+    /**
      * Test cyclicTimer function.
      */
     @Test
@@ -260,10 +268,7 @@ public class TestApis {
     private static void test(final String file, final int runs) {
         try {
             InfrastructureTester.test(file, runs);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InterruptedException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -272,10 +277,16 @@ public class TestApis {
     private static void testMultirun(final String file) {
         try {
             InfrastructureTester.testMultirun(file);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (IOException e) {
+        }
+    }
+
+    private static void test(final String file, final  Object value) {
+        try {
+            InfrastructureTester.test(file, value);
+        } catch (InterruptedException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

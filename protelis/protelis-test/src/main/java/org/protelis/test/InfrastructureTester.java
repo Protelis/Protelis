@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ import it.unibo.alchemist.core.implementations.Engine.StateCommand;
 import it.unibo.alchemist.core.interfaces.Simulation;
 import it.unibo.alchemist.loader.YamlLoader;
 import it.unibo.alchemist.model.interfaces.Environment;
+import java8.util.function.Function;
 
 /**
  * Test protelis simulations.
@@ -48,7 +50,8 @@ public final class InfrastructureTester {
     /**
      * Run a test.
      */
-    private static void generalTest(final String file, final int runs, final boolean multirun) throws IOException {
+    private static void generalTest(final String file, final int runs, final boolean multirun, final Object f)
+                    throws IOException {
         final InputStream is = InfrastructureTester.class.getResourceAsStream("/" + file + ".yml");
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         final YamlLoader loader = new YamlLoader(test);
@@ -57,12 +60,12 @@ public final class InfrastructureTester {
             assertTrue(runs + " is an invalid number of runs", runs >= 0);
             final Environment<Object> env = loader.getWith(null);
             final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
-            testSingleRun(runs, env, expectedResult);
+            testSingleRun(runs, env, expectedResult, f);
         } else {
             final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
-            for(int r: expectedResult.keys()) {
+            for (int r : expectedResult.keys()) {
                 final Environment<Object> env = loader.getWith(null);
-                testSingleRun(r, env, expectedResult.get(r));
+                testSingleRun(r, env, expectedResult.get(r), f);
             }
         }
     }
@@ -76,9 +79,12 @@ public final class InfrastructureTester {
      *            environment
      * @param expectedResult
      *            expected result
+     * @param f
+     *            testing function
      */
-    public static void testSingleRun(final int runs, final Environment<Object> env,
-                    final List<Pair<String, String>> expectedResult) {
+    @SuppressWarnings("unchecked")
+    private static void testSingleRun(final int runs, final Environment<Object> env,
+                    final List<Pair<String, String>> expectedResult, final Object f) {
         final Simulation<Object> sim = new Engine<Object>(env, runs);
         sim.addCommand(new StateCommand<>().run().build());
         sim.run();
@@ -88,25 +94,16 @@ public final class InfrastructureTester {
             simulationRes.put(pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
             System.out.println("[Node" + pNode.toString() + "]: " + pNode.get(RunProtelisProgram.RESULT));
         });
-
-        assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
-                        + simulationRes.values().size() + "]", expectedResult.size(), simulationRes.values().size());
-        for (Pair<String, String> pair : expectedResult) {
-            if (!pair.getRight().equals(DC)) {
-                Object singleNodeResult = simulationRes.get(pair.getLeft());
-                assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
-                final String err = "[Runs:" + runs + ",Node" + pair.getLeft() + "]";
-                if (singleNodeResult instanceof Double) {
-                    assertEquals(err, (double) Double.parseDouble(pair.getRight()), (double) singleNodeResult, DELTA);
-                } else if (singleNodeResult instanceof Boolean) {
-                    String v = pair.getRight();
-                    assertEquals(err, (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
-                                    : v.equals("F") ? "false" : pair.getRight()), (boolean) singleNodeResult);
-                } else {
-                    assertEquals(err, pair.getRight(), singleNodeResult);
-                }
-            }
+        if (f instanceof BiConsumer) {
+            ((BiConsumer<Map<String, Object>, List<Pair<String, String>>>) f).accept(simulationRes, expectedResult);
+        } else if (f instanceof Function) {
+            final int occ = Integer.parseInt(expectedResult.get(0).getRight());
+            final int found = ((Function<Map<String, Object>, Integer>) f).apply(simulationRes);
+            assertEquals("Expected occurences [" + occ + "] != Occurences found [" + found + "]", occ, found);
+        } else {
+            fail("How can I test without a proper function?");
         }
+
     }
 
     /**
@@ -124,6 +121,41 @@ public final class InfrastructureTester {
     }
 
     /**
+     * Test a given property.
+     * 
+     * @param file
+     *            file to bested
+     * @param expectedValue
+     *            value to be checked
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void test(final String file, final Object expectedValue) throws InterruptedException, IOException {
+        test(file, EXAMPLE_RUNS, expectedValue);
+    }
+
+    /**
+     * Test a given property.
+     * 
+     * @param file
+     *            file to bested
+     * @param exampleRuns
+     *            number of runs
+     * @param expectedValue
+     *            value to be checked
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void test(final String file, final int exampleRuns, final Object expectedValue)
+                    throws InterruptedException, IOException {
+        generalTest(file, exampleRuns, false, new TestCount(expectedValue));
+    }
+
+    /**
      * Test the given file.
      * 
      * @param file
@@ -136,7 +168,7 @@ public final class InfrastructureTester {
      *             InterruptedException
      */
     public static void test(final String file, final int exampleRuns) throws InterruptedException, IOException {
-        generalTest(file, exampleRuns, false);
+        generalTest(file, exampleRuns, false, new TestEqual());
     }
 
     /**
@@ -144,17 +176,13 @@ public final class InfrastructureTester {
      * 
      * @param file
      *            file to bested
-     * @param min
-     *            min runs
-     * @param max
-     *            max runs
      * @throws IOException
      *             IOexception
      * @throws InterruptedException
      *             InterruptedException
      */
     public static void testMultirun(final String file) throws InterruptedException, IOException {
-        generalTest(file, -1, true);
+        generalTest(file, -1, true, new TestEqual());
     }
 
     /**
@@ -172,6 +200,48 @@ public final class InfrastructureTester {
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         TestMatcher.getResult(test);
         System.out.println("Done.");
+    }
+
+    private static class TestCount implements Function<Map<String, Object>, Integer> {
+        private final Object expectedValue;
+        /**
+         * 
+         * @param expectedValue expected value
+         */
+        TestCount(final Object expectedValue) {
+            this.expectedValue = expectedValue;
+        }
+
+        @Override
+        public Integer apply(final Map<String, Object> simulationRes) {
+            Long count = simulationRes.values().stream().filter(v -> v.equals(this.expectedValue)).count();
+            return count.intValue();
+        }
+    }
+
+    private static class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
+        @Override
+        public void accept(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
+            assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
+                            + simulationRes.values().size() + "]", expectedResult.size(), simulationRes.values().size());
+            for (Pair<String, String> pair : expectedResult) {
+                if (!pair.getRight().equals(DC)) {
+                    Object singleNodeResult = simulationRes.get(pair.getLeft());
+                    assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
+                    final String err = "[Node" + pair.getLeft() + "]";
+                    if (singleNodeResult instanceof Double) {
+                        assertEquals(err, (double) Double.parseDouble(pair.getRight()), (double) singleNodeResult,
+                                        DELTA);
+                    } else if (singleNodeResult instanceof Boolean) {
+                        String v = pair.getRight();
+                        assertEquals(err, (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
+                                        : v.equals("F") ? "false" : pair.getRight()), (boolean) singleNodeResult);
+                    } else {
+                        assertEquals(err, pair.getRight(), singleNodeResult);
+                    }
+                }
+            }
+        }
     }
 
     /**
