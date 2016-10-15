@@ -3,6 +3,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.protelis.test.InfrastructureTester;
+import org.protelis.test.ProgramTester;
 
 /**
  * Testing Protelis core libraries.
@@ -265,6 +266,14 @@ public class TestApis {
         test("distanceToReplicated");
     }
 
+    /**
+     * Test logic.pt.
+     */
+    @Test
+    public void testLogic() {
+        testProgram("logic");
+    }
+
     /*
      * From this point the rest of the file is not tests, but utility methods
      */
@@ -298,6 +307,10 @@ public class TestApis {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private static void testProgram(final String file) {
+        ProgramTester.testFile(file);
     }
 
 }

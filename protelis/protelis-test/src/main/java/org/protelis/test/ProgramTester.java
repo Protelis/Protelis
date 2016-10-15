@@ -53,7 +53,11 @@ public final class ProgramTester {
      *            file to be tested
      */
     public static void testFile(final String file) {
-        testFile(file, 1);
+        if (file.endsWith(".pt")) {
+            testFile(file, 1);
+        } else {
+            testFile("/" + file + ".pt", 1);
+        }
     }
 
     /**
