@@ -95,18 +95,18 @@ public def CRF(src, initial, metric, accumulate, latency, range) {
 			[0, 0, initial]
 		} else {
 			let ndv = nbr(potential);
-			let d = ndv.get(0);
-			let v = ndv.get(1);
-			let dt = self.dt();
-			let nrange = metric.apply();
-			mux(anyHood(d + nrange + v * (latency.apply() + dt) < d)) {
-				minHood([d + nrange, 0, initial])
+			let d = ndv.get(0); // inf
+			let v = ndv.get(1); // 0
+			let dt = self.dt(); // 1
+			let nrange = metric.apply(); // 1
+			mux(anyHood((d + nrange + v * (latency.apply() + dt)) < potential.get(0))) {
+				minHood([d + nrange, 0, accumulate.apply(ndv.get(2))])
 			} else {
 				let v0 = if(dt == 0) { 1 } else { range / (dt * 12) };
-				[d + v0 * dt, v0, initial]				
+				[potential.get(0) + v0 * dt, v0, potential.get(2)]				
 			}
 		}
-	}.get(1)
+	}.get(2)
 }
 
 public def oneHopSlope(d, minD, metric) {

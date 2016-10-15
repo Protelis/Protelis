@@ -42,6 +42,14 @@ public class TestApis {
     }
 
     /**
+     * Test CRFgradient.pt.
+     */
+    @Test
+    public void testCRFGradient() {
+        test("CRFgradient");
+    }
+
+    /**
      * Test forecastObstacle.pt.
      */
     @Test
