@@ -170,57 +170,131 @@ public def flexGradient2(source, initial, metric, accumulate, epsilon, range, di
 }
 
 /*
- * Field of distances between the current and the other nodes
+ * Estimate the distance from the current node to its neighbors.
+ * 
+ * Return type: () -> num.
+ * @return field of distances from the current to its neighbors
  */
 public def nbrRange() {
 	self.nbrRange()
 }
 
+/*
+ * Add v to the field of distances from the current node to its neighbors.
+ * 
+ * Return type: (num) -> num.
+ * @param v distance to add
+ * @return field of distances from the current to its neighbors
+ */
 public def addRange(v) {
-	v + nbrRange()
+	addRangeWithMetric(v, nbrRange)
 }
 
+/*
+ * Estimate the distance from the current node to its neighbors.
+ * 
+ * Return type: () -> num.
+ * @return field of 1s for each neighbor
+ */
 public def nbrRangeHop() { 1 }
 
+/*
+ * Add of 1 the field of distances of the current node's neighbors.
+ * 
+ * Return type: () -> num.
+ * @return field of distances from the current to its neighbors
+ */
+public def addRangeHop() {
+	addRangeWithMetric(1, nbrRangeHop)
+}
 
 /*
- * Distance between the current and the source nodes 
+ * Add v to the field of distances from the current node to its neighbors.
+ * 
+ * Return type: (num, f) -> num.
+ * @param v distance to add
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @return field of distances from the current to its neighbors
+ */
+public def addRangeWithMetric(v, metric) {
+	v + metric.apply()
+}
+
+/*
+ * Distance from the current to the closest source.
+ * 
+ * Return type: (bool) -> num.
+ * @param source whether the current node is a source
+ * @return distance to the closest source
  */
 public def distanceTo(source) {
 	distanceToWithMetric(source, nbrRange)	
 }
 
 /*
- * Shortest distance between the current and the nearest source node
+ * Distance from the current to the closest source.
+ * 
+ * Return type: (bool, f) -> num.
+ * @param source whether the current node is a source
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @return distance to the closest source
  */
 public def distanceToWithMetric(source, metric) {
-	// v: other node distances from the source
-	// v + nbrRange(): 
-	//   other node distances from the source + distance of the current node from the formers
 	G(source, 0, metric, (v) -> {v + metric.apply()})
 }
 
 /**
- * Shortest path between source and destionation nodes.
+ * Smallest distance between source and destination nodes.
  * 
- * (bool, bool) -> num
+ * Return type: (bool, bool) -> num
+ * @param source whether the current node is a source
+ * @param destination whether the current node is a destination
+ * @return smallest distance between source and destination nodes
  */
 public def distanceBetween(source, dest) { 
 	distanceBetweenWithMetric(source, dest, nbrRange)
 }
 
-// distance of the source from the destination
+/**
+ * Smallest distance between source and destination nodes.
+ * 
+ * Return type: (bool, bool) -> num
+ * @param source whether the current node is a source
+ * @param destination whether the current node is a destination
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @return smallest distance between source and destination nodes
+ */
 public def distanceBetweenWithMetric(source, dest, metric) { 
 	G(source, distanceToWithMetric(dest, metric), metric, identity)
 }
 
-
-
 /*
- * Broadcast a given value from a source within a spanning tree
+ * Broadcast value across a spanning tree starting from the source.
+ * 
+ * Return type: (bool, any) -> any
+ * @param source whether the current node is a source
+ * @param value what to broadcast
+ * @return broadcasted value
  */
 public def broadcast(source, value) {
-	G(source, value, nbrRange, v -> {v})
+	broadcastWithMetric(source, value, nbrRange)
+}
+
+/*
+ * Broadcast value across a spanning tree starting from the source.
+ * 
+ * Return type: (bool, any) -> any
+ * @param source whether the current node is a source
+ * @param value what to broadcast
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @return broadcasted value
+ */
+public def broadcastWithMetric(source, value, metric) {
+	G(source, value, metric, identity)
 }
 
 /**
@@ -345,14 +419,13 @@ public def rendezvous(a, b) {
 
 
 /**
- * Shortest path.
- * 
- * Return type: (bool, bool) -> bool.
- * 
  * Dynamically computes the shortest route between regions of a network, and 
  * dynamically adapts to shape and changes of the network topology. The “shortest path” 
  * is a Boolean field that is true for devices near the shortest route from a given 
  * (distributed) source to a (distributed) destination.
+ * 
+ * Return type: (bool, bool) -> bool.
+ * 
  */
 public def shortestPath(source, destination) {
 	rep (path <- false) {

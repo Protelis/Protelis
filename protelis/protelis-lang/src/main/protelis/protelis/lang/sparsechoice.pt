@@ -4,9 +4,9 @@ import protelis:lang:spreading
 /**
  * S. 
  * 
- * Devices compete against one another to become local “leaders,”
+ * Devices compete against one another to become local leaders,
  * resulting  in  a  random  Voronoi  partition  with  a  characteristic
- * component size 'grain'.
+ * grain size .
  */
  public def S(grain, metric) {
 //	breakUsingUids(self.getDeviceUID(), grain, metric)
