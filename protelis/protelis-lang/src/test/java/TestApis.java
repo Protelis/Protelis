@@ -82,6 +82,14 @@ public class TestApis {
     }
 
     /**
+     * Test rendezvous.pt.
+     */
+    @Test
+    public void testRendezvous() {
+        test("rendezvous");
+    }
+
+    /**
      * Test G.pt.
      */
     @Test

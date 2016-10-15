@@ -59,35 +59,6 @@ public def G(source, initial, metric, accumulate) {
 	}.get(1) // return the accumulated value
 }
 
-//public def CRFgradient(source, initial, metric, accumulate, speed, dt, latency) {
-//	rep(distanceValue <- [Infinity, initial]) {
-//		mux(source) {
-//			[0, initial]
-//		} else {
-//			// previous gradient
-//			let gx = distanceValue.get(0);
-//			// apply triangle inequality
-//			let ndv = nbr(distanceValue);
-//			// c_x(y,t)
-//			let cx = [
-//				ndv.get(0) + metric.apply(),
-//				accumulate.apply(ndv.get(1))
-//			]; 
-//			// c'_x(y,t)
-//			let cx1 = [cx.get(0) 
-//				+ speed.apply() // speed
-//				* (dt.apply() + latency.apply()), 
-//				cx.get(1)
-//			];
-//			if(sumHood(if(cx1.get(0) + metric.apply() < gx) { 1 } else { 0 }) > 0) {
-//				minHood(cx)
-//			} else {
-//				[gx + speed.apply() * dt.apply(), distanceValue.get(1)]
-//			}
-//		}
-//	}.get(1)
-//}
-
 public def CRF(src, initial, metric, accumulate, latency, range) {
 	// potential <- [distance, speed, accumulatedValue]
 	rep(potential <- [Infinity, 0, initial]) {
@@ -114,10 +85,14 @@ public def oneHopSlope(d, minD, metric) {
 		(r, x) -> {
 			let nrange = metric.apply();
 			if(nrange > 0) {
-				let slope = (d - x) / max(minD, nrange);
-				if(slope > r.get(1)) {
-					[slope, x, max(minD, nrange)]
-				} else { r }
+				nrange = metric.apply();
+				let m = max(minD, nrange.fold(max));
+				let slope = (d - x) / m;
+				if(slope > r.get(0)) {
+					nrange = metric.apply();
+					m = max(minD, nrange.fold(max));
+					[slope, x, m]
+				} else { r } //????
 			} else { r }
 		}, 
 		[-Infinity, Infinity, 0], 
@@ -135,7 +110,7 @@ public def flexGradient(src, epsilon, rate, range, distortion, metric) {
 			let maxSlope = slopeInfo.get(0);
 			let msd = slopeInfo.get(1);
 			let msr = slopeInfo.get(2);
-			let ct = minHood(nbr(d) + max(minD, metric.apply()));
+			let ct = minHood(nbr(d) + max(minD, metric.apply().fold(max)));
 			mux((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
 				ct
 			} else {
@@ -153,59 +128,46 @@ public def flexGradient(src, epsilon, rate, range, distortion, metric) {
 	}
 }
 
-
-//public def flexGradient(source, initial, metric, accumulate, epsilon, range, distortion) {
-//	rep(distanceValue <- [Infinity, initial]) {
-//		mux(source) {
-//			[0, initial]
-//		} else {
-//			// previous gradient
-//			let gx = distanceValue.get(0);
-//			
-//			mux(gx != Infinity && gx != -Infinity) {
-//				env.put("gx", gx);
-//				let ndv = nbr(distanceValue);
-//				// c'_x(y,t)
-//				let cx1 = minHood([
-//					ndv.get(0) + max(distortion * range, metric.apply()),
-//					accumulate.apply(ndv.get(1))
-//				]);
-//				env.put("c'x", cx1);
-//				// s'_x
-//				let sx1 = maxHood([
-//					(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
-//					ndv.get(0), // gy
-//					max(distortion * range, metric.apply()),
-//					ndv.get(1) // accumulated value
-//				]);
-//				env.put("s'x", sx1);
-//				if(max(range, 2*cx1.get(0)) < gx) {
-//					env.put("step", 1);
-//					cx1
-//				} else {
-//					if(sx1.get(0) > 1 + epsilon) {
-//						env.put("step", 2);
-//						[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
-//					} else {
-//						if(sx1.get(0) < 1 - epsilon) {
-//							env.put("step", 4);
-//							[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
-//						} else { env.put("step", 5); distanceValue }
-//					}
-//				}
-//			} else {
-//				env.put("gx is", gx);
-//				let ndv = nbr(distanceValue);
-//				let res = minHood([
-//					ndv.get(0) + metric.apply(),
-//					accumulate.apply(ndv.get(1))
-//				]);
-//				env.put("res", res);
-//				res
-//			}
-//		}
-//	}.get(1)
-//}
+public def flexGradient2(source, initial, metric, accumulate, epsilon, range, distortion) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			[0, initial]
+		} else {
+			// previous gradient
+			let gx = distanceValue.get(0);
+			env.put("gx", gx);
+			let ndv = nbr(distanceValue);
+			// c'_x(y,t)
+			let cx1 = minHood([
+				ndv.get(0) + max(distortion * range, metric.apply()),
+				accumulate.apply(ndv.get(1))
+			]);
+			env.put("c'x", cx1);
+			// s'_x
+			let sx1 = maxHood([
+				(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
+				ndv.get(0), // gy
+				max(distortion * range, metric.apply()),
+				ndv.get(1) // accumulated value
+			]);
+			env.put("s'x", sx1);
+			if(max(range, 2*cx1.get(0)) < gx) {
+				env.put("step", 1);
+				cx1
+			} else {
+				if(sx1.get(0) > 1 + epsilon) {
+					env.put("step", 2);
+					[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
+				} else {
+					if(sx1.get(0) < 1 - epsilon) {
+						env.put("step", 4);
+						[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
+					} else { env.put("step", 5); distanceValue }
+				}
+			}
+		}
+	}.get(1)
+}
 
 /*
  * Field of distances between the current and the other nodes
@@ -251,6 +213,8 @@ public def distanceBetween(source, dest) {
 public def distanceBetweenWithMetric(source, dest, metric) { 
 	G(source, distanceToWithMetric(dest, metric), metric, identity)
 }
+
+
 
 /*
  * Broadcast a given value from a source within a spanning tree
@@ -354,6 +318,24 @@ public def channel(source, destination, obstacle, thr, width) {
   		}
   	} 
 }
+
+
+
+// == shortest path
+public def descend(source, potential) {
+	rep(path <- source) {
+		let nextStep = minHood(nbr([potential, self.getDeviceUID()]));
+		if (nextStep.size() > 1) {
+			let candidates = nbr([nextStep.get(1), path]);
+			source || anyHood([self.getDeviceUID(), true] == candidates)
+		} else { source }
+	}
+}
+
+public def rendezvous(a, b) {
+	descend(a, distanceTo(b))
+}
+
 
 /**
  * Shortest path.

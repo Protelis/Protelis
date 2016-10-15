@@ -1,0 +1,2 @@
+import protelis:lang:spreading
+rendezvous(env.has("source"), env.has("destination"))
