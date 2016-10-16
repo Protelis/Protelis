@@ -1,5 +1,2 @@
-() -> {
-    rep(c <- 0) {
-        sumHood(nbr(1))
-    }
-}.apply()
+import protelis:lang:spreading
+neighborhood()

@@ -1,9 +1,219 @@
 module protelis:lang:time
-
 import java.lang.Math.min
 import java.lang.Math.max
-
 import protelis:lang:core
+
+/**
+ * Return type: (bool) -> bool.
+ * @param event event
+ * @return true if the event is always verified
+ */
+public def allTime(event) {
+	rep(t <- event) {
+		t && event
+	}
+}
+
+/**
+ * Return type: (bool) -> bool.
+ * @param event event
+ * @return whether the event has occurred at least once
+ */
+public def anyTime(event) {
+	rep(t <- event) {
+		t || event
+	}
+}
+
+/**
+ * Return type: (bool, fun, any) -> any.
+ * @param event time
+ * @param f function to be applied
+ * @param null value
+ * @return apply f if event occurs, return null otherwise
+ */
+public def applyWhile(event, f, null) {
+	if(event) { f.apply() } else { null }
+}
+
+/**
+ * Return type: (num) -> num.
+ * @param count down length
+ * @return remaining time
+ */
+public def countDown(length) {
+	countDownWithDecay(length, self.dt())
+}
+
+/**
+ * Return type: (num, num) -> num.
+ * @param count down length
+ * @param decay
+ * @return remaining time
+ */
+public def countDownWithDecay(length, dt) {
+	T(length, 0, (t) -> {t - dt})
+}
+
+/**
+ * Counter.
+ * 
+ * Return type: (num, num) -> num.
+ * @return current status of the counter
+ */
+public def counter(start, inc) {
+	rep(c <- 0) {
+		c + inc
+	}
+}
+
+/**
+ * How many times an event occurred.
+ * 
+ * Return type: (bool) -> num.
+ * @param event event to be monitored
+ * @return how many times an event occurred
+ */
+public def countTrue(event) {
+	rep(c <- 0) {
+		c + if(event) { 1 } else { 0 }
+	}
+}
+
+/**
+ * Cyclic timer.
+ * 
+ * Return type: (num) -> num.
+ * @param length timeout
+ * @return true if the timeout is expired, false otherwise
+ */
+public def cyclicTimer(length) {
+	cyclicTimerWithDecay(length, self.dt())
+}
+
+/**
+ * Cyclic timer.
+ * 
+ * Return type: (num) -> num.
+ * @param length timeout
+ * @param decay decay rate
+ * @return true if the timeout is expired, false otherwise
+ */
+public def cyclicTimerWithDecay(length, decay) {
+	rep(left <- length) {
+		if(left == 0) {
+			length
+		} else {
+			T(length, 0, (t) -> {t - decay})
+		}
+	} == length
+}
+
+/**
+ * Periodically invoke a function.
+ * 
+ * Return type: (num, num, fun, any) -> any.
+ * @param length timeout
+ * @param decay decay rate
+ * @param f function to be invoked
+ * @param null default value
+ * @return apply f if the timeout is expired, null otherwise
+ */
+public def cyclicFunction(length, decay, f, null) {
+	if (cyclicTimerWithDecay(length, decay)) {
+		f.apply()
+	} else {
+		null
+	}
+}
+
+/**
+ * Return type: (num) -> num.
+ * @param signal to be monitored
+ * @return variation between current and old values
+ */ 
+public def delta(signal) {
+	rep(old <- [signal, 0]) {
+		[signal, signal - old.get(1)]
+	}.get(1)
+}
+
+/**
+ * Exponential back-off filter.
+ * 
+ * Return type: (num, num) -> num.
+ * @param signal signal to be filtered
+ * @param a alpha value
+ * @return filtered signal
+ */
+public def ebfFilter(signal, a) {
+	rep(old <- signal) {
+		signal * a + old * (1 - a)
+	}
+}
+ 
+/**
+ * Return type: (any, num) -> bool.
+ * @param signal signal to be monitored
+ * @param time consider the signal stable after this time
+ * @return true if the signal value does not change for at least time, false
+ * otherwise
+ */
+public def isSignalStable(signal, time) {
+	let t = 
+		rep(old <- [signal, 0]) {
+			mux(signal == old.get(0)) { 
+				[signal, old.get(1) + self.dt()]
+			} else { 
+				[signal, 0]
+			}
+		}.get(1);
+	t >= time
+}
+
+/**
+ * Return type: (bool, num) -> num.
+ * @param event event
+ * @param timeout
+ * @return true if the event occurred before timeout, false otherwise
+ */
+public def isRecentEvent(event, timeout) {
+	if(event) { 
+		true
+	} else { 
+		countDown(timeout) > 0
+	}
+}
+
+/**
+ * Return type: (bool) -> bool.
+ * @param signal binary signal to be monitored
+ * @return true if the signal had a rising edge, false otherwise
+ */
+public def isRisingEdge(signal) {
+	rep(old <- [signal, false]) {
+		mux(!old.get(0) && signal) { 
+			[signal, true]
+		} else { 
+			[signal, false]
+		}
+	}.get(1);
+}
+
+/**
+ * Hold value until a specified timeout. 
+ * 
+ * Return type: (any, any, num, num) -> any.
+ * @param value value to be stored
+ * @param null default value
+ * @param timeout hold the value for this amount of time
+ * @param dt increase the time of this value
+ * @return hold value if timeout is not expired, null otherwise
+ */
+public def limitedMemory(value, null, timeout, dt) {
+	if(wait(timeout)) { null } else { value }
+}
+
 /*
  * Timer
  * initial: initial value of the timer
@@ -16,74 +226,90 @@ public def T(initial, zero, decay) {
 	}
 }
 
-
-public def delayFunction(initial, decay, function) {
-	if (T(initial, 0, (t) -> {t - decay}) <= 0) {
-		function.apply()
-	} else {
-		NaN
-	}
-}
-
-
-public def cyclicTimer(length) {
-	cyclicTimerWithDecay(length, self.dt())
-}
-
-/*
- * Cyclic timer
- * length: duration of the each cycle
- * decay: decay rate
- */
-public def cyclicTimerWithDecay(length, decay) {
-	rep(left <- length) {
-		if(left == 0) {
-			length
-		} else {
-			T(length, 0, (t) -> {t - decay})
-		}
-	} == length
-}
-
-public def cyclicFunction(length, decay, function) {
-	if (cyclicTimerWithDecay(length, decay)) {
-		function.apply()
-	} else {
-		NaN
-	}
-}
-
-//public def limitedMemory(value, timeout, dt) {
-//	T([timeout, value], [0, false], (t) -> {[t.get(0) - dt, t.get(1)]}).get(1)
-//}
-
 /**
- * Hold `value` until a specified `timeout`. Return `false` when `T` returns 0.
+ * Return type: (any) -> any.
+ * @value signal
+ * @return the same signal
  */
-public def limitedMemory(value, null, timeout, dt) {
-	if (T(timeout, 0, (t) -> {t - dt}) <= 0) { 
-		null
-	} else { 
-		value
-	}
-}
-
-public def timer(length) {
-	timerWithDecay(length, self.dt())
-}
-
-public def timerWithDecay(length, dt) {
-	T(length, 0, (t) -> {t - dt})
-}
-
-def recentEvent(event, timeout) {
-	if(event) { 
-		true
-	} else { 
-		timer(timeout) > 0
-	}
-}
-
 public def Tfilter(value) {
 	T(value, value, identity)
+}
+
+/**
+ * Time flow.
+ * 
+ * Return type: () -> num.
+ * @return current time
+ */
+public def tick() {
+	counter(0, self.dt())
+}
+
+/**
+ * Return type: (num) -> true.
+ * @param x time
+ * @return true once every x
+ */
+public def trueOnceEvery(x) {
+	cyclicTimer(x)
+}
+
+/**
+ * Return type: (num) -> true.
+ * @param x time
+ * @return true after x
+ */
+public def trueOnce(x) {
+	countDown(x) <= 0
+}
+
+/**
+ * Return type: (bool, num) -> num.
+ * @param timeout
+ * @param event event
+ * @return true if a true condition has persisted for time
+ */
+public def trueFor(time, event) {
+	if(event) { tick() >= time } else { false }
+}
+
+/**
+ * Return type: (bool, num) -> num.
+ * @param timeout
+ * @param event event
+ * @return true if the event occurred within last time period
+ */
+public def trueDuring(time, event) {
+	if(event) { true } else { tick() <= time }
+}
+
+/**
+ * Return type: (num) -> bool.
+ * @param v value to be monitored
+ * @return whether v has changed given its previous state
+ */
+public def valueChanged(v) {
+	rep(old <- [v, true]) {
+		[v, if(v == old) { false } else { true }]
+	}.get(1)
+}
+
+/**
+ * Return type: (num) -> bool.
+ * @param count down length
+ * @return whether the countdown is expired
+ */
+public def wait(length) {
+	countDown(length) <= 0
+}
+
+/**
+ * Return type: (num) -> true.
+ * @param x time
+ * @param f function to be applied
+ * @param null value
+ * @return apply f after x, return null otherwise
+ */
+public def waitAndApply(x, f, null) {
+	if(wait(x)) { f.apply() } else { null }
 }

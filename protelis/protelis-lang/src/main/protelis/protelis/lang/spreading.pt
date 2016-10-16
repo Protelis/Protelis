@@ -461,6 +461,16 @@ public def gradcast(f, init, accumulate) {
 	}.get(1)
 }
 
+/**
+ * Count the number of neighbors.
+ * 
+ * () -> num.
+ * @return number of neighbors
+ */
+ public def neighborhood() {
+ 	sumHood(nbr(1))
+ }
+ 
 /*
  * Estimate the distance from the current node to its neighbors.
  * 
@@ -620,28 +630,6 @@ public def channel2(source, destination, obstacle, width) {
   		distanceTo(shortestPath(source, destination)) <= width
   	} 
 }
-
-/**
- * Consensus.
- * 
- * Return type: (num, f) -> num
- */
-public def consensus(init, f) {
- 	rep (val <- init) {
- 		// val + f.apply(sumHood PlusSelf(nbr(val) - val))
- 		val + f.apply(sumHood(nbr(val) - val))
- 	}	
-} 
-
-/**
- * Laplacian consensus.
- * 
- * Return type: (num, num) -> num.
- */
- public def laplacianConsensus(init, epsilon) {
- 	consensus(init, (v) -> {epsilon * v})
- }
- 
 
 def dominantValue(value) {
 	rep (tup <- [0, self.getDeviceUID(), value]) {

@@ -51,7 +51,7 @@ public def C(potential, accumulate, local, null) {
 /**
  * Summarize.
  * 
- * Return type: (bool, f, num, num) -> num.
+ * Return type: (bool, fun, num, num) -> num.
  * 
  * Broadcast the value accumulated by the source. Example: 
  * 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
@@ -62,14 +62,15 @@ public def summarize (sink, accumulate, local, null) {
 }
 
 /**
- * Average.
+ * Estimate and broadcast the average value within a spatial region.
  * 
  * Return type: (bool, num) -> num.
- * 
- * Broadcast the average value.
+ * @param sink whether the device is the root of the spanning tree
+ * @param local local value
+ * @return average value
  */
 public def average(sink, value) {
-	summarize(sink, sum, value, 0) + summarize(sink, sum, 1, 0)
+	summarize(sink, sum, value, 0) + neighborhood()
 }
 
 /**
@@ -84,20 +85,37 @@ public def opinionFeedback(acts, feedback) {
 }
 
 /**
- * Cmultisum.
+ * Estimate the average value across a bounded spatial region.
  * 
- * Return type: (num, any) -> any.
- * 
- * C  collects  values  over  a  spanning  tree;  even  small  perturbations
+ * Return type: (bool, num) -> num.
+ * @param sink whether the device is the root of the spanning tree
+ * @param local local value
+ * @param range region range
+ * @param null default value
+ * @return average value
+ */
+public def boundAverage(sink, local, range, null) {
+	boundSpreadingWithinRange(sink, () -> {
+		average(sink, local)
+	}, range, null)
+}
+
+/**
+ * The source device converge to the sum of other device values.
+ * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
  * can  cause  loss  or  duplication  of  values  with
  * major transient impact on its result. When the accumulation
  * operation for C is either idempotent (e.g., logical and, or)
  * or  separable  (e.g.,  summation),  this  can  be  mitigated  by
  * using all paths down the potential function rather than just
  * one. Can implement  any  other  idempotent  or  separable  function.
+ * 
+ * Return type: (num, num) -> num.
+ * @param potential sum values descending this potential
+ * @param local value
+ * @return aggregated value
  */
 public def Cmultisum(potential, local) {
-//	NaN
  	rep(v <- local) {
  		local + 
  			sumHood(
@@ -109,3 +127,28 @@ public def Cmultisum(potential, local) {
  			)
  	}
 }
+
+/**
+ * Devices agree on a common value.
+ * 
+ * Return type: (num, f) -> num.
+ * @param init initial device value 
+ * @param f how to determine consensus
+ * @return shared value
+ */
+public def consensus(init, f) {
+ 	rep (val <- init) {
+ 		// val + f.apply(sumHood PlusSelf(nbr(val) - val))
+ 		val + f.apply(sumHood(nbr(val) - val))
+ 	}	
+} 
+
+/**
+ * Laplacian consensus.
+ * 
+ * Return type: (num, num) -> num.
+ */
+ public def laplacianConsensus(init, epsilon) {
+ 	consensus(init, (v) -> {epsilon * v})
+ }
+ 

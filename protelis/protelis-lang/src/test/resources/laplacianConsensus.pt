@@ -1,2 +1,2 @@
-import protelis:lang:spreading
+import protelis:lang:convergecast
 laplacianConsensus(env.get("foo"), env.get("epsilon"))
