@@ -33,11 +33,17 @@ def GPIbroadcast(source, value) {
 }
 
 /*
- * Gradcast algorithm
- * source: boolean value representing whether the node is a gradient source
- * initial: initial value
- * metric: the gradient is estimated with respect to this distance function
- * accumulate: values are accumulated with respect to this function
+ * Propagate values across a spanning tree starting from the closest source.
+ * 
+ * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
+ * type must be consistent.
+ * 
+ * @param source whether the current node is a source
+ * @param initial initial value of the computation
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @param accumulate how to manage the value
+ * @return accumulated value
  */
 public def G(source, initial, metric, accumulate) {
 	rep(distanceValue <- [Infinity, initial]) {
@@ -54,6 +60,43 @@ public def G(source, initial, metric, accumulate) {
 				ndv.get(0) + metric.apply(),
 				// values estimation
 				accumulate.apply(ndv.get(1))
+			])
+		}
+	}.get(1) // return the accumulated value
+}
+
+/*
+ * Propagate values across a spanning tree starting from the closest source.
+ * 
+ * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
+ * type must be consistent.
+ * 
+ * @param source whether the current node is a source
+ * @param initial initial value of the computation
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @param accumulate how to manage the value
+ * @return accumulated value
+ */
+public def G2(source, initial, metric, density, integrand, accumulate) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			// If the node is a source then G return a 0 potential
+			// and the initial value
+			[0, initial]
+		} else {
+			// The other node potentials are requested
+			let ndv = nbr(distanceValue);
+			// G returns the value related to the minimum potential
+			minHood([
+				// potential estimation
+				ndv.get(0) + metric.apply(),
+				// values estimation
+				accumulate.apply(ndv.get(1))
+//			(+ (nbr distance-integral)
+//	  			(* (nbr-range)
+//           			(tup (mean density (nbr density))
+//            			(mean integrand (nbr integrand)))))
 			])
 		}
 	}.get(1) // return the accumulated value
@@ -218,6 +261,39 @@ public def addRangeWithLag(v, metric, speed, latency) {
 	v + metric.apply() + speed * (latency.apply() + self.dt())
 }
 
+/**
+ * Constrain the spreading of f only across a region. 
+ * 
+ * Return type: (bool, fun, any) -> any. f return type and null should be
+ * type consistent.
+ * @param region whether the function is spreaded or not
+ * @param f function to be spreaded
+ * @param null default value return whether f is not spreaded
+ * @return apply f inside the region, return null otherwise
+ */
+public def boundSpreading(region, f, null) {
+	if (region) {
+		f.apply()
+	} else {
+		null
+	}
+}
+
+ /**
+ * Constrain the spreading of f only within devices close to the source. 
+ * 
+ * Return type: (bool, num, fun, any) -> any. f return type and null should be
+ * type consistent.
+ * @param region whether the function is spreaded or not
+ * @param range maximum spreading distance from the source
+ * @param f function to be spreaded
+ * @param null default value return whether f is not spreaded
+ * @return apply f inside the region, return null otherwise
+ */
+public def boundSpreadingWithinRange(source, range, f, null) {
+	boundSpreading(distanceTo(source) < range, f, null);
+}
+
 /*
  * Broadcast value across a spanning tree starting from the source.
  * 
@@ -307,6 +383,33 @@ public def distanceToWithMetric(source, metric) {
 	G(source, 0, metric, (v) -> {v + metric.apply()})
 }
 
+/*
+ * Distance from the current to the closest source.
+ * 
+ * Return type: (bool, bool) -> num.
+ * @param source whether the node is a source
+ * @param obstacle whether the node is an obstacle
+ * @return field of minimum distances to the closest source
+ */
+public def distanceToWithObstacle(source, obstacle) {
+	if (obstacle) { Infinity }
+	else { distanceTo(source) }
+}
+
+/**
+ * Forecast obstacles along a path to the source.
+ * 
+ * Return type: (bool, bool) -> bool.
+ * @param source whether the device is a source
+ * @param obstacle whether the device is an obstacle
+ * @return true if the device will encounter an obstacle within the shortest
+ * path towards the closest source, false otherwise
+ */ 
+public def forecastObstacle(source, obstacle) {
+	let obs = if(obstacle) { 1 } else { 0 };
+	G(source, obs, nbrRange, (v) -> { obs + v }) > 0
+}
+
 /**
  * Determine the smallest distance from the current node to the source.
  * 
@@ -338,12 +441,23 @@ public def gradient(source, init, metric, latency, range) {
 }
 
 public def gradcast(f, init, accumulate) {
+//	rep(value <- init) {
+//		let ndv = [
+//			nbr(f.apply()), // distance from all the neighs
+//			nbr(accumulate.apply(value)) // value from all the neight
+//		]; 
+//		minHood(ndv)	
+//	}.get(1)
+//	rep(value <- init) {
+//		let d = f.apply();
+//		hood(
+//			min,
+//			[Infinity, value],
+//			[d, accumulate.apply(value)]
+//		)
+//	}.get(1)
 	rep(value <- init) {
-		let ndv = [
-			nbr(f.apply()), // distance from all the neighs
-			nbr(accumulate.apply(value)) // value from all the neight
-		]; 
-		minHood(ndv)	
+		minHood(nbr([f, accumulate.apply(value)]));
 	}.get(1)
 }
 
@@ -392,80 +506,46 @@ public def gossipEver(a) {
 }
 
 /**
- * Constrain the spreading of f only across a region. 
+ * Entry point for a computation.
  * 
- * Return type: (bool, fun, any) -> any. f return type and null should be
- * type consistent.
- * @param region whether the function is spreaded or not
- * @param f function to be spreaded
- * @param null default value return whether f is not spreaded
- * @return apply f inside the region, return null otherwise
+ * @param source whether the device is a source
+ * @param range spreading constraint
+ * @param function entry point
+ * @param null default value
+ * @return apply f if the device is inside the spreading region, null 
+ * otherwise
  */
-public def boundSpreading(region, f, null) {
-	if (region) {
-		f.apply()
-	} else {
-		null
-	}
-}
-
- /**
- * Constrain the spreading of f only within devices close to the source. 
- * 
- * Return type: (bool, num, fun, any) -> any. f return type and null should be
- * type consistent.
- * @param region whether the function is spreaded or not
- * @param range maximum spreading distance from the source
- * @param f function to be spreaded
- * @param null default value return whether f is not spreaded
- * @return apply f inside the region, return null otherwise
- */
-public def boundSpreadingWithinRange(source, range, f, null) {
-	boundSpreading(distanceTo(source) < range, f, null);
-}
-
-/**
- * 
- */
-public def vm(source, meter, f) {
-	boundSpreadingWithinRange(source, meter, f, zero)
-}
-
-/**
- * Distance to devices where "source" is `true`, while avoiding devices where "obstacle" is `true`
- */
-public def distanceToWithObstacle(source, obstacle) {
-	if (obstacle) { Infinity }
-	else { distanceTo(source) }
+public def vm(source, range, f, null) {
+	boundSpreadingWithinRange(source, range, f, null)
 }
 
 /**  
- * Voronoi partitioning. 
+ * Computing a Voronoi partition is an operation that is frequently useful in 
+ * distributed systems. Given an initial set of seed devices, a Voronoi 
+ * partition assigns each device to the partition of the nearest seed, 
+ * effectively breaking the network up into zones of influence around key 
+ * elements.
  * 
  * Return type: (bool, num) -> num.
  * 
- * Computing a Voronoi partition is an operation that is frequently useful in 
- * distributed systems. Given an initial set of “seed” devices, a Voronoi 
- * partition assigns each device to the partition of the nearest seed (by some 
- * not necessarily Euclidean metric), effectively breaking the network up into
- *  “zones of influence” around key elements.
+ * @param seed whether the device is a seed
+ * @param id partition id
+ * @return partition of the nearest seed
  */
  public def voronoiPatitioning(seed, id) {
  	G(seed, id, nbrRange, identity)
  }
- 
   
  /**
-  * Channel pattern.
-  * 
-  * Return type: (bool, bool, bool, num) -> num.
-  * 
   * Dynamically computes distributed routes between regions of a network, and 
   * dynamically adapts to shape and changes of the network topology. Examples 
   * of its use include long-range reliable communications, or advanced crowd 
   * steering applications in pervasive computing. The “channel” is a Boolean 
   * field that is true for devices near the shortest route from a given 
   * (distributed) source to a (distributed) destination.
+  * 
+  * Return type: (bool, bool, bool, num) -> num.
+  * 
   */
 public def channel(source, destination, obstacle, thr, width) {
   	if (obstacle) { 
@@ -562,14 +642,6 @@ public def consensus(init, f) {
  	consensus(init, (v) -> {epsilon * v})
  }
  
-/**
- * Forecast obstacles along a path to the source.
- * 
- * Return type: (bool, bool) -> bool.
- */ 
-public def forecastObstacle(source, obstacle) {
-	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
-}
 
 def dominantValue(value) {
 	rep (tup <- [0, self.getDeviceUID(), value]) {
