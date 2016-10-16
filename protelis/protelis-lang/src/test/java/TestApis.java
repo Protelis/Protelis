@@ -267,6 +267,14 @@ public class TestApis {
     }
 
     /**
+     * Test distanceTo2.pt.
+     */
+    @Test
+    public void testDistanceToWithGradcast() {
+        test("distanceTo2");
+    }
+
+    /**
      * Test logic.pt.
      */
     @Test

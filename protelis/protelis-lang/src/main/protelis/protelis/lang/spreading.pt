@@ -170,16 +170,6 @@ public def flexGradient2(source, initial, metric, accumulate, epsilon, range, di
 }
 
 /*
- * Estimate the distance from the current node to its neighbors.
- * 
- * Return type: () -> num.
- * @return field of distances from the current to its neighbors
- */
-public def nbrRange() {
-	self.nbrRange()
-}
-
-/*
  * Add v to the field of distances from the current node to its neighbors.
  * 
  * Return type: (num) -> num.
@@ -189,14 +179,6 @@ public def nbrRange() {
 public def addRange(v) {
 	addRangeWithMetric(v, nbrRange)
 }
-
-/*
- * Estimate the distance from the current node to its neighbors.
- * 
- * Return type: () -> num.
- * @return field of 1s for each neighbor
- */
-public def nbrRangeHop() { 1 }
 
 /*
  * Add of 1 the field of distances of the current node's neighbors.
@@ -222,53 +204,18 @@ public def addRangeWithMetric(v, metric) {
 }
 
 /*
- * Distance from the current to the closest source.
+ * Add v to the field of distances from the current node to its neighbors.
  * 
- * Return type: (bool) -> num.
- * @param source whether the current node is a source
- * @return distance to the closest source
- */
-public def distanceTo(source) {
-	distanceToWithMetric(source, nbrRange)	
-}
-
-/*
- * Distance from the current to the closest source.
- * 
- * Return type: (bool, f) -> num.
- * @param source whether the current node is a source
+ * Return type: (num, f, num, f) -> num.
+ * @param v distance to add
  * @param metric determine how to gauge the distance from to the current node
  * to its neighbors
- * @return distance to the closest source
+ * @param speed communication speed
+ * @param latency communication latencies between neighbors 
+ * @return field of distances from the current to its neighbors
  */
-public def distanceToWithMetric(source, metric) {
-	G(source, 0, metric, (v) -> {v + metric.apply()})
-}
-
-/**
- * Smallest distance between source and destination nodes.
- * 
- * Return type: (bool, bool) -> num
- * @param source whether the current node is a source
- * @param destination whether the current node is a destination
- * @return smallest distance between source and destination nodes
- */
-public def distanceBetween(source, dest) { 
-	distanceBetweenWithMetric(source, dest, nbrRange)
-}
-
-/**
- * Smallest distance between source and destination nodes.
- * 
- * Return type: (bool, bool) -> num
- * @param source whether the current node is a source
- * @param destination whether the current node is a destination
- * @param metric determine how to gauge the distance from to the current node
- * to its neighbors
- * @return smallest distance between source and destination nodes
- */
-public def distanceBetweenWithMetric(source, dest, metric) { 
-	G(source, distanceToWithMetric(dest, metric), metric, identity)
+public def addRangeWithLag(v, metric, speed, latency) {
+	v + metric.apply() + speed * (latency.apply() + self.dt())
 }
 
 /*
@@ -298,6 +245,127 @@ public def broadcastWithMetric(source, value, metric) {
 }
 
 /**
+ * Constrain the spreading of broadcast function only across a region. 
+ * 
+ * Return type: (bool, any) -> any. broadcast return type and null should be
+ * type consistent.
+ * @param region whether the function is spreaded or not
+ * @param null default value return whether f is not spreaded
+ * @return broadcast inside the region, return null otherwise
+ */
+public def boundBroadcast(region, null) {
+	boundSpreading(region, broadcast, null)
+}
+
+/**
+ * Smallest distance between source and destination nodes.
+ * 
+ * Return type: (bool, bool) -> num
+ * @param source whether the current node is a source
+ * @param destination whether the current node is a destination
+ * @return smallest distance between source and destination nodes
+ */
+public def distanceBetween(source, dest) { 
+	distanceBetweenWithMetric(source, dest, nbrRange)
+}
+
+/**
+ * Smallest distance between source and destination nodes.
+ * 
+ * Return type: (bool, bool) -> num
+ * @param source whether the current node is a source
+ * @param destination whether the current node is a destination
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @return smallest distance between source and destination nodes
+ */
+public def distanceBetweenWithMetric(source, dest, metric) { 
+	G(source, distanceToWithMetric(dest, metric), metric, identity)
+}
+
+/*
+ * Distance from the current to the closest source.
+ * 
+ * Return type: (bool) -> num.
+ * @param source whether the current node is a source
+ * @return distance to the closest source
+ */
+public def distanceTo(source) {
+	distanceToWithMetric(source, nbrRange)	
+}
+
+/*
+ * Distance from the current to the closest source.
+ * 
+ * Return type: (bool, f) -> num.
+ * @param source whether the node is a source
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @return field of minimum distances to the closest source
+ */
+public def distanceToWithMetric(source, metric) {
+	G(source, 0, metric, (v) -> {v + metric.apply()})
+}
+
+/**
+ * Determine the smallest distance from the current node to the source.
+ * 
+ * Return type: (bool, num, fun, fun, fun) -> num.
+ * @param source whether the node is a source
+ * @param init distance initial value
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @param latency communication latencies between neighbors
+ * @param maximum communication range
+ * @return field of minimum distances from nodes to the closest source
+ */
+public def gradient(source, init, metric, latency, range) {
+	rep (distance <- [Infinity, 0]) {
+		mux(source) { 
+			[init, 0]
+		} else {
+			let d = distance.get(0);
+			let v = distance.get(1);
+			mux(anyHood(addRangeWithLag(nbr(distance).get(0), metric, v, latency) <= d)) {
+				let ndv = nbr(distance);
+				minHood([ndv.get(0) + metric.apply(), 0])
+			} else {
+				let v0 = range.apply() / 2;
+				[d + v0 * self.dt(), v0]
+			}
+		}	  
+	}.get(0)
+}
+
+public def gradcast(f, init, accumulate) {
+	rep(value <- init) {
+		let ndv = [
+			nbr(f.apply()), // distance from all the neighs
+			nbr(accumulate.apply(value)) // value from all the neight
+		]; 
+		minHood(ndv)	
+	}.get(1)
+}
+
+/*
+ * Estimate the distance from the current node to its neighbors.
+ * 
+ * Return type: () -> num.
+ * @return field of distances from the current to its neighbors
+ */
+public def nbrRange() {
+	self.nbrRange()
+}
+
+/*
+ * Estimate the distance from the current node to its neighbors.
+ * 
+ * Return type: () -> num.
+ * @return field of 1s for each neighbor
+ */
+public def nbrRangeHop() { 1 }
+
+/**
  * Gossip.
  * 
  * f must be idempotent.
@@ -324,7 +392,14 @@ public def gossipEver(a) {
 }
 
 /**
- * Constrain the spreading of the 'f'.
+ * Constrain the spreading of f only across a region. 
+ * 
+ * Return type: (bool, fun, any) -> any. f return type and null should be
+ * type consistent.
+ * @param region whether the function is spreaded or not
+ * @param f function to be spreaded
+ * @param null default value return whether f is not spreaded
+ * @return apply f inside the region, return null otherwise
  */
 public def boundSpreading(region, f, null) {
 	if (region) {
@@ -334,22 +409,26 @@ public def boundSpreading(region, f, null) {
 	}
 }
 
-/**
- * Constrain the spreading of the 'f' within devices closer than 'meter' to the source.
+ /**
+ * Constrain the spreading of f only within devices close to the source. 
+ * 
+ * Return type: (bool, num, fun, any) -> any. f return type and null should be
+ * type consistent.
+ * @param region whether the function is spreaded or not
+ * @param range maximum spreading distance from the source
+ * @param f function to be spreaded
+ * @param null default value return whether f is not spreaded
+ * @return apply f inside the region, return null otherwise
  */
-public def constrainSpreading(source, meter, f, null) {
-	if (distanceTo(source) < meter) {
-		f.apply()
-	} else {
-		null
-	}
+public def boundSpreadingWithinRange(source, range, f, null) {
+	boundSpreading(distanceTo(source) < range, f, null);
 }
 
 /**
  * 
  */
 public def vm(source, meter, f) {
-	constrainSpreading(source, meter, f, zero)
+	boundSpreadingWithinRange(source, meter, f, zero)
 }
 
 /**

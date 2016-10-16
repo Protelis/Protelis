@@ -1,0 +1,4 @@
+import protelis:lang:spreading
+import protelis:lang:core
+//gradcast(() -> {gradient(env.has("source"), 0, nbrRange, zero, zero)}, 0, addRange)
+gradient(env.has("source"), 0, nbrRange, zero, zero)
