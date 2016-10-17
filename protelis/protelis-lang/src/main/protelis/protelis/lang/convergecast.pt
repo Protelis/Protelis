@@ -3,13 +3,19 @@ import protelis:lang:spreading
 import protelis:lang:time
 import protelis:lang:core 
 
-/*
- * Find the parent node following the maximum decrease in potential
+/**
+ * Find the parent of the current node following the maximum decrease in 
+ * potential.
+ * 
+ * Return type: (num, fun) -> any.
+ * @param potential potential
+ * @param accumulate what to do with the parent
+ * @return -NaN root, -1 no parent, accumulate(parent) otherwise
  */
-def findParent(potential) {
+def findParent2(potential, accumulate) {
 	mux(minHood(nbr(potential)) < potential) {
         // If the minimum-received potential is less then the potential of this node...
-		let closest = minHood(nbr([potential, self]));
+		let closest = minHood(nbr([potential, accumulate.apply(self)]));
 		if(closest.size() > 1) {
 		    // ... return the node representing such potential (if exists)
 			closest.get(1)
@@ -21,15 +27,47 @@ def findParent(potential) {
 	}
 }
 
-/*
- * Concentrate a potential estimated according to the given HoodOp function
- * potential: feature with respect to the HoodOp is evaluated
- * accumulate: HoodOp to apply. all, any, max, min, sum, union, ...
- * local: local value of the feature
- * null: expression that will be evaluated if the field is empty
+/**
+ * Find the parent of the current node following the maximum decrease in 
+ * potential.
+ * 
+ * Return type: (num, fun) -> any.
+ * @param potential potential
+ * @param accumulate what to do with the parent
+ * @return -2 root, -1 no parent, accumulate(parent) otherwise
  */
- 
- // solo sorgenti puntiformi
+public def findParent(potential, accumulate) {
+	mux(minHood(nbr(potential)) < potential) {
+		let closest = minHood(nbr([potential, accumulate.apply(self)]));
+		if(closest.size() > 1) { closest.get(1) } else { -1 }
+	} else { -2 }
+}
+
+/**
+ * Find the parent ID of the current node following the maximum decrease in 
+ * potential.
+ * 
+ * Return type: (num, fun) -> num.
+ * @param potential potential
+ * @param accumulate what to do with the parent
+ * @return parent id
+ */
+public def findParentId(potential) {
+	findParent(potential, (node) -> { node.getDeviceUID() })
+}
+
+/*
+ * Aggregate a field within a spanning tree built according to the maximum
+ * decrease in potential. Concentrate the potential estimated according to 
+ * the given HoodOp function.
+ * 
+ * Return type: (num, fun, any, any) -> any
+ * @param potential direction of the aggregation
+ * @param accumulate HoodOp function
+ * @param local local value 
+ * @param null expression evaluated when the field is empty
+ * @return aggregated value
+ */
 public def C(potential, accumulate, local, null) {
 	rep(v <- local) {
 		accumulate.apply(local,
@@ -42,20 +80,23 @@ public def C(potential, accumulate, local, null) {
 				// expression that will be evaluated if the field is empty
 				null,
 				// argument to evaluate (must return a Field)
-				mux(nbr(findParent(potential)) == self) { nbr(v) } else { null }
+				mux(nbr(findParent2(potential, identity)) == self) { nbr(v) } else { null }
 			)
 		)
 	}	
 }
 
 /**
- * Summarize.
- * 
- * Return type: (bool, fun, num, num) -> num.
- * 
  * Broadcast the value accumulated by the source. Example: 
  * 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
  * devices in a region.
+ * 
+ * Return type: (bool, fun, num, num) -> num.
+ * @param sink whether the device should collect the aggregated information
+ * @param accumulate how to aggregate
+ * @param local local value
+ * @param null default value
+ * @return aggregated value according to accumulate 
  */
 public def summarize (sink, accumulate, local, null) {
 	broadcast(sink, C(distanceTo(sink), accumulate, local, null))

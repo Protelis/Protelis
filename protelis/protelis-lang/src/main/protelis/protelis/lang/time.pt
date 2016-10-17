@@ -151,7 +151,21 @@ public def ebfFilter(signal, a) {
 		signal * a + old * (1 - a)
 	}
 }
- 
+
+/**
+ * Flip two values at each round.
+ *
+ * Return type: (num, num) -> num.
+ * @param first value
+ * @param second value
+ * @return (ba)+ sequence of values
+ */ 
+public def flip(a, b) {
+	rep(c <- a) {
+		(a + b) - c
+	}
+}
+
 /**
  * Return type: (any, num) -> bool.
  * @param signal signal to be monitored
@@ -221,7 +235,8 @@ public def limitedMemory(value, null, timeout, dt) {
  * decay: timer decrease its value according to this function
  */
 public def T(initial, zero, decay) {
-	rep(v <- initial) { // stateful. rep is initialized only the first time the function is invoked
+	rep(v <- initial) { 
+		// rep is initialized only during the first invocation
 		min(initial, max(zero, decay.apply(v)))
 	}
 }

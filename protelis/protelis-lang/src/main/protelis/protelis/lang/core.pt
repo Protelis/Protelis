@@ -1,33 +1,6 @@
 module protelis:lang:core
 
 /**
- * Return type: (any) -> any.
- * @param a value to be returned
- * @return the same value
- */
-public def identity(a) { 
-	a
-} 
-
-/**
- * Return type: () -> num.
- * @return 0
- */
-public def zero() {
-	0
-}
-
-/**
- * Return type: (bool, bool) -> bool.
- * @param a first condition
- * @param b second condition
- * @return true if one of the conditions is true
- */
-public def or(a, b) {
-	a || b
-}
-
-/**
  * Return type: (bool, bool) -> bool.
  * @param a first condition
  * @param b second condition
@@ -38,24 +11,46 @@ public def and(a, b) {
 }
 
 /**
- * Return type: (bool) -> bool.
- * @param a condition
- * @return negated condition
+ * Line-of-sight detector.
+ * 
+ * Return type: (any) -> bool.
+ * @param x value
+ * @return true if there is at least a neighbor respect to x, false otherwise
  */
-public def not(a) {
-	!a
+public def canSee(x) {
+	anyHood(nbr(x))
 }
 
 /**
- * Return type: (num, num) -> num.
- * @param a summand
- * @param b summand
- * @return sum of two fields
+ * Return type: (fun) -> fun.
+ * @param f function 
+ * @return g(f(args))
  */
-public def sum(a, b) {
-	a + b
+public def compose(f) {
+	() -> { f.apply() }
 }
 
+/**
+ * Return type: (any) -> fun.
+ * @param a value to be composed as a function
+ * @return a function which returns a
+ */
+public def composeValue(a) {
+	() -> { a }
+}
+
+/**
+ * @param x value to be denormalized
+ * @param oldmin oldmin
+ * @param oldmax oldmax
+ * @param newmin newmin
+ * @param newmax newmax
+ * @return denormalized value
+ */
+public def denormalize(x, oldmin, oldmax, newmin, newmax) {
+	x * (newmax - newmin) / (oldmax - oldmin) + (newmin - oldmin)
+} 
+ 
 /**
  * Return type: (num, num) -> num.
  * @param a first field
@@ -67,55 +62,12 @@ public def diff(a, b) {
 }
 
 /**
- * Return type: (num, num) -> num.
- * @param a first field
- * @param b second field
- * @return minimum between the two fields
+ * Return type: (any) -> any.
+ * @param a value to be returned
+ * @return the same value
  */
-public def min(a, b) {
-	if(a.compareTo(b) < 0 ) {
-		a
-	} else {
-		b
-	}
-}
-
-/**
- * Return type: (num, num) -> num.
- * @param a first field
- * @param b second field
- * @return maximum between the two fields
- */
-public def max(a, b) {
-	if(a.compareTo(b) > 0 ) {
-		a
-	} else {
-		b
-	}
-}
-
-/**
- * Return type: (num, num) -> num.
- * @param a first field
- * @param b second field
- * @return mean the two fields
- */
-public def mean(local, field) {
-	(local + field) / 2
-}
-
-/**
- * Low pass filter.
- * 
- * Return type: (num, num) -> num.
- * @param signal signal to be filtered
- * @param a filter value
- * @return low-pass filtered signal
- */
-public def exponentialFilter(signal, a) {
-	rep (v <- signal) {
-		signal * a + v * (1 - a)
-	}
+public def identity(a) { 
+	a
 }
 
 /**
@@ -144,9 +96,77 @@ public def iterate(tuple, filter, f, default) {
 }
 
 /**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return maximum between the two fields
+ */
+public def max(a, b) {
+	if(a.compareTo(b) > 0 ) {
+		a
+	} else {
+		b
+	}
+}
+
+/**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return mean of the two fields
+ */
+public def mean(local, field) {
+	(local + field) / 2
+}
+
+/**
+ * Return type: (num, num) -> num.
+ * @param a first field
+ * @param b second field
+ * @return minimum between the two fields
+ */
+public def min(a, b) {
+	if(a.compareTo(b) < 0 ) {
+		a
+	} else {
+		b
+	}
+}
+
+/**
+ * Return type: (bool) -> bool.
+ * @param a condition
+ * @return negated condition
+ */
+public def not(a) {
+	!a
+}
+
+/**
+ * Return type: (bool, bool) -> bool.
+ * @param a first condition
+ * @param b second condition
+ * @return true if one of the conditions is true
+ */
+public def or(a, b) {
+	a || b
+}
+
+/**
+ * Return type: (num, num, num) -> num.
+ * @param x value
+ * @param min lower bound
+ * @param max upper bound
+ * @return scale x with respect to the range
+ */
+public def range(x, min, max) {
+	x * (max - min) + min
+}
+
+/**
  * Reduce a tuple according to f.
  * 
- * Return type: (tuple, f) -> any.
+ * Return type: (tuple, fun) -> any.
  * @param tuple tuple to be reduced
  * @param f how to reduce the tuple
  * @return reduced tuple
@@ -157,4 +177,22 @@ public def reduce(tuple, f) {
 	} else {
 		f.apply(tuple.get(0),reduce(tuple.subTupleEnd(1),f));
 	}
+}
+
+/**
+ * Return type: (num, num) -> num.
+ * @param a summand
+ * @param b summand
+ * @return sum of two fields
+ */
+public def sum(a, b) {
+	a + b
+}
+
+/**
+ * Return type: () -> num.
+ * @return 0
+ */
+public def zero() {
+	0
 }

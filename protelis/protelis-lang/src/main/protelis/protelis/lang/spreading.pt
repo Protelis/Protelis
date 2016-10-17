@@ -224,6 +224,18 @@ public def addRange(v) {
 }
 
 /*
+ * Add v to the field of distances from the current node to its neighbors.
+ * 
+ * Return type: (num, fun) -> num.
+ * @param v distance to add
+ * @param next continuation
+ * @return field of distances from the current to its neighbors
+ */
+public def addRangeWithContinuation(v, next) {
+	next.apply(addRangeWithMetric(v, nbrRange))
+}
+
+/*
  * Add of 1 the field of distances of the current node's neighbors.
  * 
  * Return type: () -> num.
@@ -258,7 +270,7 @@ public def addRangeWithMetric(v, metric) {
  * @return field of distances from the current to its neighbors
  */
 public def addRangeWithLag(v, metric, speed, latency) {
-	v + metric.apply() + speed * (latency.apply() + self.dt())
+	addRangeWithMetric(v, metric) + speed * (latency.apply() + self.dt())
 }
 
 /**
@@ -333,6 +345,18 @@ public def boundBroadcast(region, null) {
 	boundSpreading(region, broadcast, null)
 }
 
+/**
+ * Dilate a spatial region.
+ * 
+ * Return type: (bool, num) -> bool.
+ * @param region whether the device is inside the region
+ * @param width how big the dilatation is
+ * @return dilated region
+ */
+ public def dilate(region, width) {
+ 	distanceTo(region) < width	
+ }
+ 
 /**
  * Smallest distance between source and destination nodes.
  * 
@@ -529,6 +553,17 @@ public def vm(source, range, f, null) {
 	boundSpreadingWithinRange(source, range, f, null)
 }
 
+/**
+ * Verify if a device is on the edge of a spatial region.
+ * 
+ * Return type: (any) -> bool.
+ * @param condition` how to discriminate a region
+ * @return true if the device is on the edge, false otherwise
+ */
+ public def isEdge(condition) {
+ 	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
+ }
+ 
 /**  
  * Computing a Voronoi partition is an operation that is frequently useful in 
  * distributed systems. Given an initial set of seed devices, a Voronoi 
