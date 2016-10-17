@@ -251,7 +251,7 @@ public final class InfrastructureTester {
         private static final String ML_NAME = "multilineComment";
         private static final String ML_RUN = "multirun";
         private static final String EXPECTED = "result:";
-        private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
+        private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
         private static final Pattern EXTRACT_RESULT = Pattern.compile(
                         ".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}", Pattern.DOTALL);
         /*
