@@ -10,68 +10,39 @@ import org.protelis.test.ProgramTester;
  */
 public class TestApis {
 
-    /**
-     * Test the number of neighbors of each device.
-     */
-    @Test
-    public void testNeighborhood() {
-        test("neighborhood");
+    private static void test(final String file) {
+        test(file, InfrastructureTester.EXAMPLE_RUNS);
     }
 
-    /**
-     * Test distanceTo function.
-     */
-    @Test
-    public void testDistanceTo() {
-        test("distanceTo");
+    private static void test(final String file, final int runs) {
+        try {
+            InfrastructureTester.test(file, runs);
+        } catch (InterruptedException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Test distanceTo with obstacle.
-     */
-    @Test
-    public void testDistanceToWithObstacle() {
-        test("distanceToWithObstacle");
+    private static void test(final String file, final Object value) {
+        try {
+            InfrastructureTester.test(file, value);
+        } catch (InterruptedException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Test flexGradient.pt.
-     */
-    @Test
-    public void testFlexGradient() {
-        test("flexGradient");
+    private static void testMultirun(final String file) {
+        try {
+            InfrastructureTester.testMultirun(file);
+        } catch (InterruptedException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Test CRFgradient.pt.
-     */
-    @Test
-    public void testCRFGradient() {
-        test("CRFgradient");
-    }
-
-    /**
-     * Test forecastObstacle.pt.
-     */
-    @Test
-    public void testForecastObstacle() {
-        test("forecastObstacle");
-    }
-
-    /**
-     * Test broadcast.pt.
-     */
-    @Test
-    public void testBroadcast() {
-        test("broadcast");
-    }
-
-    /**
-     * Test self.nbrRange().
-     */
-    @Test
-    public void testNbrRange() {
-        test("nbrRange");
+    private static void testProgram(final String file) {
+        ProgramTester.testFile(file);
     }
 
     /**
@@ -83,75 +54,19 @@ public class TestApis {
     }
 
     /**
-     * Test rendezvous.pt.
+     * Test boundedSpreading.pt.
      */
     @Test
-    public void testRendezvous() {
-        test("rendezvous");
+    public void testBoundSpreading() {
+        test("boundSpreading");
     }
 
     /**
-     * Test G.pt.
+     * Test broadcast.pt.
      */
     @Test
-    public void testG() {
-        test("G");
-    }
-
-    /**
-     * Test distanceBetween.pt.
-     */
-    @Test
-    public void testDistanceBetween() {
-        test("distanceBetween");
-    }
-
-    /**
-     * Test T function.
-     */
-    @Test
-    public void testT() {
-        test("T");
-    }
-
-    /**
-     * Test S function.
-     */
-    @Test
-    public void testS() {
-        test("S", true);
-    }
-
-    /**
-     * Test cyclicTimer function.
-     */
-    @Test
-    public void testCyclicTimer() {
-        testMultirun("cyclicTimer");
-    }
-
-    /**
-     * Test limitedMemory function.
-     */
-    @Test
-    public void testLimitedMemory() {
-        testMultirun("limitedMemory");
-    }
-
-    /**
-     * Test TFilter function.
-     */
-    @Test
-    public void testTFilter() {
-        test("tfilter");
-    }
-
-    /**
-     * Test summarize.pt.
-     */
-    @Test
-    public void testSummarize() {
-        test("summarize");
+    public void testBroadcast() {
+        test("broadcast");
     }
 
     /**
@@ -163,11 +78,123 @@ public class TestApis {
     }
 
     /**
+     * Test channel.pt.
+     */
+    @Test
+    public void testChannel() {
+        test("channel");
+    }
+
+    /**
+     * Test channel2.pt.
+     */
+    @Test
+    public void testChannel2() {
+        test("channel2");
+    }
+
+    /**
      * Test CMultisum.pt.
      */
     @Test
     public void testCMultisum() {
         test("Cmultisum");
+    }
+
+    /**
+     * Test constrainSpreading.pt.
+     */
+    @Test
+    public void testConstrainSpreading() {
+        test("constrainSpreading");
+    }
+
+    /**
+     * Test CRFgradient.pt.
+     */
+    @Test
+    public void testCRFGradient() {
+        test("CRFgradient");
+    }
+
+    /**
+     * Test cyclicTimer function.
+     */
+    @Test
+    public void testCyclicTimer() {
+        testMultirun("cyclicTimer");
+    }
+
+    /**
+     * Test diameter.pt.
+     */
+    @Test
+    public void testDiameter() {
+        test("diameter");
+    }
+
+    /**
+     * Test distanceBetween.pt.
+     */
+    @Test
+    public void testDistanceBetween() {
+        test("distanceBetween");
+    }
+
+    /**
+     * Test distanceTo function.
+     */
+    @Test
+    public void testDistanceTo() {
+        test("distanceTo");
+    }
+
+    /**
+     * Test distanceTo2.pt.
+     */
+    @Test
+    public void testDistanceToWithGradcast() {
+        test("distanceTo2");
+    }
+
+    /**
+     * Test distanceTo with obstacle.
+     */
+    @Test
+    public void testDistanceToWithObstacle() {
+        test("distanceToWithObstacle");
+    }
+
+    /**
+     * Test findParent.pt.
+     */
+    @Test
+    public void testFindParent() {
+        test("findParentId");
+    }
+
+    /**
+     * Test flexGradient.pt.
+     */
+    @Test
+    public void testFlexGradient() {
+        test("flexGradient");
+    }
+
+    /**
+     * Test forecastObstacle.pt.
+     */
+    @Test
+    public void testForecastObstacle() {
+        test("forecastObstacle");
+    }
+
+    /**
+     * Test G.pt.
+     */
+    @Test
+    public void testG() {
+        test("G");
     }
 
     /**
@@ -195,91 +222,11 @@ public class TestApis {
     }
 
     /**
-     * Test boundedSpreading.pt.
-     */
-    @Test
-    public void testBoundSpreading() {
-        test("boundSpreading");
-    }
-
-    /**
-     * Test constrainSpreading.pt.
-     */
-    @Test
-    public void testConstrainSpreading() {
-        test("constrainSpreading");
-    }
-
-    /**
      * Test gossipEver.pt.
      */
     @Test
     public void testGossipEver() {
         test("gossipEver");
-    }
-
-    /**
-     * Test opinionFeedback.pt.
-     */
-    @Test
-    public void testOpinionFeedback() {
-        test("opinionFeedback");
-    }
-
-    /**
-     * Test laplacianConsensus.pt.
-     */
-    @Test
-    public void testLaplacianConsensus() {
-        test("laplacianConsensus");
-    }
-
-    /**
-     * Test voronoiPartitioning.pt.
-     */
-    @Test
-    public void testVoronoiPartitioning() {
-        test("voronoiPartitioning");
-    }
-
-    /**
-     * Test channel.pt.
-     */
-    @Test
-    public void testChannel() {
-        test("channel");
-    }
-
-    /**
-     * Test channel2.pt.
-     */
-    @Test
-    public void testChannel2() {
-        test("channel2");
-    }
-
-    /**
-     * Test distanceToReplicated.pt.
-     */
-    @Test
-    public void testTimeReplication() {
-        test("distanceToReplicated");
-    }
-
-    /**
-     * Test distanceTo2.pt.
-     */
-    @Test
-    public void testDistanceToWithGradcast() {
-        test("distanceTo2");
-    }
-
-    /**
-     * Test findParent.pt.
-     */
-    @Test
-    public void testFindParent() {
-        test("findParentId");
     }
 
     /**
@@ -291,11 +238,19 @@ public class TestApis {
     }
 
     /**
-     * Test diameter.pt.
+     * Test laplacianConsensus.pt.
      */
     @Test
-    public void testDiameter() {
-        test("diameter");
+    public void testLaplacianConsensus() {
+        test("laplacianConsensus");
+    }
+
+    /**
+     * Test limitedMemory function.
+     */
+    @Test
+    public void testLimitedMemory() {
+        testMultirun("limitedMemory");
     }
 
     /**
@@ -306,43 +261,84 @@ public class TestApis {
         testProgram("logic");
     }
 
-    /*
-     * From this point the rest of the file is not tests, but utility methods
+    /**
+     * Test self.nbrRange().
      */
-
-    private static void test(final String file) {
-        test(file, InfrastructureTester.EXAMPLE_RUNS);
+    @Test
+    public void testNbrRange() {
+        test("nbrRange");
     }
 
-    private static void test(final String file, final int runs) {
-        try {
-            InfrastructureTester.test(file, runs);
-        } catch (InterruptedException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    /**
+     * Test the number of neighbors of each device.
+     */
+    @Test
+    public void testNeighborhood() {
+        test("neighborhood");
     }
 
-    private static void testMultirun(final String file) {
-        try {
-            InfrastructureTester.testMultirun(file);
-        } catch (InterruptedException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    /**
+     * Test opinionFeedback.pt.
+     */
+    @Test
+    public void testOpinionFeedback() {
+        test("opinionFeedback");
     }
 
-    private static void test(final String file, final Object value) {
-        try {
-            InfrastructureTester.test(file, value);
-        } catch (InterruptedException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    /**
+     * Test rendezvous.pt.
+     */
+    @Test
+    public void testRendezvous() {
+        test("rendezvous");
     }
 
-    private static void testProgram(final String file) {
-        ProgramTester.testFile(file);
+    /**
+     * Test S function.
+     */
+    @Test
+    public void testS() {
+        test("S", true);
+    }
+
+    /**
+     * Test summarize.pt.
+     */
+    @Test
+    public void testSummarize() {
+        test("summarize");
+    }
+
+    /**
+     * Test T function.
+     */
+    @Test
+    public void testT() {
+        test("T");
+    }
+
+    /**
+     * Test TFilter function.
+     */
+    @Test
+    public void testTFilter() {
+        test("tfilter");
+    }
+
+    /**
+     * Test distanceToReplicated.pt.
+     */
+    @Test
+    public void testTimeReplication() {
+        test("distanceToReplicated");
+    }
+
+    /**
+     * Test voronoiPartitioning.pt.
+     */
+    @Test
+    public void testVoronoiPartitioning() {
+        test("voronoiPartitioning");
     }
 
 }
