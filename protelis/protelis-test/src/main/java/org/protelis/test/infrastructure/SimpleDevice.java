@@ -7,7 +7,7 @@ import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.impl.AbstractExecutionContext;
-
+import static org.junit.Assert.assertNotNull;
 import it.unibo.alchemist.model.interfaces.Environment;
 import it.unibo.alchemist.model.interfaces.Reaction;
 
@@ -58,6 +58,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
 
     @Override
     public DeviceUID getDeviceUID() {
+        assertNotNull("Device id can't be null", node);
         return node;
     }
 
