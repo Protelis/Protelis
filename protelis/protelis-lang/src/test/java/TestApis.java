@@ -70,6 +70,94 @@ public class TestApis {
     }
 
     /**
+     * Test countDown.pt.
+     */
+    @Test
+    public void testCountDown() {
+        testProgram("countDown");
+    }
+
+    /**
+     * Test countTrue.pt.
+     */
+    @Test
+    public void testCountTrue() {
+        testProgram("countTrue");
+    }
+
+    /**
+     * Test cyclicFunction.pt.
+     */
+    @Test
+    public void testCyclicFunction() {
+        testProgram("cyclicFunction");
+    }
+
+    /**
+     * Test delta.pt.
+     */
+    @Test
+    public void testDelta() {
+        testProgram("delta");
+    }
+
+    /**
+     * Test isSignalStable.pt.
+     */
+    @Test
+    public void testIsSignalStable() {
+        testProgram("isSignalStable");
+    }
+
+    /**
+     * Test isRecentEvent.pt.
+     */
+    @Test
+    public void testIsRecentEvent() {
+        testProgram("isRecentEvent");
+    }
+
+    /**
+     * Test isRisingEdge.pt.
+     */
+    @Test
+    public void testIsRisingEdge() {
+        testProgram("isRisingEdge");
+    }
+
+    /**
+     * Test ebfFilter.pt.
+     */
+    @Test
+    public void testEbfFilter() {
+        testProgram("ebfFilter");
+    }
+
+    /**
+     * Test tick.pt.
+     */
+    @Test
+    public void testTick() {
+        testProgram("tick");
+    }
+
+    /**
+     * Test wait.pt.
+     */
+    @Test
+    public void testWait() {
+        testProgram("wait");
+    }
+
+    /**
+     * Test flip.pt.
+     */
+    @Test
+    public void testFlip() {
+        testProgram("flip");
+    }
+
+    /**
      * Test C.pt.
      */
     @Test
@@ -123,6 +211,14 @@ public class TestApis {
     @Test
     public void testCyclicTimer() {
         testMultirun("cyclicTimer");
+    }
+
+    /**
+     * Test cyclicTimer function.
+     */
+    @Test
+    public void testCyclicTimer2() {
+        testProgram("cyclicTimer2");
     }
 
     /**
@@ -259,6 +355,30 @@ public class TestApis {
     @Test
     public void testLogic() {
         testProgram("logic");
+    }
+
+    /**
+     * Test allTime.pt.
+     */
+    @Test
+    public void testAllTime() {
+        testProgram("allTime");
+    }
+
+    /**
+     * Test anyTime.pt.
+     */
+    @Test
+    public void testAnyTime() {
+        testProgram("anyTime");
+    }
+
+    /**
+     * Test applyWhile.pt.
+     */
+    @Test
+    public void testApplyWhile() {
+        testProgram("applyWhile");
     }
 
     /**

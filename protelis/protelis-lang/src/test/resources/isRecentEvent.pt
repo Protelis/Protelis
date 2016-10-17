@@ -1,0 +1,7 @@
+// EXPECTED_RESULT: true
+import protelis:lang:time
+if(tick() >= 3) {
+	allTime(isRecentEvent(cyclicTimer(2), 3)) &&
+		!allTime(isRecentEvent(cyclicTimer(3), 3))
+} else { false }
+	

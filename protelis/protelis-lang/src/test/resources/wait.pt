@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: true
+import protelis:lang:time
+wait(0) && if(tick() < 2) { !wait(2) } else { wait(2) }

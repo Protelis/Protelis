@@ -25,6 +25,7 @@ public class SimpleContext extends AbstractExecutionContext {
     private final Random rng = new Random(0);
     private static final DeviceUID DUMMYUID = new DeviceUID() {
         private static final long serialVersionUID = 2306021805006825289L;
+
         @Override
         public String toString() {
             return "DummyUID";
@@ -46,6 +47,13 @@ public class SimpleContext extends AbstractExecutionContext {
     @Override
     public Number getCurrentTime() {
         return System.currentTimeMillis() / 1000d;
+    }
+
+    /**
+     * @return delta time
+     */
+    public Number dt() {
+        return 1;
     }
 
     @Override
@@ -70,10 +78,9 @@ public class SimpleContext extends AbstractExecutionContext {
      */
     public static Field makeTestField() {
         final Field res = DatatypeFactory.createField(100);
-        IntStreams.range(0, 100).forEach(n -> res.addSample(
-                new DeviceUID() {
-                    private static final long serialVersionUID = 1L;
-                }, (double) n));
+        IntStreams.range(0, 100).forEach(n -> res.addSample(new DeviceUID() {
+            private static final long serialVersionUID = 1L;
+        }, (double) n));
         return res;
     }
 

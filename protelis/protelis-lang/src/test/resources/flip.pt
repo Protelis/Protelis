@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: $CYCLE % 2
+import protelis:lang:time
+flip(0, 1)

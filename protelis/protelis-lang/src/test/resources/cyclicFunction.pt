@@ -1,0 +1,5 @@
+/*
+ * EXPECTED_RESULT: $CYCLE % 10 == 0
+ */
+import protelis:lang:time
+cyclicFunction(9, () -> { true }, false)

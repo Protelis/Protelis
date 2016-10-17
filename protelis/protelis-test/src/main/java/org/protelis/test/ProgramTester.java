@@ -54,9 +54,9 @@ public final class ProgramTester {
      */
     public static void testFile(final String file) {
         if (file.endsWith(".pt")) {
-            testFile(file, 1);
+            testFile(file, MAX_CYCLE_NUM);
         } else {
-            testFile("/" + file + ".pt", 1);
+            testFile("/" + file + ".pt", MAX_CYCLE_NUM);
         }
     }
 
@@ -157,6 +157,7 @@ public final class ProgramTester {
         final ProtelisVM vm = new ProtelisVM(program, new SimpleContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
+            System.out.println(i + ": " + vm.getCurrentValue());
         }
         return vm.getCurrentValue();
     }
