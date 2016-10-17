@@ -275,6 +275,22 @@ public class TestApis {
     }
 
     /**
+     * Test findParent.pt.
+     */
+    @Test
+    public void testFindParent() {
+        test("findParentId");
+    }
+
+    /**
+     * Test isEdge.pt.
+     */
+    @Test
+    public void testIsEdge() {
+        test("isEdge");
+    }
+
+    /**
      * Test logic.pt.
      */
     @Test
