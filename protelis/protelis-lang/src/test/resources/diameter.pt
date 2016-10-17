@@ -1,0 +1,2 @@
+import protelis:lang:convergecast
+diameter(env.has("source"))

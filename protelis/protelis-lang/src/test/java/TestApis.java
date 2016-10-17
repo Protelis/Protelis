@@ -291,6 +291,14 @@ public class TestApis {
     }
 
     /**
+     * Test diameter.pt.
+     */
+    @Test
+    public void testDiameter() {
+        test("diameter");
+    }
+
+    /**
      * Test logic.pt.
      */
     @Test

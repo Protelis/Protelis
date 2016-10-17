@@ -310,6 +310,26 @@ public def valueChanged(v) {
 }
 
 /**
+ * SAMEAS valueChanged
+ * Track when the region has changed, so that stale state can be discarded.
+ * 
+ * Return type: (qny) -> any.
+ * @param region region discriminant
+ * @return true if the region has changed, false otherwise
+ */
+public def regionChanged(region) {
+	rep(old <- [region, 0]) {
+		[region, 
+			mux(region == old.get(0) && (old.get(1) == 0 || old.get(1) > 2)) {
+					0
+			} else {
+				old.get(1) + 1
+			}
+		]
+	}.get(1) > 0
+}
+
+/**
  * Return type: (num) -> bool.
  * @param count down length
  * @return whether the countdown is expired

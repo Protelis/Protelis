@@ -1,27 +1,6 @@
 module protelis:lang:sparsechoice
 import protelis:lang:spreading
 
-/**
- * S. 
- * 
- * Devices compete against one another to become local leaders,
- * resulting  in  a  random  Voronoi  partition  with  a  characteristic
- * grain size .
- */
- public def S(grain, metric) {
-//	breakUsingUids(self.getDeviceUID(), grain, metric)
-	breakUsingUids(randomUid(), grain, metric)
-}
-
-/**
- * Pair a random value to the device's id
- */
-def randomUid() {
-	rep(v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
-		[v.get(0), v.get(1)]	
-	}
-}
-
 def breakUsingUids(uid, grain, metric) {
 	// Return true if the current device is leader of the partition. Lead = current leader
 	rep(lead <- uid) {
@@ -51,5 +30,28 @@ def distanceCompetition(d, lead, uid, grain, metric) {
 			)
 		}
 	}	
+}
+
+/**
+ * Pair a random value to the device's id
+ */
+def randomUid() {
+	rep(v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
+		[v.get(0), v.get(1)]	
+	}
+}
+
+/**
+ * Devices compete against one another to become local leaders,
+ * resulting  in  a  random  Voronoi  partition  with  a  characteristic
+ * grain size.
+ * 
+ * Return type: (num, fun) -> bool.
+ * @param grain partition dimension
+ * @param distance how to gauge distance from the leader
+ * @return true if the current device is the leader, false otherwise
+ */
+public def S(grain, metric) {
+	breakUsingUids(randomUid(), grain, metric)
 }
 

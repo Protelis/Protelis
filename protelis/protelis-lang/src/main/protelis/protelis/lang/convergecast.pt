@@ -4,56 +4,31 @@ import protelis:lang:time
 import protelis:lang:core 
 
 /**
- * Find the parent of the current node following the maximum decrease in 
- * potential.
+ * Estimate and broadcast the average value within a spatial region.
  * 
- * Return type: (num, fun) -> any.
- * @param potential potential
- * @param accumulate what to do with the parent
- * @return -NaN root, -1 no parent, accumulate(parent) otherwise
+ * Return type: (bool, num) -> num.
+ * @param sink whether the device is the root of the spanning tree
+ * @param local local value
+ * @return average value
  */
-def findParent2(potential, accumulate) {
-	mux(minHood(nbr(potential)) < potential) {
-        // If the minimum-received potential is less then the potential of this node...
-		let closest = minHood(nbr([potential, accumulate.apply(self)]));
-		if(closest.size() > 1) {
-		    // ... return the node representing such potential (if exists)
-			closest.get(1)
-		} else {
-			-1
-		}
-	} else {
-		NaN
-	}
+public def average(sink, value) {
+	summarize(sink, sum, value, 0) + neighborhood()
 }
 
 /**
- * Find the parent of the current node following the maximum decrease in 
- * potential.
+ * Estimate the average value across a bounded spatial region.
  * 
- * Return type: (num, fun) -> any.
- * @param potential potential
- * @param accumulate what to do with the parent
- * @return -2 root, -1 no parent, accumulate(parent) otherwise
+ * Return type: (bool, num) -> num.
+ * @param sink whether the device is the root of the spanning tree
+ * @param local local value
+ * @param range region range
+ * @param null default value
+ * @return average value
  */
-public def findParent(potential, accumulate) {
-	mux(minHood(nbr(potential)) < potential) {
-		let closest = minHood(nbr([potential, accumulate.apply(self)]));
-		if(closest.size() > 1) { closest.get(1) } else { -1 }
-	} else { -2 }
-}
-
-/**
- * Find the parent ID of the current node following the maximum decrease in 
- * potential.
- * 
- * Return type: (num, fun) -> num.
- * @param potential potential
- * @param accumulate what to do with the parent
- * @return parent id
- */
-public def findParentId(potential) {
-	findParent(potential, (node) -> { node.getDeviceUID() })
+public def boundAverage(sink, local, range, null) {
+	boundSpreadingWithinRange(sink, () -> {
+		average(sink, local)
+	}, range, null)
 }
 
 /*
@@ -80,65 +55,10 @@ public def C(potential, accumulate, local, null) {
 				// expression that will be evaluated if the field is empty
 				null,
 				// argument to evaluate (must return a Field)
-				mux(nbr(findParent2(potential, identity)) == self) { nbr(v) } else { null }
+				mux(nbr(findParent(potential, identity)) == self) { nbr(v) } else { null }
 			)
 		)
 	}	
-}
-
-/**
- * Broadcast the value accumulated by the source. Example: 
- * 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
- * devices in a region.
- * 
- * Return type: (bool, fun, num, num) -> num.
- * @param sink whether the device should collect the aggregated information
- * @param accumulate how to aggregate
- * @param local local value
- * @param null default value
- * @return aggregated value according to accumulate 
- */
-public def summarize (sink, accumulate, local, null) {
-	broadcast(sink, C(distanceTo(sink), accumulate, local, null))
-}
-
-/**
- * Estimate and broadcast the average value within a spatial region.
- * 
- * Return type: (bool, num) -> num.
- * @param sink whether the device is the root of the spanning tree
- * @param local local value
- * @return average value
- */
-public def average(sink, value) {
-	summarize(sink, sum, value, 0) + neighborhood()
-}
-
-/**
- * Gossip implemented with C.
- */
-public def Cossip(sink, value, f) {
-	summarize(sink, f, value, value)	
-}
-
-public def opinionFeedback(acts, feedback) {
-	Tfilter(C(G(acts, 0, nbrRange, addRange), (a,b) -> { a + b }, feedback, 0))
-}
-
-/**
- * Estimate the average value across a bounded spatial region.
- * 
- * Return type: (bool, num) -> num.
- * @param sink whether the device is the root of the spanning tree
- * @param local local value
- * @param range region range
- * @param null default value
- * @return average value
- */
-public def boundAverage(sink, local, range, null) {
-	boundSpreadingWithinRange(sink, () -> {
-		average(sink, local)
-	}, range, null)
 }
 
 /**
@@ -185,11 +105,82 @@ public def consensus(init, f) {
 } 
 
 /**
+ * Gossip implemented with C.
+ */
+public def cossip(sink, value, f) {
+	summarize(sink, f, value, value)	
+}
+
+/**
+ * Estimate the diameter of the connected component joined by the current
+ * device.
+ * 
+ * Return type: (bool) -> num.
+ * @param source source of the connected component
+ * @return diameter of the connected component
+ */
+public def diameter(source) {
+	let d = distanceTo(source);
+	2 * rep(maxd <- 0) {
+		max(if(d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
+	}
+}
+
+/**
+ * Find the parent of the current node following the maximum decrease in 
+ * potential.
+ * 
+ * Return type: (num, fun) -> any.
+ * @param potential potential
+ * @param accumulate what to do with the parent
+ * @return -2 root, -1 no parent, accumulate(parent) otherwise
+ */
+public def findParent(potential, accumulate) {
+	mux(minHood(nbr(potential)) < potential) {
+		let closest = minHood(nbr([potential, accumulate.apply(self)]));
+		if(closest.size() > 1) { closest.get(1) } else { -1 }
+	} else { -2 }
+}
+
+/**
+ * Find the parent ID of the current node following the maximum decrease in 
+ * potential.
+ * 
+ * Return type: (num, fun) -> num.
+ * @param potential potential
+ * @param accumulate what to do with the parent
+ * @return parent id
+ */
+public def findParentId(potential) {
+	findParent(potential, (node) -> { node.getDeviceUID() })
+}
+ 
+/**
  * Laplacian consensus.
  * 
  * Return type: (num, num) -> num.
  */
- public def laplacianConsensus(init, epsilon) {
+public def laplacianConsensus(init, epsilon) {
  	consensus(init, (v) -> {epsilon * v})
- }
+}
+
+public def opinionFeedback(acts, feedback) {
+	Tfilter(C(G(acts, 0, nbrRange, addRange), (a,b) -> { a + b }, feedback, 0))
+}
+ 
+/**
+ * Broadcast the value accumulated by the source. Example: 
+ * 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
+ * devices in a region.
+ * 
+ * Return type: (bool, fun, num, num) -> num.
+ * @param sink whether the device should collect the aggregated information
+ * @param accumulate how to aggregate
+ * @param local local value
+ * @param null default value
+ * @return aggregated value according to accumulate 
+ */
+public def summarize (sink, accumulate, local, null) {
+	broadcast(sink, C(distanceTo(sink), accumulate, local, null))
+}
  

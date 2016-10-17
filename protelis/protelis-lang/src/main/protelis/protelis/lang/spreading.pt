@@ -3,106 +3,7 @@ import org.apache.commons.math3.util.FastMath.floor
 import protelis:lang:core
 import protelis:lang:time
 
-def GPI(source, initial, density, integrand, nbrFun) {
-	if (density < 0) {
-		// is this the boundary?
-		NaN
-	} else {
-		rep(distanceIntegral <- [Infinity, initial]) {
-			mux (source) {
-				[0, initial]
-			} else {
-				let range = nbrFun.apply();
-				minHood(
-					nbr(distanceIntegral) + [
-						range * mean(density, nbr(density)), // mean = (density + nbr(density)) / 2
-						range * mean(integrand, nbr(integrand))
-					]
-				)
-			}
-		}.get(1)
-	}
-}
-
-def GPIdistanceTo(source, obstacle) {
-	GPI(source, 0, if(obstacle) {-1} else {1}, 1, nbrRange)
-}
-
-def GPIbroadcast(source, value) {
-	GPI(source, value, 1, 0, nbrRange)
-}
-
-/*
- * Propagate values across a spanning tree starting from the closest source.
- * 
- * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
- * type must be consistent.
- * 
- * @param source whether the current node is a source
- * @param initial initial value of the computation
- * @param metric determine how to gauge the distance from to the current node
- * to its neighbors
- * @param accumulate how to manage the value
- * @return accumulated value
- */
-public def G(source, initial, metric, accumulate) {
-	rep(distanceValue <- [Infinity, initial]) {
-		mux(source) {
-			// If the node is a source then G return a 0 potential
-			// and the initial value
-			[0, initial]
-		} else {
-			// The other node potentials are requested
-			let ndv = nbr(distanceValue);
-			// G returns the value related to the minimum potential
-			minHood([
-				// potential estimation
-				ndv.get(0) + metric.apply(),
-				// values estimation
-				accumulate.apply(ndv.get(1))
-			])
-		}
-	}.get(1) // return the accumulated value
-}
-
-/*
- * Propagate values across a spanning tree starting from the closest source.
- * 
- * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
- * type must be consistent.
- * 
- * @param source whether the current node is a source
- * @param initial initial value of the computation
- * @param metric determine how to gauge the distance from to the current node
- * to its neighbors
- * @param accumulate how to manage the value
- * @return accumulated value
- */
-public def G2(source, initial, metric, density, integrand, accumulate) {
-	rep(distanceValue <- [Infinity, initial]) {
-		mux(source) {
-			// If the node is a source then G return a 0 potential
-			// and the initial value
-			[0, initial]
-		} else {
-			// The other node potentials are requested
-			let ndv = nbr(distanceValue);
-			// G returns the value related to the minimum potential
-			minHood([
-				// potential estimation
-				ndv.get(0) + metric.apply(),
-				// values estimation
-				accumulate.apply(ndv.get(1))
-//			(+ (nbr distance-integral)
-//	  			(* (nbr-range)
-//           			(tup (mean density (nbr density))
-//            			(mean integrand (nbr integrand)))))
-			])
-		}
-	}.get(1) // return the accumulated value
-}
-
-public def CRF(src, initial, metric, accumulate, latency, range) {
+public def crfGradient(src, initial, metric, accumulate, latency, range) {
 	// potential <- [distance, speed, accumulatedValue]
 	rep(potential <- [Infinity, 0, initial]) {
 		mux(src) {
@@ -121,95 +22,6 @@ public def CRF(src, initial, metric, accumulate, latency, range) {
 			}
 		}
 	}.get(2)
-}
-
-public def oneHopSlope(d, minD, metric) {
-	hood(
-		(r, x) -> {
-			let nrange = metric.apply();
-			if(nrange > 0) {
-				nrange = metric.apply();
-				let m = max(minD, nrange.fold(max));
-				let slope = (d - x) / m;
-				if(slope > r.get(0)) {
-					nrange = metric.apply();
-					m = max(minD, nrange.fold(max));
-					[slope, x, m]
-				} else { r } //????
-			} else { r }
-		}, 
-		[-Infinity, Infinity, 0], 
-		d
-	)
-}
-
-public def flexGradient(src, epsilon, rate, range, distortion, metric) {
-	rep(d <- Infinity) {
-		mux(src) { 
-			0
-		} else {
-			let minD = range * distortion;
-			let slopeInfo = oneHopSlope(d, minD, metric);
-			let maxSlope = slopeInfo.get(0);
-			let msd = slopeInfo.get(1);
-			let msr = slopeInfo.get(2);
-			let ct = minHood(nbr(d) + max(minD, metric.apply().fold(max)));
-			mux((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
-				ct
-			} else {
-				mux(maxSlope > (1 + epsilon)) {
-					msd + msr * (1 + epsilon)
-				} else {
-					mux(maxSlope < (1 - epsilon)) {
-						msd + msr * (1 - epsilon)
-					} else {
-						d
-					}
-				}
-			}
-		}
-	}
-}
-
-public def flexGradient2(source, initial, metric, accumulate, epsilon, range, distortion) {
-	rep(distanceValue <- [Infinity, initial]) {
-		mux(source) {
-			[0, initial]
-		} else {
-			// previous gradient
-			let gx = distanceValue.get(0);
-			env.put("gx", gx);
-			let ndv = nbr(distanceValue);
-			// c'_x(y,t)
-			let cx1 = minHood([
-				ndv.get(0) + max(distortion * range, metric.apply()),
-				accumulate.apply(ndv.get(1))
-			]);
-			env.put("c'x", cx1);
-			// s'_x
-			let sx1 = maxHood([
-				(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
-				ndv.get(0), // gy
-				max(distortion * range, metric.apply()),
-				ndv.get(1) // accumulated value
-			]);
-			env.put("s'x", sx1);
-			if(max(range, 2*cx1.get(0)) < gx) {
-				env.put("step", 1);
-				cx1
-			} else {
-				if(sx1.get(0) > 1 + epsilon) {
-					env.put("step", 2);
-					[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
-				} else {
-					if(sx1.get(0) < 1 - epsilon) {
-						env.put("step", 4);
-						[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
-					} else { env.put("step", 5); distanceValue }
-				}
-			}
-		}
-	}.get(1)
 }
 
 /*
@@ -346,6 +158,52 @@ public def boundBroadcast(region, null) {
 }
 
 /**
+ * Dynamically computes distributed routes between regions of a network, and 
+ * dynamically adapts to shape and changes of the network topology. Examples 
+ * of its use include long-range reliable communications, or advanced crowd 
+ * steering applications in pervasive computing. The “channel” is a Boolean 
+ * field that is true for devices near the shortest route from a given 
+ * (distributed) source to a (distributed) destination.
+ * 
+ * Return type: (bool, bool, bool, num) -> num.
+ * @param source whether the device is a source
+ * @param destination whether the device is a destination
+ * @param obstacle whether the device is an obstacle
+ * @param thr threshold for Double comparison
+ * @param width how much to dilate the channel
+ * @return true if the device is on the shortest path, false otherwise
+ */
+public def channel(source, destination, obstacle, thr, width) {
+  	if (obstacle) { 
+  		false
+  	} else { 
+  		let d = distanceBetween(source, destination);
+  		if (d == Infinity) { false }
+  		else {
+  			distanceTo(distanceTo(source) + distanceTo(destination) <=  d + thr) <= width
+  		}
+  	} 
+}
+
+/**
+ * Channel pattern.
+ * 
+ * Return type: (bool, bool, bool, num) -> num.
+ * @param source whether the device is a source
+ * @param destination whether the device is a destination
+ * @param obstacle whether the device is an obstacle
+ * @param width how much to dilate the channel
+ * @return true if the device is on the shortest path, false otherwise
+ */
+public def channel2(source, destination, obstacle, width) {
+  	if (obstacle) { 
+  		false
+  	} else { 
+  		distanceTo(shortestPath(source, destination)) <= width
+  	} 
+}
+
+/**
  * Dilate a spatial region.
  * 
  * Return type: (bool, num) -> bool.
@@ -420,6 +278,102 @@ public def distanceToWithObstacle(source, obstacle) {
 	else { distanceTo(source) }
 }
 
+/*
+ * Propagate values across a spanning tree starting from the closest source.
+ * 
+ * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
+ * type must be consistent.
+ * 
+ * @param source whether the current node is a source
+ * @param initial initial value of the computation
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @param accumulate how to manage the value
+ * @return accumulated value
+ */
+public def G(source, initial, metric, accumulate) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			// If the node is a source then G return a 0 potential
+			// and the initial value
+			[0, initial]
+		} else {
+			// The other node potentials are requested
+			let ndv = nbr(distanceValue);
+			// G returns the value related to the minimum potential
+			minHood([
+				// potential estimation
+				ndv.get(0) + metric.apply(),
+				// values estimation
+				accumulate.apply(ndv.get(1))
+			])
+		}
+	}.get(1) // return the accumulated value
+}
+
+/*
+ * Propagate values across a spanning tree starting from the closest source.
+ * 
+ * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
+ * type must be consistent.
+ * 
+ * @param source whether the current node is a source
+ * @param initial initial value of the computation
+ * @param metric determine how to gauge the distance from to the current node
+ * to its neighbors
+ * @param accumulate how to manage the value
+ * @return accumulated value
+ */
+public def G2(source, initial, metric, density, integrand, accumulate) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			// If the node is a source then G return a 0 potential
+			// and the initial value
+			[0, initial]
+		} else {
+			// The other node potentials are requested
+			let ndv = nbr(distanceValue);
+			// G returns the value related to the minimum potential
+			minHood([
+				// potential estimation
+				ndv.get(0) + metric.apply(),
+				// values estimation
+				accumulate.apply(ndv.get(1))
+//			(+ (nbr distance-integral)
+//	  			(* (nbr-range)
+//           			(tup (mean density (nbr density))
+//            			(mean integrand (nbr integrand)))))
+			])
+		}
+	}.get(1) // return the accumulated value
+}
+
+/**
+ * Gossip.
+ * 
+ * f must be idempotent.
+ */
+public def gossip(value, f) {
+	rep (v <- value) {
+		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
+	}
+}
+
+public def Gossip(value, f) {
+	G(false, value, nbrRange, (v) -> { f.apply(v, value) })
+}
+
+/**
+ * Gossip ever.
+ * 
+ * Gossip whether any location has ever experienced a given condition.
+ */
+public def gossipEver(a) {
+	rep (ever <- false) {
+		a || anyHood (nbr (ever))		
+	}
+}
+
 /**
  * Forecast obstacles along a path to the source.
  * 
@@ -486,6 +440,17 @@ public def gradcast(f, init, accumulate) {
 }
 
 /**
+ * Verify if a device is on the edge of a spatial region.
+ * 
+ * Return type: (any) -> bool.
+ * @param condition` how to discriminate a region
+ * @return true if the device is on the edge, false otherwise
+ */
+ public def isEdge(condition) {
+ 	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
+ }
+ 
+/**
  * Count the number of neighbors.
  * 
  * () -> num.
@@ -513,100 +478,7 @@ public def nbrRange() {
  */
 public def nbrRangeHop() { 1 }
 
-/**
- * Gossip.
- * 
- * f must be idempotent.
- */
-public def gossip(value, f) {
-	rep (v <- value) {
-		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
-	}
-}
-
-public def Gossip(value, f) {
-	G(false, value, nbrRange, (v) -> { f.apply(v, value) })
-}
-
-/**
- * Gossip ever.
- * 
- * Gossip whether any location has ever experienced a given condition.
- */
-public def gossipEver(a) {
-	rep (ever <- false) {
-		a || anyHood (nbr (ever))		
-	}
-}
-
-/**
- * Entry point for a computation.
- * 
- * @param source whether the device is a source
- * @param range spreading constraint
- * @param function entry point
- * @param null default value
- * @return apply f if the device is inside the spreading region, null 
- * otherwise
- */
-public def vm(source, range, f, null) {
-	boundSpreadingWithinRange(source, range, f, null)
-}
-
-/**
- * Verify if a device is on the edge of a spatial region.
- * 
- * Return type: (any) -> bool.
- * @param condition` how to discriminate a region
- * @return true if the device is on the edge, false otherwise
- */
- public def isEdge(condition) {
- 	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
- }
- 
-/**  
- * Computing a Voronoi partition is an operation that is frequently useful in 
- * distributed systems. Given an initial set of seed devices, a Voronoi 
- * partition assigns each device to the partition of the nearest seed, 
- * effectively breaking the network up into zones of influence around key 
- * elements.
- * 
- * Return type: (bool, num) -> num.
- * 
- * @param seed whether the device is a seed
- * @param id partition id
- * @return partition of the nearest seed
- */
- public def voronoiPatitioning(seed, id) {
- 	G(seed, id, nbrRange, identity)
- }
-  
- /**
-  * Dynamically computes distributed routes between regions of a network, and 
-  * dynamically adapts to shape and changes of the network topology. Examples 
-  * of its use include long-range reliable communications, or advanced crowd 
-  * steering applications in pervasive computing. The “channel” is a Boolean 
-  * field that is true for devices near the shortest route from a given 
-  * (distributed) source to a (distributed) destination.
-  * 
-  * Return type: (bool, bool, bool, num) -> num.
-  * 
-  */
-public def channel(source, destination, obstacle, thr, width) {
-  	if (obstacle) { 
-  		false
-  	} else { 
-  		let d = distanceBetween(source, destination);
-  		if (d == Infinity) { false }
-  		else {
-  			distanceTo(distanceTo(source) + distanceTo(destination) <=  d + thr) <= width
-  		}
-  	} 
-}
-
-
-
-// == shortest path
+// SAMEAS == shortest path
 public def descend(source, potential) {
 	rep(path <- source) {
 		let nextStep = minHood(nbr([potential, self.getDeviceUID()]));
@@ -620,7 +492,6 @@ public def descend(source, potential) {
 public def rendezvous(a, b) {
 	descend(a, distanceTo(b))
 }
-
 
 /**
  * Dynamically computes the shortest route between regions of a network, and 
@@ -652,19 +523,41 @@ public def shortestPath(source, destination) {
 }
 
 /**
- * Channel pattern.
+ * Entry point for a computation.
  * 
- * Return type: (bool, bool, bool, num) -> num.
- * 
- * Channel pattern which relies on 'shortestPath' function.
+ * @param source whether the device is a source
+ * @param range spreading constraint
+ * @param function entry point
+ * @param null default value
+ * @return apply f if the device is inside the spreading region, null 
+ * otherwise
  */
-public def channel2(source, destination, obstacle, width) {
-  	if (obstacle) { 
-  		false
-  	} else { 
-  		distanceTo(shortestPath(source, destination)) <= width
-  	} 
+public def vm(source, range, f, null) {
+	boundSpreadingWithinRange(source, range, f, null)
 }
+ 
+/**  
+ * Computing a Voronoi partition is an operation that is frequently useful in 
+ * distributed systems. Given an initial set of seed devices, a Voronoi 
+ * partition assigns each device to the partition of the nearest seed, 
+ * effectively breaking the network up into zones of influence around key 
+ * elements.
+ * 
+ * Return type: (bool, num) -> num.
+ * 
+ * @param seed whether the device is a seed
+ * @param id partition id
+ * @return partition of the nearest seed
+ */
+ public def voronoiPatitioning(seed, id) {
+ 	G(seed, id, nbrRange, identity)
+ }
+  
+
+
+
+
+
 
 def dominantValue(value) {
 	rep (tup <- [0, self.getDeviceUID(), value]) {
@@ -691,4 +584,92 @@ public def pldConsensus(intial, alpha, beta) {
 	}
 }
 
+public def oneHopSlope(d, minD, metric) {
+	hood(
+		(r, x) -> {
+			let nrange = metric.apply();
+			if(nrange > 0) {
+				nrange = metric.apply();
+				let m = max(minD, nrange.fold(max));
+				let slope = (d - x) / m;
+				if(slope > r.get(0)) {
+					nrange = metric.apply();
+					m = max(minD, nrange.fold(max));
+					[slope, x, m]
+				} else { r } //????
+			} else { r }
+		}, 
+		[-Infinity, Infinity, 0], 
+		d
+	)
+}
+
+public def flexGradient(src, epsilon, rate, range, distortion, metric) {
+	rep(d <- Infinity) {
+		mux(src) { 
+			0
+		} else {
+			let minD = range * distortion;
+			let slopeInfo = oneHopSlope(d, minD, metric);
+			let maxSlope = slopeInfo.get(0);
+			let msd = slopeInfo.get(1);
+			let msr = slopeInfo.get(2);
+			let ct = minHood(nbr(d) + max(minD, metric.apply().fold(max)));
+			mux((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
+				ct
+			} else {
+				mux(maxSlope > (1 + epsilon)) {
+					msd + msr * (1 + epsilon)
+				} else {
+					mux(maxSlope < (1 - epsilon)) {
+						msd + msr * (1 - epsilon)
+					} else {
+						d
+					}
+				}
+			}
+		}
+	}
+}
+
+public def flexGradient2(source, initial, metric, accumulate, epsilon, range, distortion) {
+	rep(distanceValue <- [Infinity, initial]) {
+		mux(source) {
+			[0, initial]
+		} else {
+			// previous gradient
+			let gx = distanceValue.get(0);
+			env.put("gx", gx);
+			let ndv = nbr(distanceValue);
+			// c'_x(y,t)
+			let cx1 = minHood([
+				ndv.get(0) + max(distortion * range, metric.apply()),
+				accumulate.apply(ndv.get(1))
+			]);
+			env.put("c'x", cx1);
+			// s'_x
+			let sx1 = maxHood([
+				(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
+				ndv.get(0), // gy
+				max(distortion * range, metric.apply()),
+				ndv.get(1) // accumulated value
+			]);
+			env.put("s'x", sx1);
+			if(max(range, 2*cx1.get(0)) < gx) {
+				env.put("step", 1);
+				cx1
+			} else {
+				if(sx1.get(0) > 1 + epsilon) {
+					env.put("step", 2);
+					[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
+				} else {
+					if(sx1.get(0) < 1 - epsilon) {
+						env.put("step", 4);
+						[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
+					} else { env.put("step", 5); distanceValue }
+				}
+			}
+		}
+	}.get(1)
+}
 

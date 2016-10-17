@@ -1,4 +1,4 @@
 import protelis:lang:spreading
 import protelis:lang:core
 
-CRF(env.has("source"), self.getDeviceUID().toString(), nbrRange, identity, () -> { 0 }, 1)
+crfGradient(env.has("source"), self.getDeviceUID().toString(), nbrRange, identity, () -> { 0 }, 1)

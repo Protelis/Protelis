@@ -1,0 +1,31 @@
+module protelis:gpi
+import protelis:lang:core
+import protelis:lang:spreading
+def GPI(source, initial, density, integrand, nbrFun) {
+	if (density < 0) {
+		// is this the boundary?
+		NaN
+	} else {
+		rep(distanceIntegral <- [Infinity, initial]) {
+			mux (source) {
+				[0, initial]
+			} else {
+				let range = nbrFun.apply();
+				minHood(
+					nbr(distanceIntegral) + [
+						range * mean(density, nbr(density)), // mean = (density + nbr(density)) / 2
+						range * mean(integrand, nbr(integrand))
+					]
+				)
+			}
+		}.get(1)
+	}
+}
+
+def GPIdistanceTo(source, obstacle) {
+	GPI(source, 0, if(obstacle) {-1} else {1}, 1, nbrRange)
+}
+
+def GPIbroadcast(source, value) {
+	GPI(source, value, 1, 0, nbrRange)
+}
