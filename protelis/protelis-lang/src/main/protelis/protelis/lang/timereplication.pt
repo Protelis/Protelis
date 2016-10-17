@@ -25,7 +25,7 @@ def clock(tuple) {
 }
 
 def emptyProcess() {
-	rep (p <- newProcess(Infinity, () -> {"EMPTY"}, "EMPTY")) {
+	rep(p <- newProcess(Infinity, () -> {"EMPTY"}, "EMPTY")) {
 		p
 	}
 }

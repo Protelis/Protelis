@@ -354,7 +354,7 @@ public def G2(source, initial, metric, density, integrand, accumulate) {
  * f must be idempotent.
  */
 public def gossip(value, f) {
-	rep (v <- value) {
+	rep(v <- value) {
 		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
 	}
 }
@@ -369,8 +369,8 @@ public def Gossip(value, f) {
  * Gossip whether any location has ever experienced a given condition.
  */
 public def gossipEver(a) {
-	rep (ever <- false) {
-		a || anyHood (nbr (ever))		
+	rep(ever <- false) {
+		a || anyHood(nbr(ever))		
 	}
 }
 
@@ -401,7 +401,7 @@ public def forecastObstacle(source, obstacle) {
  * @return field of minimum distances from nodes to the closest source
  */
 public def gradient(source, init, metric, latency, range) {
-	rep (distance <- [Infinity, 0]) {
+	rep(distance <- [Infinity, 0]) {
 		mux(source) { 
 			[init, 0]
 		} else {
@@ -503,7 +503,7 @@ public def rendezvous(a, b) {
  * 
  */
 public def shortestPath(source, destination) {
-	rep (path <- false) {
+	rep(path <- false) {
 		mux (source) {
 			true
 		} else {
@@ -560,7 +560,7 @@ public def vm(source, range, f, null) {
 
 
 def dominantValue(value) {
-	rep (tup <- [0, self.getDeviceUID(), value]) {
+	rep(tup <- [0, self.getDeviceUID(), value]) {
 		let local = floor(1 / self.nextRandomDouble()); // no matter what the network diameter is
 		let hoodmax = maxHood PlusSelf(nbr([tup.get(0) - 1, tup.get(1), tup.get(2)]));
 		let leader = hoodmax.get(1) == tup.get(1);
@@ -574,7 +574,7 @@ def dominantValue(value) {
 }
 
 public def pldConsensus(intial, alpha, beta) {
-	rep (value <- intial) {
+	rep(value <- intial) {
 		// regional dominant
 		alpha * dominantValue(value)
 		// blend incrementally with local

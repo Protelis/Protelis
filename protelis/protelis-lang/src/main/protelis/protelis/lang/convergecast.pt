@@ -98,7 +98,7 @@ public def Cmultisum(potential, local) {
  * @return shared value
  */
 public def consensus(init, f) {
- 	rep (val <- init) {
+ 	rep(val <- init) {
  		// val + f.apply(sumHood PlusSelf(nbr(val) - val))
  		val + f.apply(sumHood(nbr(val) - val))
  	}	
