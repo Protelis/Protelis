@@ -277,6 +277,15 @@ public def tick() {
 
 /**
  * Return type: (num) -> true.
+ * @param time time
+ * @return true after x
+ */
+public def trueOnceAfter(time) {
+	countDown(time) <= 0
+}
+
+/**
+ * Return type: (num) -> true.
  * @param x time
  * @return true once every x
  */
@@ -285,12 +294,13 @@ public def trueOnceEvery(x) {
 }
 
 /**
- * Return type: (num) -> true.
- * @param x time
- * @return true after x
+ * Return type: (bool, num) -> num.
+ * @param timeout
+ * @param event event
+ * @return true if the event occurred within last time period
  */
-public def trueOnce(x) {
-	countDown(x) <= 0
+public def trueDuringLast(time, event) {
+	if(event) { true } else { tick() <= time }
 }
 
 /**
@@ -301,16 +311,6 @@ public def trueOnce(x) {
  */
 public def trueFor(time, event) {
 	if(event) { tick() >= time } else { false }
-}
-
-/**
- * Return type: (bool, num) -> num.
- * @param timeout
- * @param event event
- * @return true if the event occurred within last time period
- */
-public def trueDuring(time, event) {
-	if(event) { true } else { tick() <= time }
 }
 
 /**

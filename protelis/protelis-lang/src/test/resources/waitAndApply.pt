@@ -1,0 +1,5 @@
+// EXPECTED_RESULT: true
+import protelis:lang:time
+waitAndApply(0, () -> {true}, false) && 
+	if(tick() < 2) { !waitAndApply(2, () -> {true}, false) } 
+	else { waitAndApply(2, () -> {true}, false) }

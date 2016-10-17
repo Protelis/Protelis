@@ -54,6 +54,30 @@ public class TestApis {
     }
 
     /**
+     * Test allTime.pt.
+     */
+    @Test
+    public void testAllTime() {
+        testProgram("allTime");
+    }
+
+    /**
+     * Test anyTime.pt.
+     */
+    @Test
+    public void testAnyTime() {
+        testProgram("anyTime");
+    }
+
+    /**
+     * Test applyWhile.pt.
+     */
+    @Test
+    public void testApplyWhile() {
+        testProgram("applyWhile");
+    }
+
+    /**
      * Test boundedSpreading.pt.
      */
     @Test
@@ -67,94 +91,6 @@ public class TestApis {
     @Test
     public void testBroadcast() {
         test("broadcast");
-    }
-
-    /**
-     * Test countDown.pt.
-     */
-    @Test
-    public void testCountDown() {
-        testProgram("countDown");
-    }
-
-    /**
-     * Test countTrue.pt.
-     */
-    @Test
-    public void testCountTrue() {
-        testProgram("countTrue");
-    }
-
-    /**
-     * Test cyclicFunction.pt.
-     */
-    @Test
-    public void testCyclicFunction() {
-        testProgram("cyclicFunction");
-    }
-
-    /**
-     * Test delta.pt.
-     */
-    @Test
-    public void testDelta() {
-        testProgram("delta");
-    }
-
-    /**
-     * Test isSignalStable.pt.
-     */
-    @Test
-    public void testIsSignalStable() {
-        testProgram("isSignalStable");
-    }
-
-    /**
-     * Test isRecentEvent.pt.
-     */
-    @Test
-    public void testIsRecentEvent() {
-        testProgram("isRecentEvent");
-    }
-
-    /**
-     * Test isRisingEdge.pt.
-     */
-    @Test
-    public void testIsRisingEdge() {
-        testProgram("isRisingEdge");
-    }
-
-    /**
-     * Test ebfFilter.pt.
-     */
-    @Test
-    public void testEbfFilter() {
-        testProgram("ebfFilter");
-    }
-
-    /**
-     * Test tick.pt.
-     */
-    @Test
-    public void testTick() {
-        testProgram("tick");
-    }
-
-    /**
-     * Test wait.pt.
-     */
-    @Test
-    public void testWait() {
-        testProgram("wait");
-    }
-
-    /**
-     * Test flip.pt.
-     */
-    @Test
-    public void testFlip() {
-        testProgram("flip");
     }
 
     /**
@@ -198,11 +134,35 @@ public class TestApis {
     }
 
     /**
+     * Test countDown.pt.
+     */
+    @Test
+    public void testCountDown() {
+        testProgram("countDown");
+    }
+
+    /**
+     * Test countTrue.pt.
+     */
+    @Test
+    public void testCountTrue() {
+        testProgram("countTrue");
+    }
+
+    /**
      * Test CRFgradient.pt.
      */
     @Test
     public void testCRFGradient() {
         test("CRFgradient");
+    }
+
+    /**
+     * Test cyclicFunction.pt.
+     */
+    @Test
+    public void testCyclicFunction() {
+        testProgram("cyclicFunction");
     }
 
     /**
@@ -219,6 +179,14 @@ public class TestApis {
     @Test
     public void testCyclicTimer2() {
         testProgram("cyclicTimer2");
+    }
+
+    /**
+     * Test delta.pt.
+     */
+    @Test
+    public void testDelta() {
+        testProgram("delta");
     }
 
     /**
@@ -262,6 +230,14 @@ public class TestApis {
     }
 
     /**
+     * Test ebfFilter.pt.
+     */
+    @Test
+    public void testEbfFilter() {
+        testProgram("ebfFilter");
+    }
+
+    /**
      * Test findParent.pt.
      */
     @Test
@@ -275,6 +251,14 @@ public class TestApis {
     @Test
     public void testFlexGradient() {
         test("flexGradient");
+    }
+
+    /**
+     * Test flip.pt.
+     */
+    @Test
+    public void testFlip() {
+        testProgram("flip");
     }
 
     /**
@@ -334,6 +318,30 @@ public class TestApis {
     }
 
     /**
+     * Test isRecentEvent.pt.
+     */
+    @Test
+    public void testIsRecentEvent() {
+        testProgram("isRecentEvent");
+    }
+
+    /**
+     * Test isRisingEdge.pt.
+     */
+    @Test
+    public void testIsRisingEdge() {
+        testProgram("isRisingEdge");
+    }
+
+    /**
+     * Test isSignalStable.pt.
+     */
+    @Test
+    public void testIsSignalStable() {
+        testProgram("isSignalStable");
+    }
+
+    /**
      * Test laplacianConsensus.pt.
      */
     @Test
@@ -355,30 +363,6 @@ public class TestApis {
     @Test
     public void testLogic() {
         testProgram("logic");
-    }
-
-    /**
-     * Test allTime.pt.
-     */
-    @Test
-    public void testAllTime() {
-        testProgram("allTime");
-    }
-
-    /**
-     * Test anyTime.pt.
-     */
-    @Test
-    public void testAnyTime() {
-        testProgram("anyTime");
-    }
-
-    /**
-     * Test applyWhile.pt.
-     */
-    @Test
-    public void testApplyWhile() {
-        testProgram("applyWhile");
     }
 
     /**
@@ -446,6 +430,14 @@ public class TestApis {
     }
 
     /**
+     * Test tick.pt.
+     */
+    @Test
+    public void testTick() {
+        testProgram("tick");
+    }
+
+    /**
      * Test distanceToReplicated.pt.
      */
     @Test
@@ -454,11 +446,67 @@ public class TestApis {
     }
 
     /**
+     * Test trueDuringLast.pt.
+     */
+    @Test
+    public void testTrueDuringLast() {
+        testProgram("trueDuringLast");
+    }
+
+    /**
+     * Test trueFor.pt.
+     */
+    @Test
+    public void testTrueFor() {
+        testProgram("trueFor");
+    }
+
+    /**
+     * Test trueOnceAfter.pt.
+     */
+    @Test
+    public void testTrueOnceAfter() {
+        testProgram("trueOnceAfter");
+    }
+
+    /**
+     * Test trueOnceEvery.pt.
+     */
+    @Test
+    public void testTrueOnceEvery() {
+        testProgram("trueOnceEvery");
+    }
+
+    /**
+     * Test valueChanged.pt.
+     */
+    @Test
+    public void testValueChanged() {
+        testProgram("valueChanged");
+    }
+
+    /**
      * Test voronoiPartitioning.pt.
      */
     @Test
     public void testVoronoiPartitioning() {
         test("voronoiPartitioning");
+    }
+
+    /**
+     * Test wait.pt.
+     */
+    @Test
+    public void testWait() {
+        testProgram("wait");
+    }
+
+    /**
+     * Test waitAndApply.pt.
+     */
+    @Test
+    public void testWaitAndApply() {
+        testProgram("waitAndApply");
     }
 
 }

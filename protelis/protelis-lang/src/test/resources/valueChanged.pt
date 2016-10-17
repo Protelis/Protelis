@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: $CYCLE % 2 == 0
+import protelis:lang:time
+valueChanged(cyclicTimer(1))

@@ -1,0 +1,5 @@
+// EXPECTED_RESULT: true
+import protelis:lang:time
+trueDuringLast(3, cyclicTimer(1)) && 
+	anyTime(trueDuringLast(3, cyclicTimer(3))) && 
+	!allTime(trueDuringLast(3, cyclicTimer(4)))
