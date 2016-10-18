@@ -1,4 +1,4 @@
-import protelis:lang:convergecast
-import protelis:lang:spreading
-import protelis:lang:core
+import protelis:coord:convergecast
+import protelis:coord:spreading
+import protelis:lang:utils
 findParentId(distanceTo(env.has("source"))).toString()

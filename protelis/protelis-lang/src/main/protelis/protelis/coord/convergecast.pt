@@ -1,7 +1,7 @@
-module protelis:lang:convergecast
-import protelis:lang:spreading
-import protelis:lang:time
-import protelis:lang:core 
+module protelis:coord:convergecast
+import protelis:coord:spreading
+import protelis:state:time
+import protelis:lang:utils 
 
 /**
  * Estimate and broadcast the average value within a spatial region.
@@ -105,7 +105,7 @@ public def consensus(init, f) {
 } 
 
 /**
- * Gossip a value manipulated with f.
+ * Gossip a value manipulated according to f.
  * 
  * Return type: (bool, any, fun) -> any.
  * @param sink whether the device is the root of the spanning tree
@@ -144,9 +144,11 @@ public def diameter(source) {
 public def findParent(potential, accumulate) {
 	mux(minHood(nbr(potential)) < potential) {
 		let closest = minHood(nbr([potential, accumulate.apply(self)]));
-		if(closest.size() > 1) { closest.get(1) } else { -1 }
-	} else { -2 }
+		if(closest.size() > 1) { closest.get(1) } else { noParent() }
+	} else { imRoot() }
 }
+def noParent() { -1 }
+def imRoot() { -2 }
 
 /**
  * Find the parent ID of the current node following the maximum decrease in 

@@ -1,5 +1,5 @@
 // EXPECTED_RESULT: true
-import protelis:lang:core
+import protelis:lang:utils
 //composeF(
 //	composeV(
 		and(

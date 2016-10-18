@@ -1,2 +1,2 @@
-import protelis:lang:spreading
+import protelis:coord:spreading
 broadcast(env.has("source"), "foo")

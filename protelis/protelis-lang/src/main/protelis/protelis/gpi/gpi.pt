@@ -1,6 +1,6 @@
 module protelis:gpi
-import protelis:lang:core
-import protelis:lang:spreading
+import protelis:lang:utils
+import protelis:coord:spreading
 def GPI(source, initial, density, integrand, nbrFun) {
 	if (density < 0) {
 		// is this the boundary?

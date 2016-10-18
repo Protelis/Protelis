@@ -1,2 +1,2 @@
-import protelis:lang:time
+import protelis:state:time
 cyclicTimer(env.get("n"))

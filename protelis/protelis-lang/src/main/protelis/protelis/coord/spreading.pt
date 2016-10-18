@@ -1,8 +1,11 @@
-module protelis:lang:spreading
+module protelis:coord:spreading
 import org.apache.commons.math3.util.FastMath.floor
-import protelis:lang:core
-import protelis:lang:time
+import protelis:lang:utils
+import protelis:state:time
 
+/**
+ * Euclidean metric
+ */
 public def crfGradient(src, initial, metric, accumulate, latency, range) {
 	// potential <- [distance, speed, accumulatedValue]
 	rep(potential <- [Infinity, 0, initial]) {
@@ -73,7 +76,7 @@ public def addRangeWithMetric(v, metric) {
 /*
  * Add v to the field of distances from the current node to its neighbors.
  * 
- * Return type: (num, f, num, f) -> num.
+ * Return type: (num, fun, num, f) -> num.
  * @param v distance to add
  * @param metric determine how to gauge the distance from to the current node
  * to its neighbors
@@ -301,6 +304,7 @@ public def G(source, initial, metric, accumulate) {
 			// The other node potentials are requested
 			let ndv = nbr(distanceValue);
 			// G returns the value related to the minimum potential
+			// TODO do we need a default?
 			minHood([
 				// potential estimation
 				ndv.get(0) + metric.apply(),
@@ -349,9 +353,12 @@ public def G2(source, initial, metric, density, integrand, accumulate) {
 }
 
 /**
- * Gossip.
+ * Gossip a value manipulated according to f.
  * 
- * f must be idempotent.
+ * Return type: (any, fun) -> any.
+ * @param value what to gossip
+ * @param f how to manipulate value
+ * @return the value resulting from gossip
  */
 public def gossip(value, f) {
 	rep(v <- value) {
@@ -359,6 +366,14 @@ public def gossip(value, f) {
 	}
 }
 
+/**
+ * Gossip a value manipulated according to f.
+ * 
+ * Return type: (any, fun) -> any.
+ * @param value what to gossip
+ * @param f how to manipulate value
+ * @return the value resulting from gossip
+ */
 public def Gossip(value, f) {
 	G(false, value, nbrRange, (v) -> { f.apply(v, value) })
 }
@@ -386,6 +401,7 @@ public def gossipEver(a) {
 public def forecastObstacle(source, obstacle) {
 	let obs = if(obstacle) { 1 } else { 0 };
 	G(source, obs, nbrRange, (v) -> { obs + v }) > 0
+//	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
 }
 
 /**
@@ -419,23 +435,8 @@ public def gradient(source, init, metric, latency, range) {
 }
 
 public def gradcast(f, init, accumulate) {
-//	rep(value <- init) {
-//		let ndv = [
-//			nbr(f.apply()), // distance from all the neighs
-//			nbr(accumulate.apply(value)) // value from all the neight
-//		]; 
-//		minHood(ndv)	
-//	}.get(1)
-//	rep(value <- init) {
-//		let d = f.apply();
-//		hood(
-//			min,
-//			[Infinity, value],
-//			[d, accumulate.apply(value)]
-//		)
-//	}.get(1)
-	rep(value <- init) {
-		minHood(nbr([f, accumulate.apply(value)]));
+	rep(value <- [Infinity, init]) {
+		minHood([nbr(f.apply()), accumulate.apply(value.get(1))]);
 	}.get(1)
 }
 
@@ -476,7 +477,9 @@ public def nbrRange() {
  * Return type: () -> num.
  * @return field of 1s for each neighbor
  */
-public def nbrRangeHop() { 1 }
+public def nbrRangeHop() { 
+	nbr(1) //TODO no value auto-field
+}
 
 // SAMEAS == shortest path
 public def descend(source, potential) {
@@ -584,24 +587,42 @@ public def pldConsensus(intial, alpha, beta) {
 	}
 }
 
-public def oneHopSlope(d, minD, metric) {
+public def slope(d, minD, metric) {
+	//TODO cosa fa la fooldHood
 	hood(
-		(r, x) -> {
+		
+		(x, r) -> {
 			let nrange = metric.apply();
 			if(nrange > 0) {
 				nrange = metric.apply();
-				let m = max(minD, nrange.fold(max));
+				let m = max(minD, maxHood(nrange));
 				let slope = (d - x) / m;
 				if(slope > r.get(0)) {
 					nrange = metric.apply();
-					m = max(minD, nrange.fold(max));
+					m = max(minD, maxHood(nrange));
 					[slope, x, m]
 				} else { r } //????
 			} else { r }
 		}, 
 		[-Infinity, Infinity, 0], 
-		d
+		//[d, minD, 0] //ArrayTupleImpl cannot be cast to org.protelis.lang.datatype.Field
+		//d // java.lang.Double cannot be cast to org.protelis.lang.datatype.Field
+		 nbr(d)
 	)
+//	nbr(d).fold(		
+//		(r, x) -> {
+//			let nrange = metric.apply();
+//			if(nrange > 0) {
+//				nrange = metric.apply();
+//				let m = max(minD, maxHood(nrange));
+//				let slope = (d - x) / m;
+//				if(slope > r.get(0)) {
+//					nrange = metric.apply();
+//					m = max(minD, maxHood(nrange));
+//					[slope, x, m]
+//				} else { r } //????
+//			} else { r }
+//		})
 }
 
 public def flexGradient(src, epsilon, rate, range, distortion, metric) {
@@ -610,11 +631,11 @@ public def flexGradient(src, epsilon, rate, range, distortion, metric) {
 			0
 		} else {
 			let minD = range * distortion;
-			let slopeInfo = oneHopSlope(d, minD, metric);
+			let slopeInfo = slope(d, minD, metric);
 			let maxSlope = slopeInfo.get(0);
 			let msd = slopeInfo.get(1);
 			let msr = slopeInfo.get(2);
-			let ct = minHood(nbr(d) + max(minD, metric.apply().fold(max)));
+			let ct = minHood(nbr(d) + max(minD, maxHood(metric.apply())));
 			mux((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
 				ct
 			} else {

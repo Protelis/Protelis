@@ -1,4 +1,4 @@
-module protelis:lang:core
+module protelis:lang:utils
 
 /**
  * Return type: (bool, bool) -> bool.

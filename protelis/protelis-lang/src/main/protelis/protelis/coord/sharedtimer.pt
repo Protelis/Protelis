@@ -1,5 +1,5 @@
-module protelis:lang:sharedTimer
-import protelis:lang:time
+module protelis:coord:sharedTimer
+import protelis:state:time
 
 /*
  * Returns an int, representing the current clock

@@ -1,5 +1,5 @@
 // EXPECTED_RESULT: true
-import protelis:lang:time
+import protelis:state:time
 allTime(applyWhile(true, () -> { true }, false)) && 
 	anyTime(applyWhile(cyclicTimer(2), () -> { true }, false)) &&
 	!allTime(applyWhile(false, () -> { true }, false))

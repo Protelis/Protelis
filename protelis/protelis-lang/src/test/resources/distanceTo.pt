@@ -1,2 +1,2 @@
-import protelis:lang:spreading
+import protelis:coord:spreading
 distanceTo(env.has("source"))

@@ -1,7 +1,7 @@
-module protelis:lang:time
+module protelis:state:time
 import java.lang.Math.min
 import java.lang.Math.max
-import protelis:lang:core
+import protelis:lang:utils
 
 /**
  * Return type: (bool) -> bool.

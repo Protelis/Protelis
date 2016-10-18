@@ -1,5 +1,5 @@
 // EXPECTED_RESULT: true
-import protelis:lang:time
+import protelis:state:time
 let t = tick();
 countDown(2) == 
 	if(t > 2) {0} else {if(t == 1) {1} else {2}}

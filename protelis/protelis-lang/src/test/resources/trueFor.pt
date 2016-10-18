@@ -1,4 +1,4 @@
 // EXPECTED_RESULT: true
-import protelis:lang:time
+import protelis:state:time
 trueFor(3, true) && 
 	anyTime(trueFor(3, !cyclicTimer(4)))

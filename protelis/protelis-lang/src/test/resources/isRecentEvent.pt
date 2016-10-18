@@ -1,5 +1,5 @@
 // EXPECTED_RESULT: true
-import protelis:lang:time
+import protelis:state:time
 if(tick() >= 3) {
 	allTime(isRecentEvent(cyclicTimer(2), 3)) &&
 		!allTime(isRecentEvent(cyclicTimer(3), 3))

@@ -1,10 +1,10 @@
-module protelis:lang:timereplication
+module protelis:coord:timereplication
 import org.apache.commons.math3.util.FastMath.max
 import org.apache.commons.math3.util.FastMath.pow
 import org.apache.commons.math3.util.FastMath.floor
 import org.apache.commons.math3.util.FastMath.min
 import org.protelis.swarm.Process.*
-import protelis:lang:sharedTimer
+import protelis:coord:sharedTimer
 
 /*
  * This function should return false if the clock is out of date (namely: no node in the network is still on that clock).

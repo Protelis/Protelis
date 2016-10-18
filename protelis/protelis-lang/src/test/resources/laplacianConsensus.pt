@@ -1,2 +1,2 @@
-import protelis:lang:convergecast
+import protelis:coord:convergecast
 laplacianConsensus(env.get("foo"), env.get("epsilon"))

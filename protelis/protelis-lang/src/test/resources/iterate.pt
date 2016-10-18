@@ -1,3 +1,3 @@
 // EXPECTED_RESULT: Infinity
-import protelis:lang:core
+import protelis:lang:utils
 iterate([0, 1, 2], (v) -> { true }, (v) -> { v + 1 }, Infinity)

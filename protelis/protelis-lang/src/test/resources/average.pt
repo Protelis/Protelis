@@ -1,2 +1,2 @@
-import protelis:lang:convergecast
+import protelis:coord:convergecast
 average(env.has("source"), 1)

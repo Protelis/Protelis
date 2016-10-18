@@ -1,5 +1,5 @@
 /*
  * EXPECTED_RESULT: $CYCLE % 10 == 0
  */
-import protelis:lang:time
+import protelis:state:time
 cyclicFunction(9, () -> { true }, false)

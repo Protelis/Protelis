@@ -1,5 +1,5 @@
-module protelis:lang:sparsechoice
-import protelis:lang:spreading
+module protelis:coord:sparsechoice
+import protelis:coord:spreading
 
 def breakUsingUids(uid, grain, metric) {
 	// Return true if the current device is leader of the partition. Lead = current leader

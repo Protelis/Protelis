@@ -1,2 +1,2 @@
-import protelis:lang:convergecast
+import protelis:coord:convergecast
 summarize(env.has("source"), (a, b) -> { a + b }, env.get("n"), 0)

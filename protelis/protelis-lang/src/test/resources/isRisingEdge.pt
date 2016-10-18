@@ -1,5 +1,5 @@
 /*
  * EXPECTED_RESULT: $CYCLE % 2 == 0
  */
-import protelis:lang:time
+import protelis:state:time
 isRisingEdge(cyclicTimer(1))

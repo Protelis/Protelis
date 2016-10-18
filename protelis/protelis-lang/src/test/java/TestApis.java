@@ -54,6 +54,14 @@ public class TestApis {
     }
 
     /**
+     * Test gradcast.pt.
+     */
+    @Test
+    public void testGradcast() {
+        test("distanceTo2");
+    }
+
+    /**
      * Test allTime.pt.
      */
     @Test
@@ -227,14 +235,6 @@ public class TestApis {
     @Test
     public void testDistanceTo() {
         test("distanceTo");
-    }
-
-    /**
-     * Test distanceTo2.pt.
-     */
-    @Test
-    public void testDistanceToWithGradcast() {
-        test("distanceTo2");
     }
 
     /**

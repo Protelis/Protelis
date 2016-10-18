@@ -1,2 +1,2 @@
-import protelis:lang:core
+import protelis:lang:utils
 canSee(env.has("source"))

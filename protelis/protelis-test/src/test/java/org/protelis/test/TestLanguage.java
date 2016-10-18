@@ -25,7 +25,6 @@ import java8.util.stream.IntStreams;
  */
 public class TestLanguage {
 
-
     /**
      * Test the alignedMap construct.
      */
@@ -40,6 +39,14 @@ public class TestLanguage {
     @Test
     public void testClosure01() {
         ProgramTester.testFile("/closure01.pt");
+    }
+
+    /**
+     * Test closures.
+     */
+    @Test
+    public void testClosure02() {
+        ProgramTester.testFile("/closure02.pt");
     }
 
     /**
@@ -191,10 +198,10 @@ public class TestLanguage {
     /**
      * Test hood with a generated field.
      */
-//    @Test
-//    public void testGenericHood07() {
-//        ProgramTester.testFile("/genericHood07.pt");
-//    }
+    // @Test
+    // public void testGenericHood07() {
+    // ProgramTester.testFile("/genericHood07.pt");
+    // }
 
     /**
      * Test simple use of apply.
@@ -490,7 +497,8 @@ public class TestLanguage {
      */
     @Test
     public void testRep01() {
-        ProgramTester.testFileWithMultipleRuns("/rep01.pt", IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
+        ProgramTester.testFileWithMultipleRuns("/rep01.pt",
+                        IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
     }
 
     /**
