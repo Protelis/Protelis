@@ -12,7 +12,7 @@ import protelis:lang:core
  * @return average value
  */
 public def average(sink, value) {
-	summarize(sink, sum, value, 0) + neighborhood()
+	summarize(sink, sum, value, 0) / neighborhood()
 }
 
 /**
@@ -105,7 +105,13 @@ public def consensus(init, f) {
 } 
 
 /**
- * Gossip implemented with C.
+ * Gossip a value manipulated with f.
+ * 
+ * Return type: (bool, any, fun) -> any.
+ * @param sink whether the device is the root of the spanning tree
+ * @param value what to gossip
+ * @param f how to manipulate value
+ * @return the value resulting from gossip
  */
 public def cossip(sink, value, f) {
 	summarize(sink, f, value, value)	
@@ -159,13 +165,24 @@ public def findParentId(potential) {
  * Laplacian consensus.
  * 
  * Return type: (num, num) -> num.
+ * @param init initial value
+ * @param epsilon epsilon
+ * @return value agreed upon consensus
  */
 public def laplacianConsensus(init, epsilon) {
  	consensus(init, (v) -> {epsilon * v})
 }
 
-public def opinionFeedback(acts, feedback) {
-	Tfilter(C(G(acts, 0, nbrRange, addRange), (a,b) -> { a + b }, feedback, 0))
+/**
+ * Aggregate the feedbacks in a region.
+ * 
+ * Return type: (bool, num) -> num.
+ * @param sink whether the device is the root of the spanning tree
+ * @param feedback value to be aggregated
+ * @return sum of feedbacks
+ */
+public def opinionFeedback(sink, feedback) {
+	Tfilter(C(distanceTo(sink), (a,b) -> { a + b }, feedback, 0))
 }
  
 /**

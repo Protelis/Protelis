@@ -1,9 +1,2 @@
-/**
- * EXPECTED_RESULT: 
- * 		[16.0 16.0 16.0 16.0] 
- * 		[16.0 16.0 16.0 16.0] 
- * 		[16.0 16.0 16.0 16.0] 
- * 		[16.0 16.0 16.0 16.0]
- */
 import protelis:lang:convergecast
 summarize(env.has("source"), (a, b) -> { a + b }, env.get("n"), 0)

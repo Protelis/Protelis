@@ -1,0 +1,30 @@
+# result:
+#  {0 T, 1 T, 2 T, 3 F, 4 F}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1]
+
+program: &program
+  - time-distribution: 1
+    program: canSee
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 0, 1, 1, 0, 0]
+    contents:
+      - in:
+          type: Circle
+          parameters: [0, 0, 1.5]
+        molecule: source
+        concentration: true
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [10, 10]
+    programs:
+      - *program

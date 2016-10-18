@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: 11
+import protelis:lang:core
+denormalize(1, 0, 2, 10, 12)

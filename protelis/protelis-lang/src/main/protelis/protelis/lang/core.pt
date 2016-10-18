@@ -21,23 +21,23 @@ public def canSee(x) {
 	anyHood(nbr(x))
 }
 
-/**
- * Return type: (fun) -> fun.
- * @param f function 
- * @return g(f(args))
- */
-public def compose(f) {
-	() -> { f.apply() }
-}
-
-/**
- * Return type: (any) -> fun.
- * @param a value to be composed as a function
- * @return a function which returns a
- */
-public def composeValue(a) {
-	() -> { a }
-}
+///**
+// * Return type: (fun) -> fun.
+// * @param f function 
+// * @return g(f(args))
+// */
+//public def composeF(f) {
+//	() -> { f.apply() }
+//}
+//
+///**
+// * Return type: (any) -> fun.
+// * @param a value to be composed as a function
+// * @return a function which returns a
+// */
+//public def composeV(a) {
+//	() -> { a }
+//}
 
 /**
  * @param x value to be denormalized
@@ -80,7 +80,7 @@ public def identity(a) {
  * @param f function to be applied
  * @param default default value. Its type must be consistend with f's
  * return type 
- * @return value of the last iteration
+ * @return default
  */
 public def iterate(tuple, filter, f, default) {
 	if(tuple.size() > 0) {

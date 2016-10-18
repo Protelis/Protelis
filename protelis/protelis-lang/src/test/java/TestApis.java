@@ -78,6 +78,14 @@ public class TestApis {
     }
 
     /**
+     * Test average.pt.
+     */
+    @Test
+    public void testAverage() {
+        test("average");
+    }
+
+    /**
      * Test boundedSpreading.pt.
      */
     @Test
@@ -99,6 +107,14 @@ public class TestApis {
     @Test
     public void testC() {
         test("C");
+    }
+
+    /**
+     * Test canSee.pt.
+     */
+    @Test
+    public void testCanSee() {
+        test("canSee");
     }
 
     /**
@@ -342,6 +358,14 @@ public class TestApis {
     }
 
     /**
+     * Test iterate.pt.
+     */
+    @Test
+    public void testIterate() {
+        testProgram("iterate");
+    }
+
+    /**
      * Test laplacianConsensus.pt.
      */
     @Test
@@ -387,6 +411,22 @@ public class TestApis {
     @Test
     public void testOpinionFeedback() {
         test("opinionFeedback");
+    }
+
+    /**
+     * Test range.pt.
+     */
+    @Test
+    public void testRange() {
+        testProgram("range");
+    }
+
+    /**
+     * Test reduce.pt.
+     */
+    @Test
+    public void testReduce() {
+        testProgram("reduce");
     }
 
     /**
