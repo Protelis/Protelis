@@ -46,6 +46,38 @@ public class TestApis {
     }
 
     /**
+     * Test alignedMapIff.pt.
+     */
+    @Test
+    public void testAlignedMapIff() {
+        testProgram("alignedMapIff");
+    }
+
+    /**
+     * Test alignedMapMr.pt.
+     */
+    @Test
+    public void testAlignedMapMr() {
+        test("alignedMapMr");
+    }
+
+    /**
+     * Test alignedMapMr2.pt.
+     */
+    @Test
+    public void testAlignedMapMr2() {
+        test("alignedMapMr2");
+    }
+
+    /**
+     * Test alignedMapSummarize.pt.
+     */
+    @Test
+    public void testAlignedMapSummarize() {
+        test("alignedMapSummarize");
+    }
+
+    /**
      * Test addRange.pt.
      */
     @Test

@@ -62,7 +62,7 @@ public def C(potential, accumulate, local, null) {
 }
 
 /**
- * The source device converge to the sum of other device values.
+ * The source device converges to the sum of other device values.
  * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
  * can  cause  loss  or  duplication  of  values  with
  * major transient impact on its result. When the accumulation
@@ -147,7 +147,15 @@ public def findParent(potential, accumulate) {
 		if(closest.size() > 1) { closest.get(1) } else { noParent() }
 	} else { imRoot() }
 }
+
+/**
+ * @return error while finding parent
+ */
 def noParent() { -1 }
+
+/**
+ * @return "I've no parent" value
+ */
 def imRoot() { -2 }
 
 /**
@@ -199,7 +207,7 @@ public def opinionFeedback(sink, feedback) {
  * @param null default value
  * @return aggregated value according to accumulate 
  */
-public def summarize (sink, accumulate, local, null) {
+public def summarize(sink, accumulate, local, null) {
 	broadcast(sink, C(distanceTo(sink), accumulate, local, null))
 }
  

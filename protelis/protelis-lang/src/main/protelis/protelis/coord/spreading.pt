@@ -607,22 +607,9 @@ public def slope(d, minD, metric) {
 		[-Infinity, Infinity, 0], 
 		//[d, minD, 0] //ArrayTupleImpl cannot be cast to org.protelis.lang.datatype.Field
 		//d // java.lang.Double cannot be cast to org.protelis.lang.datatype.Field
-		 nbr(d)
+		nbr(d)
 	)
-//	nbr(d).fold(		
-//		(r, x) -> {
-//			let nrange = metric.apply();
-//			if(nrange > 0) {
-//				nrange = metric.apply();
-//				let m = max(minD, maxHood(nrange));
-//				let slope = (d - x) / m;
-//				if(slope > r.get(0)) {
-//					nrange = metric.apply();
-//					m = max(minD, maxHood(nrange));
-//					[slope, x, m]
-//				} else { r } //????
-//			} else { r }
-//		})
+	
 }
 
 public def flexGradient(src, epsilon, rate, range, distortion, metric) {
