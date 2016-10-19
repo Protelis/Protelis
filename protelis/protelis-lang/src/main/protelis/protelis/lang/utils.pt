@@ -62,6 +62,44 @@ public def diff(a, b) {
 }
 
 /**
+ * *-hood wrapper.
+ * 
+ * Return type: (any, fun, any, fun) -> any.
+ * @param local local value
+ * @param aggregator how to reduce information
+ * @param default default value in case the field returned by fieldBuilder is empty
+ * @param fiedBuilder return which field should be reduced
+ * @return reduced value
+ */
+public def hoodW(local, aggregator, default, fieldBuilder) {
+	 rep(v <- local) {
+ 		aggregator.apply(local, 
+ 			hood(
+ 				(a, b) -> { aggregator.apply(a, b) },
+ 				default,
+ 				fieldBuilder.apply(v)
+ 			)
+ 		)
+ 	}
+}
+
+/**
+ * Stateful *-hood wrapper.
+ * 
+ * Return type: (any, fun, any, fun) -> any.
+ * @param local local value
+ * @param aggregator how to reduce information
+ * @param default default value in case the field returned by fieldBuilder is empty
+ * @param fiedBuilder return which field should be reduced
+ * @return reduced value
+ */
+public def hoodWstateful(local, aggregator, default, fieldBuilder) {
+	rep(v <- local) {
+		hoodW(local, aggregator, default, fieldBuilder)
+	}
+}
+
+/**
  * Return type: (any) -> any.
  * @param a value to be returned
  * @return the same value
