@@ -3,7 +3,6 @@ import org.apache.commons.math3.util.FastMath.max
 import org.apache.commons.math3.util.FastMath.pow
 import org.apache.commons.math3.util.FastMath.floor
 import org.apache.commons.math3.util.FastMath.min
-import org.protelis.swarm.Process.*
 import protelis:coord:sharedTimer
 
 /*
@@ -15,7 +14,7 @@ def isCurrent(currentClock, clock, k) {
 
 def isNewClock(processes, clock) {
 	processes
-		.map(self, process -> {process.pid()})
+		.map(self, process -> {process.get(0)})
 		.filter(self, pid -> {clock == pid})
 		.isEmpty()
 }
@@ -25,14 +24,14 @@ def clock(tuple) {
 }
 
 def emptyProcess() {
-	rep(p <- newProcess(Infinity, () -> {"EMPTY"}, "EMPTY")) {
+	rep(p <- [Infinity, () -> {"EMPTY"}, "EMPTY"]) {
 		p
 	}
 }
 
 def alignedExecution(processes) {
 	alignedMap(
-		nbr(processes.map(self, p -> { [p.pid(), p] } )),
+		nbr(processes.map(self, p -> { [p.get(0), p] } )),
 		(pid, pField) -> { true },
 		(pid, pField) -> {
 			let p = hoodPlusSelf(
@@ -40,26 +39,26 @@ def alignedExecution(processes) {
 				emptyProcess(),
 				pField
 			);
-			p.update(p.function().apply())
+			[p.get(0), p.get(1), p.get(1).apply()]
 		},
 		emptyProcess()
 	).map(self, tProc -> { tProc.get(1) } );
 }
 
 public def timeReplicated(process, default, p, k) {
-	let clock = sharedTimer(p, self.getDeltaTime());
+	let clock = sharedTimer(p, self.dt());
 	rep(processes <- []) {
 		/*
 		 * Add process if the clock is new
 		 */
 		if(isNewClock(processes, clock)) {
-			processes = processes.append(newProcess(clock, process, default))
+			processes = processes.append([clock, process, default])
 		} else {0};
 		/*
 		 * Align on clock, execute process
 		 */
-		alignedExecution(processes.filter(self, p -> {clock - p.pid() < k}))
+		alignedExecution(processes.filter(self, p -> {clock - p.get(0) < k}))
 	}
-	.min(emptyProcess())
-	.result();
+//	.min(emptyProcess())
+	.get(0).get(2);
 }

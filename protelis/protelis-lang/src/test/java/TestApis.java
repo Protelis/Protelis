@@ -542,11 +542,11 @@ public class TestApis {
     }
 
     /**
-     * Test distanceToReplicated.pt.
+     * Test timeReplicated.pt.
      */
     @Test
     public void testTimeReplication() {
-        test("distanceToReplicated");
+        test("timeReplicated");
     }
 
     /**

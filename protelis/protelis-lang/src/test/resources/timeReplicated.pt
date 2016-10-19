@@ -2,9 +2,9 @@ import protelis:coord:spreading
 import protelis:coord:timereplication
 
 timeReplicated(
-	() -> { distanceTo(env.has("source")) },
+	() -> { distanceToWithMetric(env.has("source"), nbrRangeHop) },
 	Infinity,
-	30,
+	3,
 	3
 )
 
