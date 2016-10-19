@@ -1,3 +1,3 @@
 import protelis:coord:convergecast
 import protelis:coord:spreading
-Cmultisum(distanceTo(env.get("source")), env.get("n"))
+cMultiSum(self.getDeviceUID(), env.get("n"))

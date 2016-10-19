@@ -51,7 +51,7 @@ public def C(potential, accumulate, local, null) {
 			 */
 			hood(
 			    // HoodOp
-				(a, b) -> {accumulate.apply(a, b)},
+				(a, b) -> { accumulate.apply(a, b) },
 				// expression that will be evaluated if the field is empty
 				null,
 				// argument to evaluate (must return a Field)
@@ -62,7 +62,7 @@ public def C(potential, accumulate, local, null) {
 }
 
 /**
- * The source device converges to the sum of other device values.
+ * The potential-source converges to the sum of other device values.
  * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
  * can  cause  loss  or  duplication  of  values  with
  * major transient impact on its result. When the accumulation
@@ -76,17 +76,42 @@ public def C(potential, accumulate, local, null) {
  * @param local value
  * @return aggregated value
  */
-public def Cmultisum(potential, local) {
- 	rep(v <- local) {
- 		local + 
- 			sumHood(
- 				mux(potential >= nbr(potential)) { 
-	 				0
-	 			} else {
-	 				nbr(v / sumHood(mux(nbr(potential) < potential) {nbr(local)} else {0}))
-	 			}
- 			)
- 	}
+public def cMultiSum(potential, local) {
+	 hoodWstateful(local, sum, 0, (v) -> {  				
+	 	mux(potential >= nbr(potential)) { 
+ 				0
+		} else {
+			nbr(v / sumHood(
+				mux(nbr(potential) < potential) { nbr(local) } else { 0 }
+			))
+		} 
+	})
+}
+
+/**
+ * The potential-source converges to the min of other device values.
+ * 
+ * Return type: (num, num) -> num.
+ * @param potential minimize values descending this potential
+ * @param local value
+ * @return minimum value
+ */
+public def cMultiMin(potential, local) {
+	 hoodWstateful(local, min, Infinity, (v) -> { 
+	 	mux(potential < nbr(potential)) { nbr(v) } else { Infinity }
+	 })
+}
+
+/**
+ * The potential-source converges to the max of other device values.
+ * 
+ * Return type: (num, num) -> num.
+ * @param potential minimize values descending this potential
+ * @param local value
+ * @return maximum value
+ */
+public def cMultiMax(potential, local) {
+	 -cMultiMin(potential, -local)
 }
 
 /**

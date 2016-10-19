@@ -85,13 +85,13 @@ public class TestApis {
         test("alignedMapMr4");
     }
 
-//    /**
-//     * Test alignedMapSummarize.pt.
-//     */
-//    @Test
-//    public void testAlignedMapSummarize() {
-//        test("alignedMapSummarize");
-//    }
+    // /**
+    // * Test alignedMapSummarize.pt.
+    // */
+    // @Test
+    // public void testAlignedMapSummarize() {
+    // test("alignedMapSummarize");
+    // }
 
     /**
      * Test addRange.pt.
@@ -190,11 +190,27 @@ public class TestApis {
     }
 
     /**
-     * Test CMultisum.pt.
+     * Test cMultiSum.pt.
      */
     @Test
-    public void testCMultisum() {
-        test("Cmultisum");
+    public void testCMultiSum() {
+        test("cMultiSum");
+    }
+
+    /**
+     * Test cMultiMax.pt.
+     */
+    @Test
+    public void testCMultiMax() {
+        test("cMultiMax");
+    }
+
+    /**
+     * Test cMultiMin.pt.
+     */
+    @Test
+    public void testCMultiMin() {
+        test("cMultiMin");
     }
 
     /**

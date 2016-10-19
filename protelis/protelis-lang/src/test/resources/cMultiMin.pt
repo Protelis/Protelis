@@ -1,0 +1,3 @@
+import protelis:coord:convergecast
+import protelis:coord:spreading
+cMultiMin(self.getDeviceUID(), env.get("n"))
