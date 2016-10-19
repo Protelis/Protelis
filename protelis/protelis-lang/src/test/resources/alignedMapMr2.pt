@@ -1,17 +1,8 @@
 import protelis:coord:spreading
-import protelis:lang:utils
 
-public def computeOnRegion(discriminant, function, default) {
-	let res = alignedMap(
-		nbr([[discriminant, default]]),
-		(key, field) -> { key == discriminant }, // cond
-		(key, field) -> { function.apply() }, 
-		default
-	);
-	if(res == []) { default } else { res.get(0).get(1) }
-}
-
-computeOnRegion(env.get("partition"), 
-	() -> { distanceTo(env.get("source")) },
+let d = env.get("partition");
+computeMultiRegion(d, 
+	(key) -> { key ==  d },
+	() -> { distanceToWithMetric(env.get("source"), nbrRangeHop) },
 	NaN
 )

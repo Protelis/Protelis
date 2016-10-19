@@ -207,6 +207,28 @@ public def channel2(source, destination, obstacle, width) {
 }
 
 /**
+ * Splice devices into regions according to the discriminant and apply f.
+ * 
+ * Return type: (any, fun, any) -> any.
+ * @param discriminant split regions according to this value
+ * @param filter how to handle the discriminant value
+ * @param function what to apply in each region
+ * @param default default value
+ * @return apply f
+ */
+public def computeMultiRegion(discriminant, filter, function, default) {
+	if(filter.apply(discriminant)) {
+		let res = alignedMap(
+			nbr([[discriminant, default]]),
+			(key, field) -> { filter.apply(key) },
+			(key, field) -> { function.apply() }, 
+			default
+		);
+		if(res == []) { default } else { res.get(0).get(1) }
+	} else { default }
+}
+
+/**
  * Dilate a spatial region.
  * 
  * Return type: (bool, num) -> bool.
@@ -478,7 +500,7 @@ public def nbrRange() {
  * @return field of 1s for each neighbor
  */
 public def nbrRangeHop() { 
-	nbr(1) //TODO no value auto-field
+	1 //TODO no value auto-field
 }
 
 // SAMEAS == shortest path

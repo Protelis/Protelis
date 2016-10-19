@@ -19,8 +19,6 @@ displacements:
       type: Grid
       parameters: [0, 0, 3, 3, 1, 1, 0, 0]
     contents:
-      - molecule: n
-        concentration: 3
       - in:
           type: Rectangle
           parameters: [1.6, -0.5, 2, 4]
@@ -31,16 +29,6 @@ displacements:
           parameters: [-0.5, -0.5, 2, 4]
         molecule: partition
         concentration: A
-      - in:
-          type: Circle
-          parameters: [3, 3, 0.5]
-        molecule: n
-        concentration: 2
-      - in:
-          type: Circle
-          parameters: [0, 0, 0.5]
-        molecule: n
-        concentration: 1
       - in:
           type: Circle
           parameters: [3, 3, 0.5]

@@ -70,12 +70,28 @@ public class TestApis {
     }
 
     /**
-     * Test alignedMapSummarize.pt.
+     * Test alignedMapMr3.pt.
      */
     @Test
-    public void testAlignedMapSummarize() {
-        test("alignedMapSummarize");
+    public void testAlignedMapMr3() {
+        test("alignedMapMr3");
     }
+
+    /**
+     * Test alignedMapMr4.pt.
+     */
+    @Test
+    public void testAlignedMapMr4() {
+        test("alignedMapMr4");
+    }
+
+//    /**
+//     * Test alignedMapSummarize.pt.
+//     */
+//    @Test
+//    public void testAlignedMapSummarize() {
+//        test("alignedMapSummarize");
+//    }
 
     /**
      * Test addRange.pt.
