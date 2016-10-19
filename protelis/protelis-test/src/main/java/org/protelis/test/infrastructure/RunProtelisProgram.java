@@ -84,7 +84,7 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
         node.setConcentration(this, vm.getCurrentValue());
         System.out.println(" [node" + node.toString() + "] " + round + ": " + vm.getCurrentValue());
         round++;
-        environment.getNeighborhood(node).getNeighbors().stream().forEach(n -> {
+        environment.getNeighborhood(node).getNeighbors().forEach(n -> {
             ProtelisNode pNode = (ProtelisNode) n;
             CachingNetworkManager cnm = ((CachingNetworkManager) pNode.getNetworkManager());
             cnm.receiveFromNeighbor(node, netmgr.getSendCache());
