@@ -1,0 +1,2 @@
+import protelis:coord:spreading
+minHood(addRangeWithLag(env.get("n"), nbrRange, 1))

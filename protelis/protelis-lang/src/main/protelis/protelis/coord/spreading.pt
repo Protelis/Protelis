@@ -4,61 +4,62 @@ import protelis:lang:utils
 import protelis:state:time
 
 /*
- * Add v to the field of distances from the current node to its neighbors.
+ * Add v to the field of distances from the current device to its neighbors.
  * 
  * Return type: (num) -> num.
  * @param v distance to add
- * @return field of distances from the current to its neighbors
+ * @return field of distances from the current device to its neighbors
  */
 public def addRange(v) {
 	addRangeWithMetric(v, nbrRange)
 }
 
 /*
- * Add of 1 the field of distances of the current node's neighbors.
+ * Add of 1 the field of distances of the current device's neighbors.
  * 
  * Return type: () -> num.
- * @return field of distances from the current to its neighbors
+ * @return field of distances from the current device to its neighbors
  */
 public def addRangeHop() {
 	addRangeWithMetric(1, nbrRangeHop)
 }
 
 /*
- * Add v to the field of distances from the current node to its neighbors.
+ * Add v to the field of distances from the current device to its neighbors.
+ * 
+ * Return type: (num, fun, f) -> num.
+ * @param v distance to add
+ * @param metric determine how to gauge the distance from to the current device
+ * to its neighbors
+ * @param speed communication speed
+ * @return field of distances from the current device to its neighbors
+ */
+public def addRangeWithLag(v, metric, speed) {
+	addRangeWithMetric(v, () -> { nbrRangeLag(metric, nbrLag, speed) })
+}
+
+/*
+ * Add v to the field of distances from the current device to its neighbors.
  * 
  * Return type: (num, f) -> num.
  * @param v distance to add
- * @param metric determine how to gauge the distance from to the current node
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
- * @return field of distances from the current to its neighbors
+ * @return field of distances from the current device to its neighbors
  */
 public def addRangeWithMetric(v, metric) {
 	v + metric.apply()
 }
 
-/*
- * Add v to the field of distances from the current node to its neighbors.
- * 
- * Return type: (num, fun, num, f) -> num.
- * @param v distance to add
- * @param metric determine how to gauge the distance from to the current node
- * to its neighbors
- * @param speed communication speed
- * @param latency communication latencies between neighbors 
- * @return field of distances from the current to its neighbors
- */
-public def addRangeWithLag(v, metric, speed) {
-	addRangeWithMetric(v, metric) + speed * (self.nbrLag() + self.dt())
-}
-
 /**
  * Constrain the spreading of broadcast function only within a region. 
  * 
- * Return type: (bool, any) -> any. broadcast return type and null should be
+ * Return type: (bool, any, bool, any) -> any. broadcast return type and null should be
  * type consistent.
  * @param region whether the function is spreaded or not
  * @param null default value return whether f is not spreaded
+ * @param source whether the current device is a source
+ * @param value what to broadcast
  * @return broadcast inside the region, return null otherwise
  */
 public def boundBroadcast(region, null, source, value) {
@@ -71,9 +72,9 @@ public def boundBroadcast(region, null, source, value) {
  * Return type: (bool, bool, any, fun, fun) -> any. initial and accumulate parameter
  * type must be consistent.
  * @param region whether the function is spreaded or not
- * @param source whether the current node is a source
+ * @param source whether the current device is a source
  * @param initial initial value of the computation
- * @param metric determine how to gauge the distance from to the current node
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @param accumulate how to manage the value
  * @param null default value return whether f is not spreaded
@@ -118,9 +119,8 @@ public def boundSpreading(region, f, null) {
 /**
  * Constrain the spreading of f only within devices close to the source. 
  * 
- * Return type: (bool, fun, fun, any) -> any. f return type and null should be
+ * Return type: (fun, fun, any) -> any. f return type and null should be
  * type consistent.
- * @param region whether the function is spreaded or not
  * @param range how to determine the range
  * @param f function to be spreaded
  * @param null default value return whether f is not spreaded
@@ -134,7 +134,7 @@ public def boundSpreadingWithRange(range, f, null) {
  * Broadcast value across a spanning tree starting from the source.
  * 
  * Return type: (bool, any) -> any
- * @param source whether the current node is a source
+ * @param source whether the current device is a source
  * @param value what to broadcast
  * @return broadcasted value
  */
@@ -146,9 +146,9 @@ public def broadcast(source, value) {
  * Broadcast value across a spanning tree starting from the source.
  * 
  * Return type: (bool, any) -> any
- * @param source whether the current node is a source
+ * @param source whether the current device is a source
  * @param value what to broadcast
- * @param metric determine how to gauge the distance from to the current node
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @return broadcasted value
  */
@@ -254,7 +254,7 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  * @param metric how to estimate distances without lag
  * @param range communication max range
  * @param initial local value 
- * @param how to accumulate the local value across the devices
+ * @param accumulate how to accumulate the local value 
  * @return accumulated value
  */
 public def crfGradient(source, metric, range, initial, accumulate) {
@@ -286,15 +286,28 @@ public def crfGradient(source, metric, range, initial, accumulate) {
  * @return dilated region
  */
  public def dilate(region, width) {
- 	distanceTo(region) < width	
+ 	dilateWithMetric(region, nbrRange, width)
+ }
+ 
+/**
+ * Dilate a spatial region.
+ * 
+ * Return type: (bool, fun, num) -> bool.
+ * @param region whether the device is inside the region
+ * @param metric how to estimate the distance between devices
+ * @param width how big the dilatation is
+ * @return dilated region
+ */
+ public def dilateWithMetric(region, metric, width) {
+ 	distanceToWithMetric(region, metric) < width	
  }
  
 /**
  * Smallest distance between source and destination nodes.
  * 
  * Return type: (bool, bool) -> num
- * @param source whether the current node is a source
- * @param destination whether the current node is a destination
+ * @param source whether the current device is a source
+ * @param destination whether the current device is a destination
  * @return smallest distance between source and destination nodes
  */
 public def distanceBetween(source, dest) { 
@@ -305,9 +318,9 @@ public def distanceBetween(source, dest) {
  * Smallest distance between source and destination nodes.
  * 
  * Return type: (bool, bool) -> num
- * @param source whether the current node is a source
- * @param destination whether the current node is a destination
- * @param metric determine how to gauge the distance from to the current node
+ * @param source whether the current device is a source
+ * @param destination whether the current device is a destination
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @return smallest distance between source and destination nodes
  */
@@ -319,7 +332,7 @@ public def distanceBetweenWithMetric(source, dest, metric) {
  * Distance from the current to the closest source.
  * 
  * Return type: (bool) -> num.
- * @param source whether the current node is a source
+ * @param source whether the current device is a source
  * @return distance to the closest source
  */
 public def distanceTo(source) {
@@ -331,7 +344,7 @@ public def distanceTo(source) {
  * 
  * Return type: (bool, f) -> num.
  * @param source whether the node is a source
- * @param metric determine how to gauge the distance from to the current node
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @return field of minimum distances to the closest source
  */
@@ -345,9 +358,9 @@ public def distanceToWithMetric(source, metric) {
  * Return type: (bool, any, fun, fun) -> any. initial and accumulate parameter
  * type must be consistent.
  * 
- * @param source whether the current node is a source
+ * @param source whether the current device is a source
  * @param initial initial value of the computation
- * @param metric determine how to gauge the distance from to the current node
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @param accumulate how to manage the value
  * @return accumulated value
@@ -422,18 +435,32 @@ public def gossipEver(a) {
  * path towards the closest source, false otherwise
  */ 
 public def forecastObstacle(source, obstacle) {
+	forecastObstacleWithMetric(source, obstacle, nbrRange)
+}
+
+/**
+ * Forecast obstacles along a path to the source.
+ * 
+ * Return type: (bool, bool) -> bool.
+ * @param source whether the device is a source
+ * @param obstacle whether the device is an obstacle
+ * @param metric how to estimate neighbors distances  
+ * @return true if the device will encounter an obstacle within the shortest
+ * path towards the closest source, false otherwise
+ */ 
+public def forecastObstacleWithMetric(source, obstacle, metric) {
 	let obs = if (obstacle) { 1 } else { 0 };
-	G(source, obs, nbrRange, (v) -> { obs + v }) > 0
+	G(source, obs, metric, (v) -> { obs + v }) > 0
 //	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
 }
 
 /**
- * Determine the smallest distance from the current node to the source.
+ * Determine the smallest distance from the current device to the source.
  * 
  * Return type: (bool, num, fun, fun, fun) -> num.
  * @param source whether the node is a source
  * @param initSource distance initial value
- * @param metric determine how to gauge the distance from to the current node
+ * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @param communicationRange communication range
  * @return field of minimum distances from nodes to the closest source
@@ -491,7 +518,7 @@ public def nbrLag() {
 }
 
 /*
- * Estimate the distance from the current node to its neighbors.
+ * Estimate the distance of the current device to its neighbors.
  * 
  * Return type: () -> num.
  * @return field of distances from the current device to its neighbors
@@ -501,7 +528,7 @@ public def nbrRange() {
 }
 
 /*
- * Estimate the distance from the current node to its neighbors.
+ * Estimate the distance from the current device to its neighbors.
  * 
  * Return type: () -> num.
  * @return field of 1s for each neighbor
@@ -511,7 +538,7 @@ public def nbrRangeHop() {
 }
 
 /*
- * Estimate the distance from the current node to its neighbors.
+ * Estimate the distance of the current device to its neighbors.
  * 
  * Return type: (fun, fun, num) -> num.
  * @param metric how to estimate distances
@@ -588,7 +615,7 @@ public def vm(source, range, f, null) {
  * Return type: (bool, num, fun, fun, any) -> any.
  * @param source whether the device is a source
  * @param range spreading constraint
- * @param metric distance metric
+ * @param metric how to estimate neighbors distances 
  * @param f entry point
  * @param null default value
  * @return apply f if the device is inside the spreading region, null 
@@ -624,10 +651,11 @@ public def voronoiPatitioning(seed, id) {
  * effectively breaking the network up into zones of influence around key 
  * elements.
  * 
- * Return type: (bool, num) -> num.
+ * Return type: (bool, num, function) -> num.
  * 
  * @param seed whether the device is a seed
  * @param id partition id
+ * @param metric how to estimate the distances of the neighbors
  * @return partition of the nearest seed
  */
 public def voronoiPatitioningWithMetric(seed, id, metric) {
@@ -702,39 +730,3 @@ public def flexGradient(source, epsilon, rate, range, distortion, metric) {
 		}
 	}
 }
-
-//public def flexGradient2(source, epsilon, range, distortion, metric) {
-//	rep (distanceValue <- Infinity) {
-//		mux (source) {
-//			0
-//		} else {
-//			env.put("gx", distanceValue);
-//			let ndv = nbr(distanceValue);
-//			// c'_x(y,t)
-//			let cx1 = minHood(ndv + max(distortion * range, metric.apply()));
-//			env.put("cx", cx1);
-//			// s'_x
-//			let sx1 = maxHood([
-//				(distanceValue - ndv) / max(distortion * range, metric.apply()),
-//				ndv, // gy
-//				max(distortion * range, metric.apply())
-//			]);
-//			if (max(range, 2 * cx1) < distanceValue) {
-//				env.put("step", "cx1 " + cx1);
-//				cx1
-//			} else {
-//				env.put("s'x", sx1);
-//				if (sx1.get(0) > 1 + epsilon) {
-//					env.put("step", "> 1 + epsilon");
-//					sx1.get(1) + (1 + epsilon) * sx1.get(2) 
-//				} else {
-//					if (sx1.get(0) < 1 - epsilon) {
-//						env.put("step", "< 1 - epsilon");
-//						sx1.get(1) + (1 - epsilon) * sx1.get(2)
-//					} else { env.put("step", "last"); distanceValue }
-//				}
-//			}
-//		}
-//	}
-//}
-

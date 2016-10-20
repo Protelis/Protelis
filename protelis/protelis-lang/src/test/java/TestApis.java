@@ -54,11 +54,19 @@ public class TestApis {
     }
 
     /**
-     * Test nbrLag.pt.
+     * Test addRangeWithLag.pt.
      */
     @Test
-    public void testNbrLag() {
-        test("nbrLag");
+    public void testAddRangeWithLag() {
+        test("addRangeWithLag");
+    }
+
+    /**
+     * Test dilate.pt.
+     */
+    @Test
+    public void testDilate() {
+        test("dilate");
     }
 
     /**
@@ -75,38 +83,6 @@ public class TestApis {
     @Test
     public void testAlignedMapMr() {
         test("alignedMapMr");
-    }
-
-    /**
-     * Test computeMultiRegion.pt.
-     */
-    @Test
-    public void testComputeMultiRegion() {
-        test("computeMultiRegion");
-    }
-
-    /**
-     * Test computeMultiRegion2.pt.
-     */
-    @Test
-    public void testComputeMultiRegion2() {
-        test("computeMultiRegion2");
-    }
-
-    // /**
-    // * Test alignedMapSummarize.pt.
-    // */
-    // @Test
-    // public void testAlignedMapSummarize() {
-    // test("alignedMapSummarize");
-    // }
-
-    /**
-     * Test computeMultiRegion3.pt.
-     */
-    @Test
-    public void testComputeMultiRegion3() {
-        test("computeMultiRegion3");
     }
 
     /**
@@ -132,6 +108,14 @@ public class TestApis {
     public void testApplyWhile() {
         testProgram("applyWhile");
     }
+
+    // /**
+    // * Test alignedMapSummarize.pt.
+    // */
+    // @Test
+    // public void testAlignedMapSummarize() {
+    // test("alignedMapSummarize");
+    // }
 
     /**
      * Test average.pt.
@@ -243,6 +227,30 @@ public class TestApis {
     @Test
     public void testCMultiSum() {
         test("cMultiSum");
+    }
+
+    /**
+     * Test computeMultiRegion.pt.
+     */
+    @Test
+    public void testComputeMultiRegion() {
+        test("computeMultiRegion");
+    }
+
+    /**
+     * Test computeMultiRegion2.pt.
+     */
+    @Test
+    public void testComputeMultiRegion2() {
+        test("computeMultiRegion2");
+    }
+
+    /**
+     * Test computeMultiRegion3.pt.
+     */
+    @Test
+    public void testComputeMultiRegion3() {
+        test("computeMultiRegion3");
     }
 
     /**
@@ -430,6 +438,14 @@ public class TestApis {
     }
 
     /**
+     * Test gradient.pt.
+     */
+    @Test
+    public void testGradient() {
+        test("gradient");
+    }
+
+    /**
      * Test isEdge.pt.
      */
     @Test
@@ -494,11 +510,27 @@ public class TestApis {
     }
 
     /**
+     * Test nbrLag.pt.
+     */
+    @Test
+    public void testNbrLag() {
+        test("nbrLag");
+    }
+
+    /**
      * Test self.nbrRange().
      */
     @Test
     public void testNbrRange() {
         test("nbrRange");
+    }
+
+    /**
+     * Test nbrRangeHop.pt.
+     */
+    @Test
+    public void testNbrRangeHop() {
+        test("nbrRangeHop");
     }
 
     /**
@@ -630,27 +662,19 @@ public class TestApis {
     }
 
     /**
-     * Test voronoiPartitioning.pt.
-     */
-    @Test
-    public void testVoronoiPartitioning() {
-        test("voronoiPartitioning");
-    }
-
-    /**
-     * Test nbrRangeHop.pt.
-     */
-    @Test
-    public void testNbrRangeHop() {
-        test("nbrRangeHop");
-    }
-
-    /**
      * Test vm.pt.
      */
     @Test
     public void testVm() {
         test("vm");
+    }
+
+    /**
+     * Test voronoiPartitioning.pt.
+     */
+    @Test
+    public void testVoronoiPartitioning() {
+        test("voronoiPartitioning");
     }
 
     /**

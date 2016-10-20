@@ -1,0 +1,3 @@
+import protelis:coord:spreading
+import protelis:lang:utils
+gradient(env.has("source"), 0, nbrRange, 0)
