@@ -108,7 +108,7 @@ public def boundDistanceTo(region, source) {
  * @return apply f inside the region, return null otherwise
  */
 public def boundSpreading(region, f, null) {
-	if (region) {
+	if(region) {
 		f.apply()
 	} else {
 		null
@@ -173,15 +173,13 @@ public def broadcastWithMetric(source, value, metric) {
  * @return true if the device is on the shortest path, false otherwise
  */
 public def channel(source, destination, obstacle, thr, width) {
-  	if (obstacle) { 
-  		false
-  	} else { 
+  	boundSpreading(!obstacle, () -> { 
   		let d = distanceBetween(source, destination);
-  		if (d == Infinity) { false }
+  		if(d == Infinity) { false }
   		else {
   			distanceTo(distanceTo(source) + distanceTo(destination) <=  d + thr) <= width
   		}
-  	} 
+  	}, false)
 }
 
 /**
@@ -195,11 +193,9 @@ public def channel(source, destination, obstacle, thr, width) {
  * @return true if the device is on the shortest path, false otherwise
  */
 public def channel2(source, destination, obstacle, width) {
-  	if (obstacle) { 
-  		false
-  	} else { 
+  	boundSpreading(!obstacle, () -> { 
   		distanceTo(shortestPath(source, destination)) <= width
-  	} 
+  	}, false)
 }
 
 /**
@@ -535,7 +531,7 @@ public def nbrRangeLag(metric, lagMetric, speed) {
 public def descend(source, potential) {
 	rep(path <- source) {
 		let nextStep = minHood(nbr([potential, self.getDeviceUID()]));
-		if (nextStep.size() > 1) {
+		if(nextStep.size() > 1) {
 			let candidates = nbr([nextStep.get(1), path]);
 			source || anyHood([self.getDeviceUID(), true] == candidates)
 		} else { source }
@@ -604,9 +600,26 @@ public def vm(source, range, f, null) {
  * @param id partition id
  * @return partition of the nearest seed
  */
- public def voronoiPatitioning(seed, id) {
- 	G(seed, id, nbrRange, identity)
- }
+public def voronoiPatitioning(seed, id) {
+	voronoiPatitioningWithMetric(seed, id, nbrRange)
+}
+
+/**  
+ * Computing a Voronoi partition is an operation that is frequently useful in 
+ * distributed systems. Given an initial set of seed devices, a Voronoi 
+ * partition assigns each device to the partition of the nearest seed, 
+ * effectively breaking the network up into zones of influence around key 
+ * elements.
+ * 
+ * Return type: (bool, num) -> num.
+ * 
+ * @param seed whether the device is a seed
+ * @param id partition id
+ * @return partition of the nearest seed
+ */
+public def voronoiPatitioningWithMetric(seed, id, metric) {
+	G(seed, id, metric, identity)
+}
 
 //public def slope(d, minD, metric) {
 //	//TODO cosa fa la fooldHood
