@@ -476,6 +476,16 @@ public def gradcast(f, init, accumulate) {
  public def isEdge(condition) {
  	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
  }
+ 
+/**
+ * Count the number of neighbors.
+ * 
+ * () -> num.
+ * @return number of neighbors
+ */
+public def neighborhood() {
+ 	sumHood(nbr(1))
+}
 
 /**
  * Communication latency.
@@ -519,16 +529,6 @@ public def nbrRangeHop() {
  */
 public def nbrRangeLag(metric, lagMetric, speed) {
 	metric.apply() + (lagMetric.apply() + self.dt()) * speed
-}
- 
-/**
- * Count the number of neighbors.
- * 
- * () -> num.
- * @return number of neighbors
- */
-public def neighborhood() {
- 	sumHood(nbr(1))
 }
 
 // SAMEAS == shortest path
@@ -607,31 +607,6 @@ public def vm(source, range, f, null) {
  public def voronoiPatitioning(seed, id) {
  	G(seed, id, nbrRange, identity)
  }
-
-def dominantValue(value) {
-	rep(tup <- [0, self.getDeviceUID(), value]) {
-		let local = floor(1 / self.nextRandomDouble()); // no matter what the network diameter is
-		let hoodmax = maxHood PlusSelf(nbr([tup.get(0) - 1, tup.get(1), tup.get(2)]));
-		let leader = hoodmax.get(1) == tup.get(1);
-		if (leader || local > hoodmax.get(0)) {
-			[max(local, hoodmax.get(0)), self.getDeviceUID(), value]
-		} else {
-			hoodmax
-		}
-	}
-	.get(2)
-}
-
-public def pldConsensus(intial, alpha, beta) {
-	rep(value <- intial) {
-		// regional dominant
-		alpha * dominantValue(value)
-		// blend incrementally with local
-		+ (1 - alpha) * value
-		// add laplacian differential
-		+ beta * sumHood PlusSelf(nbr(value) - value)
-	}
-}
 
 //public def slope(d, minD, metric) {
 //	//TODO cosa fa la fooldHood

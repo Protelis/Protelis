@@ -410,7 +410,7 @@ public class TestApis {
      */
     @Test
     public void testGradcast() {
-        test("distanceTo2");
+        test("gradcast");
     }
 
     /**
