@@ -94,4 +94,9 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
     public Field nbrRange() {
         return buildField(deviceUid -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) deviceUid), node);
     }
+
+    @Override
+    public Field nbrLag() {
+        return buildField(deviceUid -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) deviceUid), node);
+    }
 }

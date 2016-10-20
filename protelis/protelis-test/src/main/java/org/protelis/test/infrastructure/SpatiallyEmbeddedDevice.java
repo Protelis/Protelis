@@ -15,4 +15,12 @@ public interface SpatiallyEmbeddedDevice extends ExecutionContext {
      * @return field of distances
      */
     Field nbrRange();
+
+    /**
+     * Get the communication latencies between the current device and its
+     * neighbors. Latencies must be positive.
+     * 
+     * @return field of communication latencies
+     */
+    Field nbrLag();
 }

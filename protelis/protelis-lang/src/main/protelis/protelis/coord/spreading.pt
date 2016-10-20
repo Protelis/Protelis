@@ -472,22 +472,23 @@ public def gradcast(f, init, accumulate) {
  public def isEdge(condition) {
  	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
  }
- 
+
 /**
- * Count the number of neighbors.
+ * Communication latency.
  * 
- * () -> num.
- * @return number of neighbors
+ * Return type: () -> num.
+ * @return field of communication latencies between this device and its
+ * neighbors
  */
- public def neighborhood() {
- 	sumHood(nbr(1))
- }
- 
+public def nbrLag() {
+	self.nbrLatency()
+}
+
 /*
  * Estimate the distance from the current node to its neighbors.
  * 
  * Return type: () -> num.
- * @return field of distances from the current to its neighbors
+ * @return field of distances from the current device to its neighbors
  */
 public def nbrRange() {
 	self.nbrRange()
@@ -501,6 +502,29 @@ public def nbrRange() {
  */
 public def nbrRangeHop() { 
 	1 //TODO no value auto-field
+}
+
+/*
+ * Estimate the distance from the current node to its neighbors.
+ * 
+ * Return type: (fun, fun, num) -> num.
+ * @param metric how to estimate distances
+ * @param lagMetric how to estimate latencies
+ * @param speed communication speed
+ * @return field of distances from the current device to its neighbors
+ */
+public def nbrRangeLag(metric, lagMetric, speed) {
+	metric.apply() + (lagMetric.apply() + self.dt()) * speed
+}
+ 
+/**
+ * Count the number of neighbors.
+ * 
+ * () -> num.
+ * @return number of neighbors
+ */
+public def neighborhood() {
+ 	sumHood(nbr(1))
 }
 
 // SAMEAS == shortest path
