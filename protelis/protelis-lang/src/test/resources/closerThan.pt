@@ -1,0 +1,3 @@
+import java.lang.Math.min
+import protelis:coord:spreading
+closerThan(env.has("source"), env.get("range"))

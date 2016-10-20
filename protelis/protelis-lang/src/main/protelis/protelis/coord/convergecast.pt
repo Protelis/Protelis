@@ -26,9 +26,11 @@ public def average(sink, value) {
  * @return average value
  */
 public def boundAverage(sink, local, range, null) {
-	boundSpreadingWithinRange(sink, () -> {
-		average(sink, local)
-	}, range, null)
+	boundSpreadingWithRange(
+		() -> { closerThan(sink, range) }, 
+		() -> { average(sink, local) }, 
+		null
+	)
 }
 
 /*

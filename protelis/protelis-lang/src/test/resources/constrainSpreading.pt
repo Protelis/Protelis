@@ -1,3 +1,0 @@
-import java.lang.Math.min
-import protelis:coord:spreading
-boundSpreadingWithinRange(env.has("source"), env.get("range"), () -> { 1.0 }, "foo")

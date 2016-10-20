@@ -13,7 +13,7 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: alignedMapMr4
+    program: computeMultiRegion3
               
 displacements:
   - in:

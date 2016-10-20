@@ -46,6 +46,14 @@ public class TestApis {
     }
 
     /**
+     * Test addRange.pt.
+     */
+    @Test
+    public void testAddRange() {
+        test("addRange");
+    }
+
+    /**
      * Test alignedMapIff.pt.
      */
     @Test
@@ -62,27 +70,19 @@ public class TestApis {
     }
 
     /**
-     * Test alignedMapMr2.pt.
+     * Test computeMultiRegion.pt.
      */
     @Test
-    public void testAlignedMapMr2() {
-        test("alignedMapMr2");
+    public void testComputeMultiRegion() {
+        test("computeMultiRegion");
     }
 
     /**
-     * Test alignedMapMr3.pt.
+     * Test computeMultiRegion2.pt.
      */
     @Test
-    public void testAlignedMapMr3() {
-        test("alignedMapMr3");
-    }
-
-    /**
-     * Test alignedMapMr4.pt.
-     */
-    @Test
-    public void testAlignedMapMr4() {
-        test("alignedMapMr4");
+    public void testComputeMultiRegion2() {
+        test("computeMultiRegion2");
     }
 
     // /**
@@ -94,19 +94,11 @@ public class TestApis {
     // }
 
     /**
-     * Test addRange.pt.
+     * Test computeMultiRegion3.pt.
      */
     @Test
-    public void testAddRange() {
-        test("addRange");
-    }
-
-    /**
-     * Test gradcast.pt.
-     */
-    @Test
-    public void testGradcast() {
-        test("distanceTo2");
+    public void testComputeMultiRegion3() {
+        test("computeMultiRegion3");
     }
 
     /**
@@ -142,11 +134,35 @@ public class TestApis {
     }
 
     /**
+     * Test boundBroadcast.pt.
+     */
+    @Test
+    public void testBoundBroadcast() {
+        test("boundBroadcast");
+    }
+
+    /**
+     * Test boundG.pt.
+     */
+    @Test
+    public void testBoundG() {
+        test("boundG");
+    }
+
+    /**
      * Test boundedSpreading.pt.
      */
     @Test
     public void testBoundSpreading() {
         test("boundSpreading");
+    }
+
+    /**
+     * Test boundSpreadingWithRange.pt.
+     */
+    @Test
+    public void testBoundSpreadingWithRange() {
+        test("boundSpreadingWithRange");
     }
 
     /**
@@ -190,11 +206,11 @@ public class TestApis {
     }
 
     /**
-     * Test cMultiSum.pt.
+     * Test closerThan.pt.
      */
     @Test
-    public void testCMultiSum() {
-        test("cMultiSum");
+    public void testCloserThan() {
+        test("closerThan");
     }
 
     /**
@@ -214,11 +230,11 @@ public class TestApis {
     }
 
     /**
-     * Test constrainSpreading.pt.
+     * Test cMultiSum.pt.
      */
     @Test
-    public void testConstrainSpreading() {
-        test("constrainSpreading");
+    public void testCMultiSum() {
+        test("cMultiSum");
     }
 
     /**
@@ -306,7 +322,7 @@ public class TestApis {
      */
     @Test
     public void testDistanceToWithObstacle() {
-        test("distanceToWithObstacle");
+        test("boundDistanceTo");
     }
 
     /**
@@ -387,6 +403,14 @@ public class TestApis {
     @Test
     public void testGossipEver() {
         test("gossipEver");
+    }
+
+    /**
+     * Test gradcast.pt.
+     */
+    @Test
+    public void testGradcast() {
+        test("distanceTo2");
     }
 
     /**

@@ -11,7 +11,7 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: distanceToWithObstacle
+    program: boundDistanceTo
               
 displacements:
   - in:
