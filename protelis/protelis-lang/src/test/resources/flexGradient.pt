@@ -2,3 +2,4 @@ import protelis:coord:spreading
 import protelis:lang:utils
 
 flexGradient(env.has("source"), 0.1, 10, 2, 0.1, nbrRange)
+//flexGradient2(env.has("source"), 0.1, 1, 0.1, nbrRange)

@@ -10,6 +10,17 @@ public def and(a, b) {
 	a && b
 }
 
+///**
+// * Build a field from a value.
+// * 
+// * Return type: (any) -> any.
+// * @param value value to be fielded
+// * @return field of the given value
+// */
+//public def field(v) {
+//	nbr(v)
+//}
+
 /**
  * Line-of-sight detector.
  * 

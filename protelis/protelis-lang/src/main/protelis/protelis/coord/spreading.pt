@@ -609,29 +609,38 @@ public def pldConsensus(intial, alpha, beta) {
 	}
 }
 
+//public def slope(d, minD, metric) {
+//	//TODO cosa fa la fooldHood
+//	hood(
+//		
+//		(x, r) -> {
+//			let nrange = metric.apply();
+//			if(nrange > 0) {
+//				nrange = metric.apply();
+//				let m = max(minD, maxHood(nrange));
+//				let slope = (d - x) / m;
+//				if(slope > r.get(0)) {
+//					nrange = metric.apply();
+//					m = max(minD, maxHood(nrange));
+//					[slope, x, m]
+//				} else { r } //????
+//			} else { r }
+//		}, 
+//		[-Infinity, Infinity, 0], 
+//		//[d, minD, 0] //ArrayTupleImpl cannot be cast to org.protelis.lang.datatype.Field
+//		//d // java.lang.Double cannot be cast to org.protelis.lang.datatype.Field
+//		nbr(d)
+//	)
+//	
+//}
+
 public def slope(d, minD, metric) {
-	//TODO cosa fa la fooldHood
-	hood(
-		
-		(x, r) -> {
-			let nrange = metric.apply();
-			if(nrange > 0) {
-				nrange = metric.apply();
-				let m = max(minD, maxHood(nrange));
-				let slope = (d - x) / m;
-				if(slope > r.get(0)) {
-					nrange = metric.apply();
-					m = max(minD, maxHood(nrange));
-					[slope, x, m]
-				} else { r } //????
-			} else { r }
-		}, 
-		[-Infinity, Infinity, 0], 
-		//[d, minD, 0] //ArrayTupleImpl cannot be cast to org.protelis.lang.datatype.Field
-		//d // java.lang.Double cannot be cast to org.protelis.lang.datatype.Field
-		nbr(d)
-	)
-	
+	let nrange = metric.apply();
+	if(nrange > 0) {
+		let ndv = nbr(d);
+		let m = max(minD, maxHood(nrange));
+		maxHood([(d - ndv)/m, ndv, m])
+	} else { [0, d, 0] }
 }
 
 public def flexGradient(src, epsilon, rate, range, distortion, metric) {
@@ -662,44 +671,38 @@ public def flexGradient(src, epsilon, rate, range, distortion, metric) {
 	}
 }
 
-public def flexGradient2(source, initial, metric, accumulate, epsilon, range, distortion) {
-	rep(distanceValue <- [Infinity, initial]) {
-		mux(source) {
-			[0, initial]
-		} else {
-			// previous gradient
-			let gx = distanceValue.get(0);
-			env.put("gx", gx);
-			let ndv = nbr(distanceValue);
-			// c'_x(y,t)
-			let cx1 = minHood([
-				ndv.get(0) + max(distortion * range, metric.apply()),
-				accumulate.apply(ndv.get(1))
-			]);
-			env.put("c'x", cx1);
-			// s'_x
-			let sx1 = maxHood([
-				(ndv.get(0) - gx) / max(distortion * range, metric.apply()),
-				ndv.get(0), // gy
-				max(distortion * range, metric.apply()),
-				ndv.get(1) // accumulated value
-			]);
-			env.put("s'x", sx1);
-			if(max(range, 2*cx1.get(0)) < gx) {
-				env.put("step", 1);
-				cx1
-			} else {
-				if(sx1.get(0) > 1 + epsilon) {
-					env.put("step", 2);
-					[ sx1.get(1) + (1 + epsilon) * sx1.get(2), sx1.get(3) ] 
-				} else {
-					if(sx1.get(0) < 1 - epsilon) {
-						env.put("step", 4);
-						[ sx1.get(1) + (1 - epsilon) * sx1.get(2), sx1.get(3) ] 
-					} else { env.put("step", 5); distanceValue }
-				}
-			}
-		}
-	}.get(1)
-}
+//public def flexGradient2(source, epsilon, range, distortion, metric) {
+//	rep(distanceValue <- Infinity) {
+//		mux(source) {
+//			0
+//		} else {
+//			env.put("gx", distanceValue);
+//			let ndv = nbr(distanceValue);
+//			// c'_x(y,t)
+//			let cx1 = minHood(ndv + max(distortion * range, metric.apply()));
+//			env.put("cx", cx1);
+//			// s'_x
+//			let sx1 = maxHood([
+//				(distanceValue - ndv) / max(distortion * range, metric.apply()),
+//				ndv, // gy
+//				max(distortion * range, metric.apply())
+//			]);
+//			if(max(range, 2 * cx1) < distanceValue) {
+//				env.put("step", "cx1 " + cx1);
+//				cx1
+//			} else {
+//				env.put("s'x", sx1);
+//				if(sx1.get(0) > 1 + epsilon) {
+//					env.put("step", "> 1 + epsilon");
+//					sx1.get(1) + (1 + epsilon) * sx1.get(2) 
+//				} else {
+//					if(sx1.get(0) < 1 - epsilon) {
+//						env.put("step", "< 1 - epsilon");
+//						sx1.get(1) + (1 - epsilon) * sx1.get(2)
+//					} else { env.put("step", "last"); distanceValue }
+//				}
+//			}
+//		}
+//	}
+//}
 
