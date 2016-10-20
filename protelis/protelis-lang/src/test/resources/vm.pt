@@ -1,0 +1,4 @@
+import protelis:coord:spreading
+vm(env.has("source"), 1.8, () -> {
+	neighborhood()
+}, "foo")

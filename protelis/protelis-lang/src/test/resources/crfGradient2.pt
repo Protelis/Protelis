@@ -1,4 +1,4 @@
 import protelis:coord:spreading
 import protelis:lang:utils
 
-flexGradient(env.has("source"), 0.1, 10, 1, 0.1, nbrRange)
+crfGradient(env.has("source"), nbrRange, 0, 0, addRange)

@@ -40,20 +40,20 @@ public def boundAverage(sink, local, range, null) {
  * 
  * Return type: (num, fun, any, any) -> any
  * @param potential direction of the aggregation
- * @param accumulate HoodOp function
+ * @param reduce HoodOp function
  * @param local local value 
  * @param null expression evaluated when the field is empty
  * @return aggregated value
  */
-public def C(potential, accumulate, local, null) {
+public def C(potential, reduce, local, null) {
 	rep (v <- local) {
-		accumulate.apply(local,
+		reduce.apply(local,
 			/*
 			 * TODO: switch to accumulateHood
 			 */
 			hood(
 			    // HoodOp
-				(a, b) -> { accumulate.apply(a, b) },
+				(a, b) -> { reduce.apply(a, b) },
 				// expression that will be evaluated if the field is empty
 				null,
 				// argument to evaluate (must return a Field)

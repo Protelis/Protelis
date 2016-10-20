@@ -1,4 +1,4 @@
 import protelis:coord:spreading
+import protelis:coord:convergecast
 import protelis:lang:utils
-gradcast(() -> {gradient(env.has("source"), 0, nbrRange, zero, zero)}, 0, addRange)
-//gradient(env.has("source"), 0, nbrRange, zero, zero)
+C(gradient(env.has("source"), 0, nbrRange, 0), addRange, 0, 0)

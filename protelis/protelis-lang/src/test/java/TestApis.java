@@ -54,6 +54,14 @@ public class TestApis {
     }
 
     /**
+     * Test nbrLag.pt.
+     */
+    @Test
+    public void testNbrLag() {
+        test("nbrLag");
+    }
+
+    /**
      * Test alignedMapIff.pt.
      */
     @Test
@@ -259,6 +267,14 @@ public class TestApis {
     @Test
     public void testCRFGradient() {
         test("CRFgradient");
+    }
+
+    /**
+     * Test CRFgradient2.pt.
+     */
+    @Test
+    public void testCRFGradient2() {
+        test("CRFgradient2");
     }
 
     /**
@@ -619,6 +635,22 @@ public class TestApis {
     @Test
     public void testVoronoiPartitioning() {
         test("voronoiPartitioning");
+    }
+
+    /**
+     * Test nbrRangeHop.pt.
+     */
+    @Test
+    public void testNbrRangeHop() {
+        test("nbrRangeHop");
+    }
+
+    /**
+     * Test vm.pt.
+     */
+    @Test
+    public void testVm() {
+        test("vm");
     }
 
     /**

@@ -120,6 +120,17 @@ public def identity(a) {
 }
 
 /**
+ * Verify if a device is on the edge of a spatial region.
+ * 
+ * Return type: (any) -> bool.
+ * @param condition` how to discriminate a region
+ * @return true if the device is on the edge, false otherwise
+ */
+ public def isEdge(condition) {
+ 	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
+ }
+
+/**
  * Apply f to all the tuple elements satisfying the filtering condition. 
  * Default is applied otherwise.
  * 

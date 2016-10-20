@@ -1,2 +1,2 @@
-import protelis:coord:spreading
+import protelis:lang:utils
 isEdge(env.has("source"))

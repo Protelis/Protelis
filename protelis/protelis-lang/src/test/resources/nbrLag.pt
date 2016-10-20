@@ -1,0 +1,2 @@
+import protelis:coord:spreading
+distanceToWithMetric(env.has("source"), () -> { nbrRangeLag(nbrRange, nbrLag, 1) })

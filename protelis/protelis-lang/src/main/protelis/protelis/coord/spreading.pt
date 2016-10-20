@@ -48,8 +48,8 @@ public def addRangeWithMetric(v, metric) {
  * @param latency communication latencies between neighbors 
  * @return field of distances from the current to its neighbors
  */
-public def addRangeWithLag(v, metric, speed, latency) {
-	addRangeWithMetric(v, metric) + speed * (latency.apply() + self.dt())
+public def addRangeWithLag(v, metric, speed) {
+	addRangeWithMetric(v, metric) + speed * (self.nbrLag() + self.dt())
 }
 
 /**
@@ -252,13 +252,12 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  * Return type: (bool, any, fun, fun, fun, num) -> any.
  * @param source whether the device is a source
  * @param metric how to estimate distances without lag
- * @param latency how to estimate distances with lag
  * @param range communication max range
  * @param initial local value 
  * @param how to accumulate the local value across the devices
  * @return accumulated value
  */
-public def crfGradient(source, metric, metricLag, range, initial, accumulate) {
+public def crfGradient(source, metric, range, initial, accumulate) {
 	// potential <- [distance, speed, accumulatedValue]
 	rep (potential <- [Infinity, 0, initial]) {
 		mux (source) {
@@ -268,7 +267,7 @@ public def crfGradient(source, metric, metricLag, range, initial, accumulate) {
 			let d = ndv.get(0);
 			let v = ndv.get(1);
 			let dt = self.dt();
-			mux (anyHood((d + metricLag.apply(metric, nbrLag, v)) < potential.get(0))) {
+			mux (anyHood(addRangeWithLag(d, metric, v) < potential.get(0))) {
 				minHood([d + metric.apply(), 0, accumulate.apply(ndv.get(2))])
 			} else {
 				let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
@@ -401,9 +400,11 @@ public def Gossip(value, f) {
 }
 
 /**
- * Gossip ever.
+ * Gossip whether the device has ever experienced a given condition.
  * 
- * Gossip whether any location has ever experienced a given condition.
+ * Return type: (bool) -> bool.
+ * @param a condition
+ * @return true if the device has experienced the condition, false otherwise
  */
 public def gossipEver(a) {
 	rep (ever <- false) {
@@ -431,47 +432,42 @@ public def forecastObstacle(source, obstacle) {
  * 
  * Return type: (bool, num, fun, fun, fun) -> num.
  * @param source whether the node is a source
- * @param init distance initial value
+ * @param initSource distance initial value
  * @param metric determine how to gauge the distance from to the current node
  * to its neighbors
- * @param latency communication latencies between neighbors
- * @param maximum communication range
+ * @param communicationRange communication range
  * @return field of minimum distances from nodes to the closest source
  */
-public def gradient(source, init, metric, latency, range) {
+public def gradient(source, initSource, metric, communicationRange) {
 	rep (distance <- [Infinity, 0]) {
 		mux (source) { 
-			[init, 0]
+			[initSource, 0]
 		} else {
 			let d = distance.get(0);
 			let v = distance.get(1);
-			mux (anyHood(addRangeWithLag(nbr(distance).get(0), metric, v, latency) <= d)) {
+			mux (anyHood(addRangeWithLag(nbr(distance).get(0), metric, v) <= d)) {
 				let ndv = nbr(distance);
 				minHood([ndv.get(0) + metric.apply(), 0])
 			} else {
-				let v0 = range.apply() / 2;
+				let v0 = communicationRange / 2;
 				[d + v0 * self.dt(), v0]
 			}
 		}	  
 	}.get(0)
 }
 
-public def gradcast(f, init, accumulate) {
-	rep (value <- [Infinity, init]) {
-		minHood([nbr(f.apply()), accumulate.apply(value.get(1))]);
-	}.get(1)
+public def gradcast(source, gradient, local, accumulate) {
+	rep (value <- local) {
+		mux (source) { local } else {
+			minHood([
+					nbr(gradient.apply()), // get the gradient
+//					accumulate.apply(value) // get the value
+					((v) -> { v + 1 }).apply(value)
+//					((v) -> { min(v, local }).apply(value)
+				]).get(1)
+		}
+	}
 }
-
-/**
- * Verify if a device is on the edge of a spatial region.
- * 
- * Return type: (any) -> bool.
- * @param condition` how to discriminate a region
- * @return true if the device is on the edge, false otherwise
- */
- public def isEdge(condition) {
- 	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
- }
  
 /**
  * Count the number of neighbors.
@@ -491,7 +487,7 @@ public def neighborhood() {
  * neighbors
  */
 public def nbrLag() {
-	self.nbrLatency()
+	self.nbrLag()
 }
 
 /*
@@ -573,17 +569,34 @@ public def shortestPath(source, destination) {
 
 /**
  * Entry point for a computation.
- * 
+ *
+ * Return type: (bool, num, fun, any) -> any.
  * @param source whether the device is a source
  * @param range spreading constraint
- * @param function entry point
+ * @param f entry point
  * @param null default value
  * @return apply f if the device is inside the spreading region, null 
  * otherwise
  */
 public def vm(source, range, f, null) {
+	vmWithMetric(source, nbrRange, range, f, null)
+}
+
+/**
+ * Entry point for a computation.
+ * 
+ * Return type: (bool, num, fun, fun, any) -> any.
+ * @param source whether the device is a source
+ * @param range spreading constraint
+ * @param metric distance metric
+ * @param f entry point
+ * @param null default value
+ * @return apply f if the device is inside the spreading region, null 
+ * otherwise
+ */
+public def vmWithMetric(source, metric, range, f, null) {
 	boundSpreadingWithRange(() -> {
-		closerThan(source, range)
+		closerThanWithMetric(source, metric, range)
 	}, f, null)
 }
  
