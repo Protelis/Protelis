@@ -46,7 +46,7 @@ public def boundAverage(sink, local, range, null) {
  * @return aggregated value
  */
 public def C(potential, accumulate, local, null) {
-	rep(v <- local) {
+	rep (v <- local) {
 		accumulate.apply(local,
 			/*
 			 * TODO: switch to accumulateHood
@@ -57,7 +57,7 @@ public def C(potential, accumulate, local, null) {
 				// expression that will be evaluated if the field is empty
 				null,
 				// argument to evaluate (must return a Field)
-				mux(nbr(findParent(potential, identity)) == self) { nbr(v) } else { null }
+				mux (nbr(findParent(potential, identity)) == self) { nbr(v) } else { null }
 			)
 		)
 	}	
@@ -80,11 +80,11 @@ public def C(potential, accumulate, local, null) {
  */
 public def cMultiSum(potential, local) {
 	 hoodWstateful(local, sum, 0, (v) -> {  				
-	 	mux(potential >= nbr(potential)) { 
+	 	mux (potential >= nbr(potential)) { 
  				0
 		} else {
 			nbr(v / sumHood(
-				mux(nbr(potential) < potential) { nbr(local) } else { 0 }
+				mux (nbr(potential) < potential) { nbr(local) } else { 0 }
 			))
 		} 
 	})
@@ -100,7 +100,7 @@ public def cMultiSum(potential, local) {
  */
 public def cMultiMin(potential, local) {
 	 hoodWstateful(local, min, Infinity, (v) -> { 
-	 	mux(potential < nbr(potential)) { nbr(v) } else { Infinity }
+	 	mux (potential < nbr(potential)) { nbr(v) } else { Infinity }
 	 })
 }
 
@@ -125,7 +125,7 @@ public def cMultiMax(potential, local) {
  * @return shared value
  */
 public def consensus(init, f) {
- 	rep(val <- init) {
+ 	rep (val <- init) {
  		// val + f.apply(sumHood PlusSelf(nbr(val) - val))
  		val + f.apply(sumHood(nbr(val) - val))
  	}	
@@ -154,8 +154,8 @@ public def cossip(sink, value, f) {
  */
 public def diameter(source) {
 	let d = distanceTo(source);
-	2 * rep(maxd <- 0) {
-		max(if(d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
+	2 * rep (maxd <- 0) {
+		max(if (d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
 	}
 }
 
@@ -169,9 +169,9 @@ public def diameter(source) {
  * @return -2 root, -1 no parent, accumulate(parent) otherwise
  */
 public def findParent(potential, accumulate) {
-	mux(minHood(nbr(potential)) < potential) {
+	mux (minHood(nbr(potential)) < potential) {
 		let closest = minHood(nbr([potential, accumulate.apply(self)]));
-		if(closest.size() > 1) { closest.get(1) } else { noParent() }
+		if (closest.size() > 1) { closest.get(1) } else { noParent() }
 	} else { imRoot() }
 }
 

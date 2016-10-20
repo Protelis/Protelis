@@ -108,7 +108,7 @@ public def boundDistanceTo(region, source) {
  * @return apply f inside the region, return null otherwise
  */
 public def boundSpreading(region, f, null) {
-	if(region) {
+	if (region) {
 		f.apply()
 	} else {
 		null
@@ -175,7 +175,7 @@ public def broadcastWithMetric(source, value, metric) {
 public def channel(source, destination, obstacle, thr, width) {
   	boundSpreading(!obstacle, () -> { 
   		let d = distanceBetween(source, destination);
-  		if(d == Infinity) { false }
+  		if (d == Infinity) { false }
   		else {
   			distanceTo(distanceTo(source) + distanceTo(destination) <=  d + thr) <= width
   		}
@@ -230,14 +230,14 @@ public def closerThanWithMetric(source, metric, range) {
  * @return apply f
  */
 public def computeMultiRegion(discriminant, filter, function, default) {
-	if(filter.apply(discriminant)) {
+	if (filter.apply(discriminant)) {
 		let res = alignedMap(
 			nbr([[discriminant, default]]),
 			(key, field) -> { filter.apply(key) },
 			(key, field) -> { function.apply() }, 
 			default
 		);
-		if(res == []) { default } else { res.get(0).get(1) }
+		if (res == []) { default } else { res.get(0).get(1) }
 	} else { default }
 }
 
@@ -260,18 +260,18 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  */
 public def crfGradient(source, metric, metricLag, range, initial, accumulate) {
 	// potential <- [distance, speed, accumulatedValue]
-	rep(potential <- [Infinity, 0, initial]) {
-		mux(source) {
+	rep (potential <- [Infinity, 0, initial]) {
+		mux (source) {
 			[0, 0, initial]
 		} else {
 			let ndv = nbr(potential);
 			let d = ndv.get(0);
 			let v = ndv.get(1);
 			let dt = self.dt();
-			mux(anyHood((d + metricLag.apply(metric, nbrLag, v)) < potential.get(0))) {
+			mux (anyHood((d + metricLag.apply(metric, nbrLag, v)) < potential.get(0))) {
 				minHood([d + metric.apply(), 0, accumulate.apply(ndv.get(2))])
 			} else {
-				let v0 = if(dt == 0) { 1 } else { range / (dt * 12) };
+				let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
 				[potential.get(0) + v0 * dt, v0, potential.get(2)]				
 			}
 		}
@@ -354,8 +354,8 @@ public def distanceToWithMetric(source, metric) {
  * @return accumulated value
  */
 public def G(source, initial, metric, accumulate) {
-	rep(distanceValue <- [Infinity, initial]) {
-		mux(source) {
+	rep (distanceValue <- [Infinity, initial]) {
+		mux (source) {
 			// If the node is a source then G return a 0 potential
 			// and the initial value
 			[0, initial]
@@ -383,7 +383,7 @@ public def G(source, initial, metric, accumulate) {
  * @return the value resulting from gossip
  */
 public def gossip(value, f) {
-	rep(v <- value) {
+	rep (v <- value) {
 		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
 	}
 }
@@ -406,7 +406,7 @@ public def Gossip(value, f) {
  * Gossip whether any location has ever experienced a given condition.
  */
 public def gossipEver(a) {
-	rep(ever <- false) {
+	rep (ever <- false) {
 		a || anyHood(nbr(ever))		
 	}
 }
@@ -421,7 +421,7 @@ public def gossipEver(a) {
  * path towards the closest source, false otherwise
  */ 
 public def forecastObstacle(source, obstacle) {
-	let obs = if(obstacle) { 1 } else { 0 };
+	let obs = if (obstacle) { 1 } else { 0 };
 	G(source, obs, nbrRange, (v) -> { obs + v }) > 0
 //	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
 }
@@ -439,13 +439,13 @@ public def forecastObstacle(source, obstacle) {
  * @return field of minimum distances from nodes to the closest source
  */
 public def gradient(source, init, metric, latency, range) {
-	rep(distance <- [Infinity, 0]) {
-		mux(source) { 
+	rep (distance <- [Infinity, 0]) {
+		mux (source) { 
 			[init, 0]
 		} else {
 			let d = distance.get(0);
 			let v = distance.get(1);
-			mux(anyHood(addRangeWithLag(nbr(distance).get(0), metric, v, latency) <= d)) {
+			mux (anyHood(addRangeWithLag(nbr(distance).get(0), metric, v, latency) <= d)) {
 				let ndv = nbr(distance);
 				minHood([ndv.get(0) + metric.apply(), 0])
 			} else {
@@ -457,7 +457,7 @@ public def gradient(source, init, metric, latency, range) {
 }
 
 public def gradcast(f, init, accumulate) {
-	rep(value <- [Infinity, init]) {
+	rep (value <- [Infinity, init]) {
 		minHood([nbr(f.apply()), accumulate.apply(value.get(1))]);
 	}.get(1)
 }
@@ -529,9 +529,9 @@ public def nbrRangeLag(metric, lagMetric, speed) {
 
 // SAMEAS == shortest path
 public def descend(source, potential) {
-	rep(path <- source) {
+	rep (path <- source) {
 		let nextStep = minHood(nbr([potential, self.getDeviceUID()]));
-		if(nextStep.size() > 1) {
+		if (nextStep.size() > 1) {
 			let candidates = nbr([nextStep.get(1), path]);
 			source || anyHood([self.getDeviceUID(), true] == candidates)
 		} else { source }
@@ -552,7 +552,7 @@ public def rendezvous(a, b) {
  * 
  */
 public def shortestPath(source, destination) {
-	rep(path <- false) {
+	rep (path <- false) {
 		mux (source) {
 			true
 		} else {
@@ -627,11 +627,11 @@ public def voronoiPatitioningWithMetric(seed, id, metric) {
 //		
 //		(x, r) -> {
 //			let nrange = metric.apply();
-//			if(nrange > 0) {
+//			if (nrange > 0) {
 //				nrange = metric.apply();
 //				let m = max(minD, maxHood(nrange));
 //				let slope = (d - x) / m;
-//				if(slope > r.get(0)) {
+//				if (slope > r.get(0)) {
 //					nrange = metric.apply();
 //					m = max(minD, maxHood(nrange));
 //					[slope, x, m]
@@ -652,7 +652,7 @@ public def voronoiPatitioningWithMetric(seed, id, metric) {
  */
 def slope(d, minD, metric) {
 	let nrange = metric.apply();
-	if(nrange > 0) {
+	if (nrange > 0) {
 		let ndv = nbr(d);
 		let m = max(minD, maxHood(nrange));
 		maxHood([(d - ndv)/m, ndv, m])
@@ -663,8 +663,8 @@ def slope(d, minD, metric) {
  * 
  */
 public def flexGradient(source, epsilon, rate, range, distortion, metric) {
-	rep(d <- Infinity) {
-		mux(source) { 
+	rep (d <- Infinity) {
+		mux (source) { 
 			0
 		} else {
 			let minD = range * distortion;
@@ -673,13 +673,13 @@ public def flexGradient(source, epsilon, rate, range, distortion, metric) {
 			let msd = slopeInfo.get(1);
 			let msr = slopeInfo.get(2);
 			let ct = minHood(nbr(d) + max(minD, maxHood(metric.apply())));
-			mux((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
+			mux ((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
 				ct
 			} else {
-				mux(maxSlope > (1 + epsilon)) {
+				mux (maxSlope > (1 + epsilon)) {
 					msd + msr * (1 + epsilon)
 				} else {
-					mux(maxSlope < (1 - epsilon)) {
+					mux (maxSlope < (1 - epsilon)) {
 						msd + msr * (1 - epsilon)
 					} else {
 						d
@@ -691,8 +691,8 @@ public def flexGradient(source, epsilon, rate, range, distortion, metric) {
 }
 
 //public def flexGradient2(source, epsilon, range, distortion, metric) {
-//	rep(distanceValue <- Infinity) {
-//		mux(source) {
+//	rep (distanceValue <- Infinity) {
+//		mux (source) {
 //			0
 //		} else {
 //			env.put("gx", distanceValue);
@@ -706,16 +706,16 @@ public def flexGradient(source, epsilon, rate, range, distortion, metric) {
 //				ndv, // gy
 //				max(distortion * range, metric.apply())
 //			]);
-//			if(max(range, 2 * cx1) < distanceValue) {
+//			if (max(range, 2 * cx1) < distanceValue) {
 //				env.put("step", "cx1 " + cx1);
 //				cx1
 //			} else {
 //				env.put("s'x", sx1);
-//				if(sx1.get(0) > 1 + epsilon) {
+//				if (sx1.get(0) > 1 + epsilon) {
 //					env.put("step", "> 1 + epsilon");
 //					sx1.get(1) + (1 + epsilon) * sx1.get(2) 
 //				} else {
-//					if(sx1.get(0) < 1 - epsilon) {
+//					if (sx1.get(0) < 1 - epsilon) {
 //						env.put("step", "< 1 - epsilon");
 //						sx1.get(1) + (1 - epsilon) * sx1.get(2)
 //					} else { env.put("step", "last"); distanceValue }

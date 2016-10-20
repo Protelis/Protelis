@@ -3,24 +3,24 @@ import protelis:coord:spreading
 
 def breakUsingUids(uid, grain, metric) {
 	// Return true if the current device is leader of the partition. Lead = current leader
-	rep(lead <- uid) {
+	rep (lead <- uid) {
 		distanceCompetition(G(uid == lead, 0, metric, (v) -> { v + metric.apply() }), lead, uid, grain, metric)
 	} == uid
 }
 
 def distanceCompetition(d, lead, uid, grain, metric) {
-	mux(d > grain) { 
+	mux (d > grain) { 
 		// Device is far. Propose its id
 		uid 
 	} else {
 		let thr = 0.5 * grain;
-		mux(d >= thr) {
+		mux (d >= thr) {
 			// Nearest neighbor in the second half (outer side) of the region. Do not challenge at all
 			Infinity 
 		} else {
 			// Challenge for this partition
 			minHood(
-				mux(nbr(d) + metric.apply() >= thr) { 
+				mux (nbr(d) + metric.apply() >= thr) { 
 					// Device in the second half (outer side) of the region. Do not challenge at all
 					Infinity
 				} else {
@@ -36,7 +36,7 @@ def distanceCompetition(d, lead, uid, grain, metric) {
  * Pair a random value to the device's id
  */
 def randomUid() {
-	rep(v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
+	rep (v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
 		[v.get(0), v.get(1)]	
 	}
 }

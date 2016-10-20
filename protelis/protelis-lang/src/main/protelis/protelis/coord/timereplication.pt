@@ -24,7 +24,7 @@ def clock(tuple) {
 }
 
 def emptyProcess() {
-	rep(p <- [Infinity, () -> {"EMPTY"}, "EMPTY"]) {
+	rep (p <- [Infinity, () -> {"EMPTY"}, "EMPTY"]) {
 		p
 	}
 }
@@ -35,7 +35,7 @@ def alignedExecution(processes) {
 		(pid, pField) -> { true },
 		(pid, pField) -> {
 			let p = hoodPlusSelf(
-				(a, b) -> {if(a.compareTo(b) < 0) {a} else {b}},
+				(a, b) -> {if (a.compareTo(b) < 0) {a} else {b}},
 				emptyProcess(),
 				pField
 			);
@@ -47,11 +47,11 @@ def alignedExecution(processes) {
 
 public def timeReplicated(process, default, p, k) {
 	let clock = sharedTimer(p, self.dt());
-	rep(processes <- []) {
+	rep (processes <- []) {
 		/*
 		 * Add process if the clock is new
 		 */
-		if(isNewClock(processes, clock)) {
+		if (isNewClock(processes, clock)) {
 			processes = processes.append([clock, process, default])
 		} else {0};
 		/*

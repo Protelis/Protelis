@@ -5,7 +5,7 @@ import protelis:state:time
  * Returns an int, representing the current clock
  */
 public def sharedTimer(period, dt) {
-	rep(clock <- 0) {
+	rep (clock <- 0) {
 		let clockPerceived = maxHood(nbr(clock));
 		if (clockPerceived <= clock) {
 			/*

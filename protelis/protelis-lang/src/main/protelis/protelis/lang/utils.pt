@@ -83,7 +83,7 @@ public def diff(a, b) {
  * @return reduced value
  */
 public def hoodW(local, aggregator, default, fieldBuilder) {
-	 rep(v <- local) {
+	 rep (v <- local) {
  		aggregator.apply(local, 
  			hood(
  				(a, b) -> { aggregator.apply(a, b) },
@@ -105,13 +105,13 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  * @return reduced value
  */
 public def hoodWstateful(local, aggregator, default, fieldBuilder) {
-	rep(v <- local) {
+	rep (v <- local) {
 		hoodW(local, aggregator, default, fieldBuilder)
 	}
 }
 
 /**
- * Return type: (any) -> any.
+ * Return type: (any) -> any
  * @param a value to be returned
  * @return the same value
  */
@@ -132,7 +132,7 @@ public def identity(a) {
  * @return default
  */
 public def iterate(tuple, filter, f, default) {
-	if(tuple.size() > 0) {
+	if (tuple.size() > 0) {
 		if (filter.apply(tuple.get(0))) {
 			f.apply(tuple.get(0))
 		} else {
@@ -151,7 +151,7 @@ public def iterate(tuple, filter, f, default) {
  * @return maximum between the two fields
  */
 public def max(a, b) {
-	if(a.compareTo(b) > 0 ) {
+	if (a.compareTo(b) > 0 ) {
 		a
 	} else {
 		b
@@ -175,7 +175,7 @@ public def mean(local, field) {
  * @return minimum between the two fields
  */
 public def min(a, b) {
-	if(a.compareTo(b) < 0 ) {
+	if (a.compareTo(b) < 0 ) {
 		a
 	} else {
 		b
