@@ -160,7 +160,7 @@ public def diameter(source) {
 }
 
 /**
- * Find the parent of the current node following the maximum decrease in 
+ * Find the parent of the current device following the maximum decrease in 
  * potential.
  * 
  * Return type: (num, fun) -> any.
@@ -186,7 +186,7 @@ def noParent() { -1 }
 def imRoot() { -2 }
 
 /**
- * Find the parent ID of the current node following the maximum decrease in 
+ * Find the parent ID of the current device following the maximum decrease in 
  * potential.
  * 
  * Return type: (num, fun) -> num.
@@ -195,7 +195,7 @@ def imRoot() { -2 }
  * @return parent id
  */
 public def findParentId(potential) {
-	findParent(potential, (node) -> { node.getDeviceUID() })
+	findParent(potential, (device) -> { device.getDeviceUID() })
 }
  
 /**

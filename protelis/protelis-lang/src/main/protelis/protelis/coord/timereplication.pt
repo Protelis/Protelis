@@ -6,7 +6,7 @@ import org.apache.commons.math3.util.FastMath.min
 import protelis:coord:sharedTimer
 
 /*
- * This function should return false if the clock is out of date (namely: no node in the network is still on that clock).
+ * This function should return false if the clock is out of date (namely: no device in the network is still on that clock).
  */
 def isCurrent(currentClock, clock, k) {
 	currentClock - clock < k
