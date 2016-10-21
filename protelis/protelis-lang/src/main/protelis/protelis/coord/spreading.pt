@@ -91,7 +91,7 @@ public def boundG(region, null, source, initial, metric, accumulate) {
  * 
  * Return type: (bool, bool) -> num.
  * @param region where to compute distanceTo
- * @param source whether the node is a source
+ * @param source whether the device is a source
  * @return field of minimum distances to the closest source
  */
 public def boundDistanceTo(region, source) {
@@ -253,28 +253,26 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  * @param source whether the device is a source
  * @param metric how to estimate distances without lag
  * @param range communication max range
- * @param initial local value 
- * @param accumulate how to accumulate the local value 
  * @return accumulated value
  */
-public def crfGradient(source, metric, range, initial, accumulate) {
-	// potential <- [distance, speed, accumulatedValue]
-	rep (potential <- [Infinity, 0, initial]) {
+public def crfGradient(source, metric, range) {
+	// potential <- [distance, speed]
+	rep (potential <- [Infinity, 0]) {
 		mux (source) {
-			[0, 0, initial]
+			[0, 0]
 		} else {
 			let ndv = nbr(potential);
 			let d = ndv.get(0);
 			let v = ndv.get(1);
 			let dt = self.dt();
 			mux (anyHood(addRangeWithLag(d, metric, v) < potential.get(0))) {
-				minHood([d + metric.apply(), 0, accumulate.apply(ndv.get(2))])
+				minHood([d + metric.apply(), 0])
 			} else {
 				let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
-				[potential.get(0) + v0 * dt, v0, potential.get(2)]				
+				[potential.get(0) + v0 * dt, v0]				
 			}
 		}
-	}.get(2)
+	}.get(0)
 }
 
 /**
@@ -303,26 +301,26 @@ public def crfGradient(source, metric, range, initial, accumulate) {
  }
  
 /**
- * Smallest distance between source and destination nodes.
+ * Smallest distance between source and destination devices.
  * 
  * Return type: (bool, bool) -> num
  * @param source whether the current device is a source
  * @param destination whether the current device is a destination
- * @return smallest distance between source and destination nodes
+ * @return smallest distance between source and destination devices
  */
 public def distanceBetween(source, dest) { 
 	distanceBetweenWithMetric(source, dest, nbrRange)
 }
 
 /**
- * Smallest distance between source and destination nodes.
+ * Smallest distance between source and destination devices.
  * 
  * Return type: (bool, bool) -> num
  * @param source whether the current device is a source
  * @param destination whether the current device is a destination
  * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
- * @return smallest distance between source and destination nodes
+ * @return smallest distance between source and destination devices
  */
 public def distanceBetweenWithMetric(source, dest, metric) { 
 	G(source, distanceToWithMetric(dest, metric), metric, identity)
@@ -343,13 +341,56 @@ public def distanceTo(source) {
  * Distance from the current to the closest source.
  * 
  * Return type: (bool, f) -> num.
- * @param source whether the node is a source
+ * @param source whether the device is a source
  * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @return field of minimum distances to the closest source
  */
 public def distanceToWithMetric(source, metric) {
 	G(source, 0, metric, (v) -> { v + metric.apply() })
+}
+
+/**
+ * Used by flexGradient
+ */
+def slope(d, minD, metric) {
+	let nrange = metric.apply();
+	if (nrange > 0) {
+		let ndv = nbr(d);
+		let m = max(minD, maxHood(nrange));
+		maxHood([(d - ndv)/m, ndv, m])
+	} else { [0, d, 0] }
+}
+
+/**
+ * Flex-Gradient.
+ */
+public def flexGradient(source, epsilon, rate, range, distortion, metric) {
+	rep (d <- Infinity) {
+		mux (source) { 
+			0
+		} else {
+			let minD = range * distortion;
+			let slopeInfo = slope(d, minD, metric);
+			let maxSlope = slopeInfo.get(0);
+			let msd = slopeInfo.get(1);
+			let msr = slopeInfo.get(2);
+			let ct = minHood(nbr(d) + max(minD, maxHood(metric.apply())));
+			mux ((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
+				ct
+			} else {
+				mux (maxSlope > (1 + epsilon)) {
+					msd + msr * (1 + epsilon)
+				} else {
+					mux (maxSlope < (1 - epsilon)) {
+						msd + msr * (1 - epsilon)
+					} else {
+						d
+					}
+				}
+			}
+		}
+	}
 }
 
 /*
@@ -368,11 +409,11 @@ public def distanceToWithMetric(source, metric) {
 public def G(source, initial, metric, accumulate) {
 	rep (distanceValue <- [Infinity, initial]) {
 		mux (source) {
-			// If the node is a source then G return a 0 potential
+			// If the device is a source then G return a 0 potential
 			// and the initial value
 			[0, initial]
 		} else {
-			// The other node potentials are requested
+			// The other device potentials are requested
 			let ndv = nbr(distanceValue);
 			// G returns the value related to the minimum potential
 			// TODO do we need a default?
@@ -455,15 +496,36 @@ public def forecastObstacleWithMetric(source, obstacle, metric) {
 }
 
 /**
+ * Gradcast. Accumulate and return value along the direction estimated 
+ * by gradient.
+ * 
+ * Return type: (bool, fun, any, fun) -> any.
+ * @param source whether the device is a source
+ * @param gradient gradient to follow
+ * @param local local value
+ * @param accumulate how to accumulate local values
+ * @return accumulated value
+ */
+public def gradcast(source, gradient, local, accumulate) {
+	rep (value <- local) {
+		mux (source) { 
+			local
+		} else {
+			minHood([nbr(gradient.apply()), accumulate.apply(nbr(value))]).get(1)
+		}
+	}
+}
+
+/**
  * Determine the smallest distance from the current device to the source.
  * 
  * Return type: (bool, num, fun, fun, fun) -> num.
- * @param source whether the node is a source
+ * @param source whether the device is a source
  * @param initSource distance initial value
  * @param metric determine how to gauge the distance from to the current device
  * to its neighbors
  * @param communicationRange communication range
- * @return field of minimum distances from nodes to the closest source
+ * @return field of minimum distances from devices to the closest source
  */
 public def gradient(source, initSource, metric, communicationRange) {
 	rep (distance <- [Infinity, 0]) {
@@ -481,19 +543,6 @@ public def gradient(source, initSource, metric, communicationRange) {
 			}
 		}	  
 	}.get(0)
-}
-
-public def gradcast(source, gradient, local, accumulate) {
-	rep (value <- local) {
-		mux (source) { local } else {
-			minHood([
-					nbr(gradient.apply()), // get the gradient
-//					accumulate.apply(value) // get the value
-					((v) -> { v + 1 }).apply(value)
-//					((v) -> { min(v, local }).apply(value)
-				]).get(1)
-		}
-	}
 }
  
 /**
@@ -687,46 +736,3 @@ public def voronoiPatitioningWithMetric(seed, id, metric) {
 //	
 //}
 
-
-/**
- * Used by flexGradient
- */
-def slope(d, minD, metric) {
-	let nrange = metric.apply();
-	if (nrange > 0) {
-		let ndv = nbr(d);
-		let m = max(minD, maxHood(nrange));
-		maxHood([(d - ndv)/m, ndv, m])
-	} else { [0, d, 0] }
-}
-
-/**
- * 
- */
-public def flexGradient(source, epsilon, rate, range, distortion, metric) {
-	rep (d <- Infinity) {
-		mux (source) { 
-			0
-		} else {
-			let minD = range * distortion;
-			let slopeInfo = slope(d, minD, metric);
-			let maxSlope = slopeInfo.get(0);
-			let msd = slopeInfo.get(1);
-			let msr = slopeInfo.get(2);
-			let ct = minHood(nbr(d) + max(minD, maxHood(metric.apply())));
-			mux ((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
-				ct
-			} else {
-				mux (maxSlope > (1 + epsilon)) {
-					msd + msr * (1 + epsilon)
-				} else {
-					mux (maxSlope < (1 - epsilon)) {
-						msd + msr * (1 - epsilon)
-					} else {
-						d
-					}
-				}
-			}
-		}
-	}
-}
