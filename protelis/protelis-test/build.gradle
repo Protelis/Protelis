@@ -12,6 +12,8 @@ retrolambda {
   defaultMethods true
   incremental true
 }
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 dependencies {
     compile (
         project(':protelis-interpreter'),
