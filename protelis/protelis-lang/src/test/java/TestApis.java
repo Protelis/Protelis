@@ -282,7 +282,7 @@ public class TestApis {
      */
     @Test
     public void testCRFGradient() {
-        test("CRFgradient");
+        test("crfGradient");
     }
 
     /**
@@ -290,7 +290,7 @@ public class TestApis {
      */
     @Test
     public void testCRFGradient2() {
-        test("CRFgradient2");
+        test("crfGradient2");
     }
 
     /**
