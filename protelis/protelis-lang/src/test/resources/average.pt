@@ -1,2 +1,2 @@
-import protelis:coord:convergecast
+import protelis:coord:accumulation
 average(env.has("source"), 1)

@@ -1,3 +1,4 @@
+import protelis:coord:meta
 import protelis:coord:spreading
 
 let d = env.get("partition");

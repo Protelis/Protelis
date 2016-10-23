@@ -1,2 +1,2 @@
-import protelis:coord:convergecast
+import protelis:coord:accumulation
 diameter(env.has("source"))

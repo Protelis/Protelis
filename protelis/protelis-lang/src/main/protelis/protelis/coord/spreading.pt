@@ -220,28 +220,6 @@ public def closerThanWithMetric(source, metric, range) {
 }
 
 /**
- * Splice devices into regions according to the discriminant and apply f.
- * 
- * Return type: (any, fun, any) -> any.
- * @param discriminant split regions according to this value
- * @param filter how to handle the discriminant value
- * @param function what to apply in each region
- * @param default default value
- * @return apply f
- */
-public def computeMultiRegion(discriminant, filter, function, default) {
-	if (filter.apply(discriminant)) {
-		let res = alignedMap(
-			nbr([[discriminant, default]]),
-			(key, field) -> { filter.apply(key) },
-			(key, field) -> { function.apply() }, 
-			default
-		);
-		if (res == []) { default } else { res.get(0).get(1) }
-	} else { default }
-}
-
-/**
  * Self-healing gradcast algorithm that reconfigures in O(diameter) time. 
  * Requires euclidean metric. The CRF-Gradient algorithm handles this problem 
  * by splitting the calculation into constraint and restoring force behaviors.
@@ -425,45 +403,6 @@ public def G(source, initial, metric, accumulate) {
 			])
 		}
 	}.get(1) // return the accumulated value
-}
-
-/**
- * Gossip a value manipulated according to f.
- * 
- * Return type: (any, fun) -> any.
- * @param value what to gossip
- * @param f how to manipulate value
- * @return the value resulting from gossip
- */
-public def gossip(value, f) {
-	rep (v <- value) {
-		f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
-	}
-}
-
-/**
- * Gossip a value manipulated according to f.
- * 
- * Return type: (any, fun) -> any.
- * @param value what to gossip
- * @param f how to manipulate value
- * @return the value resulting from gossip
- */
-public def Gossip(value, f) {
-	G(false, value, nbrRange, (v) -> { f.apply(v, value) })
-}
-
-/**
- * Gossip whether the device has ever experienced a given condition.
- * 
- * Return type: (bool) -> bool.
- * @param a condition
- * @return true if the device has experienced the condition, false otherwise
- */
-public def gossipEver(a) {
-	rep (ever <- false) {
-		a || anyHood(nbr(ever))		
-	}
 }
 
 /**

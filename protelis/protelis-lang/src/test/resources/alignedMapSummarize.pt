@@ -1,5 +1,5 @@
 import protelis:coord:spreading
-import protelis:coord:convergecast
+import protelis:coord:accumulation
 import protelis:lang:utils
 
 def myId() {

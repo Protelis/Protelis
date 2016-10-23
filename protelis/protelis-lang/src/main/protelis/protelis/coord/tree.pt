@@ -1,5 +1,5 @@
 module protelis:coord:tree
-import protelis:coord:convergecast
+import protelis:coord:accumulation
 import protelis:coord:spreading
 import protelis:lang:utils
 

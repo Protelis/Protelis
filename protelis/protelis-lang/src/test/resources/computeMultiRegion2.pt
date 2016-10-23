@@ -1,6 +1,6 @@
+import protelis:coord:meta
 import protelis:lang:utils
-import protelis:coord:spreading
-
+import protelis:coord:nonselfstab:accumulation
 
 computeMultiRegion(
 	env.get("childPartition"), 

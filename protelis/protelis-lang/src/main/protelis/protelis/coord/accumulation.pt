@@ -1,4 +1,4 @@
-module protelis:coord:convergecast
+module protelis:coord:accumulation
 import protelis:coord:spreading
 import protelis:state:time
 import protelis:lang:utils 
@@ -90,6 +90,29 @@ public def cMultiSum(potential, local) {
 	})
 }
 
+//(def compute-cg (root coordinates)
+//     ;; center-of-gravity = sum of coordinate / number of devices
+//     (broadcast root (vmul
+//                       (/ 1 (tree-aggregate root 1 0))
+//                       (tree-aggregate root 
+//                                       coordinates
+//                                       (tup 0 0 0)))))
+//    
+                                   
+/**
+ * Return type: (num, fun, num, num) -> num.
+ * @param potential accumulate values descending this potential
+ * @param f how to accumulate values
+ * @param local local value
+ * @param default default value
+ * @return accumulated value
+ */
+public def cMultiIndependent(potential, f, local, default) {
+	 hoodWstateful(local, f, default, (v) -> { 
+	 	mux (potential < nbr(potential)) { nbr(v) } else { default }
+	 })
+}
+
 /**
  * The potential-source converges to the min of other device values.
  * 
@@ -99,9 +122,7 @@ public def cMultiSum(potential, local) {
  * @return minimum value
  */
 public def cMultiMin(potential, local) {
-	 hoodWstateful(local, min, Infinity, (v) -> { 
-	 	mux (potential < nbr(potential)) { nbr(v) } else { Infinity }
-	 })
+	 cMultiIndependent(potential, min, local, Infinity)
 }
 
 /**
@@ -130,19 +151,6 @@ public def consensus(init, f) {
  		val + f.apply(sumHood(nbr(val) - val))
  	}	
 } 
-
-/**
- * Gossip a value manipulated according to f.
- * 
- * Return type: (bool, any, fun) -> any.
- * @param sink whether the device is the root of the spanning tree
- * @param value what to gossip
- * @param f how to manipulate value
- * @return the value resulting from gossip
- */
-public def cossip(sink, value, f) {
-	summarize(sink, f, value, value)	
-}
 
 /**
  * Estimate the diameter of the connected component joined by the current
@@ -176,7 +184,6 @@ public def findParent(potential, accumulate) {
 		NaN
 	).get(0)
 }
-
 
 /**
  * Find the parent of the current device following the maximum decrease in 

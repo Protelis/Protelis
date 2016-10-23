@@ -1,0 +1,34 @@
+module protelis:coord:meta
+/**
+ * Splice devices into regions according to the discriminant and apply f.
+ * 
+ * Return type: (any, fun, any) -> any.
+ * @param discriminant split regions according to this value
+ * @param filter how to handle the discriminant value
+ * @param function what to apply in each region
+ * @param default default value
+ * @return apply f
+ */
+public def computeMultiRegion(discriminant, filter, function, default) {
+	if (filter.apply(discriminant)) {
+		let res = alignedMap(
+			nbr([[discriminant, default]]),
+			(key, field) -> { filter.apply(key) },
+			(key, field) -> { function.apply() }, 
+			default
+		);
+		if (res == []) { default } else { res.get(0).get(1) }
+	} else { default }
+}
+
+/**
+ * Feed f with pre-processed data, and then post-process the output.
+ * Return type: (fun, fun, fun) -> any
+ * @param pre how to pre-process
+ * @param f what to do
+ * @param post how to post process
+ * @return post(f(pre(input))
+ */
+public def processAndApply(pre, f, post) {
+	post.apply(f.apply(pre.apply()))
+}

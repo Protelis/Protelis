@@ -228,7 +228,7 @@ public final class InfrastructureTester {
                 if (!pair.getRight().equals(DC)) {
                     Object singleNodeResult = simulationRes.get(pair.getLeft());
                     assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
-                    final String err = "[Node" + pair.getLeft() + "]";
+                    final String err = "[Node" + pair.getLeft() + "] " + simulationRes.values();
                     if (singleNodeResult instanceof Double) {
                         assertEquals(err, (double) Double.parseDouble(pair.getRight()), (double) singleNodeResult,
                                         DELTA);
