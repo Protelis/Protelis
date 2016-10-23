@@ -646,11 +646,11 @@ public class TestApis {
     }
 
     /**
-     * Test timeReplicated.pt.
+     * Test timeReplication.pt.
      */
     @Test
     public void testTimeReplication() {
-        test("timeReplicated");
+        test("timeReplication");
     }
 
     /**
