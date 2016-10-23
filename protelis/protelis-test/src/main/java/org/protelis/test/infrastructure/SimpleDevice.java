@@ -6,6 +6,8 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.NetworkManager;
+import org.protelis.vm.SpatiallyEmbeddedDevice;
+import org.protelis.vm.TimeAwareDevice;
 import org.protelis.vm.impl.AbstractExecutionContext;
 import static org.junit.Assert.assertNotNull;
 import it.unibo.alchemist.model.interfaces.Environment;
@@ -15,7 +17,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
  * A simple implementation of a Protelis-based device, encapsulating a
  * ProtelisVM and a network interface.
  */
-public class SimpleDevice extends AbstractExecutionContext implements SpatiallyEmbeddedDevice {
+public class SimpleDevice extends AbstractExecutionContext implements SpatiallyEmbeddedDevice, TimeAwareDevice {
     private final RandomGenerator r;
     private final ProtelisNode node;
     private final Environment<Object> env;
