@@ -1,4 +1,4 @@
-module protelis:coord:sharedTimer
+module protelis:coord:sharedtimer
 import protelis:state:time
 
 /*
