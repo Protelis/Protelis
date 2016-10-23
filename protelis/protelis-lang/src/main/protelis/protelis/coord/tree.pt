@@ -1,0 +1,93 @@
+module protelis:coord:tree
+import protelis:coord:convergecast
+import protelis:coord:spreading
+import protelis:lang:utils
+
+/**
+ * Build a spanning tree.
+ * 
+ * Return type: (num, fun) -> any.
+ * @param potential potential to be followed
+ * @param function function to be applied to the parent device
+ * @return apply f
+ */
+public def spanningTree(potential) {
+	spanningTreeExtended(potential, identity, self)
+}
+
+/**
+ * Build a spanning tree.
+ * 
+ * Return type: (num, fun) -> any.
+ * @param potential potential to be followed
+ * @param function function to be applied to the parent device
+ * @param init initial value of the device
+ * @return apply f
+ */
+public def spanningTreeExtended(potential, function, init) {
+	rep (parent <- [imRoot(), init]) {
+		findParentAugmented(
+			potential, 
+			identity, 
+			(value) -> { function.apply(value) }, 
+			parent.get(1)
+		)
+	}
+}
+
+/**
+ * Apply function to the children of the current device.
+ * 
+ * Return type: (num, fun, any) -> any.
+ * @param potential potential to be followed
+ * @param function function to be applied to the children
+ * @param default default value for devices which are not children
+ * @return [child, f()]
+ */
+public def getChildren(potential, function, default) {
+	mux (nbr(findParent(potential, identity)) == self) { 
+		nbr([self, function.apply()])
+	} else {
+		[noParent(), default]
+	}
+}
+
+/**
+ * Assuming to have a spanning tree, apply f where condition holds,
+ * g otherwise.
+ * 
+ * Return type: (fun, bool, fun, fun) -> any.
+ * @param tree tree
+ * @param condition condition
+ * @param f what to do if condition is true
+ * @param g what to do if condition is false
+ * @return apply f where condition holds, g otherwise.
+ */
+public def applyOnTree(tree, condition, f, g) {
+	let parent = tree.apply();
+	mux (condition) { 
+		f.apply(parent)
+	} else {
+		g.apply(parent)
+	}
+}
+
+/**
+ * Assuming to have a spanning tree, apply f to the children of the first 
+ * device where condition holds, g otherwise.
+ * 
+ * Return type: (fun, bool, fun, fun) -> any.
+ * @param tree tree
+ * @param filter whether to execute f or g according to the parent condition
+ * @param f what to do if condition is true
+ * @param g what to do if condition is false
+ * @return apply f where condition holds, g otherwise.
+ */
+public def applyOnBranch(tree, filter, f, g) {
+	let parent = tree.apply(); // [ self, something(parent) ]
+	mux (filter.apply(parent.get(1))) { 
+		f.apply(parent)
+	} else {
+		g.apply(parent)
+	}
+}

@@ -62,14 +62,6 @@ public class TestApis {
     }
 
     /**
-     * Test dilate.pt.
-     */
-    @Test
-    public void testDilate() {
-        test("dilate");
-    }
-
-    /**
      * Test alignedMapIff.pt.
      */
     @Test
@@ -102,11 +94,19 @@ public class TestApis {
     }
 
     /**
-     * Test applyWhile.pt.
+     * Test applyOnBranch.pt.
      */
     @Test
-    public void testApplyWhile() {
-        testProgram("applyWhile");
+    public void testApplyOnBranch() {
+        test("applyOnBranch");
+    }
+
+    /**
+     * Test applyOnTree.pt.
+     */
+    @Test
+    public void testApplyOnTree() {
+        test("applyOnTree");
     }
 
     // /**
@@ -116,6 +116,14 @@ public class TestApis {
     // public void testAlignedMapSummarize() {
     // test("alignedMapSummarize");
     // }
+
+    /**
+     * Test applyWhile.pt.
+     */
+    @Test
+    public void testApplyWhile() {
+        testProgram("applyWhile");
+    }
 
     /**
      * Test average.pt.
@@ -326,6 +334,14 @@ public class TestApis {
     }
 
     /**
+     * Test dilate.pt.
+     */
+    @Test
+    public void testDilate() {
+        test("dilate");
+    }
+
+    /**
      * Test distanceBetween.pt.
      */
     @Test
@@ -395,6 +411,14 @@ public class TestApis {
     @Test
     public void testG() {
         test("G");
+    }
+
+    /**
+     * Test getChildren.pt.
+     */
+    @Test
+    public void testGetChildren() {
+        test("getChildren");
     }
 
     /**
@@ -579,6 +603,14 @@ public class TestApis {
     @Test
     public void testS() {
         test("S", true);
+    }
+
+    /**
+     * Test spanningTree.pt.
+     */
+    @Test
+    public void testSpanningTree() {
+        test("spanningTree");
     }
 
     /**

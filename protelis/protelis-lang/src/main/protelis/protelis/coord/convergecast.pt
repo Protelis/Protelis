@@ -169,21 +169,50 @@ public def diameter(source) {
  * @return -2 root, -1 no parent, accumulate(parent) otherwise
  */
 public def findParent(potential, accumulate) {
+	findParentAugmented(
+		potential, 
+		(device) -> { accumulate.apply(device) }, 
+		(value) -> { NaN },
+		NaN
+	).get(0)
+}
+
+
+/**
+ * Find the parent of the current device following the maximum decrease in 
+ * potential.
+ * 
+ * Return type: (num, fun) -> any.
+ * @param potential potential
+ * @param accumulate what to do with the parent
+ * @param accumulate what to do with the value
+ * @param local local value
+ * @param default default value for root or non parent
+ * @return -2 root, -1 no parent, accumulate(parent) otherwise
+ */
+public def findParentAugmented(potential, accumulate, accumulateV, local) {
 	mux (minHood(nbr(potential)) < potential) {
-		let closest = minHood(nbr([potential, accumulate.apply(self)]));
-		if (closest.size() > 1) { closest.get(1) } else { noParent() }
-	} else { imRoot() }
+		let closest = minHood(
+			nbr([
+				potential, 
+				accumulate.apply(self), 
+				accumulateV.apply(local)
+			])
+		);
+		if (closest.size() > 1) {  [closest.get(1), closest.get(2)] } 
+		else { [noParent(), local] }
+	} else { [imRoot(), local] }
 }
 
 /**
  * @return error while finding parent
  */
-def noParent() { -1 }
+public def noParent() { -1 }
 
 /**
  * @return "I've no parent" value
  */
-def imRoot() { -2 }
+public def imRoot() { -2 }
 
 /**
  * Find the parent ID of the current device following the maximum decrease in 

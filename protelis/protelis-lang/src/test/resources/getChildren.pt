@@ -1,0 +1,4 @@
+import protelis:coord:tree
+import protelis:coord:spreading
+
+sumHood(getChildren(distanceTo(env.has("source")), () -> { 1 }, 0).get(1))

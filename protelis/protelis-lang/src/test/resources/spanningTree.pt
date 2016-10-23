@@ -1,0 +1,8 @@
+import protelis:coord:tree
+import protelis:coord:spreading
+
+spanningTreeExtended(
+	distanceTo(env.has("source")), 
+	(n) -> { n + 1 }, 
+	0
+).get(1)
