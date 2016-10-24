@@ -405,6 +405,14 @@ public def G(source, initial, metric, accumulate) {
 	}.get(1) // return the accumulated value
 }
 
+public def Gnull(v, default) {
+	mux (v == Infinity) { 
+		default
+	} else { 
+		v
+	}
+}
+
 /**
  * Forecast obstacles along a path to the source.
  * 
@@ -429,9 +437,9 @@ public def forecastObstacle(source, obstacle) {
  * path towards the closest source, false otherwise
  */ 
 public def forecastObstacleWithMetric(source, obstacle, metric) {
-	let obs = if (obstacle) { 1 } else { 0 };
-	G(source, obs, metric, (v) -> { obs + v }) > 0
-//	G(source, obstacle, nbrRange, (v) -> { obstacle || v })
+//	let c = if (obstacle) { 1 } else { 0 };
+//	G(source, c, metric, (v) -> { c + Gnull(v, 0) }) > 0
+	G(source, obstacle, metric, (v) -> { obstacle || Gnull(v, false) })
 }
 
 /**

@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: true
+import protelis:coord:spreading
+Gnull(Infinity, false) == false && Gnull(false, false) == false && Gnull(true, false) == true
