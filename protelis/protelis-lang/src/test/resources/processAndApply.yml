@@ -1,0 +1,22 @@
+# result:
+#  {0 safe,  1 safe,  2 safe,  3 safe,
+#   4 safe,  5 dang,  6 dang,  7 safe,
+#   8 safe,  9 dang, 10 dang, 11 safe,
+#  12 safe, 13 safe, 14 safe, 15 safe}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.2]
+
+program: &program
+  - time-distribution: 1
+    program: processAndApply
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 3, 1, 1, 0.1, 0.1]
+    programs:
+      - *program

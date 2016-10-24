@@ -29,6 +29,6 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  * @param post how to post process
  * @return post(f(pre(input))
  */
-public def processAndApply(pre, f, post) {
-	post.apply(f.apply(pre.apply()))
+public def processAndApply(input, pre, f, post) {
+	post.apply(f.apply(pre.apply(input)))
 }
