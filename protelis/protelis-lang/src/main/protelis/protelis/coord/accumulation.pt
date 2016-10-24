@@ -33,7 +33,7 @@ public def boundAverage(sink, local, range, null) {
 	)
 }
 
-/*
+/**
  * Aggregate a field within a spanning tree built according to the maximum
  * decrease in potential. Concentrate the potential estimated according to 
  * the given HoodOp function.
@@ -177,7 +177,7 @@ public def diameter(source) {
  * @return -2 root, -1 no parent, accumulate(parent) otherwise
  */
 public def findParent(potential, accumulate) {
-	findParentAugmented(
+	findParentExtended(
 		potential, 
 		(device) -> { accumulate.apply(device) }, 
 		(value) -> { NaN },
@@ -197,7 +197,7 @@ public def findParent(potential, accumulate) {
  * @param default default value for root or non parent
  * @return -2 root, -1 no parent, accumulate(parent) otherwise
  */
-public def findParentAugmented(potential, accumulate, accumulateV, local) {
+public def findParentExtended(potential, accumulate, accumulateV, local) {
 	mux (minHood(nbr(potential)) < potential) {
 		let closest = minHood(
 			nbr([
@@ -271,6 +271,17 @@ public def opinionFeedback(sink, feedback) {
  * @return aggregated value according to accumulate 
  */
 public def summarize(sink, accumulate, local, null) {
-	broadcast(sink, C(distanceTo(sink), accumulate, local, null))
+	summarizeWithMetric(sink, nbrRange, accumulate, local, null)
 }
- 
+
+public def summarizeWithMetric(sink, metric, accumulate, local, null) {
+	broadcast(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null))
+}
+
+public def summarizeWithPotential(potential, zero, accumulate, local, null) {
+	broadcastWithMetric(
+		potential == zero, 
+		C(potential, accumulate, local, null), 
+		() -> { potential }
+	)
+}
