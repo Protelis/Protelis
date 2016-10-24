@@ -14,16 +14,6 @@ import org.protelis.test.ProgramTester;
  */
 public class TestApis {
 
-    /**
-     * Print the current method name.
-     */
-    @Rule
-    public TestRule watcher = new TestWatcher() {
-        protected void starting(final Description description) {
-            System.out.println("Starting test: " + description.getMethodName());
-        }
-    };
-
     private static void test(final String file) {
         test(file, InfrastructureTester.EXAMPLE_RUNS);
     }
@@ -58,6 +48,16 @@ public class TestApis {
     private static void testProgram(final String file) {
         ProgramTester.testFile(file);
     }
+
+    /**
+     * Print the current method name.
+     */
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected void starting(final Description description) {
+            System.out.println("Starting test: " + description.getMethodName());
+        }
+    };
 
     /**
      * Test addRange.pt.
@@ -108,18 +108,19 @@ public class TestApis {
     }
 
     /**
-     * Test descendBranch.pt.
+     * Test applyOnTree.pt.
      */
     @Test
-    public void testDescendBranch() {
+    public void testApplyOnTree() {
+        test("applyOnTree");
     }
 
     /**
-     * Test descendBranch2.pt.
+     * Test applyWhile.pt.
      */
     @Test
-    public void testDescendBranch2() {
-        test("descendBranch2");
+    public void testApplyWhile() {
+        testProgram("applyWhile");
     }
 
     /**
@@ -131,11 +132,11 @@ public class TestApis {
     }
 
     /**
-     * Test applyOnTree.pt.
+     * Test average.pt.
      */
     @Test
-    public void testApplyOnTree() {
-        test("applyOnTree");
+    public void testAverage() {
+        test("average");
     }
 
     // /**
@@ -145,30 +146,6 @@ public class TestApis {
     // public void testAlignedMapSummarize() {
     // test("alignedMapSummarize");
     // }
-
-    /**
-     * Test applyWhile.pt.
-     */
-    @Test
-    public void testApplyWhile() {
-        testProgram("applyWhile");
-    }
-
-    /**
-     * Test Gnull.pt.
-     */
-    @Test
-    public void testGnull() {
-        testProgram("Gnull");
-    }
-
-    /**
-     * Test average.pt.
-     */
-    @Test
-    public void testAverage() {
-        test("average");
-    }
 
     /**
      * Test boundBroadcast.pt.
@@ -363,6 +340,21 @@ public class TestApis {
     }
 
     /**
+     * Test descendBranch.pt.
+     */
+    @Test
+    public void testDescendBranch() {
+    }
+
+    /**
+     * Test descendBranch2.pt.
+     */
+    @Test
+    public void testDescendBranch2() {
+        test("descendBranch2");
+    }
+
+    /**
      * Test diameter.pt.
      */
     @Test
@@ -456,6 +448,14 @@ public class TestApis {
     @Test
     public void testGetChildren() {
         test("getChildren");
+    }
+
+    /**
+     * Test Gnull.pt.
+     */
+    @Test
+    public void testGnull() {
+        testProgram("Gnull");
     }
 
     /**
@@ -611,6 +611,14 @@ public class TestApis {
     }
 
     /**
+     * Test processAndApply.pt.
+     */
+    @Test
+    public void testProcessAndApply() {
+        test("processAndApply");
+    }
+
+    /**
      * Test range.pt.
      */
     @Test
@@ -656,6 +664,14 @@ public class TestApis {
     @Test
     public void testSummarize() {
         test("summarize");
+    }
+
+    /**
+     * Test summarizeWithPotential.pt.
+     */
+    @Test
+    public void testSummarizeWithPotential() {
+        test("summarizeWithPotential");
     }
 
     /**
