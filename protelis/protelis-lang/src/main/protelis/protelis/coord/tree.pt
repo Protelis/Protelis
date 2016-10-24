@@ -83,12 +83,29 @@ public def applyOnTree(tree, condition, f, g) {
  * @param g what to do if condition is false
  * @return apply f where condition holds, g otherwise.
  */
-public def descendBranch(tree, filter, f, g) {
-	let parent = tree.apply(); // [ self, something(parent) ]
-	mux (filter.apply(parent.get(1))) { 
-		f.apply(parent)
+public def descendBranch(parent, filter, f, g) {
+	let p = parent.apply(); // [ self, something(parent) ]
+	mux (filter.apply(p.get(1))) { 
+		f.apply(p)
 	} else {
-		g.apply(parent)
+		g.apply(p)
+	}
+}
+
+public def descendBranch2(potential, filter, f, g) {
+	descendBranchWithNull(potential, 0, filter, f, g)
+}
+
+public def descendBranchWithNull(potential, null, filter, f, g) {
+	let c = forecastObstacleWithMetric(
+		potential == null, 
+		filter.apply(), 
+		() -> { potential }
+	);
+	mux (c) { 
+		f.apply([findParent(potential, identity), c])
+	} else { 
+		g.apply([findParent(potential, identity), c])
 	}
 }
 
