@@ -8,7 +8,7 @@ descendBranch(
 		(value) -> { value || env.has("condition") },
 		env.has("condition")
 	) },
-	(condition) -> { condition },
-	(parent) -> { "bar" },
-	(parent) -> { "foo" }
+	(condition) -> { condition || env.has("condition") },
+	(parent) -> { "dang" },
+	(parent) -> { "safe" }
 )

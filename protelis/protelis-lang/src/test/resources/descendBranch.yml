@@ -1,7 +1,16 @@
 # result:
-#  {0 foo, 1 foo,  2 bar,  3 bar,
-#   4 foo, 5 foo,  6 bar,  7 bar,
-#   8 foo, 9 foo, 10 foo, 11 bar}
+#  {0 safe, 1 dang,  2 dang,  3 dang,
+#   4 safe, 5 safe,  6 dang,  7 dang,
+#   8 safe, 9 safe, 10 safe, 11 dang}
+#
+# spanning tree:
+#   0 safe (start)
+#     \
+#      1 dang
+#    /    \ 
+#   6      2 dang
+#  /     /   \
+# 11    3     7 dang (end)
 
 incarnation: test
 

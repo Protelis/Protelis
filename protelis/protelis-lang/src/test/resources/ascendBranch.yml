@@ -1,13 +1,24 @@
 # result:
-#  {0 foo, 1 foo,  2 bar,  3 bar,
-#   4 foo, 5 foo,  6 bar,  7 bar,
-#   8 foo, 9 foo, 10 foo, 11 bar}
+#  {0 dang, 1 dang,  2 safe,  3 safe,
+#   4 safe, 5 dang,  6 dang,  7 dang,
+#   8 safe, 9 safe, 10 safe, 11 safe}
+#
+# spanning tree:
+# 0 dang (end)
+#  \
+#   1 dang
+#    \ 
+#     5 dang
+#      \
+#       6 dang
+#        \
+#         7 dang (start)
 
 incarnation: test
 
 network-model:
   type: EuclideanDistance
-  parameters: [1.8]
+  parameters: [1.2]
 
 program: &program
   - time-distribution: 1
@@ -27,7 +38,7 @@ displacements:
         concentration: true
       - in:
           type: Circle
-          parameters: [1, 0, 0.5]
+          parameters: [3, 1, 0.5]
         molecule: danger
         concentration: 0.8
     programs:

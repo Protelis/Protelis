@@ -96,8 +96,8 @@ public def descendBranch(tree, filter, f, g) {
  * 
  */
 public def ascendBranch(potential, filter, f, g) {
-	mux (getChildren(potential, filter, false).get(1)) {
-		f.apply(nbr(getChildren(potential, filter, false)))
+	if (C(potential, or, filter.apply(), filter.apply())) {
+		f.apply(getChildren(potential, filter, false))
 	} else {
 		g.apply()
 	}

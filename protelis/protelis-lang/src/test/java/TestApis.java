@@ -94,11 +94,19 @@ public class TestApis {
     }
 
     /**
-     * Test applyOnBranch.pt.
+     * Test descendBranch.pt.
      */
     @Test
-    public void testApplyOnBranch() {
-        test("applyOnBranch");
+    public void testDescendBranch() {
+        test("descendBranch");
+    }
+
+    /**
+     * Test ascendBranch.pt.
+     */
+    @Test
+    public void testAscendBranch() {
+        test("ascendBranch");
     }
 
     /**
