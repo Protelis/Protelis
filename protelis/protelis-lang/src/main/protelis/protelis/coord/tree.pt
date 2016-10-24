@@ -83,11 +83,22 @@ public def applyOnTree(tree, condition, f, g) {
  * @param g what to do if condition is false
  * @return apply f where condition holds, g otherwise.
  */
-public def applyOnBranch(tree, filter, f, g) {
+public def descendBranch(tree, filter, f, g) {
 	let parent = tree.apply(); // [ self, something(parent) ]
 	mux (filter.apply(parent.get(1))) { 
 		f.apply(parent)
 	} else {
 		g.apply(parent)
+	}
+}
+
+/**
+ * 
+ */
+public def ascendBranch(potential, filter, f, g) {
+	mux (getChildren(potential, filter, false).get(1)) {
+		f.apply(nbr(getChildren(potential, filter, false)))
+	} else {
+		g.apply()
 	}
 }

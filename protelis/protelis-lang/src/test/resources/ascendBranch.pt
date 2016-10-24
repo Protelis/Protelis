@@ -1,0 +1,15 @@
+import protelis:coord:tree
+import protelis:coord:spreading
+
+ascendBranch(
+	() -> { 
+		spanningTreeExtended(
+			distanceTo(env.has("source")),
+			(value) -> { env.get("danger") },
+			env.get("danger")
+		) 
+	},
+	(danger) -> { danger > 0.5 },
+	(parent) -> { "dang" },
+	(parent) -> { "safe" }
+)
