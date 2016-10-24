@@ -16,6 +16,8 @@ import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
 import org.protelis.vm.impl.SimpleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java8.util.stream.IntStream;
 import java8.util.stream.IntStreams;
@@ -35,7 +37,7 @@ public final class ProgramTester {
     private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
     private static final int MIN_CYCLE_NUM = 1;
     private static final int MAX_CYCLE_NUM = 100;
-
+    private static final Logger L = LoggerFactory.getLogger(ProgramTester.class);
     /**
      * 
      * @param file
@@ -157,7 +159,7 @@ public final class ProgramTester {
         final ProtelisVM vm = new ProtelisVM(program, new SimpleContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
-            System.out.println(i + ": " + vm.getCurrentValue());
+            L.debug("[rnd {}] res:", i, vm.getCurrentValue());
         }
         return vm.getCurrentValue();
     }

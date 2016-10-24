@@ -21,6 +21,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.protelis.test.infrastructure.ProtelisNode;
 import org.protelis.test.infrastructure.RunProtelisProgram;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -43,6 +45,7 @@ public final class InfrastructureTester {
      */
     public static final int EXAMPLE_RUNS = 1000;
     private static final double DELTA = 0.01;
+    private static final Logger L = LoggerFactory.getLogger(InfrastructureTester.class);
 
     private InfrastructureTester() {
     }
@@ -92,7 +95,7 @@ public final class InfrastructureTester {
         sim.getEnvironment().getNodes().forEach(n -> {
             ProtelisNode pNode = (ProtelisNode) n;
             simulationRes.put(pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
-            System.out.println("[Node" + pNode.toString() + "]: " + pNode.get(RunProtelisProgram.RESULT));
+            L.debug("[node{}] res:{}", pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
         });
         if (f instanceof BiConsumer) {
             ((BiConsumer<Map<String, Object>, List<Pair<String, String>>>) f).accept(simulationRes, expectedResult);
@@ -286,9 +289,9 @@ public final class InfrastructureTester {
                 final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
                 try {
                     while (multiRun.find()) {
-                        System.out.println(multiRun.group());
-                        System.out.println(multiRun.group(1));
-                        System.out.println(multiRun.group(2));
+                        L.debug("multiRun.group(): {}", multiRun.group());
+                        L.debug("multiRun.group(1): {}", multiRun.group(1));
+                        L.debug("multiRun.group(2): {}", multiRun.group(2));
                         res.put(Integer.parseInt(multiRun.group(1)), getResultList(multiRun.group(2)));
                     }
                 } catch (IllegalStateException e) {

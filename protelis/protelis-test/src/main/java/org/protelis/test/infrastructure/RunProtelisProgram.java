@@ -7,6 +7,8 @@ import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisVM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule;
@@ -33,7 +35,9 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
     private final RandomGenerator random;
     private transient ProtelisVM vm;
     private final CachingNetworkManager netmgr;
-    private int round = 0;
+    private int round;
+    private static final Logger L = LoggerFactory.getLogger(RunProtelisProgram.class);
+
     /**
      * @param env
      *            the environment
@@ -67,6 +71,7 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
         node.setNetworkManger(netmgr);
         final ExecutionContext ctx = new SimpleDevice(env, n, r, rand, netmgr);
         vm = new ProtelisVM(prog, ctx);
+        round = 0;
     }
 
     @Override
@@ -82,7 +87,7 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
     public void execute() {
         vm.runCycle();
         node.setConcentration(this, vm.getCurrentValue());
-        System.out.println(" [node" + node.toString() + "] " + round + ": " + vm.getCurrentValue());
+        L.debug(" [node{}-rnd:{}]: {}", node.toString(), round, vm.getCurrentValue());
         round++;
         environment.getNeighborhood(node).getNeighbors().forEach(n -> {
             ProtelisNode pNode = (ProtelisNode) n;
