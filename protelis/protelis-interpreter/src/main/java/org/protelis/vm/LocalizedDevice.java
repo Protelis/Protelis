@@ -1,5 +1,6 @@
 package org.protelis.vm;
 
+import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 
 /**
@@ -13,8 +14,7 @@ public interface LocalizedDevice extends ExecutionContext {
     Tuple getCoordinates();
 
     /**
-     * @param device other device
-     * @return direction to other device
+     * @return field of directions to other devices
      */
-    Tuple getVectorToDevice(LocalizedDevice device);
+    Field getVector();
 }

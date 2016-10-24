@@ -1,4 +1,5 @@
 module protelis:lang:utils
+import java.lang.Math.pow
 
 /**
  * Return type: (bool, bool) -> bool.
@@ -191,6 +192,12 @@ public def min(a, b) {
 	} else {
 		b
 	}
+}
+
+public def norm(vector, p) {
+	vector
+		.map(self, (a) -> { pow(a, p) })
+		.reduce(self, 0, (a, b) -> { a + b })
 }
 
 /**

@@ -1,15 +1,19 @@
 package org.protelis.test.infrastructure;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.datatype.impl.ArrayTupleImpl;
+import org.protelis.vm.LocalizedDevice;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.SpatiallyEmbeddedDevice;
 import org.protelis.vm.TimeAwareDevice;
 import org.protelis.vm.impl.AbstractExecutionContext;
-import static org.junit.Assert.assertNotNull;
+
 import it.unibo.alchemist.model.interfaces.Environment;
 import it.unibo.alchemist.model.interfaces.Reaction;
 
@@ -17,7 +21,8 @@ import it.unibo.alchemist.model.interfaces.Reaction;
  * A simple implementation of a Protelis-based device, encapsulating a
  * ProtelisVM and a network interface.
  */
-public class SimpleDevice extends AbstractExecutionContext implements SpatiallyEmbeddedDevice, TimeAwareDevice {
+public class SimpleDevice extends AbstractExecutionContext
+                implements SpatiallyEmbeddedDevice, LocalizedDevice, TimeAwareDevice {
     private final RandomGenerator r;
     private final ProtelisNode node;
     private final Environment<Object> env;
@@ -45,6 +50,7 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
         this.env = environment;
         this.netmgr = netmgr;
         this.node = node;
+        // c = getCoordinates();
     }
 
     /**
@@ -94,11 +100,34 @@ public class SimpleDevice extends AbstractExecutionContext implements SpatiallyE
 
     @Override
     public Field nbrRange() {
-        return buildField(deviceUid -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) deviceUid), node);
+        return buildField(otherNode -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) otherNode), node);
     }
 
     @Override
     public Field nbrLag() {
-        return buildField(deviceUid -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) deviceUid), node);
+        return buildField(otherNode -> 1.0, node);
+    }
+
+    @Override
+    public Tuple getCoordinates() {
+        double[] cd = env.getPosition(node).getCartesianCoordinates();
+        Tuple c = new ArrayTupleImpl(0, cd.length);
+        for (int i = 0; i < cd.length; i++) {
+            c = c.set(i, cd[i]);
+        }
+        return c;
+    }
+
+    @Override
+    public Field getVector() {
+        return buildField(device -> this.getVectorToNeigh(getCoordinates(), device), this);
+    }
+
+    private Tuple getVectorToNeigh(final Tuple myC, final LocalizedDevice device) {
+        Tuple otherC = device.getCoordinates(), tmp = device.getCoordinates();
+        for (int i = 0; i < myC.size(); i++) {
+            tmp = tmp.set(i, (Double) otherC.get(i) - (Double) myC.get(i));
+        }
+        return tmp;
     }
 }

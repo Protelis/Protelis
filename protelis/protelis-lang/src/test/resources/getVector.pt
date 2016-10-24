@@ -1,0 +1,2 @@
+import protelis:lang:utils
+norm(minHood(self.getVector()), 2)

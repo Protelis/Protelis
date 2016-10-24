@@ -451,6 +451,14 @@ public class TestApis {
     }
 
     /**
+     * Test getVector.pt.
+     */
+    @Test
+    public void testGetVector() {
+        test("getVector");
+    }
+
+    /**
      * Test Gnull.pt.
      */
     @Test
