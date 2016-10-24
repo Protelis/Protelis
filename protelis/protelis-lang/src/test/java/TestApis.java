@@ -1,7 +1,11 @@
 
 import java.io.IOException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.protelis.test.InfrastructureTester;
 import org.protelis.test.ProgramTester;
 
@@ -9,6 +13,16 @@ import org.protelis.test.ProgramTester;
  * Testing Protelis core libraries.
  */
 public class TestApis {
+
+    /**
+     * Print the current method name.
+     */
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected void starting(final Description description) {
+            System.out.println("Starting test: " + description.getMethodName());
+        }
+    };
 
     private static void test(final String file) {
         test(file, InfrastructureTester.EXAMPLE_RUNS);
@@ -98,7 +112,14 @@ public class TestApis {
      */
     @Test
     public void testDescendBranch() {
-        test("descendBranch");
+    }
+
+    /**
+     * Test descendBranch2.pt.
+     */
+    @Test
+    public void testDescendBranch2() {
+        test("descendBranch2");
     }
 
     /**
@@ -131,6 +152,14 @@ public class TestApis {
     @Test
     public void testApplyWhile() {
         testProgram("applyWhile");
+    }
+
+    /**
+     * Test Gnull.pt.
+     */
+    @Test
+    public void testGnull() {
+        testProgram("Gnull");
     }
 
     /**
