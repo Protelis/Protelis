@@ -8,8 +8,7 @@ sourceSets {
 	test {
 	    resources {
 	        srcDir 'src/main/protelis'
-	        srcDir 'src/test/protelis'
-	        srcDir 'src/test/yaml'
+	        srcDir 'src/test/resources'
 	    }
 	}
 }
