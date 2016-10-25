@@ -1,0 +1,6 @@
+// EXPECTED_RESULT: true
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+falseDuringLast(3, cyclicTimer(1)) && 
+	anyTime(falseDuringLast(3, !cyclicTimer(3))) && 
+	!allTime(falseDuringLast(3, !cyclicTimer(4)))

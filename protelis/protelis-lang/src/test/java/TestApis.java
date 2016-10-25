@@ -347,14 +347,6 @@ public class TestApis {
     }
 
     /**
-     * Test descendBranch2.pt.
-     */
-    @Test
-    public void testDescendBranch2() {
-        test("descendBranch2");
-    }
-
-    /**
      * Test diameter.pt.
      */
     @Test
@@ -403,6 +395,30 @@ public class TestApis {
     }
 
     /**
+     * Test falseAfterTime.pt.
+     */
+    @Test
+    public void testFalseAfterTime() {
+        testProgram("falseAfterTime");
+    }
+
+    /**
+     * Test falseDuringLast.pt.
+     */
+    @Test
+    public void testFalseDuringLast() {
+        testProgram("falseDuringLast");
+    }
+
+    /**
+     * Test falseFor.pt.
+     */
+    @Test
+    public void testFalseFor() {
+        testProgram("falseFor");
+    }
+
+    /**
      * Test findParent.pt.
      */
     @Test
@@ -448,14 +464,6 @@ public class TestApis {
     @Test
     public void testGetChildren() {
         test("getChildren");
-    }
-
-    /**
-     * Test getVector.pt.
-     */
-    @Test
-    public void testGetVector() {
-        test("getVector");
     }
 
     /**
@@ -523,6 +531,14 @@ public class TestApis {
     }
 
     /**
+     * Test isFallingEdge.pt.
+     */
+    @Test
+    public void testIsFallingEdge() {
+        testProgram("isFallingEdge");
+    }
+
+    /**
      * Test isRecentEvent.pt.
      */
     @Test
@@ -544,14 +560,6 @@ public class TestApis {
     @Test
     public void testIsSignalStable() {
         testProgram("isSignalStable");
-    }
-
-    /**
-     * Test iterate.pt.
-     */
-    @Test
-    public void testIterate() {
-        testProgram("iterate");
     }
 
     /**
@@ -603,19 +611,19 @@ public class TestApis {
     }
 
     /**
+     * Test nbrVector.pt.
+     */
+    @Test
+    public void testNbrVector() {
+        test("nbrVector");
+    }
+
+    /**
      * Test the number of neighbors of each device.
      */
     @Test
     public void testNeighborhood() {
         test("neighborhood");
-    }
-
-    /**
-     * Test opinionFeedback.pt.
-     */
-    @Test
-    public void testOpinionFeedback() {
-        test("opinionFeedback");
     }
 
     /**
@@ -648,14 +656,6 @@ public class TestApis {
     @Test
     public void testRange() {
         testProgram("range");
-    }
-
-    /**
-     * Test reduce.pt.
-     */
-    @Test
-    public void testReduce() {
-        testProgram("reduce");
     }
 
     /**
@@ -707,27 +707,27 @@ public class TestApis {
     }
 
     /**
-     * Test TFilter function.
-     */
-    @Test
-    public void testTFilter() {
-        test("tfilter");
-    }
-
-    /**
-     * Test tick.pt.
-     */
-    @Test
-    public void testTick() {
-        testProgram("tick");
-    }
-
-    /**
      * Test timeReplication.pt.
      */
     @Test
     public void testTimeReplication() {
         test("timeReplication");
+    }
+
+    /**
+     * Test timeSinceStart.pt.
+     */
+    @Test
+    public void testTimeSinceStart() {
+        testProgram("timeSinceStart");
+    }
+
+    /**
+     * Test trueAfterTime.pt.
+     */
+    @Test
+    public void testTrueAfterTime() {
+        testProgram("trueAfterTime");
     }
 
     /**
@@ -744,22 +744,6 @@ public class TestApis {
     @Test
     public void testTrueFor() {
         testProgram("trueFor");
-    }
-
-    /**
-     * Test trueOnceAfter.pt.
-     */
-    @Test
-    public void testTrueOnceAfter() {
-        testProgram("trueOnceAfter");
-    }
-
-    /**
-     * Test trueOnceEvery.pt.
-     */
-    @Test
-    public void testTrueOnceEvery() {
-        testProgram("trueOnceEvery");
     }
 
     /**

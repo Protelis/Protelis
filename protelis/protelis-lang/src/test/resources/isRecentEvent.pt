@@ -1,6 +1,7 @@
 // EXPECTED_RESULT: true
 import protelis:state:time
-if(tick() >= 3) {
+import protelis:state:nonselfstabilizing:time
+if(timeSinceStart() >= 3) {
 	allTime(isRecentEvent(cyclicTimer(2), 3)) &&
 		!allTime(isRecentEvent(cyclicTimer(3), 3))
 } else { false }

@@ -72,32 +72,13 @@ public def applyOnTree(tree, condition, f, g) {
  * Assuming to have a spanning tree, apply f to the children of the first 
  * device where condition holds, g otherwise.
  * 
- * @param tree 	 () -> [ExecutionContext, bool], tree
- * @param filter (bool) -> bool, whether to execute f or g according to the parent condition
- * @param f 	 ([ExecutionContext, bool]) -> T', what to do if condition is true
- * @param g		 ([ExecutionContext, bool]) -> T', what to do if condition is false
- * @return 		 T', apply f where condition holds, g otherwise
- */
-public def descendBranch(parent, filter, f, g) {
-	let p = parent.apply(); // [ self, something(parent) ]
-	mux (filter.apply(p.get(1))) { 
-		f.apply(p)
-	} else {
-		g.apply(p)
-	}
-}
-
-/**
- * Assuming to have a spanning tree, apply f to the children of the first 
- * device where condition holds, g otherwise.
- * 
  * @param potential num, potential
  * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
  * @param f 	 	([ExecutionContext, bool]) -> T', what to do if condition is true
  * @param g		 	([ExecutionContext, bool]) -> T', what to do if condition is false
  * @return 		 	T', apply f where condition holds, g otherwise
  */
-public def descendBranch2(potential, filter, f, g) {
+public def descendBranch(potential, filter, f, g) {
 	descendBranchWithNull(potential, 0, filter, f, g)
 }
 

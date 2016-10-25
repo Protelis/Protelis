@@ -1,5 +1,6 @@
 // EXPECTED_RESULT: true
 import protelis:state:time
-let t = tick();
+import protelis:state:nonselfstabilizing:time
+let t = timeSinceStart();
 countDown(2) == 
 	if(t > 2) {0} else {if(t == 1) {1} else {2}}

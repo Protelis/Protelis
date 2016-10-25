@@ -16,5 +16,5 @@ public interface LocalizedDevice extends ExecutionContext {
     /**
      * @return field of directions to other devices
      */
-    Field getVector();
+    Field nbrVector();
 }

@@ -1,3 +1,4 @@
 // EXPECTED_RESULT: true
 import protelis:state:time
+import protelis:state:nonselfstabilizing:time
 anyTime(true) && anyTime(cyclicTimer(2)) && !anyTime(false)

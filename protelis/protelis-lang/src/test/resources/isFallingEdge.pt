@@ -1,0 +1,5 @@
+/*
+ * EXPECTED_RESULT: ($CYCLE + 1) % 2 == 0
+ */
+import protelis:state:time
+isFallingEdge(cyclicTimer(1))

@@ -32,11 +32,10 @@ public def boundAverage(sink, local, range, null) {
 }
 
 /**
- * Aggregate a field within a spanning tree built according to the maximum
- * decrease in potential. Concentrate the potential estimated according to 
- * the given HoodOp function.
+ * Aggregate a field of type T within a spanning tree built according to the maximum
+ * decrease in potential. Accumulate the potential according to the reduce function.
  * 
- * @param potential	num, direction of the aggregation
+ * @param potential	num, gradient of which gives aggregation direction
  * @param reduce 	(T, T) -> T, function
  * @param local 	T, local value 
  * @param null 		T, evaluated when the field is empty
@@ -102,7 +101,7 @@ public def cMultiSum(potential, local) {
  * @param default 	T, default value
  * @return 			T, accumulated value
  */
-public def cMultiIndependent(potential, f, local, default) {
+public def cMultiIdempotent(potential, f, local, default) {
 	 hoodWstateful(local, f, default, (v) -> { 
 	 	mux (potential < nbr(potential)) { nbr(v) } else { default }
 	 })
@@ -116,7 +115,7 @@ public def cMultiIndependent(potential, f, local, default) {
  * @return 			num, minimum value
  */
 public def cMultiMin(potential, local) {
-	 cMultiIndependent(potential, min, local, Infinity)
+	 cMultiIdempotent(potential, min, local, Infinity)
 }
 
 /**
@@ -235,17 +234,6 @@ public def laplacianConsensus(init, epsilon) {
  	consensus(init, (v) -> {epsilon * v})
 }
 
-/**
- * Aggregate the feedbacks in a region.
- * 
- * @param sink 	   bool, whether the device is the root of the spanning tree
- * @param feedback num, value to be aggregated
- * @return 		   num, sum of feedbacks
- */
-public def opinionFeedback(sink, feedback) {
-	Tfilter(C(distanceTo(sink), (a,b) -> { a + b }, feedback, 0))
-}
- 
 /**
  * Broadcast the value accumulated by the sink. 
  * Example: 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 

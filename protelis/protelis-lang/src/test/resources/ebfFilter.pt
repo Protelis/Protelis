@@ -1,3 +1,3 @@
 // EXPECTED_RESULT: 1
 import protelis:state:time
-ebfFilter(1, 0.1)
+exponentialBackoffFilter(1, 0.1)

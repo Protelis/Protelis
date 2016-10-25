@@ -25,6 +25,7 @@ public def computeMultiRegion(discriminant, filter, function, default) {
 /**
  * Feed f with pre-processed data, and then post-process the output.
  * 
+ * @param input G, input
  * @param pre  (G) -> H, how to pre-process
  * @param f    (H) -> I, what to do
  * @param post (I) -> T, how to post process
@@ -37,6 +38,7 @@ public def processAndApply(input, pre, f, post) {
 /**
  * Feed f with pre-processed data.
  * 
+ * @param input G, input
  * @param pre  (G) -> H, how to pre-process
  * @param f    (H) -> I, what to do
  * @return      I, f(pre(input))
@@ -48,6 +50,7 @@ public def preProcessAndApply(input, pre, f) {
 /**
  * Apply f, and then post-process the output.
  * 
+ * @param input G, input
  * @param f    (H) -> I, what to do
  * @param post (I) -> T, how to post process
  * @return      T, post(f(input))

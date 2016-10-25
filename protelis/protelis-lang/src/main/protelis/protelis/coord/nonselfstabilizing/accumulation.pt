@@ -1,4 +1,4 @@
-module protelis:coord:nonselfstab:accumulation
+module protelis:coord:nonselfstabilizing:accumulation
 import protelis:coord:spreading
 import protelis:coord:accumulation
 

@@ -4,26 +4,6 @@ import java.lang.Math.max
 import protelis:lang:utils
 
 /**
- * @param event bool, event
- * @return 		bool, true if the event is always verified
- */
-public def allTime(event) {
-	rep(t <- event) {
-		t && event
-	}
-}
-
-/**
- * @param event bool, event
- * @return 		bool, whether the event has occurred at least once
- */
-public def anyTime(event) {
-	rep(t <- event) {
-		t || event
-	}
-}
-
-/**
  * Apply a function while condition is true.
  * 
  * @param event bool, event
@@ -32,7 +12,7 @@ public def anyTime(event) {
  * @return 		T, apply f if event occurs, return null otherwise
  */
 public def applyWhile(event, f, null) {
-	if(event) { f.apply() } else { null }
+	if (event) { f.apply() } else { null }
 }
 
 /**
@@ -54,31 +34,6 @@ public def countDownWithDecay(length, dt) {
 }
 
 /**
- * Counter.
- * 
- * @param start num, counter initial value
- * @param inc 	num, how much to increase the counter
- * @return 		num, current status of the counter
- */
-public def counter(start, inc) {
-	rep(c <- start) {
-		c + inc
-	}
-}
-
-/**
- * How many times an event occurred.
- * 
- * @param event bool, event to be monitored
- * @return 		num, how many times an event occurred
- */
-public def countTrue(event) {
-	rep(c <- 0) {
-		c + if(event) { 1 } else { 0 }
-	}
-}
-
-/**
  * Cyclic timer.
  * 
  * @param length num, timeout
@@ -96,8 +51,8 @@ public def cyclicTimer(length) {
  * @return 		 bool, true if the timeout is expired, false otherwise
  */
 public def cyclicTimerWithDecay(length, decay) {
-	rep(left <- length) {
-		if(left == 0) {
+	rep (left <- length) {
+		if (left == 0) {
 			length
 		} else {
 			countDownWithDecay(length, decay)
@@ -140,7 +95,7 @@ public def cyclicFunctionWithDecay(length, decay, f, null) {
  * @return 		 num, variation between current and old values
  */ 
 public def delta(signal) {
-	rep(old <- [signal, 0]) {
+	rep (old <- [signal, 0]) {
 		[signal, signal - old.get(0)]
 	}.get(1)
 }
@@ -152,34 +107,21 @@ public def delta(signal) {
  * @param a 	 num, alpha value
  * @return 		 num, filtered signal
  */
-public def ebfFilter(signal, a) {
-	rep(old <- signal) {
+public def exponentialBackoffFilter(signal, a) {
+	rep (old <- signal) {
 		signal * a + old * (1 - a)
-	}
-}
-
-/**
- * Flip two values at each round. Return b at first.
- *
- * @param a T, first value
- * @param b T, second value
- * @return  T, (ba)+ sequence of values
- */ 
-public def flip(a, b) {
-	rep(c <- a) {
-		(a + b) - c
 	}
 }
 
 /**
  * @param signal T, signal to be monitored
  * @param time 	 num, consider the signal stable after this time
- * @return 		 bool, true if the signal value does not change for at least time
+ * @return 		 bool, true if the signal does not change for at least time
  */
 public def isSignalStable(signal, time) {
 	let t = 
-		rep(old <- [signal, 0]) {
-			mux(signal == old.get(0)) { 
+		rep (old <- [signal, 0]) {
+			mux (signal == old.get(0)) { 
 				[signal, old.get(1) + self.dt()]
 			} else { 
 				[signal, 0]
@@ -194,7 +136,7 @@ public def isSignalStable(signal, time) {
  * @return 		  bool, true if the event occurred before timeout, false otherwise
  */
 public def isRecentEvent(event, timeout) {
-	if(event) { 
+	if (event) { 
 		true
 	} else { 
 		countDown(timeout) > 0
@@ -206,8 +148,22 @@ public def isRecentEvent(event, timeout) {
  * @return 		 bool, true if the signal had a rising edge, false otherwise
  */
 public def isRisingEdge(signal) {
-	rep(old <- [signal, false]) {
-		mux(!old.get(0) && signal) { 
+	rep (old <- [signal, false]) {
+		mux (!old.get(0) && signal) { 
+			[signal, true]
+		} else { 
+			[signal, false]
+		}
+	}.get(1);
+}
+
+/**
+ * @param signal bool, binary signal to be monitored
+ * @return 		 bool, true if the signal had a falling edge, false otherwise
+ */
+public def isFallingEdge(signal) {
+	rep (old <- [signal, false]) {
+		mux (old.get(0) && !signal) { 
 			[signal, true]
 		} else { 
 			[signal, false]
@@ -225,7 +181,7 @@ public def isRisingEdge(signal) {
  * @return 		  T, hold value if timeout is not expired, null otherwise
  */
 public def limitedMemory(value, null, timeout, dt) {
-	if(wait(timeout)) { null } else { value }
+	if (wait(timeout)) { null } else { value }
 }
 
 /*
@@ -238,93 +194,36 @@ public def limitedMemory(value, null, timeout, dt) {
  * @see countDown
  */
 public def T(initial, zero, decay) {
-	rep(v <- initial) { 
+	rep (v <- initial) { 
 		// rep is initialized only during the first invocation
 		min(initial, max(zero, decay.apply(v)))
 	}
 }
 
 /**
- * @param value T, signal
- * @return 		T, the same signal
- */
-public def Tfilter(value) {
-	T(value, value, identity)
-}
-
-/**
- * Time flow.
- * 
- * @return num, time since the first tick
- */
-public def tick() {
-	counter(0, self.dt())
-}
-
-/**
- * 
  * @param timeout num, timeout
  * @return 		  bool, true after timeout, false otherwise
  */
-public def trueOnceAfter(timeout) {
+public def trueAfterTime(timeout) {
 	countDown(timeout) <= 0
 }
 
 /**
  * @param timeout num, timeout
- * @return 		  bool, true once every timeout, false otherwise
+ * @return 		  bool, false after timeout, true otherwise
  */
-public def trueOnceEvery(timeout) {
-	cyclicTimer(timeout)
+public def falseAfterTime(timeout) {
+	!trueAfterTime(timeout)
 }
 
 /**
- * @param timeout num, timeout
- * @param event   bool, event
- * @return 		  bool, true if the event occurred within last time period
- */
-public def trueDuringLast(timeout, event) {
-	if(event) { true } else { tick() <= timeout }
-}
-
-/**
- * @param timeout num, timeout
- * @param event   bool, event
- * @return        bool, true if a true condition has persisted for time
- */
-public def trueFor(time, event) {
-	if(event) { tick() >= time } else { false }
-}
-
-/**
- * 
  * @param signal T, value to be monitored
  * @return 		 bool, whether v has changed given its previous state
  */
-public def valueChanged(signal) {
-	rep(old <- [signal, true]) {
-		[signal, if(signal == old) { false } else { true }]
+public def isValueChanged(signal) {
+	rep (old <- [signal, true]) {
+		[signal, if (signal == old) { false } else { true }]
 	}.get(1)
-}
-
-/**
- * SAMEAS valueChanged
- * Track when the region has changed, so that stale state can be discarded.
- * 
- * @param region bool, region discriminant
- * @return       bool, true if the region has changed, false otherwise
- * @see valueChanged
- */
-public def regionChanged(region) {
-	rep(old <- [region, 0]) {
-		[region, 
-			mux(region == old.get(0) && (old.get(1) == 0 || old.get(1) > 2)) {
-					0
-			} else {
-				old.get(1) + 1
-			}
-		]
-	}.get(1) > 0
 }
 
 /**
@@ -342,5 +241,5 @@ public def wait(timeout) {
  * @return 		  T, apply f after x, null otherwise
  */
 public def waitAndApply(timeout, f, null) {
-	if(wait(timeout)) { f.apply() } else { null }
+	if (wait(timeout)) { f.apply() } else { null }
 }

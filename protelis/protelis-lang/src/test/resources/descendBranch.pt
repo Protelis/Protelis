@@ -1,14 +1,9 @@
 import protelis:coord:tree
 import protelis:coord:spreading
 
-let d = distanceTo(env.has("source"));
 descendBranch(
-	() -> { spanningTreeExtended(
-		d,
-		(value) -> { value || env.has("condition") },
-		env.has("condition")
-	) },
-	(condition) -> { condition || env.has("condition") },
+	distanceTo(env.has("source")),
+	() -> { env.has("condition") },
 	(parent) -> { "dang" },
 	(parent) -> { "safe" }
 )

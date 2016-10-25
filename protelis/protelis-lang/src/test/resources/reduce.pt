@@ -1,3 +1,0 @@
-// EXPECTED_RESULT: 0
-import protelis:lang:utils
-reduce([0, 1, 2], min)

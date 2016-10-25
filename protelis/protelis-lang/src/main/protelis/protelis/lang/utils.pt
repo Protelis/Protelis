@@ -73,13 +73,32 @@ public def diff(a, b) {
 /**
  * *-hood wrapper.
  * 
- * @param local       T, local value
- * @param aggregator  (T, T) -> T, how to reduce information
- * @param default 	  T, default value in case the field returned by fieldBuilder is empty
- * @param fiedBuilder T, return which field should be reduced
- * @return 			  T, reduced value
+ * @param local        T, local value
+ * @param aggregator   (T, T) -> T, how to reduce information
+ * @param default 	   T, default value in case the field returned by fieldBuilder is empty
+ * @param fieldBuilder () -> T, return which field should be reduced
+ * @return 			   T, reduced value
  */
 public def hoodW(local, aggregator, default, fieldBuilder) {
+	aggregator.apply(local, 
+		hood(
+			(a, b) -> { aggregator.apply(a, b) },
+			default,
+			fieldBuilder.apply()
+		)
+	)
+}
+
+/**
+ * Stateful *-hood wrapper.
+ * 
+ * @param local        T, local value
+ * @param aggregator   (T, T) -> T, how to reduce information
+ * @param default 	   T, default value in case the field returned by fieldBuilder is empty
+ * @param fieldBuilder (T) -> T, return which field should be reduced
+ * @return 			   T, reduced value
+ */
+public def hoodWstateful(local, aggregator, default, fieldBuilder) {
 	 rep (v <- local) {
  		aggregator.apply(local, 
  			hood(
@@ -89,21 +108,6 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  			)
  		)
  	}
-}
-
-/**
- * Stateful *-hood wrapper.
- * 
- * @param local       T, local value
- * @param aggregator  (T, T) -> T, how to reduce information
- * @param default 	  T, default value in case the field returned by fieldBuilder is empty
- * @param fiedBuilder T, return which field should be reduced
- * @return 			  T, reduced value
- */
-public def hoodWstateful(local, aggregator, default, fieldBuilder) {
-	rep (v <- local) {
-		hoodW(local, aggregator, default, fieldBuilder)
-	}
 }
 
 /**
@@ -124,28 +128,28 @@ public def identity(a) {
  	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
  }
 
-/**
- * Apply f to all the tuple elements satisfying the filtering condition. 
- * Default is applied otherwise.
- * 
- * @param tuple   [T], iterate over this tuple
- * @param filter  (T) -> bool, filtering condition
- * @param f 	  (T) -> T', function to be applied
- * @param default T, default value
- * @return 		  T, default
- */
-public def iterate(tuple, filter, f, default) {
-	if (tuple.size() > 0) {
-		if (filter.apply(tuple.get(0))) {
-			f.apply(tuple.get(0))
-		} else {
-			default
-		};
-		iterate(tuple.subTupleEnd(1), filter, f, default)
-	} else {
-		default
-	}
-}
+///**
+// * Apply f to all the tuple elements satisfying the filtering condition. 
+// * Default is applied otherwise.
+// * 
+// * @param tuple   [T], iterate over this tuple
+// * @param filter  (T) -> bool, filtering condition
+// * @param f 	  (T) -> T', function to be applied
+// * @param default T, default value
+// * @return 		  T, default
+// */
+//public def iterate(tuple, filter, f, default) {
+//	if (tuple.size() > 0) {
+//		if (filter.apply(tuple.get(0))) {
+//			f.apply(tuple.get(0))
+//		} else {
+//			default
+//		};
+//		iterate(tuple.subTupleEnd(1), filter, f, default)
+//	} else {
+//		default
+//	}
+//}
 
 /**
  * @param a T, first field
@@ -223,21 +227,6 @@ public def or(a, b) {
  */
 public def range(x, min, max) {
 	x * (max - min) + min
-}
-
-/**
- * Reduce a tuple according to f.
- * 
- * @param tuple [T], tuple to be reduced
- * @param f 	(T, T) -> T, how to reduce the tuple
- * @return 		T, reduced tuple
- */
-public def reduce(tuple, f) {
-	if (tuple.size() <= 1) {
-		tuple.get(0);
-	} else {
-		f.apply(tuple.get(0), reduce(tuple.subTupleEnd(1), f));
-	}
 }
 
 /**

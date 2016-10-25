@@ -1,2 +1,2 @@
-import protelis:coord:nonselfstab:accumulation
+import protelis:coord:nonselfstabilizing:accumulation
 gossipEver(env.get("temperature") > 20)

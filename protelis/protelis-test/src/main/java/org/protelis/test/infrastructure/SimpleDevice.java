@@ -119,7 +119,7 @@ public class SimpleDevice extends AbstractExecutionContext
     }
 
     @Override
-    public Field getVector() {
+    public Field nbrVector() {
         return buildField(device -> this.getVectorToNeigh(getCoordinates(), device), this);
     }
 

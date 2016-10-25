@@ -1,2 +1,0 @@
-import protelis:coord:accumulation
-opinionFeedback(env.has("acts"), env.get("feedback"))

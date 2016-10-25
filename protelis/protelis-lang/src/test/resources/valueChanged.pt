@@ -1,3 +1,3 @@
 // EXPECTED_RESULT: $CYCLE % 2 == 0
 import protelis:state:time
-valueChanged(cyclicTimer(1))
+isValueChanged(cyclicTimer(1))
