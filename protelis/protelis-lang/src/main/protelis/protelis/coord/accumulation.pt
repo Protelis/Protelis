@@ -6,10 +6,9 @@ import protelis:lang:utils
 /**
  * Estimate and broadcast the average value within a spatial region.
  * 
- * Return type: (bool, num) -> num.
- * @param sink whether the device is the root of the spanning tree
- * @param local local value
- * @return average value
+ * @param sink 	bool, whether the device is the root of the spanning tree
+ * @param local num,  local value
+ * @return 		num,  average value
  */
 public def average(sink, value) {
 	summarize(sink, sum, value, 0) / neighborhood()
@@ -18,12 +17,11 @@ public def average(sink, value) {
 /**
  * Estimate the average value across a bounded spatial region.
  * 
- * Return type: (bool, num) -> num.
- * @param sink whether the device is the root of the spanning tree
- * @param local local value
- * @param range region range
- * @param null default value
- * @return average value
+ * @param sink 	bool, whether the device is the root of the spanning tree
+ * @param local num,  local value
+ * @param range num,  region range
+ * @param null 	num,  default value
+ * @return 		num,  average value
  */
 public def boundAverage(sink, local, range, null) {
 	boundSpreadingWithRange(
@@ -38,12 +36,11 @@ public def boundAverage(sink, local, range, null) {
  * decrease in potential. Concentrate the potential estimated according to 
  * the given HoodOp function.
  * 
- * Return type: (num, fun, any, any) -> any
- * @param potential direction of the aggregation
- * @param reduce HoodOp function
- * @param local local value 
- * @param null expression evaluated when the field is empty
- * @return aggregated value
+ * @param potential	num, direction of the aggregation
+ * @param reduce 	(T, T) -> T, function
+ * @param local 	T, local value 
+ * @param null 		T, evaluated when the field is empty
+ * @return 			T, aggregated value
  */
 public def C(potential, reduce, local, null) {
 	rep (v <- local) {
@@ -73,10 +70,9 @@ public def C(potential, reduce, local, null) {
  * using all paths down the potential function rather than just
  * one. Can implement  any  other  idempotent  or  separable  function.
  * 
- * Return type: (num, num) -> num.
- * @param potential sum values descending this potential
- * @param local value
- * @return aggregated value
+ * @param potential num, sum values descending this potential
+ * @param local 	num, value
+ * @return 			num, aggregated value
  */
 public def cMultiSum(potential, local) {
 	 hoodWstateful(local, sum, 0, (v) -> {  				
@@ -100,12 +96,11 @@ public def cMultiSum(potential, local) {
 //    
                                    
 /**
- * Return type: (num, fun, num, num) -> num.
- * @param potential accumulate values descending this potential
- * @param f how to accumulate values
- * @param local local value
- * @param default default value
- * @return accumulated value
+ * @param potential num, accumulate values descending this potential
+ * @param 			(T, T) -> T, f how to accumulate values
+ * @param local 	T, local value
+ * @param default 	T, default value
+ * @return 			T, accumulated value
  */
 public def cMultiIndependent(potential, f, local, default) {
 	 hoodWstateful(local, f, default, (v) -> { 
@@ -116,10 +111,9 @@ public def cMultiIndependent(potential, f, local, default) {
 /**
  * The potential-source converges to the min of other device values.
  * 
- * Return type: (num, num) -> num.
- * @param potential minimize values descending this potential
- * @param local value
- * @return minimum value
+ * @param potential num, minimize values descending this potential
+ * @param local 	num, value
+ * @return 			num, minimum value
  */
 public def cMultiMin(potential, local) {
 	 cMultiIndependent(potential, min, local, Infinity)
@@ -128,10 +122,9 @@ public def cMultiMin(potential, local) {
 /**
  * The potential-source converges to the max of other device values.
  * 
- * Return type: (num, num) -> num.
- * @param potential minimize values descending this potential
- * @param local value
- * @return maximum value
+ * @param potential num, minimize values descending this potential
+ * @param local 	num, value
+ * @return 			num, maximum value
  */
 public def cMultiMax(potential, local) {
 	 -cMultiMin(potential, -local)
@@ -140,10 +133,9 @@ public def cMultiMax(potential, local) {
 /**
  * Devices agree on a common value.
  * 
- * Return type: (num, f) -> num.
- * @param init initial device value 
- * @param f how to determine consensus
- * @return shared value
+ * @param init 	num, initial device value 
+ * @param f 	(num) -> num, how to determine consensus
+ * @return 		num, shared value
  */
 public def consensus(init, f) {
  	rep (val <- init) {
@@ -156,9 +148,8 @@ public def consensus(init, f) {
  * Estimate the diameter of the connected component joined by the current
  * device.
  * 
- * Return type: (bool) -> num.
- * @param source source of the connected component
- * @return diameter of the connected component
+ * @param source 	bool, source of the connected component
+ * @return diameter num, of the connected component
  */
 public def diameter(source) {
 	let d = distanceTo(source);
@@ -171,15 +162,14 @@ public def diameter(source) {
  * Find the parent of the current device following the maximum decrease in 
  * potential.
  * 
- * Return type: (num, fun) -> any.
- * @param potential potential
- * @param accumulate what to do with the parent
- * @return -2 root, -1 no parent, accumulate(parent) otherwise
+ * @param potential num, potential
+ * @param f 		(ExecutionContext) -> T, what to do with the parent
+ * @return 			num|T, -2 root, -1 no parent, accumulate(parent) otherwise
  */
-public def findParent(potential, accumulate) {
+public def findParent(potential, f) {
 	findParentExtended(
 		potential, 
-		(device) -> { accumulate.apply(device) }, 
+		(device) -> { f.apply(device) }, 
 		(value) -> { NaN },
 		NaN
 	).get(0)
@@ -189,21 +179,20 @@ public def findParent(potential, accumulate) {
  * Find the parent of the current device following the maximum decrease in 
  * potential.
  * 
- * Return type: (num, fun) -> any.
- * @param potential potential
- * @param accumulate what to do with the parent
- * @param accumulate what to do with the value
- * @param local local value
- * @param default default value for root or non parent
- * @return -2 root, -1 no parent, accumulate(parent) otherwise
+ * @param potential num, potential
+ * @param f 		(ExecutionContext) -> T, what to do with the parent
+ * @param g 		(T') -> T', what to do with the value
+ * @param local 	T', local value
+ * @param default 	T', default value for root or non parent
+ * @return 			num|[T,T'], -2 root, -1 no parent, accumulate(parent) otherwise
  */
-public def findParentExtended(potential, accumulate, accumulateV, local) {
+public def findParentExtended(potential, f, g, local) {
 	mux (minHood(nbr(potential)) < potential) {
 		let closest = minHood(
 			nbr([
 				potential, 
-				accumulate.apply(self), 
-				accumulateV.apply(local)
+				f.apply(self), 
+				g.apply(local)
 			])
 		);
 		if (closest.size() > 1) {  [closest.get(1), closest.get(2)] } 
@@ -212,12 +201,12 @@ public def findParentExtended(potential, accumulate, accumulateV, local) {
 }
 
 /**
- * @return error while finding parent
+ * @return num, error finding parent
  */
 public def noParent() { -1 }
 
 /**
- * @return "I've no parent" value
+ * @return num, root value
  */
 public def imRoot() { -2 }
 
@@ -225,10 +214,8 @@ public def imRoot() { -2 }
  * Find the parent ID of the current device following the maximum decrease in 
  * potential.
  * 
- * Return type: (num, fun) -> num.
- * @param potential potential
- * @param accumulate what to do with the parent
- * @return parent id
+ * @param num, potential potential
+ * @return num|ExecutionContext, -2 root, -1 no parent, parent
  */
 public def findParentId(potential) {
 	findParent(potential, (device) -> { device.getDeviceUID() })
@@ -237,10 +224,9 @@ public def findParentId(potential) {
 /**
  * Laplacian consensus.
  * 
- * Return type: (num, num) -> num.
- * @param init initial value
- * @param epsilon epsilon
- * @return value agreed upon consensus
+ * @param init 	  num, initial value
+ * @param epsilon num, epsilon
+ * @return 		  num, value agreed upon consensus
  */
 public def laplacianConsensus(init, epsilon) {
  	consensus(init, (v) -> {epsilon * v})
@@ -249,35 +235,53 @@ public def laplacianConsensus(init, epsilon) {
 /**
  * Aggregate the feedbacks in a region.
  * 
- * Return type: (bool, num) -> num.
- * @param sink whether the device is the root of the spanning tree
- * @param feedback value to be aggregated
- * @return sum of feedbacks
+ * @param sink 	   bool, whether the device is the root of the spanning tree
+ * @param feedback num, value to be aggregated
+ * @return 		   num, sum of feedbacks
  */
 public def opinionFeedback(sink, feedback) {
 	Tfilter(C(distanceTo(sink), (a,b) -> { a + b }, feedback, 0))
 }
  
 /**
- * Broadcast the value accumulated by the source. Example: 
- * 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
+ * Broadcast the value accumulated by the sink. 
+ * Example: 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
  * devices in a region.
  * 
- * Return type: (bool, fun, num, num) -> num.
- * @param sink whether the device should collect the aggregated information
- * @param accumulate how to aggregate
- * @param local local value
- * @param null default value
- * @return aggregated value according to accumulate 
+ * @param sink 	 bool, whether the device should collect the aggregated information
+ * @param reduce (T, T) -> T, how to aggregate
+ * @param local  T, local value
+ * @param null   T, default value
+ * @return 	 	 T, aggregated value
  */
-public def summarize(sink, accumulate, local, null) {
-	summarizeWithMetric(sink, nbrRange, accumulate, local, null)
+public def summarize(sink, reduce, local, null) {
+	summarizeWithMetric(sink, nbrRange, reduce, local, null)
 }
 
+/**
+ * Broadcast the value accumulated by the sink. 
+ * 
+ * @param sink 	 bool, whether the device should collect the aggregated information
+ * @param metric () -> num, how to estimate distance to the other device
+ * @param reduce (T, T) -> T, how to aggregate
+ * @param local  T, local value
+ * @param null   T, default value
+ * @return 	 	 T, aggregated value
+ */
 public def summarizeWithMetric(sink, metric, accumulate, local, null) {
 	broadcast(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null))
 }
 
+/**
+ * Broadcast the value accumulated by the sink. 
+ * 
+ * @param potential num, potential
+ * @param zero 		num, value representing null potential
+ * @param reduce 	(T, T) -> T, how to aggregate
+ * @param local  	T, local value
+ * @param null   	T, default value
+ * @return 	 	 	T, aggregated value
+ */
 public def summarizeWithPotential(potential, zero, accumulate, local, null) {
 	broadcastWithMetric(
 		potential == zero, 
