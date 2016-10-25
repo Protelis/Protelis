@@ -4,7 +4,6 @@ import protelis:lang:utils
 /**
  * Splice devices into regions according to the discriminant and apply f.
  * 
- * Return type: (any, fun, any) -> any.
  * @param discriminant T, split regions according to this value
  * @param filter 	   (T) -> bool, how to handle the discriminant value
  * @param function 	   () -> T', what to apply in each region

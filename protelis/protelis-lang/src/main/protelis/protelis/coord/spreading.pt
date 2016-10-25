@@ -441,7 +441,6 @@ public def gradcast(source, gradient, local, accumulate) {
 /**
  * Determine the smallest distance from the current device to the source.
  * 
- * Return type: (bool, num, fun, fun, fun) -> num.
  * @param source bool, whether the device is a source
  * @param init   num, distance initial value
  * @param metric () -> num, estimate distance from other devices
@@ -506,7 +505,6 @@ public def nbrRangeHop() {
 /*
  * Estimate the distance of the current device.
  * 
- * Return type: (fun, fun, num) -> num.
  * @param metric    () -> num, how to estimate distances
  * @param lagmetric () -> num, how to estimate latencies
  * @param speed     num, communication speed
