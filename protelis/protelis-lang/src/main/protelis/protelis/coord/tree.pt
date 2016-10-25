@@ -7,7 +7,7 @@ import protelis:lang:utils
  * Build a spanning tree.
  * 
  * @param potential num,  potential to be followed
- * @return			ExecutionContext, parent
+ * @return			[ExecutionContext, ExecutionContext], parent
  */
 public def spanningTree(potential) {
 	spanningTreeExtended(potential, identity, self)
@@ -20,6 +20,7 @@ public def spanningTree(potential) {
  * @param function  (T) -> T', function to be applied to the parent value
  * @param init 		T', initial value of the device
  * @return 			[num|ExecutionContext, T']
+ * @see imRoot, noParent
  */
 public def spanningTreeExtended(potential, function, init) {
 	rep (parent <- [imRoot(), init]) {

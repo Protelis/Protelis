@@ -164,7 +164,8 @@ public def diameter(source) {
  * 
  * @param potential num, potential
  * @param f 		(ExecutionContext) -> T, what to do with the parent
- * @return 			num|T, -2 root, -1 no parent, accumulate(parent) otherwise
+ * @return 			num|T, imRoot() | noParent() | accumulate(parent)
+ * @see imRoot, noParent
  */
 public def findParent(potential, f) {
 	findParentExtended(
@@ -184,7 +185,8 @@ public def findParent(potential, f) {
  * @param g 		(T') -> T', what to do with the value
  * @param local 	T', local value
  * @param default 	T', default value for root or non parent
- * @return 			num|[T,T'], -2 root, -1 no parent, accumulate(parent) otherwise
+ * @return 			num|[T,T'], imRoot() | noParent() | accumulate(parent)
+ * @see imRoot, noParent
  */
 public def findParentExtended(potential, f, g, local) {
 	mux (minHood(nbr(potential)) < potential) {
@@ -215,7 +217,8 @@ public def imRoot() { -2 }
  * potential.
  * 
  * @param num, potential potential
- * @return num|ExecutionContext, -2 root, -1 no parent, parent
+ * @return num|ExecutionContext, imRoot() | noParent() | parent
+ * @see imRoot, noParent
  */
 public def findParentId(potential) {
 	findParent(potential, (device) -> { device.getDeviceUID() })
