@@ -619,6 +619,22 @@ public class TestApis {
     }
 
     /**
+     * Test postProcessAndApply.pt.
+     */
+    @Test
+    public void testPostProcessAndApply() {
+        test("postProcessAndApply");
+    }
+
+    /**
+     * Test preProcessAndApply.pt.
+     */
+    @Test
+    public void testPreProcessAndApply() {
+        test("preProcessAndApply");
+    }
+
+    /**
      * Test processAndApply.pt.
      */
     @Test

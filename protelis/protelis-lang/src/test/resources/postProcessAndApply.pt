@@ -1,11 +1,10 @@
 import protelis:coord:meta
 import protelis:coord:spreading
 
-processAndApply(
+postProcessAndApply(
 	nbr(1), // input
-	(inputField) -> { sumHood(inputField) }, // pre-process
-	(processedInput) -> { 
-		G(env.has("source"), false, nbrRange, (v) -> { processedInput > 3 })
+	(input) -> { 
+		G(env.has("source"), false, nbrRange, (v) -> { sumHood(input) > 3 })
 	}, // f
 	(functionOutput) -> { 
 		if (functionOutput) { "dang" } else { "safe" }
