@@ -1,0 +1,40 @@
+module protelis:coord:graph
+import protelis:coord:meta
+import protelis:lang:utils
+
+public def checkLeaf(myId, inbound) {
+	rep (v <- inbound) {
+		unionHood(nbr(v))
+	}.intersection([myId]).size() == 0
+}
+
+public def checkRoot(inbound) {
+	inbound == []
+}
+
+public def checkChain(myId, inbound) {
+	chain(myId, inbound).intersection([myId]).size() > 0 || 
+		checkSelfChain(myId, inbound)
+}
+
+public def checkSelfChain(myId, inbound) {
+	inbound.intersection([myId]).size() > 0
+}
+
+public def chain(myId, inbound) {
+	mux (inbound != []) {
+		rep (v <- inbound) {
+			v.union(
+				hood(
+					(a, b) -> { a.union(b) }, 
+					[], 
+					mux (v.intersection(nbr([myId])).size() > 0) {
+						nbr(inbound)
+					} else {
+						[]			
+					}
+				)
+			)
+		}
+	} else { [] }
+}

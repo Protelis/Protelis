@@ -1,0 +1,60 @@
+# result:
+#  {0 T, 1 F,  
+#   2 F, 3 F}
+# 
+# graph:
+#          0 -> 1
+#          |
+#  2 <- 3 <-   
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: checkRoot
+              
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    contents:
+      - molecule: dependencies
+        concentration: []
+      - molecule: myId
+        concentration: 0
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [1, 0]
+    contents:
+      - molecule: dependencies
+        concentration: [0]
+      - molecule: myId
+        concentration: 1
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [0, 1]
+    contents:
+      - molecule: dependencies
+        concentration: [3]
+      - molecule: myId
+        concentration: 2
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [1, 1]
+    contents:
+      - molecule: dependencies
+        concentration: [0]
+      - molecule: myId
+        concentration: 3
+    programs:
+      - *program      

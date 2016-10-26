@@ -139,14 +139,6 @@ public class TestApis {
         test("average");
     }
 
-    // /**
-    // * Test alignedMapSummarize.pt.
-    // */
-    // @Test
-    // public void testAlignedMapSummarize() {
-    // test("alignedMapSummarize");
-    // }
-
     /**
      * Test boundBroadcast.pt.
      */
@@ -195,6 +187,14 @@ public class TestApis {
         test("C");
     }
 
+    // /**
+    // * Test alignedMapSummarize.pt.
+    // */
+    // @Test
+    // public void testAlignedMapSummarize() {
+    // test("alignedMapSummarize");
+    // }
+
     /**
      * Test canSee.pt.
      */
@@ -217,6 +217,62 @@ public class TestApis {
     @Test
     public void testChannel2() {
         test("channel2");
+    }
+
+    /**
+     * Test checkChain.pt.
+     */
+    @Test
+    public void testCheckChain() {
+        test("checkChain");
+    }
+
+    /**
+     * Test checkChain2.pt.
+     */
+    @Test
+    public void testCheckChain2() {
+        test("checkChain2");
+    }
+
+    /**
+     * Test checkChain3.pt.
+     */
+    @Test
+    public void testCheckChain3() {
+        test("checkChain3");
+    }
+
+    /**
+     * Test checkChain4.pt.
+     */
+    @Test
+    public void testCheckChain4() {
+        test("checkChain4");
+    }
+
+    /**
+     * Test checkChain5.pt.
+     */
+    @Test
+    public void testCheckChain5() {
+        test("checkChain5");
+    }
+
+    /**
+     * Test checkLeaf.pt.
+     */
+    @Test
+    public void testCheckLeaf() {
+        test("checkLeaf");
+    }
+
+    /**
+     * Test checkRoot.pt.
+     */
+    @Test
+    public void testCheckRoot() {
+        test("checkRoot");
     }
 
     /**
