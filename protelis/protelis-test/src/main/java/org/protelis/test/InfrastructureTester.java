@@ -66,7 +66,7 @@ public final class InfrastructureTester {
             testSingleRun(runs, env, expectedResult, f);
         } else {
             final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
-            for (int r : expectedResult.keys()) {
+            for (final int r : expectedResult.keys()) {
                 final Environment<Object> env = loader.getWith(null);
                 testSingleRun(r, env, expectedResult.get(r), f);
             }
@@ -91,9 +91,9 @@ public final class InfrastructureTester {
         final Simulation<Object> sim = new Engine<Object>(env, runs);
         sim.addCommand(new StateCommand<>().run().build());
         sim.run();
-        Map<String, Object> simulationRes = new HashMap<>();
+        final Map<String, Object> simulationRes = new HashMap<>();
         sim.getEnvironment().getNodes().forEach(n -> {
-            ProtelisNode pNode = (ProtelisNode) n;
+            final ProtelisNode pNode = (ProtelisNode) n;
             simulationRes.put(pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
             L.debug("[node{}] res:{}", pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
         });
@@ -199,17 +199,19 @@ public final class InfrastructureTester {
      *             file not found
      */
     public static void main(final String[] args) throws InterruptedException, IOException {
-        InputStream is = InfrastructureTester.class.getResourceAsStream(EXAMPLE);
+        final InputStream is = InfrastructureTester.class.getResourceAsStream(EXAMPLE);
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         TestMatcher.getResult(test);
-        System.out.println("Done.");
+        L.info("Done.");
     }
 
     private static class TestCount implements Function<Map<String, Object>, Integer> {
         private final Object expectedValue;
+
         /**
          * 
-         * @param expectedValue expected value
+         * @param expectedValue
+         *            expected value
          */
         TestCount(final Object expectedValue) {
             this.expectedValue = expectedValue;
@@ -217,7 +219,7 @@ public final class InfrastructureTester {
 
         @Override
         public Integer apply(final Map<String, Object> simulationRes) {
-            Long count = simulationRes.values().stream().filter(v -> v.equals(this.expectedValue)).count();
+            final Long count = simulationRes.values().stream().filter(v -> v.equals(this.expectedValue)).count();
             return count.intValue();
         }
     }
@@ -226,17 +228,18 @@ public final class InfrastructureTester {
         @Override
         public void accept(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
             assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
-                            + simulationRes.values().size() + "]", expectedResult.size(), simulationRes.values().size());
-            for (Pair<String, String> pair : expectedResult) {
+                            + simulationRes.values().size() + "]", expectedResult.size(),
+                            simulationRes.values().size());
+            for (final Pair<String, String> pair : expectedResult) {
                 if (!pair.getRight().equals(DC)) {
-                    Object singleNodeResult = simulationRes.get(pair.getLeft());
+                    final Object singleNodeResult = simulationRes.get(pair.getLeft());
                     assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
                     final String err = "[Node" + pair.getLeft() + "] " + simulationRes.values();
                     if (singleNodeResult instanceof Double) {
                         assertEquals(err, (double) Double.parseDouble(pair.getRight()), (double) singleNodeResult,
                                         DELTA);
                     } else if (singleNodeResult instanceof Boolean) {
-                        String v = pair.getRight();
+                        final String v = pair.getRight();
                         assertEquals(err, (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
                                         : v.equals("F") ? "false" : pair.getRight()), (boolean) singleNodeResult);
                     } else {
@@ -250,7 +253,7 @@ public final class InfrastructureTester {
     /**
      * Matching results.
      */
-    public static class TestMatcher {
+    public static final class TestMatcher {
         private static final String ML_NAME = "multilineComment";
         private static final String ML_RUN = "multirun";
         private static final String EXPECTED = "result:";
@@ -264,8 +267,11 @@ public final class InfrastructureTester {
                         .compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?", Pattern.DOTALL);
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
+        private TestMatcher() {
+        }
+
         static {
-            InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
+            final InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
             try {
                 final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
                 assertNotNull(getResult(test));
@@ -285,7 +291,7 @@ public final class InfrastructureTester {
             final TIntObjectMap<List<Pair<String, String>>> res = new TIntObjectHashMap<>();
             final Matcher outer = EXTRACT_RESULT.matcher(text);
             if (outer.find()) {
-                String result = outer.group(ML_NAME);
+                final String result = outer.group(ML_NAME);
                 final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
                 try {
                     while (multiRun.find()) {
@@ -314,7 +320,7 @@ public final class InfrastructureTester {
             List<Pair<String, String>> res = new LinkedList<>();
             final Matcher outer = EXTRACT_RESULT.matcher(text);
             if (outer.find()) {
-                String result = outer.group(ML_NAME);
+                final String result = outer.group(ML_NAME);
                 res = getResultList(result);
             } else {
                 fail("Your test does not include the expected result");

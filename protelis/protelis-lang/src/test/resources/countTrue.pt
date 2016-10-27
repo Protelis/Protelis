@@ -1,4 +1,4 @@
-// EXPECTED_RESULT: $CYCLE / 2
+// EXPECTED_RESULT: $CYCLE
 import protelis:state:time
 import protelis:state:nonselfstabilizing:time
-countTrue(cyclicTimer(1))
+countTrue(true)

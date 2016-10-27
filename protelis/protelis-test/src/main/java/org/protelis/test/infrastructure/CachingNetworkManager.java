@@ -22,7 +22,7 @@ import org.protelis.vm.util.CodePath;
  * device and the most recent messages received from each neighbor.
  */
 public class CachingNetworkManager implements NetworkManager {
-    private Map<CodePath, Object> sendCache = null;
+    private Map<CodePath, Object> sendCache;
     private final Map<DeviceUID, Map<CodePath, Object>> receiveCache = new HashMap<>();
 
     /**

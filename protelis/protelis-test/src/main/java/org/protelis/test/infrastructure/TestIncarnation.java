@@ -34,7 +34,7 @@ public final class TestIncarnation implements Incarnation<Object> {
 
     @Override
     public double getProperty(final Node<Object> node, final Molecule mol, final String prop) {
-        Object val = node.getConcentration(mol);
+        final Object val = node.getConcentration(mol);
         if (val instanceof Number) {
             return ((Number) val).doubleValue();
         } else if (val instanceof String) {

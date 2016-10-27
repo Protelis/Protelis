@@ -33,7 +33,7 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
     private final org.protelis.vm.ProtelisProgram program;
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "All the random engines provided by Apache are Serializable")
     private final RandomGenerator random;
-    private transient ProtelisVM vm;
+    private final ProtelisVM vm;
     private final CachingNetworkManager netmgr;
     private int round;
     private static final Logger L = LoggerFactory.getLogger(RunProtelisProgram.class);
@@ -90,8 +90,8 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
         L.debug(" [node{}-rnd:{}]: {}", node.toString(), round, vm.getCurrentValue());
         round++;
         environment.getNeighborhood(node).getNeighbors().forEach(n -> {
-            ProtelisNode pNode = (ProtelisNode) n;
-            CachingNetworkManager cnm = ((CachingNetworkManager) pNode.getNetworkManager());
+            final ProtelisNode pNode = (ProtelisNode) n;
+            final CachingNetworkManager cnm = ((CachingNetworkManager) pNode.getNetworkManager());
             cnm.receiveFromNeighbor(node, netmgr.getSendCache());
         });
         node.put(RESULT, vm.getCurrentValue());

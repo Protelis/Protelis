@@ -1,6 +1,7 @@
 module protelis:coord:graph
 import protelis:coord:meta
 import protelis:lang:utils
+import protelis:coord:spreading
 
 public def checkLeaf(myId, inbound) {
 	rep (v <- inbound) {
@@ -13,8 +14,7 @@ public def checkRoot(inbound) {
 }
 
 public def checkChain(myId, inbound) {
-	chain(myId, inbound).intersection([myId]).size() > 0 || 
-		checkSelfChain(myId, inbound)
+	chain(myId, inbound).intersection([myId]).size() > 0 || checkSelfChain(myId, inbound)
 }
 
 public def checkSelfChain(myId, inbound) {
@@ -28,13 +28,32 @@ public def chain(myId, inbound) {
 				hood(
 					(a, b) -> { a.union(b) }, 
 					[], 
-					mux (v.intersection(nbr([myId])).size() > 0) {
-						nbr(inbound)
-					} else {
-						[]			
-					}
+					mux (isParent(myId, v)) { nbr(inbound) } else { [] }
 				)
 			)
 		}
 	} else { [] }
+}
+
+public def isParent(myId, inbound) {
+	inbound.intersection(nbr([myId])).size() > 0
+}
+
+public def greatestLowerBound(myId, inbound, a, b) {
+//	rep (v <- [null, null]) {
+//		mux (inbound == []) { null } 
+//		else {
+//			let neigh = nbr(v);
+//			// get my parents' ids
+//			let parentIds = mux (isParent(myId, inbound)) { neigh.get(0) } else { [] };
+//			// check if contains a
+//			let hasA = anyHood(parentIds == a);
+//			// check if contains b
+//			let hasB = anyHood(parentIds == b);
+//			if (neigh.get(0) == a) { [a, neigh.get(1) + 1] } 
+//			else { if (neigh.get(0) == b) { [b, neigh.get(1) + 1] } else { [null, null] } }
+//		}
+//	} 
+	let metric = () -> { mux (isParent(myId, inbound)) { 1 } else { Infinity }};
+	G(a, "a", metric, identity)// && G(myId == b, b, metric, identity) == b
 }

@@ -26,9 +26,6 @@ import java8.util.stream.IntStreams;
  * Test a protelis program.
  */
 public final class ProgramTester {
-    private ProgramTester() {
-    }
-
     private static final String SL_NAME = "singleLineComment";
     private static final String ML_NAME = "multilineComment";
     private static final String EXPECTED = "EXPECTED_RESULT:";
@@ -36,8 +33,12 @@ public final class ProgramTester {
                     + ">.*?)\\s*\\*\\/|\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
     private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
     private static final int MIN_CYCLE_NUM = 1;
-    private static final int MAX_CYCLE_NUM = 100;
+    private static final int MAX_CYCLE_NUM = 10;
     private static final Logger L = LoggerFactory.getLogger(ProgramTester.class);
+
+    private ProgramTester() {
+    }
+
     /**
      * 
      * @param file
@@ -55,11 +56,7 @@ public final class ProgramTester {
      *            file to be tested
      */
     public static void testFile(final String file) {
-        if (file.endsWith(".pt")) {
-            testFile(file, MAX_CYCLE_NUM);
-        } else {
-            testFile("/" + file + ".pt", MAX_CYCLE_NUM);
-        }
+        testFile(file, MAX_CYCLE_NUM);
     }
 
     /**
@@ -106,7 +103,8 @@ public final class ProgramTester {
      */
     public static void testFile(final String file, final int runs) {
         final Object execResult = runProgram(file, runs);
-        final InputStream is = ProgramTester.class.getResourceAsStream(file);
+        final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
+        final InputStream is = ProgramTester.class.getResourceAsStream(fileWithExt);
         try {
             final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final Matcher extractor = EXTRACT_RESULT.matcher(test);
@@ -159,7 +157,7 @@ public final class ProgramTester {
         final ProtelisVM vm = new ProtelisVM(program, new SimpleContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
-            L.debug("[rnd {}] res:", i, vm.getCurrentValue());
+            L.debug("[rnd {}] res: {}", i, vm.getCurrentValue());
         }
         return vm.getCurrentValue();
     }

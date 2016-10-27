@@ -1,4 +1,4 @@
-// EXPECTED_RESULT: true
+// EXPECTED_RESULT: $CYCLE > 3
 import protelis:state:time
 import protelis:state:nonselfstabilizing:time
 falseDuringLast(3, cyclicTimer(1)) && 

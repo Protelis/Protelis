@@ -111,3 +111,26 @@ public def trueFor(time, event) {
 public def falseFor(time, event) {
 	trueFor(time, !event)
 }
+
+/**
+ * @param f () -> T, what to execute first
+ * @param condition (T) -> bool, whether it is possible to execute continuation
+ * @param continuation (T) -> T', what to execute next
+ * @return T|T', apply f until condition becomes true, execute continuation next
+ */
+public def sequence(f, condition, continuation) {	
+	// [
+	//    bool, it is possible to execute continuation
+	//    T, last output of f
+	// ]
+	rep(v <- [false, f.apply()]) {
+		if (v.get(0) || condition.apply(v.get(1))) {
+			// apply continuation and not f
+//			continuation.apply(v.get(1));
+			[true, continuation.apply(v.get(1))]
+		} else {
+			// apply f
+			[false, f.apply()]
+		}
+	}.get(1)
+}

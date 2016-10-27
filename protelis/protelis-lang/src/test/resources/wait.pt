@@ -1,4 +1,4 @@
-// EXPECTED_RESULT: true
+// EXPECTED_RESULT: $CYCLE > 1
 import protelis:state:time
 import protelis:state:nonselfstabilizing:time
-wait(0) && if(timeSinceStart() < 2) { !wait(2) } else { wait(2) }
+wait(0) && wait(2)

@@ -1,6 +1,8 @@
+package org.protelis.lang.test;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -13,6 +15,7 @@ import org.protelis.test.ProgramTester;
  * Testing Protelis core libraries.
  */
 public class TestApis {
+    private static final Logger L = Logger.getLogger(TestApis.class);
 
     private static void test(final String file) {
         test(file, InfrastructureTester.EXAMPLE_RUNS);
@@ -22,8 +25,7 @@ public class TestApis {
         try {
             InfrastructureTester.test(file, runs);
         } catch (InterruptedException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            L.error(e.getMessage(), e);
         }
     }
 
@@ -31,8 +33,7 @@ public class TestApis {
         try {
             InfrastructureTester.test(file, value);
         } catch (InterruptedException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            L.error(e.getMessage(), e);
         }
     }
 
@@ -40,13 +41,12 @@ public class TestApis {
         try {
             InfrastructureTester.testMultirun(file);
         } catch (InterruptedException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            L.error(e.getMessage(), e);
         }
     }
 
     private static void testProgram(final String file) {
-        ProgramTester.testFile(file);
+        ProgramTester.testFileWithMultipleRuns(file);
     }
 
     /**
@@ -55,7 +55,7 @@ public class TestApis {
     @Rule
     public TestRule watcher = new TestWatcher() {
         protected void starting(final Description description) {
-            System.out.println("Starting test: " + description.getMethodName());
+            L.info(description.getMethodName());
         }
     };
 
@@ -106,6 +106,7 @@ public class TestApis {
     public void testAnyTime() {
         testProgram("anyTime");
     }
+
 
     /**
      * Test applyOnTree.pt.
@@ -187,14 +188,6 @@ public class TestApis {
         test("C");
     }
 
-    // /**
-    // * Test alignedMapSummarize.pt.
-    // */
-    // @Test
-    // public void testAlignedMapSummarize() {
-    // test("alignedMapSummarize");
-    // }
-
     /**
      * Test canSee.pt.
      */
@@ -202,6 +195,14 @@ public class TestApis {
     public void testCanSee() {
         test("canSee");
     }
+
+    // /**
+    // * Test alignedMapSummarize.pt.
+    // */
+    // @Test
+    // public void testAlignedMapSummarize() {
+    // test("alignedMapSummarize");
+    // }
 
     /**
      * Test channel.pt.
@@ -242,6 +243,14 @@ public class TestApis {
     public void testCheckChain3() {
         test("checkChain3");
     }
+
+    // /**
+    // * Test greatestLowerbound.pt.
+    // */
+    // @Test
+    // public void testGreatestLowerBound() {
+    // test("greatestLowerbound");
+    // }
 
     /**
      * Test checkChain4.pt.
@@ -619,6 +628,14 @@ public class TestApis {
     }
 
     /**
+     * Test isValueChanged.pt.
+     */
+    @Test
+    public void testIsValueChanged() {
+        testProgram("isValueChanged");
+    }
+
+    /**
      * Test laplacianConsensus.pt.
      */
     @Test
@@ -731,6 +748,14 @@ public class TestApis {
     }
 
     /**
+     * Test sequence.pt.
+     */
+    @Test
+    public void testSequence() {
+        testProgram("sequence");
+    }
+
+    /**
      * Test spanningTree.pt.
      */
     @Test
@@ -800,14 +825,6 @@ public class TestApis {
     @Test
     public void testTrueFor() {
         testProgram("trueFor");
-    }
-
-    /**
-     * Test valueChanged.pt.
-     */
-    @Test
-    public void testValueChanged() {
-        testProgram("valueChanged");
     }
 
     /**

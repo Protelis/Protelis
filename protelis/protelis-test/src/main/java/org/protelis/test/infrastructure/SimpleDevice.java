@@ -50,7 +50,6 @@ public class SimpleDevice extends AbstractExecutionContext
         this.env = environment;
         this.netmgr = netmgr;
         this.node = node;
-        // c = getCoordinates();
     }
 
     /**
@@ -92,6 +91,7 @@ public class SimpleDevice extends AbstractExecutionContext
     /**
      * Note: this should be going away in the future, to be replaced by standard
      * Java random.
+     * @return a double random value
      */
     @Override
     public double nextRandomDouble() {
@@ -110,7 +110,7 @@ public class SimpleDevice extends AbstractExecutionContext
 
     @Override
     public Tuple getCoordinates() {
-        double[] cd = env.getPosition(node).getCartesianCoordinates();
+        final double[] cd = env.getPosition(node).getCartesianCoordinates();
         Tuple c = new ArrayTupleImpl(0, cd.length);
         for (int i = 0; i < cd.length; i++) {
             c = c.set(i, cd[i]);
@@ -124,7 +124,8 @@ public class SimpleDevice extends AbstractExecutionContext
     }
 
     private Tuple getVectorToNeigh(final Tuple myC, final LocalizedDevice device) {
-        Tuple otherC = device.getCoordinates(), tmp = device.getCoordinates();
+        final Tuple otherC = device.getCoordinates();
+        Tuple tmp = device.getCoordinates();
         for (int i = 0; i < myC.size(); i++) {
             tmp = tmp.set(i, (Double) otherC.get(i) - (Double) myC.get(i));
         }

@@ -222,7 +222,7 @@ public def falseAfterTime(timeout) {
  */
 public def isValueChanged(signal) {
 	rep (old <- [signal, true]) {
-		[signal, if (signal == old) { false } else { true }]
+		[signal, !(signal == old.get(0))]
 	}.get(1)
 }
 

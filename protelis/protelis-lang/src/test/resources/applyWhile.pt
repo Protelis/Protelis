@@ -1,4 +1,4 @@
-// EXPECTED_RESULT: true
+// EXPECTED_RESULT: $CYCLE > 2
 import protelis:state:time
 import protelis:state:nonselfstabilizing:time
 allTime(applyWhile(true, () -> { true }, false)) && 
