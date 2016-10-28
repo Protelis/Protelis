@@ -21,6 +21,7 @@ import java8.util.stream.IntStreams;
 public final class DummyContext extends SimpleContext {
 
     private DummyContext() {
+        super();
     }
 
     /**
