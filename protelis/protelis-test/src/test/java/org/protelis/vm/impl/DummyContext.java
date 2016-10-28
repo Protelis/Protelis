@@ -20,11 +20,7 @@ import java8.util.stream.IntStreams;
  */
 public final class DummyContext extends SimpleContext {
 
-    /**
-     * Create a dummy execution context.
-     */
-    public DummyContext() {
-        super();
+    private DummyContext() {
     }
 
     /**

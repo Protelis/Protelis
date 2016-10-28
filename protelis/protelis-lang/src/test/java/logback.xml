@@ -14,7 +14,6 @@
 		<appender-ref ref="STDOUT" />
 	</root>
 
-
 	<logger name="ch.qos.logback.classic.joran" level="off"
 		additivity="false">
 		<appender-ref ref="STDOUT" />

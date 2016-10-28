@@ -1,7 +1,6 @@
 module protelis:coord:graph
-import protelis:coord:meta
 import protelis:lang:utils
-import protelis:coord:spreading
+import protelis:coord:nonselfstabilizing:accumulation
 
 public def checkLeaf(myId, inbound) {
 	rep (v <- inbound) {
@@ -28,7 +27,8 @@ public def chain(myId, inbound) {
 				hood(
 					(a, b) -> { a.union(b) }, 
 					[], 
-					mux (isParent(myId, v)) { nbr(inbound) } else { [] }
+//					mux (isParent(myId, v)) { nbr(inbound) } else { [] }
+					nbrParent(myId, v, inbound, [])
 				)
 			)
 		}
@@ -39,21 +39,53 @@ public def isParent(myId, inbound) {
 	inbound.intersection(nbr([myId])).size() > 0
 }
 
-public def greatestLowerBound(myId, inbound, a, b) {
-//	rep (v <- [null, null]) {
-//		mux (inbound == []) { null } 
-//		else {
-//			let neigh = nbr(v);
-//			// get my parents' ids
-//			let parentIds = mux (isParent(myId, inbound)) { neigh.get(0) } else { [] };
-//			// check if contains a
-//			let hasA = anyHood(parentIds == a);
-//			// check if contains b
-//			let hasB = anyHood(parentIds == b);
-//			if (neigh.get(0) == a) { [a, neigh.get(1) + 1] } 
-//			else { if (neigh.get(0) == b) { [b, neigh.get(1) + 1] } else { [null, null] } }
-//		}
-//	} 
-	let metric = () -> { mux (isParent(myId, inbound)) { 1 } else { Infinity }};
-	G(a, "a", metric, identity)// && G(myId == b, b, metric, identity) == b
+public def nbrParent(myId, inbound, message, null) {
+	let res = mux (isParent(myId, inbound)) { nbr(message) } else { null };
+	mux (res == []) { null } else { res }
+}
+
+def spreadGLB(myId, inbound, nodes) {
+	rep (v <- [[-Infinity], -Infinity]) {
+		mux (isNotEmpty(intersection(nodes, [myId]))) { [[myId], 0] } 
+		else {
+			let aggr = hood(
+				(a, b) -> {
+					let c = intersection(nodes, a.get(0));
+					if (isEmpty(c)) { 
+						[intersection(nodes, b.get(0)), b.get(1)]
+					} else {
+						if (c.size() == nodes.size()) { a } 
+							else { 
+							if (isNotEmpty(intersection(nodes, b.get(0)))) {
+								[c.union(b.get(0)), max(a.get(1), b.get(1))]
+							} else { [c, a.get(1)] }
+						}
+					}
+				}, [], nbrParent(myId, inbound, v, [[-Infinity], -Infinity])
+			);
+			if (aggr == []) { [[-Infinity], -Infinity] } 
+			else { [aggr.get(0), aggr.get(1) + 1] }
+		}	
+	}
+}
+
+public def greatestLowerBound(myId, inbound, nodes) {
+//	spreadGLB(myId, inbound, nodes)
+	let spread = spreadGLB(myId, inbound, nodes);
+	let v =
+		if (spread.get(0).size() == nodes.size()) { spread.get(1) } 
+		else { Infinity };
+	gossip(v, min) == v
+}
+
+def intersection(list1, list2) {
+	list1.intersection(list2)
+}
+
+def isEmpty(list) {
+	list.size() == 0
+}
+
+def isNotEmpty(list) {
+	list.size() > 0
 }

@@ -244,13 +244,13 @@ public class TestApis {
         test("checkChain3");
     }
 
-    // /**
-    // * Test greatestLowerbound.pt.
-    // */
-    // @Test
-    // public void testGreatestLowerBound() {
-    // test("greatestLowerbound");
-    // }
+     /**
+     * Test greatestLowerBound.pt.
+     */
+     @Test
+     public void testGreatestLowerBound() {
+     test("greatestLowerBound");
+     }
 
     /**
      * Test checkChain4.pt.
