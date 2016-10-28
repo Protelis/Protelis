@@ -2,37 +2,36 @@ module protelis:coord:graph
 import protelis:lang:utils
 import protelis:coord:nonselfstabilizing:accumulation
 
-public def checkLeaf(myId, inbound) {
-	rep (v <- inbound) {
+public def isLeaf(myId, inbound) {
+	!rep (v <- inbound) {
 		unionHood(nbr(v))
-	}.intersection([myId]).size() == 0
+	}.contains(myId)
 }
 
-public def checkRoot(inbound) {
-	inbound == []
+public def isRoot(inbound) {
+	isEmpty(inbound)
 }
 
-public def checkChain(myId, inbound) {
-	chain(myId, inbound).intersection([myId]).size() > 0 || checkSelfChain(myId, inbound)
+public def circularDependency(myId, inbound) {
+	hasTransitiveDependency(myId, inbound) || hasSelfDependency(myId, inbound)
 }
 
-public def checkSelfChain(myId, inbound) {
-	inbound.intersection([myId]).size() > 0
+public def hasSelfDependency(myId, inbound) {
+	inbound.contains(myId)
 }
 
-public def chain(myId, inbound) {
-	mux (inbound != []) {
+public def hasTransitiveDependency(myId, inbound) {
+	isNotEmpty(mux (inbound != []) {
 		rep (v <- inbound) {
 			v.union(
 				hood(
-					(a, b) -> { a.union(b) }, 
-					[], 
-//					mux (isParent(myId, v)) { nbr(inbound) } else { [] }
-					nbrParent(myId, v, inbound, [])
+					(a, b) -> { a.union(b) }, [], nbrParent(myId, v, inbound, [])
 				)
 			)
 		}
-	} else { [] }
+	} else { 
+		[]
+	}.intersection([myId]))
 }
 
 public def isParent(myId, inbound) {
@@ -46,8 +45,9 @@ public def nbrParent(myId, inbound, message, null) {
 
 def spreadGLB(myId, inbound, nodes) {
 	rep (v <- [[-Infinity], -Infinity]) {
-		mux (isNotEmpty(intersection(nodes, [myId]))) { [[myId], 0] } 
-		else {
+		mux (nodes.contains(myId)) { 
+			[intersection(nodes, inbound).union([myId]), 0]
+		} else {
 			let aggr = hood(
 				(a, b) -> {
 					let c = intersection(nodes, a.get(0));
@@ -63,14 +63,13 @@ def spreadGLB(myId, inbound, nodes) {
 					}
 				}, [], nbrParent(myId, inbound, v, [[-Infinity], -Infinity])
 			);
-			if (aggr == []) { [[-Infinity], -Infinity] } 
+			if (isEmpty(aggr)) { [[-Infinity], -Infinity] } 
 			else { [aggr.get(0), aggr.get(1) + 1] }
 		}	
 	}
 }
 
 public def greatestLowerBound(myId, inbound, nodes) {
-//	spreadGLB(myId, inbound, nodes)
 	let spread = spreadGLB(myId, inbound, nodes);
 	let v =
 		if (spread.get(0).size() == nodes.size()) { spread.get(1) } 
@@ -87,5 +86,5 @@ def isEmpty(list) {
 }
 
 def isNotEmpty(list) {
-	list.size() > 0
+	!isEmpty(list)
 }

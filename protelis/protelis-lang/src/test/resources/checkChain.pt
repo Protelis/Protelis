@@ -1,2 +1,2 @@
 import protelis:coord:graph
-checkChain(env.get("myId"), env.get("inbound"))
+circularDependency(env.get("myId"), env.get("inbound"))

@@ -107,7 +107,6 @@ public class TestApis {
         testProgram("anyTime");
     }
 
-
     /**
      * Test applyOnTree.pt.
      */
@@ -229,7 +228,7 @@ public class TestApis {
     }
 
     /**
-     * Test checkChain2.pt.
+     * Test checkChain.pt.
      */
     @Test
     public void testCheckChain2() {
@@ -237,23 +236,15 @@ public class TestApis {
     }
 
     /**
-     * Test checkChain3.pt.
+     * Test checkChain.pt.
      */
     @Test
     public void testCheckChain3() {
         test("checkChain3");
     }
 
-     /**
-     * Test greatestLowerBound.pt.
-     */
-     @Test
-     public void testGreatestLowerBound() {
-     test("greatestLowerBound");
-     }
-
     /**
-     * Test checkChain4.pt.
+     * Test checkChain.pt.
      */
     @Test
     public void testCheckChain4() {
@@ -261,7 +252,7 @@ public class TestApis {
     }
 
     /**
-     * Test checkChain5.pt.
+     * Test checkChain.pt.
      */
     @Test
     public void testCheckChain5() {
@@ -585,6 +576,22 @@ public class TestApis {
     @Test
     public void testGradient() {
         test("gradient");
+    }
+
+    /**
+     * Test greatestLowerBound.pt.
+     */
+    @Test
+    public void testGreatestLowerBound() {
+        test("greatestLowerBound");
+    }
+
+    /**
+     * Test greatestLowerBound.pt.
+     */
+    @Test
+    public void testGreatestLowerBound2() {
+        test("greatestLowerBound2");
     }
 
     /**
