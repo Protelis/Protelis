@@ -651,6 +651,14 @@ public class TestApis {
     }
 
     /**
+     * Test leastUpperBound.pt.
+     */
+    @Test
+    public void testLeastUpperBound() {
+        test("leastUpperBound");
+    }
+
+    /**
      * Test limitedMemory function.
      */
     @Test

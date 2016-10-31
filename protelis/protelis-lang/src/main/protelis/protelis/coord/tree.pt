@@ -2,12 +2,23 @@ module protelis:coord:tree
 import protelis:coord:accumulation
 import protelis:coord:spreading
 import protelis:lang:utils
-
+/*
+ * Building a spanning tree equals to find the parent of device. Using this
+ * library, the parent information is based on a information pair (treated as a 
+ * Tuple): [parent device, additional information]. Finding the parent device
+ * is based on protelis:coord:accumulation.findParentExtended. The first element
+ * of the tuple is then a number (in case of error) or the parent execution 
+ * context. The second field has been added for the sake of generality. It is 
+ * intended as any information of interest related to the parent.
+ * @see protelis:coord:accumulation.findParentExtended
+ */
+ 
 /**
  * Build a spanning tree.
  * 
  * @param potential num,  potential to be followed
- * @return			[ExecutionContext, ExecutionContext], parent
+ * @return			[num|ExecutionContext, num|ExecutionContext], parent
+ * @see             protelis:coord:accumulation.findParentExtended
  */
 public def spanningTree(potential) {
 	spanningTreeExtended(potential, identity, self)
@@ -20,7 +31,9 @@ public def spanningTree(potential) {
  * @param function  (T) -> T', function to be applied to the parent value
  * @param init 		T', initial value of the device
  * @return 			[num|ExecutionContext, T']
- * @see imRoot, noParent
+ * @see protelis:coord:accumulation.findParentExtended,
+ *      protelis:coord:accumulation.imRoot, 
+ *      protelis:coord:accumulation.noParent
  */
 public def spanningTreeExtended(potential, function, init) {
 	rep (parent <- [imRoot(), init]) {
@@ -39,7 +52,7 @@ public def spanningTreeExtended(potential, function, init) {
  * @param potential num, potential to be followed
  * @param function  (T) -> T, function to be applied to the children value
  * @param default   T, default value for devices which are not children
- * @return 			[child, T]
+ * @return 			[num|ExecutionContext, T]
  */
 public def getChildren(potential, function, default) {
 	mux (nbr(findParent(potential, identity)) == self) { 

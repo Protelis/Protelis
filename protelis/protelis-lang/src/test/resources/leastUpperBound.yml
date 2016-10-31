@@ -1,0 +1,94 @@
+# result:
+# {0 F, 1 F, 2 F, 3 F, 4 F, 5 T, 6 T, 7 F}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: leastUpperBound
+              
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    contents:
+      - molecule: outbound
+        concentration: []
+      - molecule: myId
+        concentration: 0
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [0.1, 0]
+    contents:
+      - molecule: outbound
+        concentration: [7]
+      - molecule: myId
+        concentration: 1
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [0.2, 0]
+    contents:
+      - molecule: outbound
+        concentration: []
+      - molecule: myId
+        concentration: 2
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [0.05, 0.1]
+    contents:
+      - molecule: outbound
+        concentration: [0, 1]
+      - molecule: myId
+        concentration: 3
+    programs:
+      - *program    
+  - in:
+      type: Point
+      parameters: [0.15, 0.1]
+    contents:
+      - molecule: outbound
+        concentration: [2]
+      - molecule: myId
+        concentration: 4
+    programs:
+      - *program 
+  - in:
+      type: Point
+      parameters: [0.05, 0.2]
+    contents:
+      - molecule: outbound
+        concentration: [2, 3, 6]
+      - molecule: myId
+        concentration: 5
+    programs:
+      - *program 
+  - in:
+      type: Point
+      parameters: [0.15, 0.2]
+    contents:
+      - molecule: outbound
+        concentration: [2, 3]
+      - molecule: myId
+        concentration: 6
+    programs:
+      - *program 
+  - in:
+      type: Point
+      parameters: [0.05, -0.1]
+    contents:
+      - molecule: outbound
+        concentration: []
+      - molecule: myId
+        concentration: 7
+    programs:
+      - *program                    

@@ -2,30 +2,74 @@ module protelis:coord:graph
 import protelis:lang:utils
 import protelis:coord:nonselfstabilizing:accumulation
 
+/**
+ * Check if a device is a leaf of the graph.
+ * 
+ * A device is a leaf when none of the other devices refers to it as an 
+ * inbound connection, and the device has no outbound connections.
+ * 
+ * @param myId    T, device id
+ * @param inbound [T], inbound connections
+ * @return 		  bool, true if the device is a leaf, false otherwise
+ */
 public def isLeaf(myId, inbound) {
 	!rep (v <- inbound) {
 		unionHood(nbr(v))
 	}.contains(myId)
 }
 
+/**
+ * Check if a device is a root of the graph.
+ * 
+ * A device is a root when it has no inbound connections.
+ * 
+ * @param inbound [T], inbound connections
+ * @return 		  bool, true if the device is a root, false otherwise
+ */
 public def isRoot(inbound) {
 	isEmpty(inbound)
 }
 
+/**
+ * Check if circular dependencies exist.
+ * 
+ * A circular dependency exists if a device is self-referencing itself or a 
+ * transitive dependency exists.
+ * 
+ * @param myId    T, device id
+ * @param inbound [T], inbound connections
+ * @return 		  bool, true if the device is part of a circular dependency, 
+ *                false otherwise
+ */
 public def circularDependency(myId, inbound) {
 	hasTransitiveDependency(myId, inbound) || hasSelfDependency(myId, inbound)
 }
 
+/**
+ * Check if a device is self-referencing itself.
+ * 
+ * @param myId    T, device id
+ * @param inbound [T], inbound connections
+ * @return 		  bool, true if the device is self-referencing itself
+ */
 public def hasSelfDependency(myId, inbound) {
 	inbound.contains(myId)
 }
 
+/**
+ * Check if a device is part of a transitive circular dependency.
+ * 
+ * @param myId    T, device id
+ * @param inbound [T], inbound connections
+ * @return 		  bool, true if the device is part of a transitive circular 
+ *                dependency
+ */
 public def hasTransitiveDependency(myId, inbound) {
 	isNotEmpty(mux (inbound != []) {
 		rep (v <- inbound) {
 			v.union(
 				hood(
-					(a, b) -> { a.union(b) }, [], nbrParent(myId, v, inbound, [])
+					(a, b) -> { a.union(b) }, [], nbrWrapper(myId, v, inbound, [])
 				)
 			)
 		}
@@ -34,19 +78,41 @@ public def hasTransitiveDependency(myId, inbound) {
 	}.intersection([myId]))
 }
 
+/**
+ * @param myId    T, device id
+ * @param inbound [T], inbound connections
+ * @return 		  bool, true if the device is parrent of the current device
+ */
 public def isParent(myId, inbound) {
 	inbound.intersection(nbr([myId])).size() > 0
 }
 
-public def nbrParent(myId, inbound, message, null) {
-	let res = mux (isParent(myId, inbound)) { nbr(message) } else { null };
+/**
+ * This nbrWrapper get the messages coming only from a subset of neighbors.
+ * When working with graph, nbrWrabber must be use instead of nbr. Otherwise the 
+ * graph logical structure is broken.
+ * 
+ * If connections is the set of inbound connections, then nbrWrapper returns 
+ * only the messages coming from the parents of the current device, replacing 
+ * messages from the children with null. Using outbound connections does the 
+ * opposite. 
+ * 
+ * @param myId        T, device id
+ * @param connections [T], inbound connections
+ * @param message	  T', field on which nbr is applied
+ * @param null        T', placeholder for devices which not fulfill the 
+ *                    filtering criteria
+ * @return            T', filtered set of messages
+ */
+public def nbrWrapper(myId, connections, message, null) {
+	let res = mux (isParent(myId, connections)) { nbr(message) } else { null };
 	mux (res == []) { null } else { res }
 }
 
-def spreadGLB(myId, inbound, nodes) {
+def spreadBoundValue(myId, connections, nodes) {
 	rep (v <- [[-Infinity], -Infinity]) {
 		mux (nodes.contains(myId)) { 
-			[intersection(nodes, inbound).union([myId]), 0]
+			[intersection(nodes, connections).union([myId]), 0]
 		} else {
 			let aggr = hood(
 				(a, b) -> {
@@ -61,7 +127,7 @@ def spreadGLB(myId, inbound, nodes) {
 							} else { [c, a.get(1)] }
 						}
 					}
-				}, [], nbrParent(myId, inbound, v, [[-Infinity], -Infinity])
+				}, [], nbrWrapper(myId, connections, v, [[-Infinity], -Infinity])
 			);
 			if (isEmpty(aggr)) { [[-Infinity], -Infinity] } 
 			else { [aggr.get(0), aggr.get(1) + 1] }
@@ -69,12 +135,34 @@ def spreadGLB(myId, inbound, nodes) {
 	}
 }
 
+/**
+ * Get the greatest lower bound for a set of devices.
+ * 
+ * @param myId    T, device id
+ * @param inbound [T], inbound connections
+ * @param nodes   T, node on which estimate the greatest lower bound
+ * @return 	      bool, true if the device is part of greatest lower bound
+ *                set of devices, false otherwise
+ */
 public def greatestLowerBound(myId, inbound, nodes) {
-	let spread = spreadGLB(myId, inbound, nodes);
+	let spread = spreadBoundValue(myId, inbound, nodes);
 	let v =
 		if (spread.get(0).size() == nodes.size()) { spread.get(1) } 
 		else { Infinity };
 	gossip(v, min) == v
+}
+
+/**
+ * Get the least upper bound for a set of devices.
+ * 
+ * @param myId    T, device id
+ * @param outbound [T], outbound connections
+ * @param nodes   T, node on which estimate the least upper bound 
+ * @return 	      bool, true if the device is part of least upper bound 
+ *                set of devices, false otherwise
+ */
+public def leastUpperBound(myId, outbound, nodes) {
+	greatestLowerBound(myId, outbound, nodes)
 }
 
 def intersection(list1, list2) {
