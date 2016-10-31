@@ -266,4 +266,20 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
      */
     Tuple sort();
 
+    /**
+     * @param def
+     *            the return in case min is not defined
+     * @return the smallest element of this tuple, if defined, or default
+     *         otherwise
+     */
+    Object min(Object def);
+
+    /**
+     * @param def
+     *            the return in case max is not defined
+     * @return the biggest element of this tuple, if defined, or default
+     *         otherwise
+     */
+    Object max(Object def);
+
 }
