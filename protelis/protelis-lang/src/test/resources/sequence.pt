@@ -1,5 +1,5 @@
-// EXPECTED_RESULT: $CYCLE > 5
+// EXPECTED_RESULT: $CYCLE > 2
 import protelis:state:time
 import protelis:state:nonselfstabilizing:time
 
-sequence(() -> { false }, (v) -> { cyclicTimer(5) }, (v) -> { true })
+sequence(() -> { false }, (v) -> { cyclicTimer(2) }, (v) -> { true })

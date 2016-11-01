@@ -10,10 +10,20 @@
 		</layout>
 	</appender>
 
-	<root level="error">
-		<appender-ref ref="STDOUT" />
-	</root>
+<!-- 	<root level="debug"> -->
+<!-- 		<appender-ref ref="STDOUT" /> -->
+<!-- 	</root> -->
 
+	<logger name="org.protelis.test" level="error"
+		additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.protelis.test.infrastructure" level="error"
+		additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
 	<logger name="ch.qos.logback.classic.joran" level="off"
 		additivity="false">
 		<appender-ref ref="STDOUT" />

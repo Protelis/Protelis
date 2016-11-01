@@ -4,10 +4,10 @@ import protelis:coord:spreading
 import protelis:lang:utils
 /*
  * Building a spanning tree equals to find the parent of device. Using this
- * library, the parent information is based on a information pair (treated as a 
+ * library, parent information is based on an information pair (treated as a 
  * Tuple): [parent device, additional information]. Finding the parent device
  * is based on protelis:coord:accumulation.findParentExtended. The first element
- * of the tuple is then a number (in case of error) or the parent execution 
+ * of the tuple is then a number (in case of error) or the parent's execution 
  * context. The second field has been added for the sake of generality. It is 
  * intended as any information of interest related to the parent.
  * @see protelis:coord:accumulation.findParentExtended
@@ -107,7 +107,7 @@ public def descendBranch(potential, filter, f, g) {
  * @return 		 	T', apply f where condition holds, g otherwise
  */
 public def descendBranchWithNull(potential, null, filter, f, g) {
-	let c = forecastObstacleWithMetric(
+	let c = directProjectionWithMetric(
 		potential == null, 
 		filter.apply(), 
 		() -> { potential }

@@ -1,5 +1,5 @@
 # result:
-#  {1:[0 false], 2:[0 false], 3:[0 true]}
+#  {2:[0 false, 1 false], 4:[0 false, 1 false], 6:[0 true, 1 true]}
 
 incarnation: test
 
@@ -13,8 +13,8 @@ program: &program
               
 displacements:
   - in:
-      type: Point
-      parameters: [0, 0]
+      type: Grid
+      parameters: [0, 0, 1, 0, 1, 1, 0.1, 0.1]
     contents:
       - molecule: n
         concentration: 2

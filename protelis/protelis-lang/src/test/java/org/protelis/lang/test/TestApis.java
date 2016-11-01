@@ -195,14 +195,6 @@ public class TestApis {
         test("canSee");
     }
 
-    // /**
-    // * Test alignedMapSummarize.pt.
-    // */
-    // @Test
-    // public void testAlignedMapSummarize() {
-    // test("alignedMapSummarize");
-    // }
-
     /**
      * Test channel.pt.
      */
@@ -257,22 +249,6 @@ public class TestApis {
     @Test
     public void testCheckChain5() {
         test("checkChain5");
-    }
-
-    /**
-     * Test checkLeaf.pt.
-     */
-    @Test
-    public void testCheckLeaf() {
-        test("checkLeaf");
-    }
-
-    /**
-     * Test checkRoot.pt.
-     */
-    @Test
-    public void testCheckRoot() {
-        test("checkRoot");
     }
 
     /**
@@ -419,6 +395,14 @@ public class TestApis {
     }
 
     /**
+     * Test directProjection.pt.
+     */
+    @Test
+    public void testDirectProjection() {
+        test("directProjection");
+    }
+
+    /**
      * Test distanceBetween.pt.
      */
     @Test
@@ -496,14 +480,6 @@ public class TestApis {
     @Test
     public void testFlip() {
         testProgram("flip");
-    }
-
-    /**
-     * Test forecastObstacle.pt.
-     */
-    @Test
-    public void testForecastObstacle() {
-        test("forecastObstacle");
     }
 
     /**
@@ -611,6 +587,14 @@ public class TestApis {
     }
 
     /**
+     * Test isLeaf.pt.
+     */
+    @Test
+    public void testIsLeaf() {
+        test("isLeaf");
+    }
+
+    /**
      * Test isRecentEvent.pt.
      */
     @Test
@@ -624,6 +608,14 @@ public class TestApis {
     @Test
     public void testIsRisingEdge() {
         testProgram("isRisingEdge");
+    }
+
+    /**
+     * Test isRoot.pt.
+     */
+    @Test
+    public void testIsRoot() {
+        test("isRoot");
     }
 
     /**
@@ -768,6 +760,30 @@ public class TestApis {
     @Test
     public void testSequence() {
         testProgram("sequence");
+    }
+
+    /**
+     * Test sequence.pt.
+     */
+    @Test
+    public void testSequence2() {
+        testMultirun("sequence");
+    }
+
+    /**
+     * Test sequenceIfAll.pt.
+     */
+    @Test
+    public void testSequenceIfAll() {
+        testMultirun("sequenceIfAll");
+    }
+
+    /**
+     * Test sequenceIfAny.pt.
+     */
+    @Test
+    public void testSequenceIfAny() {
+        testMultirun("sequenceIfAny");
     }
 
     /**
