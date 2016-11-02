@@ -236,9 +236,10 @@ public final class InfrastructureTester {
                     final Object singleNodeResult = simulationRes.get(pair.getLeft());
                     assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
                     final String err = "[Node" + pair.getLeft() + "] " + simulationRes.values();
-                    if (singleNodeResult instanceof Double) {
-                        assertEquals(err, (double) Double.parseDouble(pair.getRight()), (double) singleNodeResult,
-                                        DELTA);
+                    if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
+                        final double tmp = singleNodeResult instanceof Integer
+                                        ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
+                        assertEquals(err, (double) Double.parseDouble(pair.getRight()), tmp, DELTA);
                     } else if (singleNodeResult instanceof Boolean) {
                         final String v = pair.getRight();
                         assertEquals(err, (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
