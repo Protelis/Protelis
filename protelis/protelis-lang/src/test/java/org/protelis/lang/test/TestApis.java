@@ -430,7 +430,7 @@ public class TestApis {
      * Test ebfFilter.pt.
      */
     @Test
-    public void testEbfFilter() {
+    public void testExponentialBackoffFilter() {
         testProgram("ebfFilter");
     }
 
@@ -459,11 +459,19 @@ public class TestApis {
     }
 
     /**
-     * Test findParent.pt.
+     * Test getParent.pt.
      */
     @Test
-    public void testFindParent() {
-        test("findParentId");
+    public void testGetParent() {
+        test("getParentId");
+    }
+
+    /**
+     * Test getParents.pt.
+     */
+    @Test
+    public void testGetParents() {
+        test("getParents");
     }
 
     /**
@@ -496,6 +504,14 @@ public class TestApis {
     @Test
     public void testGetChildren() {
         test("getChildren");
+    }
+
+    /**
+     * Test getAllChildren.pt.
+     */
+    @Test
+    public void testGetAllChildren() {
+        test("getAllChildren");
     }
 
     /**

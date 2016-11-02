@@ -1,10 +1,10 @@
 import protelis:coord:tree
 import protelis:coord:spreading
-
+import protelis:lang:utils
 let d = distanceTo(env.has("source"));
 applyOnTree(
 	() -> { spanningTree(d).get(0) },
 	env.has("condition"),
-	(parent) -> { sumHood(getChildren(d, () -> { 1 }, 0).get(1)) },
+	(parent) -> { sumHood(getChildren(d, identity, () -> { 1 }, 0).get(1)) },
 	(parent) -> { "foo" }
 )

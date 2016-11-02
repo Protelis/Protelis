@@ -1,5 +1,6 @@
 module protelis:coord:graph
 import protelis:lang:utils
+import protelis:coord:tree
 import protelis:coord:nonselfstabilizing:accumulation
 
 /**
