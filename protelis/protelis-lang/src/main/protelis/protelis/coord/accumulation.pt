@@ -179,6 +179,98 @@ public def diameter(source) {
 }
 
 /**
+ * Apply function to the all the children which potential is greater or equale to
+ * the potential of the current device. A child may have multiple parents.
+ * 
+ * @param potential num, potential to be followed
+ * @param function  (T) -> T, function to be applied to the children value
+ * @param default   T, default value for devices which are not children
+ * @return 			[num|ExecutionContext, T]
+ */
+public def getAllChildren(potential, f, g, default) {
+	getChildrenExtended(
+		potential, 
+		() -> { nbr(potential) >= potential }, 
+		f,
+		g,
+		default
+	)
+}
+
+/**
+ * Get the ids of all the children with a potential greater or equal the pontential of the 
+ * current device.
+ * 
+ * @param potential num, potential to be followed
+ * @return 			[num], list of children ids
+ */
+public def getAllChildrenIds(potential) {
+	idUnion(
+		getAllChildren(
+			potential, 
+			(device) -> { device.getDeviceUID() },
+			() -> { NaN },
+			NaN
+		).get(0)
+	)
+}
+
+/**
+ * Apply function to the children of the current device. Use this function if every
+ * child has a single parent, see getAllChildren otherwise.
+ * 
+ * @param potential num, potential to be followed
+ * @param f         (ExecutionContext) -> T', function to be applied to the child 
+ * @param g         (T) -> T, function to be applied to the child value
+ * @param default   T, default value for devices which are not children
+ * @return 			[num|T', T], children
+ */
+public def getChildren(potential, f, g, default) {
+	getChildrenExtended(
+		potential, 
+		() -> { nbr(getParent(potential, identity)) == self }, 
+		f,
+		g,
+		default
+	)
+}
+
+/**
+ * Apply function to the children of the current device. A child may have multiple parents.
+ * 
+ * @param potential num, potential to be followed
+ * @param condition () -> bool, which children should be considered
+ * @param f         (ExecutionContext) -> T', function to be applied to the child 
+ * @param g         (T) -> T, function to be applied to the child value
+ * @param default   T, default value for devices which are not children
+ * @return 			[num|T', T], children list
+ */
+public def getChildrenExtended(potential, condition, f, g, default) {
+	mux (condition.apply()) { 
+		nbr([f.apply(self), g.apply()])
+	} else {
+		[noParent(), default]
+	}
+}
+
+/**
+ * Get the ids of all the children of the current device.
+ * 
+ * @param potential num, potential to be followed
+ * @return 			[num], list of children ids
+ */
+public def getChildrenIds(potential) {
+	idUnion(
+		getChildren(
+			potential, 
+			(device) -> { device.getDeviceUID() },
+			() -> { NaN },
+			NaN
+		).get(0)
+	)
+}
+
+/**
  * Find the parent of the current device following the maximum decrease in 
  * potential.
  * 
@@ -208,7 +300,7 @@ public def getParent(potential, f) {
  * @see imRoot, noParent
  */
 public def getParentExtendend(potential, f, g, local) {
-	getParentExtended(
+	getParentsExtended(
 		potential, 
 		(v) -> { minHood(v) },
 		f, 
@@ -230,7 +322,7 @@ public def getParentExtendend(potential, f, g, local) {
  * @see imRoot, noParent
  */
 public def getParents(potential, f, g, local, default) {
-	getParentExtended(potential, identity, f, g, local, default)
+	getParentsExtended(potential, identity, f, g, local, default)
 }
 
 
@@ -246,7 +338,7 @@ public def getParents(potential, f, g, local, default) {
  * @return 			[[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
  * @see imRoot, noParent
  */
-public def getParentExtended(potential, condition, f, g, local, default) {
+public def getParentsExtended(potential, condition, f, g, local, default) {
 	mux (condition.apply(nbr(potential)) < potential) {
 		let c = condition.apply(nbr([potential, f.apply(self), g.apply(local)]));
 		mux (c.size() > 1) {  [c.get(1), c.get(2)] }
@@ -255,9 +347,42 @@ public def getParentExtended(potential, condition, f, g, local, default) {
 }
 
 /**
- * @return num, error finding parent
+ * Find the ID of the current-device parent by following the maximum decrease in 
+ * potential.
+ * 
+ * @param potential num, potential
+ * @return          num, imRoot()|noParent()|parentId
+ * @see imRoot, noParent
  */
-public def noParent() { -1 }
+public def getParentId(potential) {
+	getParent(potential, (device) -> { device.getDeviceUID() })
+}
+
+/**
+ * Find the IDs of the current-device parents by following a potential decrease.
+ * 
+ * @param potential num, potential
+ * @return          [num], list of parent ids
+ */
+public def getParentIds(potential) {
+	idUnion(getParents(potential, (device) -> { device.getDeviceUID() }, identity, NaN, NaN).get(0))
+}
+
+/**
+ * @param id num, device id
+ * @return   bool, true if the device has no parent
+ */
+public def hasNoParent(id) {
+	id == noParent() || id == imRoot()
+}
+
+/**
+ * @param id num, device id
+ * @return   bool, true if the device has a parent
+ */
+public def hasParent(id) {
+	!hasNoParent(id)
+}
 
 /**
  * @return num, root value
@@ -265,16 +390,23 @@ public def noParent() { -1 }
 public def imRoot() { -2 }
 
 /**
- * Find the parent ID of the current device following the maximum decrease in 
- * potential.
- * 
- * @param num, potential potential
- * @return num|ExecutionContext, imRoot()|noParent()|parent
- * @see imRoot, noParent
+ * TODO: this function MUST NOT be public as it is an utilities for both protelis:coord:accumulation and
+ * protelis:coord:tree. This function reduces a field of ids
  */
-public def getParentId(potential) {
-	getParent(potential, (device) -> { device.getDeviceUID() })
+def idUnion(idField) {
+	hood(
+		(a, b) -> { 
+			if (a.size() == 1 && hasNoParent(a.get(0))) { // a has no parent
+				if (hasNoParent(b.get(0))) { [] } else { b }
+			} else { 
+				if (hasNoParent(b.get(0))) { a } else {  a.union(b) } 
+			} 
+		},
+		[],
+		[idField]
+	)
 }
+
  
 /**
  * Laplacian consensus.
@@ -286,6 +418,11 @@ public def getParentId(potential) {
 public def laplacianConsensus(init, epsilon) {
  	consensus(init, (v) -> {epsilon * v})
 }
+
+/**
+ * @return num, error finding parent
+ */
+public def noParent() { -1 }
 
 /**
  * Broadcast the value accumulated by the sink. 

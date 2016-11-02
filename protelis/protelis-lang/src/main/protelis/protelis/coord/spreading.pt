@@ -247,9 +247,36 @@ public def crfGradient(source, metric, range) {
  * @param width  num, how much to dilate
  * @return 		 bool, dilated region
  */
- public def dilateWithMetric(region, metric, width) {
+public def dilateWithMetric(region, metric, width) {
  	distanceToWithMetric(region, metric) < width	
- }
+}
+
+/**
+ * Forecast obstacles along a path to the source.
+ * 
+ * @param source   bool, whether the device is a source
+ * @param obstacle bool, whether the device is an obstacle
+ * @return         bool, true if the device encounter an obstacle within the shortest
+ * path towards the closest source, false otherwise
+ */ 
+public def directProjection(source, obstacle) {
+	directProjectionWithMetric(source, obstacle, nbrRange)
+}
+
+/**
+ * Forecast obstacles along a path to the source.
+ * 
+ * @param source   bool, whether the device is a source
+ * @param obstacle bool, whether the device is an obstacle
+ * @param metric   () -> num, how to estimate neighbors distances  
+ * @return         bool, true if the device encounter an obstacle within the shortest
+ * path towards the closest source, false otherwise
+ */ 
+public def directProjectionWithMetric(source, obstacle, metric) {
+//	let c = if (obstacle) { 1 } else { 0 };
+//	G(source, c, metric, (v) -> { c + Gnull(v, 0) }) > 0
+	G(source, obstacle, metric, (v) -> { obstacle || Gnull(v, false) })
+}
  
 /**
  * Smallest distance between source and destination devices.
@@ -390,33 +417,6 @@ public def Gnull(v, default) {
 	} else { 
 		v
 	}
-}
-
-/**
- * Forecast obstacles along a path to the source.
- * 
- * @param source   bool, whether the device is a source
- * @param obstacle bool, whether the device is an obstacle
- * @return         bool, true if the device encounter an obstacle within the shortest
- * path towards the closest source, false otherwise
- */ 
-public def directProjection(source, obstacle) {
-	directProjectionWithMetric(source, obstacle, nbrRange)
-}
-
-/**
- * Forecast obstacles along a path to the source.
- * 
- * @param source   bool, whether the device is a source
- * @param obstacle bool, whether the device is an obstacle
- * @param metric   () -> num, how to estimate neighbors distances  
- * @return         bool, true if the device encounter an obstacle within the shortest
- * path towards the closest source, false otherwise
- */ 
-public def directProjectionWithMetric(source, obstacle, metric) {
-//	let c = if (obstacle) { 1 } else { 0 };
-//	G(source, c, metric, (v) -> { c + Gnull(v, 0) }) > 0
-	G(source, obstacle, metric, (v) -> { obstacle || Gnull(v, false) })
 }
 
 /**

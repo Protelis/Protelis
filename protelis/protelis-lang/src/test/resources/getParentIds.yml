@@ -1,13 +1,13 @@
 # result:
-#  {0 2.0, 1 1.0,  
-#   2 1.0, 3 0.0}
+#  {0 0.0, 1 1.0,  
+#   2 1.0, 3 2.0}
 #
-# spanning tree
-#       0 
-#     /   \
-#    1     2
-#     \   /
-#       3
+# spanning tree: [list of parent ids]
+#        0 []
+#      /   \
+# [0] 1     2 [0]
+#      \   /
+#        3 [1,2]
 incarnation: test
 
 network-model:
@@ -15,8 +15,8 @@ network-model:
   parameters: [1.2]
 
 program: &program
-  - time-distribution: 1
-    program: getAllChildren
+  - time-distribution: 1.2
+    program: getParentIds
               
 displacements:
   - in:

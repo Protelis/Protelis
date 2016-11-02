@@ -47,63 +47,6 @@ public def spanningTreeExtended(potential, function, init) {
 }
 
 /**
- * Apply function to the children of the current device. Use this function if every
- * child has a single parent, see getAllChildren otherwise.
- * 
- * @param potential num, potential to be followed
- * @param f         (ExecutionContext) -> T', function to be applied to the child 
- * @param g         (T) -> T, function to be applied to the child value
- * @param default   T, default value for devices which are not children
- * @return 			[num|T', T], children
- */
-public def getChildren(potential, f, g, default) {
-	getChildrenExtended(
-		potential, 
-		() -> { nbr(getParent(potential, identity)) == self }, 
-		f,
-		g,
-		default
-	)
-}
-
-/**
- * Apply function to the all the children which potential is greater or equale to
- * the potential of the current device. A child may have multiple parents.
- * 
- * @param potential num, potential to be followed
- * @param function  (T) -> T, function to be applied to the children value
- * @param default   T, default value for devices which are not children
- * @return 			[num|ExecutionContext, T]
- */
-public def getAllChildren(potential, f, g, default) {
-	getChildrenExtended(
-		potential, 
-		() -> { nbr(potential) >= potential }, 
-		f,
-		g,
-		default
-	)
-}
-
-/**
- * Apply function to the children of the current device. A child may have multiple parents.
- * 
- * @param potential num, potential to be followed
- * @param condition () -> bool, which children should be considered
- * @param f         (ExecutionContext) -> T', function to be applied to the child 
- * @param g         (T) -> T, function to be applied to the child value
- * @param default   T, default value for devices which are not children
- * @return 			[num|T', T], children
- */
-public def getChildrenExtended(potential, condition, f, g, default) {
-	mux (condition.apply()) { 
-		nbr([f.apply(self), g.apply()])
-	} else {
-		[noParent(), default]
-	}
-}
-
-/**
  * Assuming to have a spanning tree, apply f where condition holds,
  * g otherwise.
  * 

@@ -459,22 +459,6 @@ public class TestApis {
     }
 
     /**
-     * Test getParent.pt.
-     */
-    @Test
-    public void testGetParent() {
-        test("getParentId");
-    }
-
-    /**
-     * Test getParents.pt.
-     */
-    @Test
-    public void testGetParents() {
-        test("getParents");
-    }
-
-    /**
      * Test flexGradient.pt.
      */
     @Test
@@ -499,6 +483,22 @@ public class TestApis {
     }
 
     /**
+     * Test getAllChildren.pt.
+     */
+    @Test
+    public void testGetAllChildren() {
+        test("getAllChildren");
+    }
+
+    /**
+     * Test getAllChildrenIds.pt.
+     */
+    @Test
+    public void testGetAllChildrenIds() {
+        test("getAllChildrenIds");
+    }
+
+    /**
      * Test getChildren.pt.
      */
     @Test
@@ -507,11 +507,35 @@ public class TestApis {
     }
 
     /**
-     * Test getAllChildren.pt.
+     * Test getChildrenIds.pt.
      */
     @Test
-    public void testGetAllChildren() {
-        test("getAllChildren");
+    public void testGetChildrenIds() {
+        test("getChildrenIds");
+    }
+
+    /**
+     * Test getParent.pt.
+     */
+    @Test
+    public void testGetParentId() {
+        test("getParentId");
+    }
+
+    /**
+     * Test getParents.pt.
+     */
+    @Test
+    public void testGetParentIds() {
+        test("getParentIds");
+    }
+
+    /**
+     * Test getParents.pt.
+     */
+    @Test
+    public void testGetParents() {
+        test("getParents");
     }
 
     /**
@@ -584,6 +608,14 @@ public class TestApis {
     @Test
     public void testGreatestLowerBound2() {
         test("greatestLowerBound2");
+    }
+
+    /**
+     * Test hasNoParent.pt.
+     */
+    @Test
+    public void testHasNoParent() {
+        testProgram("hasNoParent");
     }
 
     /**

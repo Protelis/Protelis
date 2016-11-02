@@ -1,3 +1,4 @@
+import protelis:coord:accumulation
 import protelis:coord:tree
 import protelis:coord:spreading
 import protelis:lang:utils
