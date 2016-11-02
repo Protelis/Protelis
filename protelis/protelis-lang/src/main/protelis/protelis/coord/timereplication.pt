@@ -59,6 +59,7 @@ public def timeReplicated(process, default, p, k) {
 		 */
 		alignedExecution(processes.filter(self, p -> {clock - p.get(0) < k}))
 	}
-//	.min(emptyProcess())
-	.get(0).get(2);
+	.min(emptyProcess())
+	.get(2) // instead of .result()
+//	.get(0).get(2); 
 }

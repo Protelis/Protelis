@@ -400,8 +400,8 @@ public def Gnull(v, default) {
  * @return         bool, true if the device encounter an obstacle within the shortest
  * path towards the closest source, false otherwise
  */ 
-public def forecastObstacle(source, obstacle) {
-	forecastObstacleWithMetric(source, obstacle, nbrRange)
+public def directProjection(source, obstacle) {
+	directProjectionWithMetric(source, obstacle, nbrRange)
 }
 
 /**
@@ -413,7 +413,7 @@ public def forecastObstacle(source, obstacle) {
  * @return         bool, true if the device encounter an obstacle within the shortest
  * path towards the closest source, false otherwise
  */ 
-public def forecastObstacleWithMetric(source, obstacle, metric) {
+public def directProjectionWithMetric(source, obstacle, metric) {
 //	let c = if (obstacle) { 1 } else { 0 };
 //	G(source, c, metric, (v) -> { c + Gnull(v, 0) }) > 0
 	G(source, obstacle, metric, (v) -> { obstacle || Gnull(v, false) })

@@ -1,4 +1,4 @@
 import protelis:coord:accumulation
 import protelis:coord:spreading
 import protelis:lang:utils
-findParentId(distanceTo(env.has("source"))).toString()
+sumHood(getParents(distanceTo(env.has("source")), identity, identity, 1, 0).get(1))

@@ -1,6 +1,6 @@
 # result:
-#  {0 F, 1 T,  
-#   2 T, 3 F}
+#  {0 T, 1 F,  
+#   2 F, 3 F}
 # 
 # graph:
 #          0 -> 1
@@ -15,7 +15,7 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: checkLeaf
+    program: isRoot
               
 displacements:
   - in:

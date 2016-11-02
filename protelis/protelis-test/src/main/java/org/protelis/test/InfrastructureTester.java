@@ -68,6 +68,7 @@ public final class InfrastructureTester {
             final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
             for (final int r : expectedResult.keys()) {
                 final Environment<Object> env = loader.getWith(null);
+                L.debug("run {}", r);
                 testSingleRun(r, env, expectedResult.get(r), f);
             }
         }

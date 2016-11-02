@@ -1,2 +1,0 @@
-import protelis:coord:spreading
-forecastObstacle(env.has("source"), env.has("obstacle"))

@@ -9,11 +9,15 @@ import org.protelis.lang.datatype.Tuple;
 public interface LocalizedDevice extends ExecutionContext {
 
     /**
+     * TODO: define coordinate.
+     * 
      * @return coordinates of the current device
      */
     Tuple getCoordinates();
 
     /**
+     * TODO: define vector.
+     * 
      * @return field of directions to other devices
      */
     Field nbrVector();

@@ -195,14 +195,6 @@ public class TestApis {
         test("canSee");
     }
 
-    // /**
-    // * Test alignedMapSummarize.pt.
-    // */
-    // @Test
-    // public void testAlignedMapSummarize() {
-    // test("alignedMapSummarize");
-    // }
-
     /**
      * Test channel.pt.
      */
@@ -257,22 +249,6 @@ public class TestApis {
     @Test
     public void testCheckChain5() {
         test("checkChain5");
-    }
-
-    /**
-     * Test checkLeaf.pt.
-     */
-    @Test
-    public void testCheckLeaf() {
-        test("checkLeaf");
-    }
-
-    /**
-     * Test checkRoot.pt.
-     */
-    @Test
-    public void testCheckRoot() {
-        test("checkRoot");
     }
 
     /**
@@ -419,6 +395,14 @@ public class TestApis {
     }
 
     /**
+     * Test directProjection.pt.
+     */
+    @Test
+    public void testDirectProjection() {
+        test("directProjection");
+    }
+
+    /**
      * Test distanceBetween.pt.
      */
     @Test
@@ -446,7 +430,7 @@ public class TestApis {
      * Test ebfFilter.pt.
      */
     @Test
-    public void testEbfFilter() {
+    public void testExponentialBackoffFilter() {
         testProgram("ebfFilter");
     }
 
@@ -475,11 +459,19 @@ public class TestApis {
     }
 
     /**
-     * Test findParent.pt.
+     * Test getParent.pt.
      */
     @Test
-    public void testFindParent() {
-        test("findParentId");
+    public void testGetParent() {
+        test("getParentId");
+    }
+
+    /**
+     * Test getParents.pt.
+     */
+    @Test
+    public void testGetParents() {
+        test("getParents");
     }
 
     /**
@@ -499,14 +491,6 @@ public class TestApis {
     }
 
     /**
-     * Test forecastObstacle.pt.
-     */
-    @Test
-    public void testForecastObstacle() {
-        test("forecastObstacle");
-    }
-
-    /**
      * Test G.pt.
      */
     @Test
@@ -520,6 +504,14 @@ public class TestApis {
     @Test
     public void testGetChildren() {
         test("getChildren");
+    }
+
+    /**
+     * Test getAllChildren.pt.
+     */
+    @Test
+    public void testGetAllChildren() {
+        test("getAllChildren");
     }
 
     /**
@@ -611,6 +603,14 @@ public class TestApis {
     }
 
     /**
+     * Test isLeaf.pt.
+     */
+    @Test
+    public void testIsLeaf() {
+        test("isLeaf");
+    }
+
+    /**
      * Test isRecentEvent.pt.
      */
     @Test
@@ -624,6 +624,14 @@ public class TestApis {
     @Test
     public void testIsRisingEdge() {
         testProgram("isRisingEdge");
+    }
+
+    /**
+     * Test isRoot.pt.
+     */
+    @Test
+    public void testIsRoot() {
+        test("isRoot");
     }
 
     /**
@@ -648,6 +656,14 @@ public class TestApis {
     @Test
     public void testLaplacianConsensus() {
         test("laplacianConsensus");
+    }
+
+    /**
+     * Test leastUpperBound.pt.
+     */
+    @Test
+    public void testLeastUpperBound() {
+        test("leastUpperBound");
     }
 
     /**
@@ -760,6 +776,30 @@ public class TestApis {
     @Test
     public void testSequence() {
         testProgram("sequence");
+    }
+
+    /**
+     * Test sequence.pt.
+     */
+    @Test
+    public void testSequence2() {
+        testMultirun("sequence");
+    }
+
+    /**
+     * Test sequenceIfAll.pt.
+     */
+    @Test
+    public void testSequenceIfAll() {
+        testMultirun("sequenceIfAll");
+    }
+
+    /**
+     * Test sequenceIfAny.pt.
+     */
+    @Test
+    public void testSequenceIfAny() {
+        testMultirun("sequenceIfAny");
     }
 
     /**

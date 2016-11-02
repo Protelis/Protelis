@@ -1,0 +1,32 @@
+# result:
+#  {0 2.0, 1 1.0,  
+#   2 1.0, 3 0.0}
+#
+# spanning tree
+#       0
+#     /   \
+#    1     2
+#     \   /
+#       3
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.2]
+
+program: &program
+  - time-distribution: 1
+    program: getAllChildren
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 1, 1, 1, 0.1, 0.1]
+    contents:
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: source
+        concentration: true
+    programs:
+      - *program

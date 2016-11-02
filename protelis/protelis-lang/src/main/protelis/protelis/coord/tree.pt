@@ -2,12 +2,23 @@ module protelis:coord:tree
 import protelis:coord:accumulation
 import protelis:coord:spreading
 import protelis:lang:utils
-
+/*
+ * Building a spanning tree equals to find the parent of device. Using this
+ * library, parent information is based on an information pair (treated as a 
+ * Tuple): [parent device, additional information]. Finding the parent device
+ * is based on protelis:coord:accumulation.getParentExtended. The first element
+ * of the tuple is then a number (in case of error) or the parent's execution 
+ * context. The second field has been added for the sake of generality. It is 
+ * intended as any information of interest related to the parent.
+ * @see protelis:coord:accumulation.getParentExtended
+ */
+ 
 /**
  * Build a spanning tree.
  * 
  * @param potential num,  potential to be followed
- * @return			[ExecutionContext, ExecutionContext], parent
+ * @return			[num|ExecutionContext, num|ExecutionContext], parent
+ * @see             protelis:coord:accumulation.getParentExtended
  */
 public def spanningTree(potential) {
 	spanningTreeExtended(potential, identity, self)
@@ -20,11 +31,13 @@ public def spanningTree(potential) {
  * @param function  (T) -> T', function to be applied to the parent value
  * @param init 		T', initial value of the device
  * @return 			[num|ExecutionContext, T']
- * @see imRoot, noParent
+ * @see protelis:coord:accumulation.getParentExtended,
+ *      protelis:coord:accumulation.imRoot, 
+ *      protelis:coord:accumulation.noParent
  */
 public def spanningTreeExtended(potential, function, init) {
 	rep (parent <- [imRoot(), init]) {
-		findParentExtended(
+		getParentExtendend(
 			potential, 
 			identity, 
 			(value) -> { function.apply(value) }, 
@@ -34,16 +47,57 @@ public def spanningTreeExtended(potential, function, init) {
 }
 
 /**
- * Apply function to the children of the current device.
+ * Apply function to the children of the current device. Use this function if every
+ * child has a single parent, see getAllChildren otherwise.
+ * 
+ * @param potential num, potential to be followed
+ * @param f         (ExecutionContext) -> T', function to be applied to the child 
+ * @param g         (T) -> T, function to be applied to the child value
+ * @param default   T, default value for devices which are not children
+ * @return 			[num|T', T], children
+ */
+public def getChildren(potential, f, g, default) {
+	getChildrenExtended(
+		potential, 
+		() -> { nbr(getParent(potential, identity)) == self }, 
+		f,
+		g,
+		default
+	)
+}
+
+/**
+ * Apply function to the all the children which potential is greater or equale to
+ * the potential of the current device. A child may have multiple parents.
  * 
  * @param potential num, potential to be followed
  * @param function  (T) -> T, function to be applied to the children value
  * @param default   T, default value for devices which are not children
- * @return 			[child, T]
+ * @return 			[num|ExecutionContext, T]
  */
-public def getChildren(potential, function, default) {
-	mux (nbr(findParent(potential, identity)) == self) { 
-		nbr([self, function.apply()])
+public def getAllChildren(potential, f, g, default) {
+	getChildrenExtended(
+		potential, 
+		() -> { nbr(potential) >= potential }, 
+		f,
+		g,
+		default
+	)
+}
+
+/**
+ * Apply function to the children of the current device. A child may have multiple parents.
+ * 
+ * @param potential num, potential to be followed
+ * @param condition () -> bool, which children should be considered
+ * @param f         (ExecutionContext) -> T', function to be applied to the child 
+ * @param g         (T) -> T, function to be applied to the child value
+ * @param default   T, default value for devices which are not children
+ * @return 			[num|T', T], children
+ */
+public def getChildrenExtended(potential, condition, f, g, default) {
+	mux (condition.apply()) { 
+		nbr([f.apply(self), g.apply()])
 	} else {
 		[noParent(), default]
 	}
@@ -94,15 +148,15 @@ public def descendBranch(potential, filter, f, g) {
  * @return 		 	T', apply f where condition holds, g otherwise
  */
 public def descendBranchWithNull(potential, null, filter, f, g) {
-	let c = forecastObstacleWithMetric(
+	let c = directProjectionWithMetric(
 		potential == null, 
 		filter.apply(), 
 		() -> { potential }
 	);
 	mux (c) { 
-		f.apply([findParent(potential, identity), c])
+		f.apply([getParent(potential, identity), c])
 	} else { 
-		g.apply([findParent(potential, identity), c])
+		g.apply([getParent(potential, identity), c])
 	}
 }
 
@@ -118,7 +172,7 @@ public def descendBranchWithNull(potential, null, filter, f, g) {
  */
 public def ascendBranch(potential, filter, f, g) {
 	if (C(potential, or, filter.apply(), filter.apply())) {
-		f.apply(getChildren(potential, filter, false))
+		f.apply(getChildren(potential, identity, filter, false))
 	} else {
 		g.apply()
 	}

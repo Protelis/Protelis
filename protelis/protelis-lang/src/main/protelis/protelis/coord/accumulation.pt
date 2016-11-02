@@ -53,7 +53,7 @@ public def C(potential, reduce, local, null) {
 				// expression that will be evaluated if the field is empty
 				null,
 				// argument to evaluate (must return a Field)
-				mux (nbr(findParent(potential, identity)) == self) { nbr(v) } else { null }
+				mux (nbr(getParent(potential, identity)) == self) { nbr(v) } else { null }
 			)
 		)
 	}	
@@ -74,17 +74,38 @@ public def C(potential, reduce, local, null) {
  * @return 			num, aggregated value
  */
 public def cMultiSum(potential, local) {
-	 hoodWstateful(local, sum, 0, (v) -> {  				
+	 cMultiDivisible(
+	 	potential, 
+	 	local, 
+	 	0, 
+	 	sum, 
+	 	(v) -> { v }, 
+	 	(v) -> { sumHood(
+	 		mux (nbr(potential) < potential) { nbr(local) } else { 0 }
+	 	) },
+	 	(dividend, divisor) -> { dividend / divisor }
+	 )
+}
+
+/**
+ * @param potential	num, gradient of which gives aggregation direction
+ * @param local		T, local value
+ * @param reduce	(T, T) -> T, how to aggregate values
+ * @param dividend	(T) -> T, dividend
+ * @param divisor	(T) -> T, divisor
+ * @param fraction	(T, T) -> T, how to divide dividend by the divisor
+ * @param null		T, null value
+ * @return 			T, aggregated value
+ */
+public def cMultiDivisible(potential, local, null, reduce, dividend, divisor, fraction) {
+	hoodWstateful(local, reduce, null, (v) -> {  				
 	 	mux (potential >= nbr(potential)) { 
- 				0
+ 				null
 		} else {
-			nbr(v / sumHood(
-				mux (nbr(potential) < potential) { nbr(local) } else { 0 }
-			))
+			nbr(fraction.apply(dividend.apply(v), divisor.apply(v)))
 		} 
 	})
 }
-
 //(def compute-cg (root coordinates)
 //     ;; center-of-gravity = sum of coordinate / number of devices
 //     (broadcast root (vmul
@@ -96,30 +117,30 @@ public def cMultiSum(potential, local) {
                                    
 /**
  * @param potential num, accumulate values descending this potential
- * @param 			(T, T) -> T, f how to accumulate values
+ * @param f			(T, T) -> T, how to accumulate values
  * @param local 	T, local value
  * @param default 	T, default value
  * @return 			T, accumulated value
  */
 public def cMultiIdempotent(potential, f, local, default) {
-	 hoodWstateful(local, f, default, (v) -> { 
+	hoodWstateful(local, f, default, (v) -> { 
 	 	mux (potential < nbr(potential)) { nbr(v) } else { default }
-	 })
+	})
 }
 
 /**
- * The potential-source converges to the min of other device values.
+ * The potential-source converges to the min value.
  * 
  * @param potential num, minimize values descending this potential
  * @param local 	num, value
  * @return 			num, minimum value
  */
 public def cMultiMin(potential, local) {
-	 cMultiIdempotent(potential, min, local, Infinity)
+	cMultiIdempotent(potential, min, local, Infinity)
 }
 
 /**
- * The potential-source converges to the max of other device values.
+ * The potential-source converges to the max values.
  * 
  * @param potential num, minimize values descending this potential
  * @param local 	num, value
@@ -163,11 +184,11 @@ public def diameter(source) {
  * 
  * @param potential num, potential
  * @param f 		(ExecutionContext) -> T, what to do with the parent
- * @return 			num|T, imRoot() | noParent() | accumulate(parent)
+ * @return 			num|T, imRoot()|noParent()|f(parent)
  * @see imRoot, noParent
  */
-public def findParent(potential, f) {
-	findParentExtended(
+public def getParent(potential, f) {
+	getParentExtendend(
 		potential, 
 		(device) -> { f.apply(device) }, 
 		(value) -> { NaN },
@@ -183,22 +204,54 @@ public def findParent(potential, f) {
  * @param f 		(ExecutionContext) -> T, what to do with the parent
  * @param g 		(T') -> T', what to do with the value
  * @param local 	T', local value
- * @param default 	T', default value for root or non parent
- * @return 			num|[T,T'], imRoot() | noParent() | accumulate(parent)
+ * @return 			[num|T,T'], [imRoot()|noParent()|f(parent), g(value)]
  * @see imRoot, noParent
  */
-public def findParentExtended(potential, f, g, local) {
-	mux (minHood(nbr(potential)) < potential) {
-		let closest = minHood(
-			nbr([
-				potential, 
-				f.apply(self), 
-				g.apply(local)
-			])
-		);
-		if (closest.size() > 1) {  [closest.get(1), closest.get(2)] } 
-		else { [noParent(), local] }
-	} else { [imRoot(), local] }
+public def getParentExtendend(potential, f, g, local) {
+	getParentExtended(
+		potential, 
+		(v) -> { minHood(v) },
+		f, 
+		g, 
+		local, 
+		local
+	)
+}
+
+/**
+ * Find the parents of the current device following the decrease in 
+ * potential.
+ * 
+ * @param potential num, potential
+ * @param f 		(ExecutionContext) -> T, what to do with the parent
+ * @param g 		(T') -> T', what to do with the value
+ * @param local 	T', local value
+ * @return 			[[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
+ * @see imRoot, noParent
+ */
+public def getParents(potential, f, g, local, default) {
+	getParentExtended(potential, identity, f, g, local, default)
+}
+
+
+/**
+ * Find the parents of the current device following the decrease in 
+ * potential.
+ * 
+ * @param potential num, potential
+ * @param condition (num) -> bool, how to determine parent devices
+ * @param f 		(ExecutionContext) -> T, what to do with the parent
+ * @param g 		(T') -> T', what to do with the value
+ * @param local 	T', local value
+ * @return 			[[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
+ * @see imRoot, noParent
+ */
+public def getParentExtended(potential, condition, f, g, local, default) {
+	mux (condition.apply(nbr(potential)) < potential) {
+		let c = condition.apply(nbr([potential, f.apply(self), g.apply(local)]));
+		mux (c.size() > 1) {  [c.get(1), c.get(2)] }
+		else { [noParent(), default] }
+	} else { [imRoot(), default] }
 }
 
 /**
@@ -216,11 +269,11 @@ public def imRoot() { -2 }
  * potential.
  * 
  * @param num, potential potential
- * @return num|ExecutionContext, imRoot() | noParent() | parent
+ * @return num|ExecutionContext, imRoot()|noParent()|parent
  * @see imRoot, noParent
  */
-public def findParentId(potential) {
-	findParent(potential, (device) -> { device.getDeviceUID() })
+public def getParentId(potential) {
+	getParent(potential, (device) -> { device.getDeviceUID() })
 }
  
 /**

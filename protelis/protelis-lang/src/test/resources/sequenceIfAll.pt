@@ -1,0 +1,3 @@
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+sequenceIfAll(() -> { "foo" }, wait(2), (v) -> { "bar" })
