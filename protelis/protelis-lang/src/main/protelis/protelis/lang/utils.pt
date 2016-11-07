@@ -55,7 +55,7 @@ public def canSee(a) {
  * @param oldmax num, oldmax
  * @param newmin num, newmin
  * @param newmax num, newmax
- * @return          num, denormalized value
+ * @return       num, denormalized value
  */
 public def denormalize(x, oldmin, oldmax, newmin, newmax) {
     x * (newmax - newmin) / (oldmax - oldmin) + (newmin - oldmin)
@@ -75,9 +75,9 @@ public def diff(a, b) {
  * 
  * @param local        T, local value
  * @param aggregator   (T, T) -> T, how to reduce information
- * @param default        T, default value in case the field returned by fieldBuilder is empty
+ * @param default      T, default value in case the field returned by fieldBuilder is empty
  * @param fieldBuilder () -> T, return which field should be reduced
- * @return                T, reduced value
+ * @return             T, reduced value
  */
 public def hoodW(local, aggregator, default, fieldBuilder) {
     aggregator.apply(local, 
@@ -94,9 +94,9 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  * 
  * @param local        T, local value
  * @param aggregator   (T, T) -> T, how to reduce information
- * @param default        T, default value in case the field returned by fieldBuilder is empty
+ * @param default      T, default value in case the field returned by fieldBuilder is empty
  * @param fieldBuilder (T) -> T, return which field should be reduced
- * @return                T, reduced value
+ * @return             T, reduced value
  */
 public def hoodWstateful(local, aggregator, default, fieldBuilder) {
      rep (v <- local) {
@@ -122,34 +122,11 @@ public def identity(a) {
  * Verify if a device is on the edge of a spatial region.
  * 
  * @param condition bool, how to discriminate a region
- * @return             bool, true if the device is on the edge, false otherwise
+ * @return          bool, true if the device is on the edge, false otherwise
  */
  public def isEdge(condition) {
      !(allHood(nbr(condition)) || allHood(!nbr(condition)))
  }
-
-///**
-// * Apply f to all the tuple elements satisfying the filtering condition. 
-// * Default is applied otherwise.
-// * 
-// * @param tuple   [T], iterate over this tuple
-// * @param filter  (T) -> bool, filtering condition
-// * @param f       (T) -> T', function to be applied
-// * @param default T, default value
-// * @return           T, default
-// */
-//public def iterate(tuple, filter, f, default) {
-//    if (tuple.size() > 0) {
-//        if (filter.apply(tuple.get(0))) {
-//            f.apply(tuple.get(0))
-//        } else {
-//            default
-//        };
-//        iterate(tuple.subTupleEnd(1), filter, f, default)
-//    } else {
-//        default
-//    }
-//}
 
 /**
  * @param a T, first field
@@ -190,8 +167,8 @@ public def min(a, b) {
  * Norm of a numeric tuple.
  * 
  * @param tuple [num], tuple
- * @param p        num, pow
- * @return         num, norm of a numeric tuple
+ * @param p     num, pow
+ * @return      num, norm of a numeric tuple
  */
 public def norm(tuple, p) {
     pow(
@@ -223,7 +200,7 @@ public def or(a, b) {
  * @param x   num, value
  * @param min num, lower bound
  * @param max num, upper bound
- * @return       num, scale x with respect to the range
+ * @return    num, scale x with respect to the range
  */
 public def range(x, min, max) {
     x * (max - min) + min

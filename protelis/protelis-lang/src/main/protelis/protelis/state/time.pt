@@ -9,7 +9,7 @@ import protelis:lang:utils
  * @param event bool, event
  * @param f     () -> T, function to be applied
  * @param null  T, null value
- * @return         T, apply f if event occurs, return null otherwise
+ * @return      T, apply f if event occurs, return null otherwise
  */
 public def applyWhile(event, f, null) {
     if (event) { f.apply() } else { null }
@@ -17,7 +17,7 @@ public def applyWhile(event, f, null) {
 
 /**
  * @param length num, count down length
- * @return          num, remaining time
+ * @return       num, remaining time
  */
 public def countDown(length) {
     countDownWithDecay(length, self.dt())
@@ -27,7 +27,7 @@ public def countDown(length) {
  * 
  * @param length num, count down length
  * @param dt     num, decay
- * @return          num, remaining time
+ * @return       num, remaining time
  */
 public def countDownWithDecay(length, dt) {
     T(length, 0, (t) -> {t - dt})
@@ -37,7 +37,7 @@ public def countDownWithDecay(length, dt) {
  * Cyclic timer.
  * 
  * @param length num, timeout
- * @return          bool, true if the timeout is expired, false otherwise
+ * @return       bool, true if the timeout is expired, false otherwise
  */
 public def cyclicTimer(length) {
     cyclicTimerWithDecay(length, self.dt())
@@ -48,7 +48,7 @@ public def cyclicTimer(length) {
  * 
  * @param length num, timeout
  * @param decay  num, decay rate
- * @return          bool, true if the timeout is expired, false otherwise
+ * @return       bool, true if the timeout is expired, false otherwise
  */
 public def cyclicTimerWithDecay(length, decay) {
     rep (left <- length) {
@@ -65,8 +65,8 @@ public def cyclicTimerWithDecay(length, decay) {
  * 
  * @param length num, timeout
  * @param f      () -> T, function to be invoked
- * @param null      T, default value
- * @return          T, apply f if the timeout is expired, null otherwise
+ * @param null   T, default value
+ * @return       T, apply f if the timeout is expired, null otherwise
  */
 public def cyclicFunction(length, f, null) {
     cyclicFunctionWithDecay(length, self.dt(), f, null)
@@ -78,8 +78,8 @@ public def cyclicFunction(length, f, null) {
  * @param length num, timeout
  * @param decay  num, decay rate
  * @param f      () -> T, function to be invoked
- * @param null      T, default value
- * @return          T, apply f if the timeout is expired, null otherwise
+ * @param null   T, default value
+ * @return       T, apply f if the timeout is expired, null otherwise
  */
 public def cyclicFunctionWithDecay(length, decay, f, null) {
     if (cyclicTimerWithDecay(length, decay)) {
@@ -92,7 +92,7 @@ public def cyclicFunctionWithDecay(length, decay, f, null) {
 /**
  * 
  * @param signal num, signal to be monitored
- * @return          num, variation between current and old values
+ * @return       num, variation between current and old values
  */ 
 public def delta(signal) {
     rep (old <- [signal, 0]) {
@@ -105,7 +105,7 @@ public def delta(signal) {
  * 
  * @param signal num, signal to be filtered
  * @param a      num, alpha value
- * @return          num, filtered signal
+ * @return       num, filtered signal
  */
 public def exponentialBackoffFilter(signal, a) {
     rep (old <- signal) {
@@ -115,8 +115,8 @@ public def exponentialBackoffFilter(signal, a) {
 
 /**
  * @param signal T, signal to be monitored
- * @param time      num, consider the signal stable after this time
- * @return          bool, true if the signal does not change for at least time
+ * @param time   num, consider the signal stable after this time
+ * @return       bool, true if the signal does not change for at least time
  */
 public def isSignalStable(signal, time) {
     let t = 
@@ -133,7 +133,7 @@ public def isSignalStable(signal, time) {
 /**
  * @param event   bool, event
  * @param timeout num, timeout
- * @return           bool, true if the event occurred before timeout, false otherwise
+ * @return        bool, true if the event occurred before timeout, false otherwise
  */
 public def isRecentEvent(event, timeout) {
     if (event) { 
@@ -145,7 +145,7 @@ public def isRecentEvent(event, timeout) {
 
 /**
  * @param signal bool, binary signal to be monitored
- * @return          bool, true if the signal had a rising edge, false otherwise
+ * @return       bool, true if the signal had a rising edge, false otherwise
  */
 public def isRisingEdge(signal) {
     rep (old <- [signal, false]) {
@@ -159,7 +159,7 @@ public def isRisingEdge(signal) {
 
 /**
  * @param signal bool, binary signal to be monitored
- * @return          bool, true if the signal had a falling edge, false otherwise
+ * @return       bool, true if the signal had a falling edge, false otherwise
  */
 public def isFallingEdge(signal) {
     rep (old <- [signal, false]) {
@@ -178,8 +178,8 @@ public def isFallingEdge(signal) {
  * @param value   T, value to be stored
  * @param null    T, default value
  * @param timeout num, hold the value for this amount of time
- * @param dt       num, increase the time of this value
- * @return           T, hold value if timeout is not expired, null otherwise
+ * @param dt      num, increase the time of this value
+ * @return        T, hold value if timeout is not expired, null otherwise
  */
 public def limitedMemory(value, null, timeout, dt) {
     rep (v <- value) {
@@ -195,10 +195,9 @@ public def limitedMemory(value, null, timeout, dt) {
  * Timer.
  * 
  * @param initial num, initial value of the timer
- * @param zero num, lower bound of the timer
- * @param decay (num) -> num, decay rate
- * @return current status of the timer
- * @see countDown
+ * @param zero    num, lower bound of the timer
+ * @param decay   (num) -> num, decay rate
+ * @return        num, current status of the timer
  */
 public def T(initial, zero, decay) {
     rep (v <- initial) { 
@@ -209,7 +208,7 @@ public def T(initial, zero, decay) {
 
 /**
  * @param timeout num, timeout
- * @return           bool, true after timeout, false otherwise
+ * @return        bool, true after timeout, false otherwise
  */
 public def trueAfterTime(timeout) {
     countDown(timeout) <= 0
@@ -217,7 +216,7 @@ public def trueAfterTime(timeout) {
 
 /**
  * @param timeout num, timeout
- * @return           bool, false after timeout, true otherwise
+ * @return        bool, false after timeout, true otherwise
  */
 public def falseAfterTime(timeout) {
     !trueAfterTime(timeout)
@@ -225,7 +224,7 @@ public def falseAfterTime(timeout) {
 
 /**
  * @param signal T, value to be monitored
- * @return          bool, whether v has changed given its previous state
+ * @return       bool, whether v has changed given its previous state
  */
 public def isValueChanged(signal) {
     rep (old <- [signal, true]) {
@@ -235,7 +234,7 @@ public def isValueChanged(signal) {
 
 /**
  * @param timeout num, count down length
- * @return           bool, whether the countdown is expired
+ * @return        bool, whether the countdown is expired
  */
 public def wait(timeout) {
     waitWithDecay(timeout, self.dt())
@@ -244,7 +243,7 @@ public def wait(timeout) {
 /**
  * @param timeout num, count down length
  * @param dt      num, decay
- * @return           bool, whether the countdown is expired
+ * @return        bool, whether the countdown is expired
  */
 public def waitWithDecay(timeout, dt) {
     countDownWithDecay(timeout, dt) <= 0
@@ -254,7 +253,7 @@ public def waitWithDecay(timeout, dt) {
  * @param timeout num, timeut
  * @param f       () -> T, function to be applied
  * @param null    T, null value
- * @return           T, apply f after x, null otherwise
+ * @return        T, apply f after x, null otherwise
  */
 public def waitAndApply(timeout, f, null) {
     if (wait(timeout)) { f.apply() } else { null }

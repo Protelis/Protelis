@@ -46,9 +46,9 @@ def randomUid() {
  * resulting  in  a  random  Voronoi  partition  with  a  characteristic
  * grain size.
  * 
- * @param grain     num, partition dimension
- * @param metric     () -> num, estimate distance from the leader
- * @return             bool, true if the current device is the leader, false otherwise
+ * @param grain  num, partition dimension
+ * @param metric () -> num, estimate distance from the leader
+ * @return       bool, true if the current device is the leader, false otherwise
  */
 public def S(grain, metric) {
     breakUsingUids(randomUid(), grain, metric)

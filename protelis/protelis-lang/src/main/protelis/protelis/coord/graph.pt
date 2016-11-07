@@ -11,7 +11,7 @@ import protelis:coord:nonselfstabilizing:accumulation
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return           bool, true if the device is part of a circular dependency, 
+ * @return        bool, true if the device is part of a circular dependency, 
  *                false otherwise
  */
 public def circularDependency(myId, inbound) {
@@ -23,7 +23,7 @@ public def circularDependency(myId, inbound) {
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return           bool, true if the device is self-referencing itself
+ * @return        bool, true if the device is self-referencing itself
  */
 public def hasSelfDependency(myId, inbound) {
     inbound.contains(myId)
@@ -34,7 +34,7 @@ public def hasSelfDependency(myId, inbound) {
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return           bool, true if the device is part of a transitive circular 
+ * @return        bool, true if the device is part of a transitive circular 
  *                dependency
  */
 public def hasTransitiveDependency(myId, inbound) {
@@ -57,7 +57,7 @@ public def hasTransitiveDependency(myId, inbound) {
  * @param myId    T, device id
  * @param inbound [T], inbound connections
  * @param nodes   T, node on which estimate the greatest lower bound
- * @return           bool, true if the device is part of greatest lower bound
+ * @return        bool, true if the device is part of greatest lower bound
  *                set of devices, false otherwise
  */
 public def greatestLowerBound(myId, inbound, nodes) {
@@ -76,7 +76,7 @@ public def greatestLowerBound(myId, inbound, nodes) {
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return           bool, true if the device is a leaf, false otherwise
+ * @return        bool, true if the device is a leaf, false otherwise
  */
 public def isLeaf(myId, inbound) {
     !rep (v <- inbound) {
@@ -90,7 +90,7 @@ public def isLeaf(myId, inbound) {
  * A device is a root when it has no inbound connections.
  * 
  * @param inbound [T], inbound connections
- * @return           bool, true if the device is a root, false otherwise
+ * @return        bool, true if the device is a root, false otherwise
  */
 public def isRoot(inbound) {
     isEmpty(inbound)
@@ -99,7 +99,7 @@ public def isRoot(inbound) {
 /**
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return           bool, true if the device is parrent of the current device
+ * @return        bool, true if the device is parrent of the current device
  */
 public def isParent(myId, inbound) {
     inbound.intersection(nbr([myId])).size() > 0
@@ -111,7 +111,7 @@ public def isParent(myId, inbound) {
  * @param myId    T, device id
  * @param outbound [T], outbound connections
  * @param nodes   T, node on which estimate the least upper bound 
- * @return           bool, true if the device is part of least upper bound 
+ * @return        bool, true if the device is part of least upper bound 
  *                set of devices, false otherwise
  */
 public def leastUpperBound(myId, outbound, nodes) {
@@ -130,7 +130,7 @@ public def leastUpperBound(myId, outbound, nodes) {
  * 
  * @param myId        T, device id
  * @param connections [T], inbound connections
- * @param message      T', field on which nbr is applied
+ * @param message     T', field on which nbr is applied
  * @param null        T', placeholder for devices which not fulfill the 
  *                    filtering criteria
  * @return            T', filtered set of messages

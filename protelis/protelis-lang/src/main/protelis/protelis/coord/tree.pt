@@ -17,7 +17,7 @@ import protelis:lang:utils
  * Build a spanning tree.
  * 
  * @param potential num,  potential to be followed
- * @return            [num|ExecutionContext, num|ExecutionContext], parent
+ * @return          [num|ExecutionContext, num|ExecutionContext], parent
  * @see             protelis:coord:accumulation.getParentExtended
  */
 public def spanningTree(potential) {
@@ -29,8 +29,8 @@ public def spanningTree(potential) {
  * 
  * @param potential num, potential to be followed
  * @param function  (T) -> T', function to be applied to the parent value
- * @param init         T', initial value of the device
- * @return             [num|ExecutionContext, T']
+ * @param init      T', initial value of the device
+ * @return          [num|ExecutionContext, T']
  * @see protelis:coord:accumulation.getParentExtended,
  *      protelis:coord:accumulation.imRoot, 
  *      protelis:coord:accumulation.noParent
@@ -50,11 +50,11 @@ public def spanningTreeExtended(potential, function, init) {
  * Assuming to have a spanning tree, apply f where condition holds,
  * g otherwise.
  * 
- * @param tree         () -> T, tree
+ * @param tree      () -> T, tree
  * @param condition bool, condition
  * @param f         (T) -> T', what to do if condition is true
- * @param g            (T) -> T', what to do if condition is false
- * @return             T', apply f where condition holds, g otherwise
+ * @param g         (T) -> T', what to do if condition is false
+ * @return          T', apply f where condition holds, g otherwise
  */
 public def applyOnTree(tree, condition, f, g) {
     let parent = tree.apply();
@@ -71,9 +71,9 @@ public def applyOnTree(tree, condition, f, g) {
  * 
  * @param potential num, potential
  * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
- * @param f          ([ExecutionContext, bool]) -> T', what to do if condition is true
- * @param g             ([ExecutionContext, bool]) -> T', what to do if condition is false
- * @return              T', apply f where condition holds, g otherwise
+ * @param f         ([ExecutionContext, bool]) -> T', what to do if condition is true
+ * @param g         ([ExecutionContext, bool]) -> T', what to do if condition is false
+ * @return          T', apply f where condition holds, g otherwise
  */
 public def descendBranch(potential, filter, f, g) {
     descendBranchWithNull(potential, 0, filter, f, g)
@@ -84,11 +84,11 @@ public def descendBranch(potential, filter, f, g) {
  * device where condition holds, g otherwise.
  * 
  * @param potential num, potential
- * @param null         num, null potential value
- * @param filter     (bool) -> bool, whether to execute f or g according to the parent condition
- * @param f          ([ExecutionContext, bool]) -> T', what to do if condition is true
- * @param g             ([ExecutionContext, bool]) -> T', what to do if condition is false
- * @return              T', apply f where condition holds, g otherwise
+ * @param null      num, null potential value
+ * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
+ * @param f         ([ExecutionContext, bool]) -> T', what to do if condition is true
+ * @param g         ([ExecutionContext, bool]) -> T', what to do if condition is false
+ * @return          T', apply f where condition holds, g otherwise
  */
 public def descendBranchWithNull(potential, null, filter, f, g) {
     let c = directProjectionWithMetric(
@@ -108,10 +108,10 @@ public def descendBranchWithNull(potential, null, filter, f, g) {
  * devices where condition holds, g otherwise.
  * 
  * @param potential num, potential
- * @param filter     (bool) -> bool, whether to execute f or g according to the parent condition
- * @param f          ([ExecutionContext, bool]) -> T', what to do if condition is true
- * @param g             ([ExecutionContext, bool]) -> T', what to do if condition is false
- * @return              T', apply f where condition holds, g otherwise
+ * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
+ * @param f         ([ExecutionContext, bool]) -> T', what to do if condition is true
+ * @param g         ([ExecutionContext, bool]) -> T', what to do if condition is false
+ * @return          T', apply f where condition holds, g otherwise
  */
 public def ascendBranch(potential, filter, f, g) {
     if (C(potential, or, filter.apply(), filter.apply())) {

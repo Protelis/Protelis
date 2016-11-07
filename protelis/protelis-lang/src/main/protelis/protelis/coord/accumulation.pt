@@ -6,9 +6,9 @@ import protelis:lang:utils
 /**
  * Estimate and broadcast the average value within a spatial region.
  * 
- * @param sink     bool, whether the device is the root of the spanning tree
+ * @param sink  bool, whether the device is the root of the spanning tree
  * @param local num,  local value
- * @return         num,  average value
+ * @return      num,  average value
  */
 public def average(sink, value) {
     summarize(sink, sum, value, 0) / neighborhood()
@@ -17,11 +17,11 @@ public def average(sink, value) {
 /**
  * Estimate the average value across a bounded spatial region.
  * 
- * @param sink     bool, whether the device is the root of the spanning tree
+ * @param sink  bool, whether the device is the root of the spanning tree
  * @param local num,  local value
  * @param range num,  region range
- * @param null     num,  default value
- * @return         num,  average value
+ * @param null  num,  default value
+ * @return      num,  average value
  */
 public def boundAverage(sink, local, range, null) {
     boundSpreadingWithRange(
@@ -35,11 +35,11 @@ public def boundAverage(sink, local, range, null) {
  * Aggregate a field of type T within a spanning tree built according to the maximum
  * decrease in potential. Accumulate the potential according to the reduce function.
  * 
- * @param potential    num, gradient of which gives aggregation direction
- * @param reduce     (T, T) -> T, function
+ * @param potential num, gradient of which gives aggregation direction
+ * @param reduce    (T, T) -> T, function
  * @param local     T, local value 
- * @param null         T, evaluated when the field is empty
- * @return             T, aggregated value
+ * @param null      T, evaluated when the field is empty
+ * @return          T, aggregated value
  */
 public def C(potential, reduce, local, null) {
     rep (v <- local) {
@@ -71,7 +71,7 @@ public def C(potential, reduce, local, null) {
  * 
  * @param potential num, sum values descending this potential
  * @param local     num, value
- * @return             num, aggregated value
+ * @return          num, aggregated value
  */
 public def cMultiSum(potential, local) {
      cMultiDivisible(
@@ -88,39 +88,31 @@ public def cMultiSum(potential, local) {
 }
 
 /**
- * @param potential    num, gradient of which gives aggregation direction
- * @param local        T, local value
+ * @param potential num, gradient of which gives aggregation direction
+ * @param local     T, local value
  * @param reduce    (T, T) -> T, how to aggregate values
- * @param dividend    (T) -> T, dividend
- * @param divisor    (T) -> T, divisor
- * @param fraction    (T, T) -> T, how to divide dividend by the divisor
- * @param null        T, null value
- * @return             T, aggregated value
+ * @param dividend  (T) -> T, dividend
+ * @param divisor   (T) -> T, divisor
+ * @param fraction  (T, T) -> T, how to divide dividend by the divisor
+ * @param null      T, null value
+ * @return          T, aggregated value
  */
 public def cMultiDivisible(potential, local, null, reduce, dividend, divisor, fraction) {
-    hoodWstateful(local, reduce, null, (v) -> {                  
-         mux (potential >= nbr(potential)) { 
+    hoodWstateful(local, reduce, null, (v) -> {
+         mux (potential >= nbr(potential)) {
                  null
         } else {
             nbr(fraction.apply(dividend.apply(v), divisor.apply(v)))
         } 
     })
 }
-//(def compute-cg (root coordinates)
-//     ;; center-of-gravity = sum of coordinate / number of devices
-//     (broadcast root (vmul
-//                       (/ 1 (tree-aggregate root 1 0))
-//                       (tree-aggregate root 
-//                                       coordinates
-//                                       (tup 0 0 0)))))
-//    
-                                   
+
 /**
  * @param potential num, accumulate values descending this potential
- * @param f            (T, T) -> T, how to accumulate values
+ * @param f         (T, T) -> T, how to accumulate values
  * @param local     T, local value
- * @param default     T, default value
- * @return             T, accumulated value
+ * @param default   T, default value
+ * @return          T, accumulated value
  */
 public def cMultiIdempotent(potential, f, local, default) {
     hoodWstateful(local, f, default, (v) -> { 
@@ -133,7 +125,7 @@ public def cMultiIdempotent(potential, f, local, default) {
  * 
  * @param potential num, minimize values descending this potential
  * @param local     num, value
- * @return             num, minimum value
+ * @return          num, minimum value
  */
 public def cMultiMin(potential, local) {
     cMultiIdempotent(potential, min, local, Infinity)
@@ -144,7 +136,7 @@ public def cMultiMin(potential, local) {
  * 
  * @param potential num, minimize values descending this potential
  * @param local     num, value
- * @return             num, maximum value
+ * @return          num, maximum value
  */
 public def cMultiMax(potential, local) {
      -cMultiMin(potential, -local)
@@ -153,9 +145,9 @@ public def cMultiMax(potential, local) {
 /**
  * Devices agree on a common value.
  * 
- * @param init     num, initial device value 
+ * @param init  num, initial device value 
  * @param f     (num) -> num, how to determine consensus
- * @return         num, shared value
+ * @return      num, shared value
  */
 public def consensus(init, f) {
      rep (val <- init) {
@@ -168,7 +160,7 @@ public def consensus(init, f) {
  * Estimate the diameter of the connected component joined by the current
  * device.
  * 
- * @param source     bool, source of the connected component
+ * @param source    bool, source of the connected component
  * @return diameter num, of the connected component
  */
 public def diameter(source) {
@@ -185,7 +177,7 @@ public def diameter(source) {
  * @param potential num, potential to be followed
  * @param function  (T) -> T, function to be applied to the children value
  * @param default   T, default value for devices which are not children
- * @return             [num|ExecutionContext, T]
+ * @return          [num|ExecutionContext, T]
  */
 public def getAllChildren(potential, f, g, default) {
     getChildrenExtended(
@@ -202,7 +194,7 @@ public def getAllChildren(potential, f, g, default) {
  * current device.
  * 
  * @param potential num, potential to be followed
- * @return             [num], list of children ids
+ * @return          [num], list of children ids
  */
 public def getAllChildrenIds(potential) {
     idUnion(
@@ -223,7 +215,7 @@ public def getAllChildrenIds(potential) {
  * @param f         (ExecutionContext) -> T', function to be applied to the child 
  * @param g         (T) -> T, function to be applied to the child value
  * @param default   T, default value for devices which are not children
- * @return             [num|T', T], children
+ * @return          [num|T', T], children
  */
 public def getChildren(potential, f, g, default) {
     getChildrenExtended(
@@ -243,7 +235,7 @@ public def getChildren(potential, f, g, default) {
  * @param f         (ExecutionContext) -> T', function to be applied to the child 
  * @param g         (T) -> T, function to be applied to the child value
  * @param default   T, default value for devices which are not children
- * @return             [num|T', T], children list
+ * @return          [num|T', T], children list
  */
 public def getChildrenExtended(potential, condition, f, g, default) {
     mux (condition.apply()) { 
@@ -257,7 +249,7 @@ public def getChildrenExtended(potential, condition, f, g, default) {
  * Get the ids of all the children of the current device.
  * 
  * @param potential num, potential to be followed
- * @return             [num], list of children ids
+ * @return          [num], list of children ids
  */
 public def getChildrenIds(potential) {
     idUnion(
@@ -276,13 +268,13 @@ public def getChildrenIds(potential) {
  * 
  * @param potential num, potential
  * @param f         (ExecutionContext) -> T, what to do with the parent
- * @return             num|T, imRoot()|noParent()|f(parent)
+ * @return          num|T, imRoot()|noParent()|f(parent)
  * @see imRoot, noParent
  */
 public def getParent(potential, f) {
     getParentExtendend(
-        potential, 
-        (device) -> { f.apply(device) }, 
+        potential,
+        (device) -> { f.apply(device) },
         (value) -> { NaN },
         NaN
     ).get(0)
@@ -296,7 +288,7 @@ public def getParent(potential, f) {
  * @param f         (ExecutionContext) -> T, what to do with the parent
  * @param g         (T') -> T', what to do with the value
  * @param local     T', local value
- * @return             [num|T,T'], [imRoot()|noParent()|f(parent), g(value)]
+ * @return          [num|T,T'], [imRoot()|noParent()|f(parent), g(value)]
  * @see imRoot, noParent
  */
 public def getParentExtendend(potential, f, g, local) {
@@ -318,7 +310,7 @@ public def getParentExtendend(potential, f, g, local) {
  * @param f         (ExecutionContext) -> T, what to do with the parent
  * @param g         (T') -> T', what to do with the value
  * @param local     T', local value
- * @return             [[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
+ * @return          [[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
  * @see imRoot, noParent
  */
 public def getParents(potential, f, g, local, default) {
@@ -335,7 +327,7 @@ public def getParents(potential, f, g, local, default) {
  * @param f         (ExecutionContext) -> T, what to do with the parent
  * @param g         (T') -> T', what to do with the value
  * @param local     T', local value
- * @return             [[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
+ * @return          [[num|T,T']], [[imRoot()|noParent()|f(parent), g(value)]]
  * @see imRoot, noParent
  */
 public def getParentsExtended(potential, condition, f, g, local, default) {
@@ -398,7 +390,7 @@ def idUnion(idField) {
         (a, b) -> { 
             if (a.size() == 1 && hasNoParent(a.get(0))) { // a has no parent
                 if (hasNoParent(b.get(0))) { [] } else { b }
-            } else { 
+            } else {
                 if (hasNoParent(b.get(0))) { a } else {  a.union(b) } 
             } 
         },
@@ -411,9 +403,9 @@ def idUnion(idField) {
 /**
  * Laplacian consensus.
  * 
- * @param init       num, initial value
+ * @param init    num, initial value
  * @param epsilon num, epsilon
- * @return           num, value agreed upon consensus
+ * @return        num, value agreed upon consensus
  */
 public def laplacianConsensus(init, epsilon) {
      consensus(init, (v) -> {epsilon * v})
@@ -429,11 +421,11 @@ public def noParent() { -1 }
  * Example: 'summarize(distanceTo(sink), sum, 1, 0)' broadcast the sum number of 
  * devices in a region.
  * 
- * @param sink      bool, whether the device should collect the aggregated information
+ * @param sink   bool, whether the device should collect the aggregated information
  * @param reduce (T, T) -> T, how to aggregate
  * @param local  T, local value
  * @param null   T, default value
- * @return           T, aggregated value
+ * @return       T, aggregated value
  */
 public def summarize(sink, reduce, local, null) {
     summarizeWithMetric(sink, nbrRange, reduce, local, null)
@@ -442,12 +434,12 @@ public def summarize(sink, reduce, local, null) {
 /**
  * Broadcast the value accumulated by the sink. 
  * 
- * @param sink      bool, whether the device should collect the aggregated information
+ * @param sink   bool, whether the device should collect the aggregated information
  * @param metric () -> num, how to estimate distance to the other device
  * @param reduce (T, T) -> T, how to aggregate
  * @param local  T, local value
  * @param null   T, default value
- * @return           T, aggregated value
+ * @return       T, aggregated value
  */
 public def summarizeWithMetric(sink, metric, accumulate, local, null) {
     broadcast(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null))
@@ -457,11 +449,11 @@ public def summarizeWithMetric(sink, metric, accumulate, local, null) {
  * Broadcast the value accumulated by the sink. 
  * 
  * @param potential num, potential
- * @param zero         num, value representing null potential
- * @param reduce     (T, T) -> T, how to aggregate
- * @param local      T, local value
- * @param null       T, default value
- * @return               T, aggregated value
+ * @param zero      num, value representing null potential
+ * @param reduce    (T, T) -> T, how to aggregate
+ * @param local     T, local value
+ * @param null      T, default value
+ * @return          T, aggregated value
  */
 public def summarizeWithPotential(potential, zero, accumulate, local, null) {
     broadcastWithMetric(
