@@ -222,7 +222,7 @@ public def crfGradient(source, metric, range) {
                 minHood([d + metric.apply(), 0])
             } else {
                 let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
-                [potential.get(0) + v0 * dt, v0]               
+                [potential.get(0) + v0 * dt, v0]            
             }
         }
     }.get(0)
@@ -248,7 +248,7 @@ public def crfGradient(source, metric, range) {
  * @return       bool, dilated region
  */
 public def dilateWithMetric(region, metric, width) {
-     distanceToWithMetric(region, metric) < width   
+     distanceToWithMetric(region, metric) < width
 }
 
 /**
@@ -308,7 +308,7 @@ public def distanceBetweenWithMetric(source, dest, metric) {
  * @return       num, distance to the closest source
  */
 public def distanceTo(source) {
-    distanceToWithMetric(source, nbrRange)   
+    distanceToWithMetric(source, nbrRange)
 }
 
 /*
@@ -461,7 +461,7 @@ public def gradient(source, init, metric, range) {
                 let v0 = range / 2;
                 [d + v0 * self.dt(), v0]
             }
-        }     
+        }
     }.get(0)
 }
 

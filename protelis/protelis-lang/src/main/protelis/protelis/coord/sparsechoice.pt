@@ -29,7 +29,7 @@ def distanceCompetition(d, lead, uid, grain, metric) {
                 }
             )
         }
-    }   
+    }
 }
 
 /**
@@ -37,7 +37,7 @@ def distanceCompetition(d, lead, uid, grain, metric) {
  */
 def randomUid() {
     rep (v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
-        [v.get(0), v.get(1)]   
+        [v.get(0), v.get(1)]
     }
 }
 
