@@ -61,5 +61,5 @@ public def timeReplicated(process, default, p, k) {
     }
     .min(emptyProcess())
     .get(2) // instead of .result()
-//    .get(0).get(2); 
+//    .get(0).get(2);
 }

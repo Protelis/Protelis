@@ -4,18 +4,18 @@ import protelis:coord:spreading
 import protelis:lang:utils
 /*
  * Building a spanning tree equals to find the parent of device. Using this
- * library, parent information is based on an information pair (treated as a 
+ * library, parent information is based on an information pair (treated as a
  * Tuple): [parent device, additional information]. Finding the parent device
  * is based on protelis:coord:accumulation.getParentExtended. The first element
- * of the tuple is then a number (in case of error) or the parent's execution 
- * context. The second field has been added for the sake of generality. It is 
+ * of the tuple is then a number (in case of error) or the parent's execution
+ * context. The second field has been added for the sake of generality. It is
  * intended as any information of interest related to the parent.
  * @see protelis:coord:accumulation.getParentExtended
  */
- 
+
 /**
  * Build a spanning tree.
- * 
+ *
  * @param potential num,  potential to be followed
  * @return          [num|ExecutionContext, num|ExecutionContext], parent
  * @see             protelis:coord:accumulation.getParentExtended
@@ -26,21 +26,21 @@ public def spanningTree(potential) {
 
 /**
  * Build a spanning tree.
- * 
+ *
  * @param potential num, potential to be followed
  * @param function  (T) -> T', function to be applied to the parent value
  * @param init      T', initial value of the device
  * @return          [num|ExecutionContext, T']
  * @see protelis:coord:accumulation.getParentExtended,
- *      protelis:coord:accumulation.imRoot, 
+ *      protelis:coord:accumulation.imRoot,
  *      protelis:coord:accumulation.noParent
  */
 public def spanningTreeExtended(potential, function, init) {
     rep (parent <- [imRoot(), init]) {
         getParentExtendend(
-            potential, 
-            identity, 
-            (value) -> { function.apply(value) }, 
+            potential,
+            identity,
+            (value) -> { function.apply(value) },
             parent.get(1)
         )
     }
@@ -49,7 +49,7 @@ public def spanningTreeExtended(potential, function, init) {
 /**
  * Assuming to have a spanning tree, apply f where condition holds,
  * g otherwise.
- * 
+ *
  * @param tree      () -> T, tree
  * @param condition bool, condition
  * @param f         (T) -> T', what to do if condition is true
@@ -58,7 +58,7 @@ public def spanningTreeExtended(potential, function, init) {
  */
 public def applyOnTree(tree, condition, f, g) {
     let parent = tree.apply();
-    mux (condition) { 
+    mux (condition) {
         f.apply(parent)
     } else {
         g.apply(parent)
@@ -66,9 +66,9 @@ public def applyOnTree(tree, condition, f, g) {
 }
 
 /**
- * Assuming to have a spanning tree, apply f to the children of the first 
+ * Assuming to have a spanning tree, apply f to the children of the first
  * device where condition holds, g otherwise.
- * 
+ *
  * @param potential num, potential
  * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
  * @param f         ([ExecutionContext, bool]) -> T', what to do if condition is true
@@ -80,9 +80,9 @@ public def descendBranch(potential, filter, f, g) {
 }
 
 /**
- * Assuming to have a spanning tree, apply f to the children of the first 
+ * Assuming to have a spanning tree, apply f to the children of the first
  * device where condition holds, g otherwise.
- * 
+ *
  * @param potential num, potential
  * @param null      num, null potential value
  * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
@@ -92,13 +92,13 @@ public def descendBranch(potential, filter, f, g) {
  */
 public def descendBranchWithNull(potential, null, filter, f, g) {
     let c = directProjectionWithMetric(
-        potential == null, 
-        filter.apply(), 
+        potential == null,
+        filter.apply(),
         () -> { potential }
     );
-    mux (c) { 
+    mux (c) {
         f.apply([getParent(potential, identity), c])
-    } else { 
+    } else {
         g.apply([getParent(potential, identity), c])
     }
 }
@@ -106,7 +106,7 @@ public def descendBranchWithNull(potential, null, filter, f, g) {
 /**
  * Assuming to have a spanning tree, apply f to the father of any of the
  * devices where condition holds, g otherwise.
- * 
+ *
  * @param potential num, potential
  * @param filter    (bool) -> bool, whether to execute f or g according to the parent condition
  * @param f         ([ExecutionContext, bool]) -> T', what to do if condition is true

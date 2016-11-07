@@ -22,7 +22,7 @@ public def anyTime(event) {
 
 /**
  * Counter.
- * 
+ *
  * @param start num, counter initial value
  * @param inc   num, how much to increase the counter
  * @return      num, current status of the counter
@@ -35,7 +35,7 @@ public def counter(start, inc) {
 
 /**
  * How many times an event occurred.
- * 
+ *
  * @param event bool, event to be monitored
  * @return      num, how many times an event occurred
  */
@@ -51,7 +51,7 @@ public def countTrue(event) {
  * @param a T, first value
  * @param b T, second value
  * @return  T, (ba)+ sequence of values
- */ 
+ */
 public def flip(a, b) {
     rep (c <- a) {
         (a + b) - c
@@ -60,7 +60,7 @@ public def flip(a, b) {
 
 /**
  * Time flow.
- * 
+ *
  * @return num, time since the first tick
  */
 public def timeSinceStart() {
@@ -73,9 +73,9 @@ public def timeSinceStart() {
  * @return        bool, true if the event occurred within last time period
  */
 public def trueDuringLast(timeout, event) {
-    if (event) { 
+    if (event) {
         true
-    } else { 
+    } else {
         timeSinceStart() <= timeout
     }
 }
@@ -96,9 +96,9 @@ public def falseDuringLast(timeout, event) {
  * @return        bool, true if a true condition has persisted for time
  */
 public def trueFor(time, event) {
-    if (event) { 
+    if (event) {
         timeSinceStart() >= time
-    } else { 
+    } else {
         false
     }
 }
@@ -132,7 +132,7 @@ public def sequence(f, condition, g) {
  * @param f         () -> T, what to execute first
  * @param condition bool, boolean condition
  * @param g         (T) -> T', what to execute next
- * @return          T|T', apply f until condition becomes true in any device, 
+ * @return          T|T', apply f until condition becomes true in any device,
  *                  apply g next
  */
 public def sequenceIfAny(f, condition, g) {
@@ -147,11 +147,11 @@ public def sequenceIfAny(f, condition, g) {
  * @param f         () -> T, what to execute first
  * @param condition bool, boolean condition
  * @param g         (T) -> T', what to execute next
- * @return          T|T', apply f until condition becomes true in all the devices, 
+ * @return          T|T', apply f until condition becomes true in all the devices,
  *                  apply g next
  */
 public def sequenceIfAll(f, condition, g) {
-    sequence(f, (ev) -> { 
+    sequence(f, (ev) -> {
         allHood(nbr(condition)) && condition
     }, g)
 }

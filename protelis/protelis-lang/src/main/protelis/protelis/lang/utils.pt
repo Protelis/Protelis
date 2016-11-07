@@ -12,7 +12,7 @@ public def and(a, b) {
 
 ///**
 // * Build a field from a value.
-// * 
+// *
 // * Return type: (any) -> any.
 // * @param value value to be fielded
 // * @return field of the given value
@@ -23,7 +23,7 @@ public def and(a, b) {
 
 /**
  * Line-of-sight detector.
- * 
+ *
  * @param a T, value
  * @return  bool, true if there is at least a neighbor respect to x, false otherwise
  */
@@ -33,7 +33,7 @@ public def canSee(a) {
 
 ///**
 // * Return type: (fun) -> fun.
-// * @param f function 
+// * @param f function
 // * @return g(f(args))
 // */
 //public def composeF(f) {
@@ -59,8 +59,8 @@ public def canSee(a) {
  */
 public def denormalize(x, oldmin, oldmax, newmin, newmax) {
     x * (newmax - newmin) / (oldmax - oldmin) + (newmin - oldmin)
-} 
- 
+}
+
 /**
  * @param a num, first field
  * @param b num, second field
@@ -72,7 +72,7 @@ public def diff(a, b) {
 
 /**
  * *-hood wrapper.
- * 
+ *
  * @param local        T, local value
  * @param aggregator   (T, T) -> T, how to reduce information
  * @param default      T, default value in case the field returned by fieldBuilder is empty
@@ -80,7 +80,7 @@ public def diff(a, b) {
  * @return             T, reduced value
  */
 public def hoodW(local, aggregator, default, fieldBuilder) {
-    aggregator.apply(local, 
+    aggregator.apply(local,
         hood(
             (a, b) -> { aggregator.apply(a, b) },
             default,
@@ -91,7 +91,7 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
 
 /**
  * Stateful *-hood wrapper.
- * 
+ *
  * @param local        T, local value
  * @param aggregator   (T, T) -> T, how to reduce information
  * @param default      T, default value in case the field returned by fieldBuilder is empty
@@ -100,7 +100,7 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  */
 public def hoodWstateful(local, aggregator, default, fieldBuilder) {
      rep (v <- local) {
-         aggregator.apply(local, 
+         aggregator.apply(local,
              hood(
                  (a, b) -> { aggregator.apply(a, b) },
                  default,
@@ -114,13 +114,13 @@ public def hoodWstateful(local, aggregator, default, fieldBuilder) {
  * @param a T, value to be returned
  * @return  T, the same value
  */
-public def identity(a) { 
+public def identity(a) {
     a
 }
 
 /**
  * Verify if a device is on the edge of a spatial region.
- * 
+ *
  * @param condition bool, how to discriminate a region
  * @return          bool, true if the device is on the edge, false otherwise
  */
@@ -165,7 +165,7 @@ public def min(a, b) {
 
 /**
  * Norm of a numeric tuple.
- * 
+ *
  * @param tuple [num], tuple
  * @param p     num, pow
  * @return      num, norm of a numeric tuple
@@ -174,7 +174,7 @@ public def norm(tuple, p) {
     pow(
         tuple
             .map(self, (a) -> { pow(a, p) })
-            .reduce(self, 0, (a, b) -> { a + b }), 
+            .reduce(self, 0, (a, b) -> { a + b }),
         1/p
     )
 }

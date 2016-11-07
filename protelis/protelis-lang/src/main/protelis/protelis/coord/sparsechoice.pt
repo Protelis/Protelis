@@ -9,18 +9,18 @@ def breakUsingUids(uid, grain, metric) {
 }
 
 def distanceCompetition(d, lead, uid, grain, metric) {
-    mux (d > grain) { 
+    mux (d > grain) {
         // Device is far. Propose its id
-        uid 
+        uid
     } else {
         let thr = 0.5 * grain;
         mux (d >= thr) {
             // Nearest neighbor in the second half (outer side) of the region. Do not challenge at all
-            Infinity 
+            Infinity
         } else {
             // Challenge for this partition
             minHood(
-                mux (nbr(d) + metric.apply() >= thr) { 
+                mux (nbr(d) + metric.apply() >= thr) {
                     // Device in the second half (outer side) of the region. Do not challenge at all
                     Infinity
                 } else {
@@ -29,7 +29,7 @@ def distanceCompetition(d, lead, uid, grain, metric) {
                 }
             )
         }
-    }    
+    }   
 }
 
 /**
@@ -37,7 +37,7 @@ def distanceCompetition(d, lead, uid, grain, metric) {
  */
 def randomUid() {
     rep (v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
-        [v.get(0), v.get(1)]    
+        [v.get(0), v.get(1)]   
     }
 }
 
@@ -45,7 +45,7 @@ def randomUid() {
  * Devices compete against one another to become local leaders,
  * resulting  in  a  random  Voronoi  partition  with  a  characteristic
  * grain size.
- * 
+ *
  * @param grain  num, partition dimension
  * @param metric () -> num, estimate distance from the leader
  * @return       bool, true if the current device is the leader, false otherwise

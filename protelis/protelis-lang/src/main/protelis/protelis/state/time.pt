@@ -5,7 +5,7 @@ import protelis:lang:utils
 
 /**
  * Apply a function while condition is true.
- * 
+ *
  * @param event bool, event
  * @param f     () -> T, function to be applied
  * @param null  T, null value
@@ -24,7 +24,7 @@ public def countDown(length) {
 }
 
 /**
- * 
+ *
  * @param length num, count down length
  * @param dt     num, decay
  * @return       num, remaining time
@@ -35,7 +35,7 @@ public def countDownWithDecay(length, dt) {
 
 /**
  * Cyclic timer.
- * 
+ *
  * @param length num, timeout
  * @return       bool, true if the timeout is expired, false otherwise
  */
@@ -45,7 +45,7 @@ public def cyclicTimer(length) {
 
 /**
  * Cyclic timer.
- * 
+ *
  * @param length num, timeout
  * @param decay  num, decay rate
  * @return       bool, true if the timeout is expired, false otherwise
@@ -62,7 +62,7 @@ public def cyclicTimerWithDecay(length, decay) {
 
 /**
  * Periodically invoke a function.
- * 
+ *
  * @param length num, timeout
  * @param f      () -> T, function to be invoked
  * @param null   T, default value
@@ -74,7 +74,7 @@ public def cyclicFunction(length, f, null) {
 
 /**
  * Periodically invoke a function.
- * 
+ *
  * @param length num, timeout
  * @param decay  num, decay rate
  * @param f      () -> T, function to be invoked
@@ -90,10 +90,10 @@ public def cyclicFunctionWithDecay(length, decay, f, null) {
 }
 
 /**
- * 
+ *
  * @param signal num, signal to be monitored
  * @return       num, variation between current and old values
- */ 
+ */
 public def delta(signal) {
     rep (old <- [signal, 0]) {
         [signal, signal - old.get(0)]
@@ -102,7 +102,7 @@ public def delta(signal) {
 
 /**
  * Exponential back-off filter.
- * 
+ *
  * @param signal num, signal to be filtered
  * @param a      num, alpha value
  * @return       num, filtered signal
@@ -119,11 +119,11 @@ public def exponentialBackoffFilter(signal, a) {
  * @return       bool, true if the signal does not change for at least time
  */
 public def isSignalStable(signal, time) {
-    let t = 
+    let t =
         rep (old <- [signal, 0]) {
-            mux (signal == old.get(0)) { 
+            mux (signal == old.get(0)) {
                 [signal, old.get(1) + self.dt()]
-            } else { 
+            } else {
                 [signal, 0]
             }
         }.get(1);
@@ -136,9 +136,9 @@ public def isSignalStable(signal, time) {
  * @return        bool, true if the event occurred before timeout, false otherwise
  */
 public def isRecentEvent(event, timeout) {
-    if (event) { 
+    if (event) {
         true
-    } else { 
+    } else {
         countDown(timeout) > 0
     }
 }
@@ -149,9 +149,9 @@ public def isRecentEvent(event, timeout) {
  */
 public def isRisingEdge(signal) {
     rep (old <- [signal, false]) {
-        mux (!old.get(0) && signal) { 
+        mux (!old.get(0) && signal) {
             [signal, true]
-        } else { 
+        } else {
             [signal, false]
         }
     }.get(1);
@@ -163,17 +163,17 @@ public def isRisingEdge(signal) {
  */
 public def isFallingEdge(signal) {
     rep (old <- [signal, false]) {
-        mux (old.get(0) && !signal) { 
+        mux (old.get(0) && !signal) {
             [signal, true]
-        } else { 
+        } else {
             [signal, false]
         }
     }.get(1);
 }
 
 /**
- * Hold value until a specified timeout. 
- * 
+ * Hold value until a specified timeout.
+ *
  * TODO: reconsider this function. When do we trigger the recording?
  * @param value   T, value to be stored
  * @param null    T, default value
@@ -183,9 +183,9 @@ public def isFallingEdge(signal) {
  */
 public def limitedMemory(value, null, timeout, dt) {
     rep (v <- value) {
-        if (waitWithDecay(timeout, dt)) { 
+        if (waitWithDecay(timeout, dt)) {
             null
-        } else { 
+        } else {
             v
         }
     }
@@ -193,14 +193,14 @@ public def limitedMemory(value, null, timeout, dt) {
 
 /*
  * Timer.
- * 
+ *
  * @param initial num, initial value of the timer
  * @param zero    num, lower bound of the timer
  * @param decay   (num) -> num, decay rate
  * @return        num, current status of the timer
  */
 public def T(initial, zero, decay) {
-    rep (v <- initial) { 
+    rep (v <- initial) {
         // rep is initialized only during the first invocation
         min(initial, max(zero, decay.apply(v)))
     }

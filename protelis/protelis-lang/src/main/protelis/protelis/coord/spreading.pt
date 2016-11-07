@@ -5,7 +5,7 @@ import protelis:state:time
 
 /*
  * Add v to the field of distances from the current device.
- * 
+ *
  * @param v num, distance to add
  * @return  num, field of distances from the current device
  */
@@ -15,7 +15,7 @@ public def addRange(v) {
 
 /*
  * Add of 1 the field of distances of the current device's neighbors.
- * 
+ *
  * @return num, field of distances from the current device
  */
 public def addRangeHop() {
@@ -24,7 +24,7 @@ public def addRangeHop() {
 
 /*
  * Add v to the field of distances from the current device.
- * 
+ *
  * @param v      num, distance to add
  * @param metric () -> num, estimate distance from other devices
  * @param speed  num, communication speed
@@ -36,7 +36,7 @@ public def addRangeWithLag(v, metric, speed) {
 
 /*
  * Add v to the field of distances from the current device.
- * 
+ *
  * @param v      num, distance to add
  * @param metric () -> num, estimate distance from other devices
  * @return       num, field of distances from the current device
@@ -46,8 +46,8 @@ public def addRangeWithMetric(v, metric) {
 }
 
 /**
- * Constrain the spreading of broadcast function only within a region. 
- * 
+ * Constrain the spreading of broadcast function only within a region.
+ *
  * @param region bool, whether the function is spreaded or not
  * @param null   T, default value where f is not spreaded
  * @param source bool, whether the current device is a source
@@ -59,7 +59,7 @@ public def boundBroadcast(region, null, source, value) {
 }
 
 /**
- * Constrain the spreading of G function only within a region. 
+ * Constrain the spreading of G function only within a region.
 
  * @param region     bool, whether the function is spreaded or not
  * @param null       T, default value where f is not spreaded
@@ -70,14 +70,14 @@ public def boundBroadcast(region, null, source, value) {
  * @return           T, accumulated value
  */
 public def boundG(region, null, source, initial, metric, accumulate) {
-    boundSpreading(region, () -> { 
+    boundSpreading(region, () -> {
         G(source, initial, metric, accumulate)
     }, null)
 }
 
 /*
  * Distance from the current to the closest source.
- * 
+ *
  * @param region bool, where to compute distanceTo
  * @param source bool, whether the device is a source
  * @return       num, field of minimum distances to the closest source
@@ -87,8 +87,8 @@ public def boundDistanceTo(region, source) {
 }
 
 /**
- * Constrain the spreading of f only across a region. 
- * 
+ * Constrain the spreading of f only across a region.
+ *
  * @param region bool, whether the function is spreaded or not
  * @param f      () -> T,  function to be spreaded
  * @param null   T, default value where f is not spreaded
@@ -103,8 +103,8 @@ public def boundSpreading(region, f, null) {
 }
 
 /**
- * Constrain the spreading of f only within devices close to the source. 
- * 
+ * Constrain the spreading of f only within devices close to the source.
+ *
  * @param range () -> bool, how to determine the range
  * @param f     () -> T, function to be spreaded
  * @param null  T, default value where f is not spreaded
@@ -116,7 +116,7 @@ public def boundSpreadingWithRange(range, f, null) {
 
 /*
  * Broadcast value across a spanning tree starting from the source.
- * 
+ *
  * @param source bool, whether the current device is a source
  * @param value  T, what to broadcast
  * @return       T, broadcasted value
@@ -127,7 +127,7 @@ public def broadcast(source, value) {
 
 /*
  * Broadcast value across a spanning tree starting from the source.
- * 
+ *
  * @param source bool, whether the current device is a source
  * @param value  T, what to broadcast
  * @param metric () -> num, estimate distance from other devices
@@ -138,13 +138,13 @@ public def broadcastWithMetric(source, value, metric) {
 }
 
 /**
- * Dynamically computes distributed routes between regions of a network, and 
- * dynamically adapts to shape and changes of the network topology. Examples 
- * of its use include long-range reliable communications, or advanced crowd 
- * steering applications in pervasive computing. The �channel� is a Boolean 
- * field that is true for devices near the shortest route from a given 
+ * Dynamically computes distributed routes between regions of a network, and
+ * dynamically adapts to shape and changes of the network topology. Examples
+ * of its use include long-range reliable communications, or advanced crowd
+ * steering applications in pervasive computing. The �channel� is a Boolean
+ * field that is true for devices near the shortest route from a given
  * (distributed) source to a (distributed) destination.
- * 
+ *
  * @param source   bool, whether the device is a source
  * @param dest     bool, whether the device is a destination
  * @param obstacle bool, whether the device is an obstacle
@@ -153,7 +153,7 @@ public def broadcastWithMetric(source, value, metric) {
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
 public def channel(source, dest, obstacle, thr, width) {
-      boundSpreading(!obstacle, () -> { 
+      boundSpreading(!obstacle, () -> {
           let d = distanceBetween(source, dest);
           if (d == Infinity) { false }
           else {
@@ -164,7 +164,7 @@ public def channel(source, dest, obstacle, thr, width) {
 
 /**
  * Channel pattern.
- * 
+ *
  * @param source   bool, whether the device is a source
  * @param dest     bool, whether the device is a destination
  * @param obstacle bool, whether the device is an obstacle
@@ -172,7 +172,7 @@ public def channel(source, dest, obstacle, thr, width) {
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
 public def channel2(source, destination, obstacle, width) {
-      boundSpreading(!obstacle, () -> { 
+      boundSpreading(!obstacle, () -> {
           distanceTo(shortestPath(source, destination)) <= width
       }, false)
 }
@@ -197,13 +197,13 @@ public def closerThanWithMetric(source, metric, range) {
 }
 
 /**
- * Self-healing gradcast algorithm that reconfigures in O(diameter) time. 
- * Requires euclidean metric. The CRF-Gradient algorithm handles this problem 
+ * Self-healing gradcast algorithm that reconfigures in O(diameter) time.
+ * Requires euclidean metric. The CRF-Gradient algorithm handles this problem
  * by splitting the calculation into constraint and restoring force behaviors.
- * When constraint is dominant, the value of a device gx(t) stays fixed or 
- * decreases, set by the triangle inequality from its neighbors� values.  When 
+ * When constraint is dominant, the value of a device gx(t) stays fixed or
+ * decreases, set by the triangle inequality from its neighbors� values.  When
  * restoring force is dominant, gx(t) rises at a fixed velocity v0.
- * 
+ *
  * @param source bool,  whether the device is a source
  * @param metric () -> num, how to estimate distances without lag
  * @param range  num, communication max range
@@ -222,7 +222,7 @@ public def crfGradient(source, metric, range) {
                 minHood([d + metric.apply(), 0])
             } else {
                 let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
-                [potential.get(0) + v0 * dt, v0]                
+                [potential.get(0) + v0 * dt, v0]               
             }
         }
     }.get(0)
@@ -230,7 +230,7 @@ public def crfGradient(source, metric, range) {
 
 /**
  * Dilate a spatial region.
- * 
+ *
  * @param region bool, whether the device is inside the region
  * @param width  num, how much to dilate
  * @return       bool, dilated region
@@ -238,82 +238,82 @@ public def crfGradient(source, metric, range) {
  public def dilate(region, width) {
      dilateWithMetric(region, nbrRange, width)
  }
- 
+
 /**
  * Dilate a spatial region.
- * 
+ *
  * @param region bool, whether the device is inside the region
  * @param metric () -> num, how to estimate the distance between devices
  * @param width  num, how much to dilate
  * @return       bool, dilated region
  */
 public def dilateWithMetric(region, metric, width) {
-     distanceToWithMetric(region, metric) < width    
+     distanceToWithMetric(region, metric) < width   
 }
 
 /**
  * Forecast obstacles along a path to the source.
- * 
+ *
  * @param source   bool, whether the device is a source
  * @param obstacle bool, whether the device is an obstacle
  * @return         bool, true if the device encounter an obstacle within the shortest
  * path towards the closest source, false otherwise
- */ 
+ */
 public def directProjection(source, obstacle) {
     directProjectionWithMetric(source, obstacle, nbrRange)
 }
 
 /**
  * Forecast obstacles along a path to the source.
- * 
+ *
  * @param source   bool, whether the device is a source
  * @param obstacle bool, whether the device is an obstacle
- * @param metric   () -> num, how to estimate neighbors distances  
+ * @param metric   () -> num, how to estimate neighbors distances 
  * @return         bool, true if the device encounter an obstacle within the shortest
  * path towards the closest source, false otherwise
- */ 
+ */
 public def directProjectionWithMetric(source, obstacle, metric) {
 //    let c = if (obstacle) { 1 } else { 0 };
 //    G(source, c, metric, (v) -> { c + Gnull(v, 0) }) > 0
     G(source, obstacle, metric, (v) -> { obstacle || Gnull(v, false) })
 }
- 
+
 /**
  * Smallest distance between source and destination devices.
- * 
+ *
  * @param source bool, whether the current device is a source
  * @param dest   bool, whether the current device is a destination
  * @return       num, smallest distance between source and destination devices
  */
-public def distanceBetween(source, dest) { 
+public def distanceBetween(source, dest) {
     distanceBetweenWithMetric(source, dest, nbrRange)
 }
 
 /**
  * Smallest distance between source and destination devices.
- * 
+ *
  * @param source bool, whether the current device is a source
  * @param dest   bool, whether the current device is a destination
  * @param metric () -> num, estimate distance from other devices
  * @return       num, smallest distance between source and destination devices
  */
-public def distanceBetweenWithMetric(source, dest, metric) { 
+public def distanceBetweenWithMetric(source, dest, metric) {
     G(source, distanceToWithMetric(dest, metric), metric, identity)
 }
 
 /*
  * Distance from the current to the closest source.
- * 
+ *
  * @param source bool, whether the current device is a source
  * @return       num, distance to the closest source
  */
 public def distanceTo(source) {
-    distanceToWithMetric(source, nbrRange)    
+    distanceToWithMetric(source, nbrRange)   
 }
 
 /*
  * Distance from the current to the closest source.
- * 
+ *
  * @param source bool, whether the device is a source
  * @param metric () -> num, estimate distance from other devices
  * @return       num, field of minimum distances to the closest source
@@ -336,9 +336,9 @@ def slope(d, minD, metric) {
 
 /**
  * Flex-Gradient.
- * 
+ *
  * @param source     bool, whether the device is a source
- * @param epsilon    num, tolerance 
+ * @param epsilon    num, tolerance
  * @param rate       num, communication rate
  * @param range      num, communication range
  * @param distortion num, distortion
@@ -346,7 +346,7 @@ def slope(d, minD, metric) {
  */
 public def flexGradient(source, epsilon, rate, range, distortion, metric) {
     rep (d <- Infinity) {
-        mux (source) { 
+        mux (source) {
             0
         } else {
             let minD = range * distortion;
@@ -374,7 +374,7 @@ public def flexGradient(source, epsilon, rate, range, distortion, metric) {
 
 /*
  * Propagate values across a spanning tree starting from the closest source.
- * 
+ *
  * @param source     bool, whether the current device is a source
  * @param initial    T, initial value of the computation
  * @param metric     () -> num, estimate distance from other devices
@@ -403,25 +403,25 @@ public def G(source, initial, metric, accumulate) {
 }
 
 /**
- * Wrapper for G error. 
+ * Wrapper for G error.
  * For example: G(aBool, aBool, aMetric, (v) -> { Gnull(v, false) ... }
  * assure that G is not broken in case minHood([..., ...]) returns Infinity.
- * 
+ *
  * @param v       T, value to be checked
  * @param default T, default value to avoid to broke G
  * @return        T, v or default
  */
 public def Gnull(v, default) {
-    mux (v == Infinity) { 
+    mux (v == Infinity) {
         default
-    } else { 
+    } else {
         v
     }
 }
 
 /**
  * Gradcast.
- * 
+ *
  * @param source     bool, whether the device is a source
  * @param gradient   num, gradient to follow
  * @param local      T, local value
@@ -430,7 +430,7 @@ public def Gnull(v, default) {
  */
 public def gradcast(source, gradient, local, accumulate) {
     rep (value <- local) {
-        mux (source) { 
+        mux (source) {
             local
         } else {
             minHood([nbr(gradient.apply()), accumulate.apply(nbr(value))]).get(1)
@@ -440,7 +440,7 @@ public def gradcast(source, gradient, local, accumulate) {
 
 /**
  * Determine the smallest distance from the current device to the source.
- * 
+ *
  * @param source bool, whether the device is a source
  * @param init   num, distance initial value
  * @param metric () -> num, estimate distance from other devices
@@ -449,7 +449,7 @@ public def gradcast(source, gradient, local, accumulate) {
  */
 public def gradient(source, init, metric, range) {
     rep (distance <- [Infinity, 0]) {
-        mux (source) { 
+        mux (source) {
             [init, 0]
         } else {
             let d = distance.get(0);
@@ -461,13 +461,13 @@ public def gradient(source, init, metric, range) {
                 let v0 = range / 2;
                 [d + v0 * self.dt(), v0]
             }
-        }      
+        }     
     }.get(0)
 }
- 
+
 /**
  * Count the number of neighbors.
- * 
+ *
  * @return num, number of neighbors
  */
 public def neighborhood() {
@@ -476,7 +476,7 @@ public def neighborhood() {
 
 /**
  * Communication latency.
- * 
+ *
  * @return num, communication latencies between this device and its
  * neighbors
  */
@@ -486,7 +486,7 @@ public def nbrLag() {
 
 /*
  * Estimate the distance of the current device.
- * 
+ *
  * @return num, field of distances from the current device
  */
 public def nbrRange() {
@@ -495,16 +495,16 @@ public def nbrRange() {
 
 /*
  * Estimate the distance from the current device.
- * 
+ *
  * @return num, field of 1s for each neighbor
  */
-public def nbrRangeHop() { 
+public def nbrRangeHop() {
     1
 }
 
 /*
  * Estimate the distance of the current device.
- * 
+ *
  * @param metric    () -> num, how to estimate distances
  * @param lagmetric () -> num, how to estimate latencies
  * @param speed     num, communication speed
@@ -516,12 +516,12 @@ public def nbrRangeLag(metric, lagMetric, speed) {
 
 /**
  * Shortest path according to a potential.
- * 
+ *
  * @param source    bool, whether the device is a source
  * @param potential num, potential
  * @return          bool, true if the device is in the shortest path
  * @see rendezvous
- */ 
+ */
 public def descend(source, potential) {
     rep (path <- source) {
         let nextStep = minHood(nbr([potential, self.getDeviceUID()]));
@@ -534,10 +534,10 @@ public def descend(source, potential) {
 
 /**
  * Shortest path.
- * 
+ *
  * @param source bool, whether the device is the source
  * @param dest   bool, whether the device is the destination
- * @return       bool, true if the device is in the shortest path 
+ * @return       bool, true if the device is in the shortest path
  * @see descend, shortestPath
  */
 public def rendezvous(source, dest) {
@@ -545,14 +545,14 @@ public def rendezvous(source, dest) {
 }
 
 /**
- * Dynamically computes the shortest route between regions of a network, and 
- * dynamically adapts to shape and changes of the network topology. The �shortest path� 
- * is a Boolean field that is true for devices near the shortest route from a given 
+ * Dynamically computes the shortest route between regions of a network, and
+ * dynamically adapts to shape and changes of the network topology. The �shortest path�
+ * is a Boolean field that is true for devices near the shortest route from a given
  * (distributed) source to a (distributed) destination.
- * 
+ *
  * @param source bool, whether the device is the source
  * @param dest   bool, whether the device is the destination
- * @return       bool, true if the device is in the shortest path 
+ * @return       bool, true if the device is in the shortest path
  * @see rendezvous
  */
 public def shortestPath(source, destination) {
@@ -563,7 +563,7 @@ public def shortestPath(source, destination) {
             // any device on the shortest path
             anyHood(
                 // check whether a neigh is on the shortest path AND the current device is in the shortest path
-                nbr (path) && 
+                nbr (path) &&
                     (distanceTo(destination) == nbr( // if my distance is the same as the collected one
                         minHood( // get the closest distance
                             nbr(distanceTo(destination)) // get the neighbors distances from the destination
@@ -590,9 +590,9 @@ public def vm(source, range, f, null) {
 
 /**
  * Entry point for a computation.
- * 
+ *
  * @param source bool, whether the device is a source
- * @param metric () -> num, how to estimate neighbors distances 
+ * @param metric () -> num, how to estimate neighbors distances
  * @param range  num, spreading constraint
  * @param f      () -> T, entry point
  * @param null   T, default value
@@ -603,14 +603,14 @@ public def vmWithMetric(source, metric, range, f, null) {
         closerThanWithMetric(source, metric, range)
     }, f, null)
 }
- 
-/**  
- * Computing a Voronoi partition is an operation that is frequently useful in 
- * distributed systems. Given an initial set of seed devices, a Voronoi 
- * partition assigns each device to the partition of the nearest seed, 
- * effectively breaking the network up into zones of influence around key 
+
+/** 
+ * Computing a Voronoi partition is an operation that is frequently useful in
+ * distributed systems. Given an initial set of seed devices, a Voronoi
+ * partition assigns each device to the partition of the nearest seed,
+ * effectively breaking the network up into zones of influence around key
  * elements.
- * 
+ *
  * @param source bool, whether the device is a seed
  * @param id     T, partition id
  * @return       T, partition of the nearest seed
@@ -619,13 +619,13 @@ public def voronoiPatitioning(source, id) {
     voronoiPatitioningWithMetric(source, id, nbrRange)
 }
 
-/**  
- * Computing a Voronoi partition is an operation that is frequently useful in 
- * distributed systems. Given an initial set of seed devices, a Voronoi 
- * partition assigns each device to the partition of the nearest seed, 
- * effectively breaking the network up into zones of influence around key 
+/** 
+ * Computing a Voronoi partition is an operation that is frequently useful in
+ * distributed systems. Given an initial set of seed devices, a Voronoi
+ * partition assigns each device to the partition of the nearest seed,
+ * effectively breaking the network up into zones of influence around key
  * elements.
- * 
+ *
  * @param source bool, whether the device is a seed
  * @param id     T, partition id
  * @param metric () -> num, how to estimate the distances of the neighbors
