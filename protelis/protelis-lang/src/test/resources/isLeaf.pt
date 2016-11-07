@@ -1,0 +1,3 @@
+import protelis:coord:graph
+import protelis:coord:spreading
+isLeaf(env.get("myId"), env.get("dependencies"))

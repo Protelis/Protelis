@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: $CYCLE
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+countTrue(true)

@@ -1,0 +1,65 @@
+module protelis:coord:timereplication
+import org.apache.commons.math3.util.FastMath.max
+import org.apache.commons.math3.util.FastMath.pow
+import org.apache.commons.math3.util.FastMath.floor
+import org.apache.commons.math3.util.FastMath.min
+import protelis:coord:sharedtimer
+
+/*
+ * This function should return false if the clock is out of date (namely: no device in the network is still on that clock).
+ */
+def isCurrent(currentClock, clock, k) {
+    currentClock - clock < k
+}
+
+def isNewClock(processes, clock) {
+    processes
+        .map(self, process -> {process.get(0)})
+        .filter(self, pid -> {clock == pid})
+        .isEmpty()
+}
+
+def clock(tuple) {
+    tuple.get(0)
+}
+
+def emptyProcess() {
+    rep (p <- [Infinity, () -> {"EMPTY"}, "EMPTY"]) {
+        p
+    }
+}
+
+def alignedExecution(processes) {
+    alignedMap(
+        nbr(processes.map(self, p -> { [p.get(0), p] } )),
+        (pid, pField) -> { true },
+        (pid, pField) -> {
+            let p = hoodPlusSelf(
+                (a, b) -> {if (a.compareTo(b) < 0) {a} else {b}},
+                emptyProcess(),
+                pField
+            );
+            [p.get(0), p.get(1), p.get(1).apply()]
+        },
+        emptyProcess()
+    ).map(self, tProc -> { tProc.get(1) } );
+}
+
+public def timeReplicated(process, default, p, k) {
+    let clock = sharedTimer(p, self.dt());
+    rep (processes <- []) {
+        /*
+         * Add process if the clock is new
+         */
+        if (isNewClock(processes, clock)) {
+            processes = processes.append([clock, process, default])
+        } else {0};
+        /*
+         * Align on clock, execute process
+         */
+        alignedExecution(processes.filter(self, p -> {clock - p.get(0) < k}))
+    }
+    .min(emptyProcess())
+    .get(2) // instead of .result()
+//    .get(0).get(2);
+}

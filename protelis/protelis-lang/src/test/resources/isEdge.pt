@@ -1,0 +1,2 @@
+import protelis:lang:utils
+isEdge(env.has("source"))

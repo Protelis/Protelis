@@ -1,0 +1,2 @@
+import protelis:coord:spreading
+boundBroadcast(!env.has("obstacle"), "bar", env.has("source"), "foo")

@@ -1,0 +1,25 @@
+# result:
+#  {4:[0 bar, 1 bar, 2 bar, 3 bar], 100:[0 foo, 1 foo, 2 foo, 3 foo]}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: sequenceIfAny
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 1, 1, 1, 0, 0]
+    contents:
+      - in:
+          type: Circle
+          parameters: [1, 1, 0.5]
+        molecule: obstacle
+        concentration: true
+    programs:
+      - *program

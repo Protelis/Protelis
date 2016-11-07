@@ -1,0 +1,25 @@
+# result:
+#  {0 0.0, 1 0.0,
+#   2 0.0, 3 0.0}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: T
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 1, 1, 1, 0, 0]
+    contents:
+      - molecule: n
+        concentration: 5
+      - molecule: decay
+        concentration: 1
+    programs:
+      - *program

@@ -4,3 +4,11 @@ dependencies {
     )
 }
 
+sourceSets {
+	test {
+	    resources {
+	        srcDir 'src/main/protelis'
+	        srcDir 'src/test/resources'
+	    }
+	}
+}

@@ -9,6 +9,7 @@
 package org.protelis.lang.datatype.impl;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import java8.util.J8Arrays;
 import java8.util.function.BinaryOperator;
@@ -44,6 +45,17 @@ public class ArrayTupleImpl implements Tuple {
     private final Object[] arrayContents;
     private int hash;
     private String string;
+    @SuppressWarnings("unchecked")
+    private static final Comparator<Object> COMPARE_TO = (a, b) -> {
+        if (a instanceof Comparable && b instanceof Comparable) {
+            try {
+                return ((Comparable<Object>) a).compareTo((Comparable<?>) b);
+            } catch (RuntimeException e) {
+                return compareLexicographically(a, b);
+            }
+        }
+        return compareLexicographically(a, b);
+    };
 
     /**
      * @param base
@@ -374,25 +386,25 @@ public class ArrayTupleImpl implements Tuple {
         return insert(0, element);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Tuple sort() {
         final Object[] newArray = Arrays.copyOf(arrayContents, arrayContents.length);
-        Arrays.sort(newArray, (a, b) -> {
-            if (a instanceof Comparable && b instanceof Comparable) {
-                try {
-                    return ((Comparable<Object>) a).compareTo((Comparable<?>) b);
-                } catch (RuntimeException e) {
-                    return compareLexicographically(a, b);
-                }
-            }
-            return compareLexicographically(a, b);
-        });
+        Arrays.sort(newArray, COMPARE_TO);
         return DatatypeFactory.createTuple(newArray);
     }
 
     private static int compareLexicographically(final Object a, final Object b) {
         return a.toString().compareTo(b.toString());
+    }
+
+    @Override
+    public Object min(final Object def) {
+        return J8Arrays.stream(arrayContents).min(COMPARE_TO).orElse(def);
+    }
+
+    @Override
+    public Object max(final Object def) {
+        return J8Arrays.stream(arrayContents).max(COMPARE_TO).orElse(def);
     }
 
 }

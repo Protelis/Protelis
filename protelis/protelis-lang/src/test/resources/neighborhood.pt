@@ -1,9 +1,2 @@
-module neighborhood
-
-def neighborhood() {
-    rep(c <- 0) {
-        sumHood(nbr(1))
-    }
-}
-
+import protelis:coord:spreading
 neighborhood()

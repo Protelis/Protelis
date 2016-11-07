@@ -1,0 +1,12 @@
+import protelis:coord:meta
+import protelis:coord:spreading
+
+postProcessAndApply(
+    nbr(1), // input
+    (input) -> { 
+        G(env.has("source"), false, nbrRange, (v) -> { sumHood(input) > 3 })
+    }, // f
+    (functionOutput) -> { 
+        if (functionOutput) { "dang" } else { "safe" }
+    } // post-process
+)

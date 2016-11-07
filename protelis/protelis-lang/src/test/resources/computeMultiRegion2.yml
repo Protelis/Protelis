@@ -1,0 +1,45 @@
+# result:
+#  {0 2.0,  1 2.0,  2 Infinity,  3 Infinity,
+#   4 2.0,  5 2.0,  6 Infinity,  7 Infinity,
+#   8 2.0,  9 2.0, 10 Infinity, 11 Infinity,
+#  12 2.0, 13 2.0, 14 Infinity, 15 Infinity}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1]
+
+program: &program
+  - time-distribution: 1
+    program: computeMultiRegion2
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 3, 1, 1, 0, 0]
+    contents:
+      - molecule: n
+        concentration: 3
+      - in:
+          type: Rectangle
+          parameters: [-0.5, -0.5, 2, 4]
+        molecule: childPartition
+        concentration: 0.5
+      - in:
+          type: Rectangle
+          parameters: [1.6, -0.5, 2, 4]
+        molecule: childPartition
+        concentration: 0.7
+      - in:
+          type: Circle
+          parameters: [3, 3, 0.5]
+        molecule: n
+        concentration: 1
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: n
+        concentration: 2
+    programs:
+      - *program

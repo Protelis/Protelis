@@ -1,0 +1,18 @@
+import protelis:coord:meta
+import protelis:lang:utils
+import protelis:coord:nonselfstabilizing:accumulation
+
+computeMultiRegion(
+    env.get("rootPartition"), 
+    (key) -> { key == env.get("rootPartition") },
+    () -> { 
+        gossip(computeMultiRegion(
+                    env.get("childPartition"), 
+                    (key) -> { key < 0.6 },
+                    () -> { gossip(env.get("n"), min) },
+                    Infinity
+                ), min)
+    },
+    Infinity
+)
+

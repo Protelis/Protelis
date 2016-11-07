@@ -1,0 +1,32 @@
+# result:
+#  {0 0.0, 1 1.0,  
+#   2 1.0, 3 2.0}
+#
+# spanning tree: [list of parent ids]
+#        0 []
+#      /   \
+# [0] 1     2 [0]
+#      \   /
+#        3 [1,2]
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.2]
+
+program: &program
+  - time-distribution: 1.2
+    program: getParentIds
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 1, 1, 1, 0.1, 0.1]
+    contents:
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: source
+        concentration: true
+    programs:
+      - *program

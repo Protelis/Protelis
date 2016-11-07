@@ -1,0 +1,2 @@
+import protelis:state:time
+T(env.get("n"), 0, (v) -> { v - env.get("decay") })

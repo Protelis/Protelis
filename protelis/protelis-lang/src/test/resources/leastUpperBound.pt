@@ -1,0 +1,2 @@
+import protelis:coord:graph
+leastUpperBound(env.get("myId"), env.get("outbound"), [1, 2])

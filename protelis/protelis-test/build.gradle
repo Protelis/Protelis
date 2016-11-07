@@ -1,0 +1,10 @@
+dependencies {
+    compile (
+        project(':protelis-interpreter'),
+        "it.unibo.alchemist:alchemist-loading:$alchemistLoadingVersion",
+        "junit:junit:$junitVersion"
+    )
+    testCompile(
+        project(':protelis-interpreter')
+    )
+}

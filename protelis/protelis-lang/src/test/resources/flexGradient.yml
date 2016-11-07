@@ -1,0 +1,27 @@
+# result:
+#  {0 0.0, 1 1.0,  2 2.0,  3 3.0,
+#   4 1.0, 5 2.0,  6 3.0,  7 4.0,
+#   8 2.0, 9 3.0, 10 4.0, 11 5.0}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1]
+
+program: &program
+  - time-distribution: 1
+    program: flexGradient
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0, 0]
+    contents:
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: source
+        concentration: true
+    programs:
+      - *program

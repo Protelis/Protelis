@@ -1,0 +1,2 @@
+import protelis:coord:spreading
+directProjection(env.has("source"), env.has("obstacle"))

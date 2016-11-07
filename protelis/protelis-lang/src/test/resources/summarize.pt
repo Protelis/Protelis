@@ -1,0 +1,2 @@
+import protelis:coord:accumulation
+summarize(env.has("source"), (a, b) -> { a + b }, env.get("n"), 0)

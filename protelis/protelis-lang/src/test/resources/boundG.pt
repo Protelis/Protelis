@@ -1,0 +1,3 @@
+import protelis:coord:spreading
+import protelis:lang:utils
+boundG(!env.has("obstacle"), "bar", env.has("source"), "foo", nbrRange, identity)
