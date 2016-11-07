@@ -88,7 +88,7 @@ The project has been developed using Eclipse, and can be easily imported in such
   * Wait for Eclipse to resolve all the features
   * Click "Confirm >"
   * Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
-* Set the line delimiter to LF (only for *Windows users*)
+* Set the line delimiter to LF (only for **Windows users**)
   * In Eclipse, click window -> preferences
   * In the search form enter "encoding", then press Enter
   * Go to General -> Workspace
