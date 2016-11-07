@@ -5,21 +5,21 @@ import protelis:lang:utils
  * Splice devices into regions according to the discriminant and apply f.
  * 
  * @param discriminant T, split regions according to this value
- * @param filter 	   (T) -> bool, how to handle the discriminant value
- * @param function 	   () -> T', what to apply in each region
- * @param default 	   T', default value
- * @return 			   T', apply f or default
+ * @param filter        (T) -> bool, how to handle the discriminant value
+ * @param function        () -> T', what to apply in each region
+ * @param default        T', default value
+ * @return                T', apply f or default
  */
 public def computeMultiRegion(discriminant, filter, function, default) {
-	if (filter.apply(discriminant)) {
-		let res = alignedMap(
-			nbr([[discriminant, default]]),
-			(key, field) -> { filter.apply(key) },
-			(key, field) -> { function.apply() }, 
-			default
-		);
-		if (res == []) { default } else { res.get(0).get(1) }
-	} else { default }
+    if (filter.apply(discriminant)) {
+        let res = alignedMap(
+            nbr([[discriminant, default]]),
+            (key, field) -> { filter.apply(key) },
+            (key, field) -> { function.apply() }, 
+            default
+        );
+        if (res == []) { default } else { res.get(0).get(1) }
+    } else { default }
 }
 
 /**
@@ -29,10 +29,10 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  * @param pre  (G) -> H, how to pre-process
  * @param f    (H) -> I, what to do
  * @param post (I) -> T, how to post process
- * @return 	    T, post(f(pre(input)))
+ * @return         T, post(f(pre(input)))
  */
 public def processAndApply(input, pre, f, post) {
-	post.apply(f.apply(pre.apply(input)))
+    post.apply(f.apply(pre.apply(input)))
 }
 
 /**
@@ -44,7 +44,7 @@ public def processAndApply(input, pre, f, post) {
  * @return      I, f(pre(input))
  */
 public def preProcessAndApply(input, pre, f) {
-	f.apply(pre.apply(input))
+    f.apply(pre.apply(input))
 }
 
 /**
@@ -56,5 +56,5 @@ public def preProcessAndApply(input, pre, f) {
  * @return      T, post(f(input))
  */
 public def postProcessAndApply(input, f, post) {
-	post.apply(f.apply(input))
+    post.apply(f.apply(input))
 }

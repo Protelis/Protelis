@@ -2,43 +2,43 @@ module protelis:coord:sparsechoice
 import protelis:coord:spreading
 
 def breakUsingUids(uid, grain, metric) {
-	// Return true if the current device is leader of the partition. Lead = current leader
-	rep (lead <- uid) {
-		distanceCompetition(G(uid == lead, 0, metric, (v) -> { v + metric.apply() }), lead, uid, grain, metric)
-	} == uid
+    // Return true if the current device is leader of the partition. Lead = current leader
+    rep (lead <- uid) {
+        distanceCompetition(G(uid == lead, 0, metric, (v) -> { v + metric.apply() }), lead, uid, grain, metric)
+    } == uid
 }
 
 def distanceCompetition(d, lead, uid, grain, metric) {
-	mux (d > grain) { 
-		// Device is far. Propose its id
-		uid 
-	} else {
-		let thr = 0.5 * grain;
-		mux (d >= thr) {
-			// Nearest neighbor in the second half (outer side) of the region. Do not challenge at all
-			Infinity 
-		} else {
-			// Challenge for this partition
-			minHood(
-				mux (nbr(d) + metric.apply() >= thr) { 
-					// Device in the second half (outer side) of the region. Do not challenge at all
-					Infinity
-				} else {
-					// Suggest the uid with the lowest random number
-					nbr(lead)
-				}
-			)
-		}
-	}	
+    mux (d > grain) { 
+        // Device is far. Propose its id
+        uid 
+    } else {
+        let thr = 0.5 * grain;
+        mux (d >= thr) {
+            // Nearest neighbor in the second half (outer side) of the region. Do not challenge at all
+            Infinity 
+        } else {
+            // Challenge for this partition
+            minHood(
+                mux (nbr(d) + metric.apply() >= thr) { 
+                    // Device in the second half (outer side) of the region. Do not challenge at all
+                    Infinity
+                } else {
+                    // Suggest the uid with the lowest random number
+                    nbr(lead)
+                }
+            )
+        }
+    }    
 }
 
 /**
  * Pair a random value to the device's id
  */
 def randomUid() {
-	rep (v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
-		[v.get(0), v.get(1)]	
-	}
+    rep (v <- [self.nextRandomDouble(), self.getDeviceUID()]) {
+        [v.get(0), v.get(1)]    
+    }
 }
 
 /**
@@ -46,11 +46,11 @@ def randomUid() {
  * resulting  in  a  random  Voronoi  partition  with  a  characteristic
  * grain size.
  * 
- * @param grain 	num, partition dimension
- * @param metric 	() -> num, estimate distance from the leader
- * @return 			bool, true if the current device is the leader, false otherwise
+ * @param grain     num, partition dimension
+ * @param metric     () -> num, estimate distance from the leader
+ * @return             bool, true if the current device is the leader, false otherwise
  */
 public def S(grain, metric) {
-	breakUsingUids(randomUid(), grain, metric)
+    breakUsingUids(randomUid(), grain, metric)
 }
 

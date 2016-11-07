@@ -1,9 +1,9 @@
 import protelis:coord:accumulation
 import protelis:coord:spreading
 summarizeWithPotential(
-	distanceTo(env.has("source")), 
-	0, 
-	(a, b) -> { a + b }, 
-	env.get("n"), 
-	0
+    distanceTo(env.has("source")), 
+    0, 
+    (a, b) -> { a + b }, 
+    env.get("n"), 
+    0
 )

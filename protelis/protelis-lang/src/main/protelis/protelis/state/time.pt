@@ -7,40 +7,40 @@ import protelis:lang:utils
  * Apply a function while condition is true.
  * 
  * @param event bool, event
- * @param f 	() -> T, function to be applied
+ * @param f     () -> T, function to be applied
  * @param null  T, null value
- * @return 		T, apply f if event occurs, return null otherwise
+ * @return         T, apply f if event occurs, return null otherwise
  */
 public def applyWhile(event, f, null) {
-	if (event) { f.apply() } else { null }
+    if (event) { f.apply() } else { null }
 }
 
 /**
  * @param length num, count down length
- * @return 		 num, remaining time
+ * @return          num, remaining time
  */
 public def countDown(length) {
-	countDownWithDecay(length, self.dt())
+    countDownWithDecay(length, self.dt())
 }
 
 /**
  * 
  * @param length num, count down length
- * @param dt	 num, decay
- * @return 		 num, remaining time
+ * @param dt     num, decay
+ * @return          num, remaining time
  */
 public def countDownWithDecay(length, dt) {
-	T(length, 0, (t) -> {t - dt})
+    T(length, 0, (t) -> {t - dt})
 }
 
 /**
  * Cyclic timer.
  * 
  * @param length num, timeout
- * @return 		 bool, true if the timeout is expired, false otherwise
+ * @return          bool, true if the timeout is expired, false otherwise
  */
 public def cyclicTimer(length) {
-	cyclicTimerWithDecay(length, self.dt())
+    cyclicTimerWithDecay(length, self.dt())
 }
 
 /**
@@ -48,28 +48,28 @@ public def cyclicTimer(length) {
  * 
  * @param length num, timeout
  * @param decay  num, decay rate
- * @return 		 bool, true if the timeout is expired, false otherwise
+ * @return          bool, true if the timeout is expired, false otherwise
  */
 public def cyclicTimerWithDecay(length, decay) {
-	rep (left <- length) {
-		if (left == 0) {
-			length
-		} else {
-			countDownWithDecay(length, decay)
-		}
-	} == length
+    rep (left <- length) {
+        if (left == 0) {
+            length
+        } else {
+            countDownWithDecay(length, decay)
+        }
+    } == length
 }
 
 /**
  * Periodically invoke a function.
  * 
  * @param length num, timeout
- * @param f 	 () -> T, function to be invoked
- * @param null 	 T, default value
- * @return 		 T, apply f if the timeout is expired, null otherwise
+ * @param f      () -> T, function to be invoked
+ * @param null      T, default value
+ * @return          T, apply f if the timeout is expired, null otherwise
  */
 public def cyclicFunction(length, f, null) {
-	cyclicFunctionWithDecay(length, self.dt(), f, null)
+    cyclicFunctionWithDecay(length, self.dt(), f, null)
 }
 
 /**
@@ -77,98 +77,98 @@ public def cyclicFunction(length, f, null) {
  * 
  * @param length num, timeout
  * @param decay  num, decay rate
- * @param f 	 () -> T, function to be invoked
- * @param null 	 T, default value
- * @return 		 T, apply f if the timeout is expired, null otherwise
+ * @param f      () -> T, function to be invoked
+ * @param null      T, default value
+ * @return          T, apply f if the timeout is expired, null otherwise
  */
 public def cyclicFunctionWithDecay(length, decay, f, null) {
-	if (cyclicTimerWithDecay(length, decay)) {
-		f.apply()
-	} else {
-		null
-	}
+    if (cyclicTimerWithDecay(length, decay)) {
+        f.apply()
+    } else {
+        null
+    }
 }
 
 /**
  * 
  * @param signal num, signal to be monitored
- * @return 		 num, variation between current and old values
+ * @return          num, variation between current and old values
  */ 
 public def delta(signal) {
-	rep (old <- [signal, 0]) {
-		[signal, signal - old.get(0)]
-	}.get(1)
+    rep (old <- [signal, 0]) {
+        [signal, signal - old.get(0)]
+    }.get(1)
 }
 
 /**
  * Exponential back-off filter.
  * 
  * @param signal num, signal to be filtered
- * @param a 	 num, alpha value
- * @return 		 num, filtered signal
+ * @param a      num, alpha value
+ * @return          num, filtered signal
  */
 public def exponentialBackoffFilter(signal, a) {
-	rep (old <- signal) {
-		signal * a + old * (1 - a)
-	}
+    rep (old <- signal) {
+        signal * a + old * (1 - a)
+    }
 }
 
 /**
  * @param signal T, signal to be monitored
- * @param time 	 num, consider the signal stable after this time
- * @return 		 bool, true if the signal does not change for at least time
+ * @param time      num, consider the signal stable after this time
+ * @return          bool, true if the signal does not change for at least time
  */
 public def isSignalStable(signal, time) {
-	let t = 
-		rep (old <- [signal, 0]) {
-			mux (signal == old.get(0)) { 
-				[signal, old.get(1) + self.dt()]
-			} else { 
-				[signal, 0]
-			}
-		}.get(1);
-	t >= time
+    let t = 
+        rep (old <- [signal, 0]) {
+            mux (signal == old.get(0)) { 
+                [signal, old.get(1) + self.dt()]
+            } else { 
+                [signal, 0]
+            }
+        }.get(1);
+    t >= time
 }
 
 /**
  * @param event   bool, event
  * @param timeout num, timeout
- * @return 		  bool, true if the event occurred before timeout, false otherwise
+ * @return           bool, true if the event occurred before timeout, false otherwise
  */
 public def isRecentEvent(event, timeout) {
-	if (event) { 
-		true
-	} else { 
-		countDown(timeout) > 0
-	}
+    if (event) { 
+        true
+    } else { 
+        countDown(timeout) > 0
+    }
 }
 
 /**
  * @param signal bool, binary signal to be monitored
- * @return 		 bool, true if the signal had a rising edge, false otherwise
+ * @return          bool, true if the signal had a rising edge, false otherwise
  */
 public def isRisingEdge(signal) {
-	rep (old <- [signal, false]) {
-		mux (!old.get(0) && signal) { 
-			[signal, true]
-		} else { 
-			[signal, false]
-		}
-	}.get(1);
+    rep (old <- [signal, false]) {
+        mux (!old.get(0) && signal) { 
+            [signal, true]
+        } else { 
+            [signal, false]
+        }
+    }.get(1);
 }
 
 /**
  * @param signal bool, binary signal to be monitored
- * @return 		 bool, true if the signal had a falling edge, false otherwise
+ * @return          bool, true if the signal had a falling edge, false otherwise
  */
 public def isFallingEdge(signal) {
-	rep (old <- [signal, false]) {
-		mux (old.get(0) && !signal) { 
-			[signal, true]
-		} else { 
-			[signal, false]
-		}
-	}.get(1);
+    rep (old <- [signal, false]) {
+        mux (old.get(0) && !signal) { 
+            [signal, true]
+        } else { 
+            [signal, false]
+        }
+    }.get(1);
 }
 
 /**
@@ -178,17 +178,17 @@ public def isFallingEdge(signal) {
  * @param value   T, value to be stored
  * @param null    T, default value
  * @param timeout num, hold the value for this amount of time
- * @param dt 	  num, increase the time of this value
- * @return 		  T, hold value if timeout is not expired, null otherwise
+ * @param dt       num, increase the time of this value
+ * @return           T, hold value if timeout is not expired, null otherwise
  */
 public def limitedMemory(value, null, timeout, dt) {
-	rep (v <- value) {
-		if (waitWithDecay(timeout, dt)) { 
-			null
-		} else { 
-			v
-		}
-	}
+    rep (v <- value) {
+        if (waitWithDecay(timeout, dt)) { 
+            null
+        } else { 
+            v
+        }
+    }
 }
 
 /*
@@ -201,61 +201,61 @@ public def limitedMemory(value, null, timeout, dt) {
  * @see countDown
  */
 public def T(initial, zero, decay) {
-	rep (v <- initial) { 
-		// rep is initialized only during the first invocation
-		min(initial, max(zero, decay.apply(v)))
-	}
+    rep (v <- initial) { 
+        // rep is initialized only during the first invocation
+        min(initial, max(zero, decay.apply(v)))
+    }
 }
 
 /**
  * @param timeout num, timeout
- * @return 		  bool, true after timeout, false otherwise
+ * @return           bool, true after timeout, false otherwise
  */
 public def trueAfterTime(timeout) {
-	countDown(timeout) <= 0
+    countDown(timeout) <= 0
 }
 
 /**
  * @param timeout num, timeout
- * @return 		  bool, false after timeout, true otherwise
+ * @return           bool, false after timeout, true otherwise
  */
 public def falseAfterTime(timeout) {
-	!trueAfterTime(timeout)
+    !trueAfterTime(timeout)
 }
 
 /**
  * @param signal T, value to be monitored
- * @return 		 bool, whether v has changed given its previous state
+ * @return          bool, whether v has changed given its previous state
  */
 public def isValueChanged(signal) {
-	rep (old <- [signal, true]) {
-		[signal, !(signal == old.get(0))]
-	}.get(1)
+    rep (old <- [signal, true]) {
+        [signal, !(signal == old.get(0))]
+    }.get(1)
 }
 
 /**
  * @param timeout num, count down length
- * @return 		  bool, whether the countdown is expired
+ * @return           bool, whether the countdown is expired
  */
 public def wait(timeout) {
-	waitWithDecay(timeout, self.dt())
+    waitWithDecay(timeout, self.dt())
 }
 
 /**
  * @param timeout num, count down length
  * @param dt      num, decay
- * @return 		  bool, whether the countdown is expired
+ * @return           bool, whether the countdown is expired
  */
 public def waitWithDecay(timeout, dt) {
-	countDownWithDecay(timeout, dt) <= 0
+    countDownWithDecay(timeout, dt) <= 0
 }
 
 /**
  * @param timeout num, timeut
- * @param f 	  () -> T, function to be applied
+ * @param f       () -> T, function to be applied
  * @param null    T, null value
- * @return 		  T, apply f after x, null otherwise
+ * @return           T, apply f after x, null otherwise
  */
 public def waitAndApply(timeout, f, null) {
-	if (wait(timeout)) { f.apply() } else { null }
+    if (wait(timeout)) { f.apply() } else { null }
 }

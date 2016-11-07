@@ -1,8 +1,8 @@
 // EXPECTED_RESULT: true
 import protelis:coord:accumulation
 hasNoParent(imRoot()) && 
-	hasNoParent(noParent()) && 
-	!hasNoParent(1) &&
-	!hasParent(imRoot()) && 
-	!hasParent(noParent()) &&  
-	hasParent(1)
+    hasNoParent(noParent()) && 
+    !hasNoParent(1) &&
+    !hasParent(imRoot()) && 
+    !hasParent(noParent()) &&  
+    hasParent(1)

@@ -2,5 +2,5 @@ import protelis:coord:spreading
 import protelis:lang:utils
 
 gradcast(env.has("source"), () -> {
-	crfGradient(env.has("source"), nbrRange, 1)
+    crfGradient(env.has("source"), nbrRange, 1)
 }, 0, addRange)

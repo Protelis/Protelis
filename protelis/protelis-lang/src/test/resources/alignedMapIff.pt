@@ -4,18 +4,18 @@
 import protelis:state:time
 
 public def iff(c, t, el) {
-	let res = alignedMap(
-		nbr([[c, "foo"]]),
-		(key, field) -> { key }, // cond
-		(key, field) -> { t.apply(field) },
-		"foo" 
-	);
-	if(res == []) { el.apply() } else { res.get(0).get(1) }
+    let res = alignedMap(
+        nbr([[c, "foo"]]),
+        (key, field) -> { key }, // cond
+        (key, field) -> { t.apply(field) },
+        "foo" 
+    );
+    if(res == []) { el.apply() } else { res.get(0).get(1) }
 }
 
 iff(cyclicTimer(1), 
-	(field) -> { "Here I'm!" },
-	() -> { "bar" }
+    (field) -> { "Here I'm!" },
+    () -> { "bar" }
 )
 
 //iff(cyclicTimer(1), (field) -> { field })

@@ -7,7 +7,7 @@ import java.lang.Math.pow
  * @return  bool, true if both the conditions are true
  */
 public def and(a, b) {
-	a && b
+    a && b
 }
 
 ///**
@@ -18,7 +18,7 @@ public def and(a, b) {
 // * @return field of the given value
 // */
 //public def field(v) {
-//	nbr(v)
+//    nbr(v)
 //}
 
 /**
@@ -28,7 +28,7 @@ public def and(a, b) {
  * @return  bool, true if there is at least a neighbor respect to x, false otherwise
  */
 public def canSee(a) {
-	anyHood(nbr(a))
+    anyHood(nbr(a))
 }
 
 ///**
@@ -37,7 +37,7 @@ public def canSee(a) {
 // * @return g(f(args))
 // */
 //public def composeF(f) {
-//	() -> { f.apply() }
+//    () -> { f.apply() }
 //}
 //
 ///**
@@ -46,19 +46,19 @@ public def canSee(a) {
 // * @return a function which returns a
 // */
 //public def composeV(a) {
-//	() -> { a }
+//    () -> { a }
 //}
 
 /**
- * @param x 	 num, value to be denormalized
+ * @param x      num, value to be denormalized
  * @param oldmin num, oldmin
  * @param oldmax num, oldmax
  * @param newmin num, newmin
  * @param newmax num, newmax
- * @return 		 num, denormalized value
+ * @return          num, denormalized value
  */
 public def denormalize(x, oldmin, oldmax, newmin, newmax) {
-	x * (newmax - newmin) / (oldmax - oldmin) + (newmin - oldmin)
+    x * (newmax - newmin) / (oldmax - oldmin) + (newmin - oldmin)
 } 
  
 /**
@@ -67,7 +67,7 @@ public def denormalize(x, oldmin, oldmax, newmin, newmax) {
  * @return  num, difference between two fields
  */
 public def diff(a, b) {
-	a - b
+    a - b
 }
 
 /**
@@ -75,18 +75,18 @@ public def diff(a, b) {
  * 
  * @param local        T, local value
  * @param aggregator   (T, T) -> T, how to reduce information
- * @param default 	   T, default value in case the field returned by fieldBuilder is empty
+ * @param default        T, default value in case the field returned by fieldBuilder is empty
  * @param fieldBuilder () -> T, return which field should be reduced
- * @return 			   T, reduced value
+ * @return                T, reduced value
  */
 public def hoodW(local, aggregator, default, fieldBuilder) {
-	aggregator.apply(local, 
-		hood(
-			(a, b) -> { aggregator.apply(a, b) },
-			default,
-			fieldBuilder.apply()
-		)
-	)
+    aggregator.apply(local, 
+        hood(
+            (a, b) -> { aggregator.apply(a, b) },
+            default,
+            fieldBuilder.apply()
+        )
+    )
 }
 
 /**
@@ -94,20 +94,20 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  * 
  * @param local        T, local value
  * @param aggregator   (T, T) -> T, how to reduce information
- * @param default 	   T, default value in case the field returned by fieldBuilder is empty
+ * @param default        T, default value in case the field returned by fieldBuilder is empty
  * @param fieldBuilder (T) -> T, return which field should be reduced
- * @return 			   T, reduced value
+ * @return                T, reduced value
  */
 public def hoodWstateful(local, aggregator, default, fieldBuilder) {
-	 rep (v <- local) {
- 		aggregator.apply(local, 
- 			hood(
- 				(a, b) -> { aggregator.apply(a, b) },
- 				default,
- 				fieldBuilder.apply(v)
- 			)
- 		)
- 	}
+     rep (v <- local) {
+         aggregator.apply(local, 
+             hood(
+                 (a, b) -> { aggregator.apply(a, b) },
+                 default,
+                 fieldBuilder.apply(v)
+             )
+         )
+     }
 }
 
 /**
@@ -115,17 +115,17 @@ public def hoodWstateful(local, aggregator, default, fieldBuilder) {
  * @return  T, the same value
  */
 public def identity(a) { 
-	a
+    a
 }
 
 /**
  * Verify if a device is on the edge of a spatial region.
  * 
  * @param condition bool, how to discriminate a region
- * @return 			bool, true if the device is on the edge, false otherwise
+ * @return             bool, true if the device is on the edge, false otherwise
  */
  public def isEdge(condition) {
- 	!(allHood(nbr(condition)) || allHood(!nbr(condition)))
+     !(allHood(nbr(condition)) || allHood(!nbr(condition)))
  }
 
 ///**
@@ -134,21 +134,21 @@ public def identity(a) {
 // * 
 // * @param tuple   [T], iterate over this tuple
 // * @param filter  (T) -> bool, filtering condition
-// * @param f 	  (T) -> T', function to be applied
+// * @param f       (T) -> T', function to be applied
 // * @param default T, default value
-// * @return 		  T, default
+// * @return           T, default
 // */
 //public def iterate(tuple, filter, f, default) {
-//	if (tuple.size() > 0) {
-//		if (filter.apply(tuple.get(0))) {
-//			f.apply(tuple.get(0))
-//		} else {
-//			default
-//		};
-//		iterate(tuple.subTupleEnd(1), filter, f, default)
-//	} else {
-//		default
-//	}
+//    if (tuple.size() > 0) {
+//        if (filter.apply(tuple.get(0))) {
+//            f.apply(tuple.get(0))
+//        } else {
+//            default
+//        };
+//        iterate(tuple.subTupleEnd(1), filter, f, default)
+//    } else {
+//        default
+//    }
 //}
 
 /**
@@ -157,11 +157,11 @@ public def identity(a) {
  * @return  T, maximum between the two fields
  */
 public def max(a, b) {
-	if (a.compareTo(b) > 0 ) {
-		a
-	} else {
-		b
-	}
+    if (a.compareTo(b) > 0 ) {
+        a
+    } else {
+        b
+    }
 }
 
 /**
@@ -170,7 +170,7 @@ public def max(a, b) {
  * @return  num, mean of the two fields
  */
 public def mean(local, field) {
-	(local + field) / 2
+    (local + field) / 2
 }
 
 /**
@@ -179,27 +179,27 @@ public def mean(local, field) {
  * @return  num, minimum between the two fields
  */
 public def min(a, b) {
-	if (a.compareTo(b) < 0 ) {
-		a
-	} else {
-		b
-	}
+    if (a.compareTo(b) < 0 ) {
+        a
+    } else {
+        b
+    }
 }
 
 /**
  * Norm of a numeric tuple.
  * 
  * @param tuple [num], tuple
- * @param p		num, pow
- * @return 		num, norm of a numeric tuple
+ * @param p        num, pow
+ * @return         num, norm of a numeric tuple
  */
 public def norm(tuple, p) {
-	pow(
-		tuple
-			.map(self, (a) -> { pow(a, p) })
-			.reduce(self, 0, (a, b) -> { a + b }), 
-		1/p
-	)
+    pow(
+        tuple
+            .map(self, (a) -> { pow(a, p) })
+            .reduce(self, 0, (a, b) -> { a + b }), 
+        1/p
+    )
 }
 
 /**
@@ -207,7 +207,7 @@ public def norm(tuple, p) {
  * @return  bool, negated condition
  */
 public def not(a) {
-	!a
+    !a
 }
 
 /**
@@ -216,17 +216,17 @@ public def not(a) {
  * @return  bool, true if one of the conditions is true
  */
 public def or(a, b) {
-	a || b
+    a || b
 }
 
 /**
  * @param x   num, value
  * @param min num, lower bound
  * @param max num, upper bound
- * @return 	  num, scale x with respect to the range
+ * @return       num, scale x with respect to the range
  */
 public def range(x, min, max) {
-	x * (max - min) + min
+    x * (max - min) + min
 }
 
 /**
@@ -235,12 +235,12 @@ public def range(x, min, max) {
  * @return  num, sum of two fields
  */
 public def sum(a, b) {
-	a + b
+    a + b
 }
 
 /**
  * @return num, 0
  */
 public def zero() {
-	0
+    0
 }

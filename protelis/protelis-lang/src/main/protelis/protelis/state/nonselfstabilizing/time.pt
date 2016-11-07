@@ -2,47 +2,47 @@ module protelis:state:nonselfstabilizing:time
 import protelis:state:time
 /**
  * @param event bool, event
- * @return 		bool, true if the event is always verified
+ * @return         bool, true if the event is always verified
  */
 public def allTime(event) {
-	rep (t <- event) {
-		t && event
-	}
+    rep (t <- event) {
+        t && event
+    }
 }
 
 /**
  * @param event bool, event
- * @return 		bool, whether the event has occurred at least once
+ * @return         bool, whether the event has occurred at least once
  */
 public def anyTime(event) {
-	rep (t <- event) {
-		t || event
-	}
+    rep (t <- event) {
+        t || event
+    }
 }
 
 /**
  * Counter.
  * 
  * @param start num, counter initial value
- * @param inc 	num, how much to increase the counter
- * @return 		num, current status of the counter
+ * @param inc     num, how much to increase the counter
+ * @return         num, current status of the counter
  */
 public def counter(start, inc) {
-	rep (c <- start) {
-		c + inc
-	}
+    rep (c <- start) {
+        c + inc
+    }
 }
 
 /**
  * How many times an event occurred.
  * 
  * @param event bool, event to be monitored
- * @return 		num, how many times an event occurred
+ * @return         num, how many times an event occurred
  */
 public def countTrue(event) {
-	rep (c <- 0) {
-		c + if (event) { 1 } else { 0 }
-	}
+    rep (c <- 0) {
+        c + if (event) { 1 } else { 0 }
+    }
 }
 
 /**
@@ -53,9 +53,9 @@ public def countTrue(event) {
  * @return  T, (ba)+ sequence of values
  */ 
 public def flip(a, b) {
-	rep (c <- a) {
-		(a + b) - c
-	}
+    rep (c <- a) {
+        (a + b) - c
+    }
 }
 
 /**
@@ -64,29 +64,29 @@ public def flip(a, b) {
  * @return num, time since the first tick
  */
 public def timeSinceStart() {
-	counter(0, self.dt())
+    counter(0, self.dt())
 }
 
 /**
  * @param timeout num, timeout
  * @param event   bool, event
- * @return 		  bool, true if the event occurred within last time period
+ * @return           bool, true if the event occurred within last time period
  */
 public def trueDuringLast(timeout, event) {
-	if (event) { 
-		true
-	} else { 
-		timeSinceStart() <= timeout
-	}
+    if (event) { 
+        true
+    } else { 
+        timeSinceStart() <= timeout
+    }
 }
 
 /**
  * @param timeout num, timeout
  * @param event   bool, event
- * @return 		  bool, true if the event did not occurred within last time period
+ * @return           bool, true if the event did not occurred within last time period
  */
 public def falseDuringLast(timeout, event) {
-	trueDuringLast(timeout, !event)
+    trueDuringLast(timeout, !event)
 }
 
 
@@ -96,11 +96,11 @@ public def falseDuringLast(timeout, event) {
  * @return        bool, true if a true condition has persisted for time
  */
 public def trueFor(time, event) {
-	if (event) { 
-		timeSinceStart() >= time
-	} else { 
-		false
-	}
+    if (event) { 
+        timeSinceStart() >= time
+    } else { 
+        false
+    }
 }
 
 /**
@@ -109,7 +109,7 @@ public def trueFor(time, event) {
  * @return        bool, true if a false condition has persisted for time
  */
 public def falseFor(time, event) {
-	trueFor(time, !event)
+    trueFor(time, !event)
 }
 
 /**
@@ -118,14 +118,14 @@ public def falseFor(time, event) {
  * @param g         (T) -> T', what to execute next
  * @return          T|T', apply f until condition becomes true, apply g next
  */
-public def sequence(f, condition, g) {	
-	rep (v <- [false, f.apply()]) {
-		if (v.get(0) || condition.apply(v.get(1))) {
-			[true, g.apply(v.get(1))]
-		} else {
-			[false, f.apply()]
-		}
-	}.get(1)
+public def sequence(f, condition, g) {    
+    rep (v <- [false, f.apply()]) {
+        if (v.get(0) || condition.apply(v.get(1))) {
+            [true, g.apply(v.get(1))]
+        } else {
+            [false, f.apply()]
+        }
+    }.get(1)
 }
 
 /**
@@ -135,12 +135,12 @@ public def sequence(f, condition, g) {
  * @return          T|T', apply f until condition becomes true in any device, 
  *                  apply g next
  */
-public def sequenceIfAny(f, condition, g) {	
-	sequence(f, (v) -> {
-		rep (ev <- condition) {
-			anyHood(nbr(ev)) || condition
-		}
-	}, g)
+public def sequenceIfAny(f, condition, g) {    
+    sequence(f, (v) -> {
+        rep (ev <- condition) {
+            anyHood(nbr(ev)) || condition
+        }
+    }, g)
 }
 
 /**
@@ -150,10 +150,10 @@ public def sequenceIfAny(f, condition, g) {
  * @return          T|T', apply f until condition becomes true in all the devices, 
  *                  apply g next
  */
-public def sequenceIfAll(f, condition, g) {	
-	sequence(f, (ev) -> { 
-//		rep (ev <- condition) {
-			allHood(nbr(condition)) && condition
-//		}
-	}, g)
+public def sequenceIfAll(f, condition, g) {    
+    sequence(f, (ev) -> { 
+//        rep (ev <- condition) {
+            allHood(nbr(condition)) && condition
+//        }
+    }, g)
 }

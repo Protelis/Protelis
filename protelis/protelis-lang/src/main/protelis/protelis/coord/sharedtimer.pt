@@ -5,19 +5,19 @@ import protelis:state:time
  * Returns an int, representing the current clock
  */
 public def sharedTimer(period, dt) {
-	rep (clock <- 0) {
-		let clockPerceived = maxHood(nbr(clock));
-		if (clockPerceived <= clock) {
-			/*
-			 * I'm currently as fast as the fastest device in the neighborhood,
-			 * so keep on counting time
-			 */
-			clock + if (cyclicTimerWithDecay(period, dt)) { 1 } else { 0 }
-		} else {
-			/*
-			 * Someone else's faster, take his time, and restart counting
-			 */
-			clockPerceived
-		}
-	}
+    rep (clock <- 0) {
+        let clockPerceived = maxHood(nbr(clock));
+        if (clockPerceived <= clock) {
+            /*
+             * I'm currently as fast as the fastest device in the neighborhood,
+             * so keep on counting time
+             */
+            clock + if (cyclicTimerWithDecay(period, dt)) { 1 } else { 0 }
+        } else {
+            /*
+             * Someone else's faster, take his time, and restart counting
+             */
+            clockPerceived
+        }
+    }
 }

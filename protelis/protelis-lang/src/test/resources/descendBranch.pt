@@ -2,8 +2,8 @@ import protelis:coord:tree
 import protelis:coord:spreading
 
 descendBranch(
-	distanceTo(env.has("source")),
-	() -> { env.has("condition") },
-	(parent) -> { "dang" },
-	(parent) -> { "safe" }
+    distanceTo(env.has("source")),
+    () -> { env.has("condition") },
+    (parent) -> { "dang" },
+    (parent) -> { "safe" }
 )

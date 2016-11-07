@@ -2,12 +2,12 @@ import protelis:coord:meta
 import protelis:coord:spreading
 
 processAndApply(
-	nbr(1), // input
-	(inputField) -> { sumHood(inputField) }, // pre-process
-	(processedInput) -> { 
-		G(env.has("source"), false, nbrRange, (v) -> { processedInput > 3 })
-	}, // f
-	(functionOutput) -> { 
-		if (functionOutput) { "dang" } else { "safe" }
-	} // post-process
+    nbr(1), // input
+    (inputField) -> { sumHood(inputField) }, // pre-process
+    (processedInput) -> { 
+        G(env.has("source"), false, nbrRange, (v) -> { processedInput > 3 })
+    }, // f
+    (functionOutput) -> { 
+        if (functionOutput) { "dang" } else { "safe" }
+    } // post-process
 )

@@ -11,11 +11,11 @@ import protelis:coord:nonselfstabilizing:accumulation
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return 		  bool, true if the device is part of a circular dependency, 
+ * @return           bool, true if the device is part of a circular dependency, 
  *                false otherwise
  */
 public def circularDependency(myId, inbound) {
-	hasTransitiveDependency(myId, inbound) || hasSelfDependency(myId, inbound)
+    hasTransitiveDependency(myId, inbound) || hasSelfDependency(myId, inbound)
 }
 
 /**
@@ -23,10 +23,10 @@ public def circularDependency(myId, inbound) {
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return 		  bool, true if the device is self-referencing itself
+ * @return           bool, true if the device is self-referencing itself
  */
 public def hasSelfDependency(myId, inbound) {
-	inbound.contains(myId)
+    inbound.contains(myId)
 }
 
 /**
@@ -34,21 +34,21 @@ public def hasSelfDependency(myId, inbound) {
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return 		  bool, true if the device is part of a transitive circular 
+ * @return           bool, true if the device is part of a transitive circular 
  *                dependency
  */
 public def hasTransitiveDependency(myId, inbound) {
-	isNotEmpty(mux (inbound != []) {
-		rep (v <- inbound) {
-			v.union(
-				hood(
-					(a, b) -> { a.union(b) }, [], nbrWrapper(myId, v, inbound, [])
-				)
-			)
-		}
-	} else { 
-		[]
-	}.intersection([myId]))
+    isNotEmpty(mux (inbound != []) {
+        rep (v <- inbound) {
+            v.union(
+                hood(
+                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, v, inbound, [])
+                )
+            )
+        }
+    } else { 
+        []
+    }.intersection([myId]))
 }
 
 /**
@@ -57,15 +57,15 @@ public def hasTransitiveDependency(myId, inbound) {
  * @param myId    T, device id
  * @param inbound [T], inbound connections
  * @param nodes   T, node on which estimate the greatest lower bound
- * @return 	      bool, true if the device is part of greatest lower bound
+ * @return           bool, true if the device is part of greatest lower bound
  *                set of devices, false otherwise
  */
 public def greatestLowerBound(myId, inbound, nodes) {
-	let spread = spreadBoundValue(myId, inbound, nodes);
-	let v =
-		if (spread.get(0).size() == nodes.size()) { spread.get(1) } 
-		else { Infinity };
-	gossip(v, min) == v
+    let spread = spreadBoundValue(myId, inbound, nodes);
+    let v =
+        if (spread.get(0).size() == nodes.size()) { spread.get(1) } 
+        else { Infinity };
+    gossip(v, min) == v
 }
 
 /**
@@ -76,12 +76,12 @@ public def greatestLowerBound(myId, inbound, nodes) {
  * 
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return 		  bool, true if the device is a leaf, false otherwise
+ * @return           bool, true if the device is a leaf, false otherwise
  */
 public def isLeaf(myId, inbound) {
-	!rep (v <- inbound) {
-		unionHood(nbr(v))
-	}.contains(myId)
+    !rep (v <- inbound) {
+        unionHood(nbr(v))
+    }.contains(myId)
 }
 
 /**
@@ -90,19 +90,19 @@ public def isLeaf(myId, inbound) {
  * A device is a root when it has no inbound connections.
  * 
  * @param inbound [T], inbound connections
- * @return 		  bool, true if the device is a root, false otherwise
+ * @return           bool, true if the device is a root, false otherwise
  */
 public def isRoot(inbound) {
-	isEmpty(inbound)
+    isEmpty(inbound)
 }
 
 /**
  * @param myId    T, device id
  * @param inbound [T], inbound connections
- * @return 		  bool, true if the device is parrent of the current device
+ * @return           bool, true if the device is parrent of the current device
  */
 public def isParent(myId, inbound) {
-	inbound.intersection(nbr([myId])).size() > 0
+    inbound.intersection(nbr([myId])).size() > 0
 }
 
 /**
@@ -111,11 +111,11 @@ public def isParent(myId, inbound) {
  * @param myId    T, device id
  * @param outbound [T], outbound connections
  * @param nodes   T, node on which estimate the least upper bound 
- * @return 	      bool, true if the device is part of least upper bound 
+ * @return           bool, true if the device is part of least upper bound 
  *                set of devices, false otherwise
  */
 public def leastUpperBound(myId, outbound, nodes) {
-	greatestLowerBound(myId, outbound, nodes)
+    greatestLowerBound(myId, outbound, nodes)
 }
 
 /**
@@ -130,50 +130,50 @@ public def leastUpperBound(myId, outbound, nodes) {
  * 
  * @param myId        T, device id
  * @param connections [T], inbound connections
- * @param message	  T', field on which nbr is applied
+ * @param message      T', field on which nbr is applied
  * @param null        T', placeholder for devices which not fulfill the 
  *                    filtering criteria
  * @return            T', filtered set of messages
  */
 public def nbrWrapper(myId, connections, message, null) {
-	let res = mux (isParent(myId, connections)) { nbr(message) } else { null };
-	mux (res == []) { null } else { res }
+    let res = mux (isParent(myId, connections)) { nbr(message) } else { null };
+    mux (res == []) { null } else { res }
 }
 
 def spreadBoundValue(myId, connections, nodes) {
-	rep (v <- [[-Infinity], -Infinity]) {
-		mux (nodes.contains(myId)) { 
-			[intersection(nodes, connections).union([myId]), 0]
-		} else {
-			let aggr = hood(
-				(a, b) -> {
-					let c = intersection(nodes, a.get(0));
-					if (isEmpty(c)) { 
-						[intersection(nodes, b.get(0)), b.get(1)]
-					} else {
-						if (c.size() == nodes.size()) { a } 
-							else { 
-							if (isNotEmpty(intersection(nodes, b.get(0)))) {
-								[c.union(b.get(0)), max(a.get(1), b.get(1))]
-							} else { [c, a.get(1)] }
-						}
-					}
-				}, [], nbrWrapper(myId, connections, v, [[-Infinity], -Infinity])
-			);
-			if (isEmpty(aggr)) { [[-Infinity], -Infinity] } 
-			else { [aggr.get(0), aggr.get(1) + 1] }
-		}	
-	}
+    rep (v <- [[-Infinity], -Infinity]) {
+        mux (nodes.contains(myId)) { 
+            [intersection(nodes, connections).union([myId]), 0]
+        } else {
+            let aggr = hood(
+                (a, b) -> {
+                    let c = intersection(nodes, a.get(0));
+                    if (isEmpty(c)) { 
+                        [intersection(nodes, b.get(0)), b.get(1)]
+                    } else {
+                        if (c.size() == nodes.size()) { a } 
+                            else { 
+                            if (isNotEmpty(intersection(nodes, b.get(0)))) {
+                                [c.union(b.get(0)), max(a.get(1), b.get(1))]
+                            } else { [c, a.get(1)] }
+                        }
+                    }
+                }, [], nbrWrapper(myId, connections, v, [[-Infinity], -Infinity])
+            );
+            if (isEmpty(aggr)) { [[-Infinity], -Infinity] } 
+            else { [aggr.get(0), aggr.get(1) + 1] }
+        }    
+    }
 }
 
 def intersection(list1, list2) {
-	list1.intersection(list2)
+    list1.intersection(list2)
 }
 
 def isEmpty(list) {
-	list.size() == 0
+    list.size() == 0
 }
 
 def isNotEmpty(list) {
-	!isEmpty(list)
+    !isEmpty(list)
 }

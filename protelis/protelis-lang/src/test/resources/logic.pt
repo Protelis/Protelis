@@ -1,19 +1,19 @@
 // EXPECTED_RESULT: true
 import protelis:lang:utils
 //composeF(
-//	composeV(
-		and(
-			or(not(false), false), 
-			identity(
-				mean(
-					sum(1, 
-						diff(1, zero())
-					), 2
-				) == 2
-			)
-		)
-//	)
+//    composeV(
+        and(
+            or(not(false), false), 
+            identity(
+                mean(
+                    sum(1, 
+                        diff(1, zero())
+                    ), 2
+                ) == 2
+            )
+        )
+//    )
 //).apply()
-	
-//	composeV(1).apply() // false
-//	(() -> {1}).apply() // 1
+    
+//    composeV(1).apply() // false
+//    (() -> {1}).apply() // 1
