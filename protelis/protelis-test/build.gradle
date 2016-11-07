@@ -1,11 +1,10 @@
 dependencies {
     compile (
         project(':protelis-interpreter'),
-        // https://mvnrepository.com/artifact/it.unibo.alchemist/alchemist-loading
         "it.unibo.alchemist:alchemist-loading:$alchemistLoadingVersion",
         "junit:junit:$junitVersion"
     )
     testCompile(
-    	project(':protelis-interpreter')
+        project(':protelis-interpreter')
     )
 }

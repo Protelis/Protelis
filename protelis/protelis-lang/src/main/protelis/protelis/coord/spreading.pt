@@ -222,7 +222,7 @@ public def crfGradient(source, metric, range) {
                 minHood([d + metric.apply(), 0])
             } else {
                 let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
-                [potential.get(0) + v0 * dt, v0]            
+                [potential.get(0) + v0 * dt, v0]
             }
         }
     }.get(0)
@@ -268,13 +268,11 @@ public def directProjection(source, obstacle) {
  *
  * @param source   bool, whether the device is a source
  * @param obstacle bool, whether the device is an obstacle
- * @param metric   () -> num, how to estimate neighbors distances 
+ * @param metric   () -> num, how to estimate neighbors distances
  * @return         bool, true if the device encounter an obstacle within the shortest
  * path towards the closest source, false otherwise
  */
 public def directProjectionWithMetric(source, obstacle, metric) {
-//    let c = if (obstacle) { 1 } else { 0 };
-//    G(source, c, metric, (v) -> { c + Gnull(v, 0) }) > 0
     G(source, obstacle, metric, (v) -> { obstacle || Gnull(v, false) })
 }
 
@@ -604,7 +602,7 @@ public def vmWithMetric(source, metric, range, f, null) {
     }, f, null)
 }
 
-/** 
+/**
  * Computing a Voronoi partition is an operation that is frequently useful in
  * distributed systems. Given an initial set of seed devices, a Voronoi
  * partition assigns each device to the partition of the nearest seed,
