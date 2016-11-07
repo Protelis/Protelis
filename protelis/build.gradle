@@ -23,7 +23,7 @@ allprojects {
 
         runtime "ch.qos.logback:logback-classic:$logbackVersion"
 
-	    testCompile "junit:junit:$junitVersion"
+        testCompile "junit:junit:$junitVersion"
 
         testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
 
