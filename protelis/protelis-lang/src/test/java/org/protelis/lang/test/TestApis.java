@@ -46,7 +46,7 @@ public class TestApis {
     }
 
     private static void testProgram(final String file) {
-        ProgramTester.testFileWithMultipleRuns(file);
+        ProgramTester.runFileWithMultipleRuns(file);
     }
 
     /**
