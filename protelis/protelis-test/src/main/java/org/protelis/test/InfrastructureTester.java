@@ -120,8 +120,8 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void test(final String file) throws InterruptedException, IOException {
-        test(file, EXAMPLE_RUNS);
+    public static void runTest(final String file) throws InterruptedException, IOException {
+        runTest(file, EXAMPLE_RUNS);
     }
 
     /**
@@ -136,8 +136,8 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void test(final String file, final Object expectedValue) throws InterruptedException, IOException {
-        test(file, EXAMPLE_RUNS, expectedValue);
+    public static void runTest(final String file, final Object expectedValue) throws InterruptedException, IOException {
+        runTest(file, EXAMPLE_RUNS, expectedValue);
     }
 
     /**
@@ -154,8 +154,7 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void test(final String file, final int exampleRuns, final Object expectedValue)
-                    throws InterruptedException, IOException {
+    public static void runTest(final String file, final int exampleRuns, final Object expectedValue) throws InterruptedException, IOException {
         generalTest(file, exampleRuns, false, new TestCount(expectedValue));
     }
 
@@ -171,7 +170,7 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void test(final String file, final int exampleRuns) throws InterruptedException, IOException {
+    public static void runTest(final String file, final int exampleRuns) throws InterruptedException, IOException {
         generalTest(file, exampleRuns, false, new TestEqual());
     }
 
@@ -185,7 +184,7 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void testMultirun(final String file) throws InterruptedException, IOException {
+    public static void multiRun(final String file) throws InterruptedException, IOException {
         generalTest(file, -1, true, new TestEqual());
     }
 

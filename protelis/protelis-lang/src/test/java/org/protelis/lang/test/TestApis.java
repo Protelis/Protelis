@@ -23,7 +23,7 @@ public class TestApis {
 
     private static void test(final String file, final int runs) {
         try {
-            InfrastructureTester.test(file, runs);
+            InfrastructureTester.runTest(file, runs);
         } catch (InterruptedException | IOException e) {
             L.error(e.getMessage(), e);
         }
@@ -31,7 +31,7 @@ public class TestApis {
 
     private static void test(final String file, final Object value) {
         try {
-            InfrastructureTester.test(file, value);
+            InfrastructureTester.runTest(file, value);
         } catch (InterruptedException | IOException e) {
             L.error(e.getMessage(), e);
         }
@@ -39,7 +39,7 @@ public class TestApis {
 
     private static void testMultirun(final String file) {
         try {
-            InfrastructureTester.testMultirun(file);
+            InfrastructureTester.multiRun(file);
         } catch (InterruptedException | IOException e) {
             L.error(e.getMessage(), e);
         }
