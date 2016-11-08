@@ -1,0 +1,8 @@
+import protelis:coord:accumulation
+import protelis:coord:spreading
+quorumSensing(
+    distanceTo(env.has("source")),
+    (deviceNum) -> { "foo" },
+    (deviceNum) -> { deviceNum },
+    12
+)

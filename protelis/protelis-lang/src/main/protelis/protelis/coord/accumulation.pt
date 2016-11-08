@@ -508,3 +508,34 @@ public def summarizeWithPotential(potential, zero, accumulate, local, null) {
         () -> { potential }
     )
 }
+
+/**
+ * Quorum sensing.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param under     (num) -> T, what to do if quorum is under threshold
+ * @param over      (num) -> T, what to do otherwise
+ * @param thr       num, threshold
+ * @return          T
+ */
+public def quorumSensing(potential, under, over, thr) {
+    quorumSensingExtended(potential, under, over, thr, true, true)
+}
+
+/**
+ * Quorum sensing.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param under     (num) -> T, what to do if quorum is under threshold
+ * @param over      (num) -> T, what to do otherwise
+ * @param thr       num, threshold
+ * @return          T
+ */
+public def quorumSensingExtended(potential, under, over, thr, condition, region) {
+    let c = countDeviceInRegion(potential, condition, region);
+    if (c < thr) {
+        under.apply(c)
+    } else {
+        over.apply(c)
+    }
+}

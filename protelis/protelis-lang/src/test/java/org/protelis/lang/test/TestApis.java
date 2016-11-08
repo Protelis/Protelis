@@ -811,6 +811,14 @@ public class TestApis {
     }
 
     /**
+     * Test quorumSensing.pt.
+     */
+    @Test
+    public void testQuorumSensing() {
+        test("quorumSensing");
+    }
+
+    /**
      * Test range.pt.
      */
     @Test
