@@ -60,34 +60,6 @@ public def C(potential, reduce, local, null) {
 }
 
 /**
- * The potential-source converges to the sum of other device values.
- * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
- * can  cause  loss  or  duplication  of  values  with
- * major transient impact on its result. When the accumulation
- * operation for C is either idempotent (e.g., logical and, or)
- * or  separable  (e.g.,  summation),  this  can  be  mitigated  by
- * using all paths down the potential function rather than just
- * one. Can implement  any  other  idempotent  or  separable  function.
- *
- * @param potential num, sum values descending this potential
- * @param local     num, value
- * @return          num, aggregated value
- */
-public def cMultiSum(potential, local) {
-     cMultiDivisible(
-         potential,
-         local,
-         0,
-         sum,
-         (v) -> { v },
-         (v) -> { sumHood(
-             mux (nbr(potential) < potential) { nbr(local) } else { 0 }
-         ) },
-         (dividend, divisor) -> { dividend / divisor }
-     )
-}
-
-/**
  * @param potential num, gradient of which gives aggregation direction
  * @param local     T, local value
  * @param reduce    (T, T) -> T, how to aggregate values
@@ -143,6 +115,34 @@ public def cMultiMax(potential, local) {
 }
 
 /**
+ * The potential-source converges to the sum of other device values.
+ * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
+ * can  cause  loss  or  duplication  of  values  with
+ * major transient impact on its result. When the accumulation
+ * operation for C is either idempotent (e.g., logical and, or)
+ * or  separable  (e.g.,  summation),  this  can  be  mitigated  by
+ * using all paths down the potential function rather than just
+ * one. Can implement  any  other  idempotent  or  separable  function.
+ *
+ * @param potential num, sum values descending this potential
+ * @param local     num, value
+ * @return          num, aggregated value
+ */
+public def cMultiSum(potential, local) {
+     cMultiDivisible(
+         potential,
+         local,
+         0,
+         sum,
+         (v) -> { v },
+         (v) -> { sumHood(
+             mux (nbr(potential) < potential) { nbr(local) } else { 0 }
+         ) },
+         (dividend, divisor) -> { dividend / divisor }
+     )
+}
+
+/**
  * Devices agree on a common value.
  *
  * @param init  num, initial device value
@@ -154,6 +154,41 @@ public def consensus(init, f) {
          // val + f.apply(sumHood PlusSelf(nbr(val) - val))
          val + f.apply(sumHood(nbr(val) - val))
      }
+}
+
+/**
+ * Count the devices with a given condition.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param condition bool, discriminant
+ * @return          num, number of devices
+ */
+public def countDeviceWithCondition(potential, condition) {
+    summarizeWithPotential(potential, 0, sum, if (condition) { 1 } else { 0 }, 0)
+// broadcast(potential == 0, cMultiSum(potential, if (condition) { 1 } else { 0 }))
+// FAIL!!
+}
+
+/**
+ * Count the devices.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @return          num, number of devices
+ */
+public def countDevice(potential) {
+    countDeviceWithCondition(potential, true)
+}
+
+/**
+ * Count the devices in a region.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param condition bool, device discriminant
+ * @param region    bool, region discriminant
+ * @return          num, number of devices
+ */
+public def countDeviceInRegion(potential, condition, region) {
+    boundSpreading(region, () -> { countDeviceWithCondition(potential, condition) }, 0)
 }
 
 /**

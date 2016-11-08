@@ -308,6 +308,22 @@ public class TestApis {
     }
 
     /**
+     * Test countDevice.pt.
+     */
+    @Test
+    public void testCountDevice() {
+        test("countDevice");
+    }
+
+    /**
+     * Test countDeviceInRegion.pt.
+     */
+    @Test
+    public void testCountDeviceInRegion() {
+        test("countDeviceInRegion");
+    }
+
+    /**
      * Test countDown.pt.
      */
     @Test

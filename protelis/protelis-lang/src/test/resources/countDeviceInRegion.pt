@@ -1,0 +1,3 @@
+import protelis:coord:accumulation
+import protelis:coord:spreading
+countDeviceInRegion(distanceTo(env.has("source")), !env.has("source"), env.has("region"))
