@@ -32,7 +32,7 @@ dependencies {
     compile "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     compile "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
     compile "com.google.code.findbugs:findbugs:$findBugsVersion"
-    compile "net.sourceforge.streamsupport:streamsupport-flow:${streamVersion}"
+    compile "net.sourceforge.streamsupport:streamsupport:${streamVersion}"
 }
 
 /*
@@ -40,6 +40,6 @@ dependencies {
  */
 javadoc {
     options {
-        linksOffline("https://static.javadoc.io/net.sourceforge.streamsupport/streamsupport/1.5.1/", 'java8.*')
+        linksOffline("https://www.javadoc.io/page/net.sourceforge.streamsupport/streamsupport/${streamVersion}/", 'java8.*')
     }
 }
