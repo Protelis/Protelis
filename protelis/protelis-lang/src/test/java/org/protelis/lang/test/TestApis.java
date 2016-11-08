@@ -427,11 +427,19 @@ public class TestApis {
     }
 
     /**
+     * Test evaporation.pt.
+     */
+    @Test
+    public void testEvaporation() {
+        testProgram("evaporation");
+    }
+
+    /**
      * Test ebfFilter.pt.
      */
     @Test
     public void testExponentialBackoffFilter() {
-        testProgram("ebfFilter");
+        testProgram("exponentialBackoffFilter");
     }
 
     /**
