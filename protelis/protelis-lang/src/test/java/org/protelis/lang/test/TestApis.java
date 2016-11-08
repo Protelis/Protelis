@@ -403,6 +403,14 @@ public class TestApis {
     }
 
     /**
+     * Test diameterInArea.pt.
+     */
+    @Test
+    public void testDiameterInArea() {
+        test("diameterInArea");
+    }
+
+    /**
      * Test dilate.pt.
      */
     @Test

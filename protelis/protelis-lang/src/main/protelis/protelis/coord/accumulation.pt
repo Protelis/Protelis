@@ -192,8 +192,8 @@ public def countDeviceInRegion(potential, condition, region) {
 }
 
 /**
- * Estimate the diameter of the connected component joined by the current
- * device.
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
  *
  * @param source    bool, source of the connected component
  * @return diameter num, of the connected component
@@ -203,6 +203,17 @@ public def diameter(source) {
     2 * rep (maxd <- 0) {
         max(if (d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
     }
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
+ *
+ * @param source    bool, source of the connected component
+ * @return diameter num, of the connected component
+ */
+public def diameterInArea(source, region) {
+    boundSpreading(region, () -> { diameter(source) }, 0)
 }
 
 /**
