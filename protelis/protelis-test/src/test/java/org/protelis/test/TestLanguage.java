@@ -30,7 +30,7 @@ public class TestLanguage {
      */
     @Test
     public void testAlignedMap() {
-        ProgramTester.testFileWithMultipleRuns("/alignedMap.pt");
+        ProgramTester.runFileWithMultipleRuns("/alignedMap.pt");
     }
 
     /**
@@ -38,7 +38,7 @@ public class TestLanguage {
      */
     @Test
     public void testClosure01() {
-        ProgramTester.testFile("/closure01.pt");
+        ProgramTester.runFile("/closure01.pt");
     }
 
     /*
@@ -58,7 +58,7 @@ public class TestLanguage {
      */
     @Test
     public void testCyclicTimer() {
-        ProgramTester.testFileWithMultipleRuns("/cyclicTimer.pt");
+        ProgramTester.runFileWithMultipleRuns("/cyclicTimer.pt");
     }
 
     /**
@@ -66,7 +66,7 @@ public class TestLanguage {
      */
     @Test
     public void testBinary01() {
-        ProgramTester.testFile("/binary01.pt");
+        ProgramTester.runFile("/binary01.pt");
     }
 
     /**
@@ -74,7 +74,7 @@ public class TestLanguage {
      */
     @Test
     public void testEnvironment01() {
-        ProgramTester.testFile("/environment01.pt");
+        ProgramTester.runFile("/environment01.pt");
     }
 
     /**
@@ -82,7 +82,7 @@ public class TestLanguage {
      */
     @Test
     public void testEval01() {
-        ProgramTester.testFile("/eval01.pt");
+        ProgramTester.runFile("/eval01.pt");
     }
 
     /**
@@ -91,7 +91,7 @@ public class TestLanguage {
      */
     @Test
     public void testEval02() {
-        ProgramTester.testFile("/eval02.pt");
+        ProgramTester.runFile("/eval02.pt");
     }
 
     /**
@@ -99,7 +99,7 @@ public class TestLanguage {
      */
     @Test
     public void testFieldMethod01() {
-        ProgramTester.testFile("/fieldMethod01.pt");
+        ProgramTester.runFile("/fieldMethod01.pt");
     }
 
     /**
@@ -107,7 +107,7 @@ public class TestLanguage {
      */
     @Test
     public void testFieldMethod02() {
-        ProgramTester.testFile("/fieldMethod02.pt");
+        ProgramTester.runFile("/fieldMethod02.pt");
     }
 
     /**
@@ -115,7 +115,7 @@ public class TestLanguage {
      */
     @Test
     public void testFieldMethod03() {
-        ProgramTester.testFile("/fieldMethod03.pt");
+        ProgramTester.runFile("/fieldMethod03.pt");
     }
 
     /**
@@ -123,7 +123,7 @@ public class TestLanguage {
      */
     @Test
     public void testFunction01() {
-        ProgramTester.testFile("/function01.pt");
+        ProgramTester.runFile("/function01.pt");
     }
 
     /**
@@ -131,7 +131,7 @@ public class TestLanguage {
      */
     @Test
     public void testFunction02() {
-        ProgramTester.testFile("/function02.pt");
+        ProgramTester.runFile("/function02.pt");
     }
 
     /**
@@ -139,7 +139,7 @@ public class TestLanguage {
      */
     @Test
     public void testFunction03() {
-        ProgramTester.testFile("/function03.pt");
+        ProgramTester.runFile("/function03.pt");
     }
 
     /**
@@ -148,7 +148,7 @@ public class TestLanguage {
      */
     @Test
     public void testFunction04() {
-        ProgramTester.testFile("/function04.pt");
+        ProgramTester.runFile("/function04.pt");
     }
 
     /**
@@ -156,7 +156,7 @@ public class TestLanguage {
      */
     @Test
     public void testGenericHood01() {
-        ProgramTester.testFile("/genericHood01.pt");
+        ProgramTester.runFile("/genericHood01.pt");
     }
 
     /**
@@ -164,7 +164,7 @@ public class TestLanguage {
      */
     @Test
     public void testGenericHood02() {
-        ProgramTester.testFile("/genericHood02.pt");
+        ProgramTester.runFile("/genericHood02.pt");
     }
 
     /**
@@ -172,7 +172,7 @@ public class TestLanguage {
      */
     @Test
     public void testGenericHood03() {
-        ProgramTester.testFile("/genericHood03.pt");
+        ProgramTester.runFile("/genericHood03.pt");
     }
 
     /**
@@ -180,7 +180,7 @@ public class TestLanguage {
      */
     @Test
     public void testGenericHood04() {
-        ProgramTester.testFile("/genericHood04.pt");
+        ProgramTester.runFile("/genericHood04.pt");
     }
 
     /**
@@ -188,7 +188,7 @@ public class TestLanguage {
      */
     @Test
     public void testGenericHood05() {
-        ProgramTester.testFile("/genericHood05.pt");
+        ProgramTester.runFile("/genericHood05.pt");
     }
 
     /**
@@ -196,7 +196,7 @@ public class TestLanguage {
      */
     @Test
     public void testGenericHood06() {
-        ProgramTester.testFile("/genericHood06.pt");
+        ProgramTester.runFile("/genericHood06.pt");
     }
 
     /**
@@ -212,7 +212,7 @@ public class TestLanguage {
      */
     @Test
     public void testHof01() {
-        ProgramTester.testFileWithMultipleRuns("/hof01.pt");
+        ProgramTester.runFileWithMultipleRuns("/hof01.pt");
     }
 
     /**
@@ -220,7 +220,7 @@ public class TestLanguage {
      */
     @Test
     public void testHof02() {
-        ProgramTester.testFileWithMultipleRuns("/hof02.pt");
+        ProgramTester.runFileWithMultipleRuns("/hof02.pt");
     }
 
     /**
@@ -229,7 +229,7 @@ public class TestLanguage {
      */
     @Test
     public void testHof03() {
-        ProgramTester.testFileWithMultipleRuns("/hof03.pt");
+        ProgramTester.runFileWithMultipleRuns("/hof03.pt");
     }
 
     /**
@@ -237,7 +237,7 @@ public class TestLanguage {
      */
     @Test
     public void testHof04() {
-        ProgramTester.testFile("/hof04.pt");
+        ProgramTester.runFile("/hof04.pt");
     }
 
     /**
@@ -245,7 +245,7 @@ public class TestLanguage {
      */
     @Test
     public void testHof05() {
-        ProgramTester.testFile("/hof05.pt");
+        ProgramTester.runFile("/hof05.pt");
     }
 
     /**
@@ -253,7 +253,7 @@ public class TestLanguage {
      */
     @Test
     public void testHood01() {
-        ProgramTester.testFile("/hood01.pt");
+        ProgramTester.runFile("/hood01.pt");
     }
 
     /**
@@ -261,7 +261,7 @@ public class TestLanguage {
      */
     @Test
     public void testHood02() {
-        ProgramTester.testFile("/hood02.pt");
+        ProgramTester.runFile("/hood02.pt");
     }
 
     /**
@@ -269,7 +269,7 @@ public class TestLanguage {
      */
     @Test
     public void testHood03() {
-        ProgramTester.testFile("/hood03.pt");
+        ProgramTester.runFile("/hood03.pt");
     }
 
     /**
@@ -277,7 +277,7 @@ public class TestLanguage {
      */
     @Test
     public void testIf01() {
-        ProgramTester.testFileWithMultipleRuns("/if01.pt");
+        ProgramTester.runFileWithMultipleRuns("/if01.pt");
     }
 
     /**
@@ -286,7 +286,7 @@ public class TestLanguage {
     @Test
     public void testIf02() {
         try {
-            ProgramTester.testFile("/if02.pt", 1, null);
+            ProgramTester.runFile("/if02.pt", 1, null);
             fail("If should never return fields");
         } catch (IllegalStateException e) {
             assertNotNull(e);
@@ -298,7 +298,7 @@ public class TestLanguage {
      */
     @Test
     public void testLambda01() {
-        ProgramTester.testFile("/lambda01.pt");
+        ProgramTester.runFile("/lambda01.pt");
     }
 
     /**
@@ -306,7 +306,7 @@ public class TestLanguage {
      */
     @Test
     public void testLambda02() {
-        ProgramTester.testFileWithMultipleRuns("/lambda02.pt");
+        ProgramTester.runFileWithMultipleRuns("/lambda02.pt");
     }
 
     /**
@@ -314,7 +314,7 @@ public class TestLanguage {
      */
     @Test
     public void testLambda03() {
-        ProgramTester.testFileWithMultipleRuns("/lambda03.pt");
+        ProgramTester.runFileWithMultipleRuns("/lambda03.pt");
     }
 
     /**
@@ -330,7 +330,7 @@ public class TestLanguage {
      */
     @Test
     public void testMath01() {
-        ProgramTester.testFile("/math01.pt");
+        ProgramTester.runFile("/math01.pt");
     }
 
     /**
@@ -338,7 +338,7 @@ public class TestLanguage {
      */
     @Test
     public void testMath02() {
-        ProgramTester.testFile("/math02.pt");
+        ProgramTester.runFile("/math02.pt");
     }
 
     /**
@@ -346,7 +346,7 @@ public class TestLanguage {
      */
     @Test
     public void testMath03() {
-        ProgramTester.testFile("/math03.pt");
+        ProgramTester.runFile("/math03.pt");
     }
 
     /**
@@ -354,7 +354,7 @@ public class TestLanguage {
      */
     @Test
     public void testMath04() {
-        ProgramTester.testFile("/math04.pt");
+        ProgramTester.runFile("/math04.pt");
     }
 
     /**
@@ -362,7 +362,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod01() {
-        ProgramTester.testFile("/method01.pt");
+        ProgramTester.runFile("/method01.pt");
     }
 
     /**
@@ -370,7 +370,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod02() {
-        ProgramTester.testFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
+        ProgramTester.runFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
     }
 
     /**
@@ -378,7 +378,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod03() {
-        ProgramTester.testFile("/method03.pt");
+        ProgramTester.runFile("/method03.pt");
     }
 
     /**
@@ -386,7 +386,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod04() {
-        ProgramTester.testFile("/method04.pt");
+        ProgramTester.runFile("/method04.pt");
     }
 
     /**
@@ -394,7 +394,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod05() {
-        ProgramTester.testFile("/method05.pt");
+        ProgramTester.runFile("/method05.pt");
     }
 
     /**
@@ -402,7 +402,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod06() {
-        ProgramTester.testFile("/method06.pt");
+        ProgramTester.runFile("/method06.pt");
     }
 
     /**
@@ -410,7 +410,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod07() {
-        ProgramTester.testFile("/method07.pt");
+        ProgramTester.runFile("/method07.pt");
     }
 
     /**
@@ -419,7 +419,7 @@ public class TestLanguage {
      */
     @Test
     public void testModules01() {
-        ProgramTester.testFile("/modules01.pt");
+        ProgramTester.runFile("/modules01.pt");
     }
 
     /**
@@ -427,7 +427,7 @@ public class TestLanguage {
      */
     @Test
     public void testModules02() {
-        ProgramTester.testFile("/modules02.pt");
+        ProgramTester.runFile("/modules02.pt");
     }
 
     /**
@@ -436,7 +436,7 @@ public class TestLanguage {
      */
     @Test
     public void testModules03() {
-        ProgramTester.testFile("/modules03.pt");
+        ProgramTester.runFile("/modules03.pt");
     }
 
     /**
@@ -444,7 +444,7 @@ public class TestLanguage {
      */
     @Test
     public void testModules04() {
-        ProgramTester.testFile("/modules04.pt");
+        ProgramTester.runFile("/modules04.pt");
     }
 
     /**
@@ -453,7 +453,7 @@ public class TestLanguage {
      */
     @Test
     public void testModules05() {
-        ProgramTester.testFile("/modules05.pt");
+        ProgramTester.runFile("/modules05.pt");
     }
 
     /**
@@ -461,7 +461,7 @@ public class TestLanguage {
      */
     @Test
     public void testMux01() {
-        ProgramTester.testFileWithMultipleRuns("/mux01.pt");
+        ProgramTester.runFileWithMultipleRuns("/mux01.pt");
     }
 
     /**
@@ -469,7 +469,7 @@ public class TestLanguage {
      */
     @Test
     public void testMultiStatement01() {
-        ProgramTester.testFile("/multistatement01.pt");
+        ProgramTester.runFile("/multistatement01.pt");
     }
 
     /**
@@ -477,7 +477,7 @@ public class TestLanguage {
      */
     @Test
     public void testMultiStatement02() {
-        ProgramTester.testFile("/multistatement02.pt");
+        ProgramTester.runFile("/multistatement02.pt");
     }
 
     /**
@@ -485,7 +485,7 @@ public class TestLanguage {
      */
     @Test
     public void testMultiStatement03() {
-        ProgramTester.testFile("/multistatement03.pt");
+        ProgramTester.runFile("/multistatement03.pt");
     }
 
     /**
@@ -493,7 +493,7 @@ public class TestLanguage {
      */
     @Test
     public void testMultiStatement04() {
-        ProgramTester.testFile("/multistatement04.pt");
+        ProgramTester.runFile("/multistatement04.pt");
     }
 
     /**
@@ -501,7 +501,7 @@ public class TestLanguage {
      */
     @Test
     public void testRep01() {
-        ProgramTester.testFileWithMultipleRuns("/rep01.pt",
+        ProgramTester.runFileWithMultipleRuns("/rep01.pt",
                         IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
     }
 
@@ -512,7 +512,7 @@ public class TestLanguage {
     public void testRep02() {
         double prev = 1;
         for (int i = 1; i < 100; i++) {
-            ProgramTester.testFile("/rep02.pt", i, prev);
+            ProgramTester.runFile("/rep02.pt", i, prev);
             prev = prev * (prev + 1);
         }
     }
@@ -522,7 +522,7 @@ public class TestLanguage {
      */
     @Test
     public void testSum() {
-        ProgramTester.testFile("/sum.pt");
+        ProgramTester.runFile("/sum.pt");
     }
 
     /**
@@ -530,7 +530,7 @@ public class TestLanguage {
      */
     @Test
     public void testLoadFile() {
-        ProgramTester.testFile("/sum.pt");
+        ProgramTester.runFile("/sum.pt");
     }
 
     /**
@@ -538,7 +538,7 @@ public class TestLanguage {
      */
     @Test
     public void testLoadFromClasspath() {
-        ProgramTester.testFileWithExplicitResult("classpath:/sum.pt", 8d);
+        ProgramTester.runFileWithExplicitResult("classpath:/sum.pt", 8d);
     }
 
     /**
@@ -546,7 +546,7 @@ public class TestLanguage {
      */
     @Test
     public void testLoadModule() {
-        ProgramTester.testFileWithExplicitResult("5+3", 8d);
+        ProgramTester.runFileWithExplicitResult("5+3", 8d);
     }
 
     /**
@@ -554,7 +554,7 @@ public class TestLanguage {
      */
     @Test
     public void testAnonymousLoadModule() {
-        ProgramTester.testFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
+        ProgramTester.runFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
     }
 
     /**
@@ -562,7 +562,7 @@ public class TestLanguage {
      */
     @Test
     public void testLoadFromModuleName01() {
-        ProgramTester.testFileWithExplicitResult("modules04", 1d);
+        ProgramTester.runFileWithExplicitResult("modules04", 1d);
     }
 
     /**
@@ -570,7 +570,7 @@ public class TestLanguage {
      */
     @Test
     public void testLoadFromModuleName02() {
-        ProgramTester.testFileWithExplicitResult("protelis:test:circular02", 1d);
+        ProgramTester.runFileWithExplicitResult("protelis:test:circular02", 1d);
     }
 
     /**
@@ -587,7 +587,7 @@ public class TestLanguage {
     @Test
     public void testTuple01() {
         final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
-        ProgramTester.testFileWithExplicitResult("/tuple01.pt", expectedResult);
+        ProgramTester.runFileWithExplicitResult("/tuple01.pt", expectedResult);
     }
 
     /**
@@ -596,7 +596,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple02() {
-        ProgramTester.testFile("/tuple02.pt");
+        ProgramTester.runFile("/tuple02.pt");
     }
 
     /**
@@ -604,7 +604,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple03() {
-        ProgramTester.testFileWithExplicitResult("/tuple03.pt", Integer.valueOf(3));
+        ProgramTester.runFileWithExplicitResult("/tuple03.pt", Integer.valueOf(3));
     }
 
     /**
@@ -612,7 +612,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple04() {
-        ProgramTester.testFile("/tuple04.pt");
+        ProgramTester.runFile("/tuple04.pt");
     }
 
     /**
@@ -621,7 +621,7 @@ public class TestLanguage {
     @Test
     public void testTuple05() {
         final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 2.0, 2.0, 2.0 });
-        ProgramTester.testFileWithExplicitResult("/tuple05.pt", expectedResult);
+        ProgramTester.runFileWithExplicitResult("/tuple05.pt", expectedResult);
     }
 
     /**
@@ -629,9 +629,9 @@ public class TestLanguage {
      */
     @Test
     public void testTupleArithmetic() {
-        ProgramTester.testFile("/tuple06.pt");
-        ProgramTester.testFile("/tuple07.pt");
-        ProgramTester.testFile("/tuple08.pt");
+        ProgramTester.runFile("/tuple06.pt");
+        ProgramTester.runFile("/tuple07.pt");
+        ProgramTester.runFile("/tuple08.pt");
     }
 
     /**
@@ -639,7 +639,7 @@ public class TestLanguage {
      */
     @Test
     public void testTupleMap01() {
-        ProgramTester.testFile("/TupleMap01.pt");
+        ProgramTester.runFile("/TupleMap01.pt");
     }
 
     /**
@@ -647,7 +647,7 @@ public class TestLanguage {
      */
     @Test
     public void testTupleReduce01() {
-        ProgramTester.testFile("/TupleReduce01.pt");
+        ProgramTester.runFile("/TupleReduce01.pt");
     }
 
     /**
@@ -655,7 +655,7 @@ public class TestLanguage {
      */
     @Test
     public void testTupleFilter01() {
-        ProgramTester.testFile("/TupleFilter01.pt");
+        ProgramTester.runFile("/TupleFilter01.pt");
     }
 
     /**
@@ -663,7 +663,7 @@ public class TestLanguage {
      */
     @Test
     public void testUnary01() {
-        ProgramTester.testFile("/unary01.pt");
+        ProgramTester.runFile("/unary01.pt");
     }
 
     /**
@@ -671,7 +671,7 @@ public class TestLanguage {
      */
     @Test
     public void testUnary02() {
-        ProgramTester.testFileWithExplicitResult("/unary02.pt", -Math.PI);
+        ProgramTester.runFileWithExplicitResult("/unary02.pt", -Math.PI);
     }
 
 }

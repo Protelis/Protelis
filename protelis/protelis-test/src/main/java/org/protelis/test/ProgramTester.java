@@ -46,8 +46,8 @@ public final class ProgramTester {
      * @param expectedResult
      *            result
      */
-    public static void testFileWithExplicitResult(final String file, final Object expectedResult) {
-        testFile(file, 1, expectedResult);
+    public static void runFileWithExplicitResult(final String file, final Object expectedResult) {
+        runFile(file, 1, expectedResult);
     }
 
     /**
@@ -55,8 +55,8 @@ public final class ProgramTester {
      * @param file
      *            file to be tested
      */
-    public static void testFile(final String file) {
-        testFile(file, MAX_CYCLE_NUM);
+    public static void runFile(final String file) {
+        runFile(file, MAX_CYCLE_NUM);
     }
 
     /**
@@ -64,8 +64,8 @@ public final class ProgramTester {
      * @param file
      *            file to be tested
      */
-    public static void testFileWithMultipleRuns(final String file) {
-        testFileWithMultipleRuns(file, MIN_CYCLE_NUM, MAX_CYCLE_NUM);
+    public static void runFileWithMultipleRuns(final String file) {
+        runFileWithMultipleRuns(file, MIN_CYCLE_NUM, MAX_CYCLE_NUM);
     }
 
     /**
@@ -77,8 +77,8 @@ public final class ProgramTester {
      * @param max
      *            max runs
      */
-    public static void testFileWithMultipleRuns(final String file, final int min, final int max) {
-        testFileWithMultipleRuns(file, IntStreams.rangeClosed(min, max));
+    public static void runFileWithMultipleRuns(final String file, final int min, final int max) {
+        runFileWithMultipleRuns(file, IntStreams.rangeClosed(min, max));
     }
 
     /**
@@ -88,9 +88,9 @@ public final class ProgramTester {
      * @param stream
      *            stream of run
      */
-    public static void testFileWithMultipleRuns(final String file, final IntStream stream) {
+    public static void runFileWithMultipleRuns(final String file, final IntStream stream) {
         stream.forEach(i -> {
-            testFile(file, i);
+            runFile(file, i);
         });
     }
 
@@ -101,7 +101,7 @@ public final class ProgramTester {
      * @param runs
      *            number of runs
      */
-    public static void testFile(final String file, final int runs) {
+    public static void runFile(final String file, final int runs) {
         final Object execResult = runProgram(file, runs);
         final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
         final InputStream is = ProgramTester.class.getResourceAsStream(fileWithExt);
@@ -135,7 +135,7 @@ public final class ProgramTester {
      * @param expectedResult
      *            expected result
      */
-    public static void testFile(final String file, final int runs, final Object expectedResult) {
+    public static void runFile(final String file, final int runs, final Object expectedResult) {
         assertEquals(expectedResult, runProgram(file, runs));
     }
 
