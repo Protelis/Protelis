@@ -101,6 +101,18 @@ public def delta(signal) {
 }
 
 /**
+ * Evaporation pattern.
+ * 
+ * @param length num, duration
+ * @param info   T, information
+ * @param decay  num, decay rate
+ * @return       [num, T]
+ */
+public def evaporation(length, info, decay) {
+    T([length, info], [0, info], (t) -> { [t.get(0) - decay, t.get(1)] })
+}
+
+/**
  * Exponential back-off filter.
  *
  * @param signal num, signal to be filtered
