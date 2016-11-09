@@ -40,6 +40,6 @@ dependencies {
  */
 javadoc {
     options {
-        linksOffline("https://www.javadoc.io/page/net.sourceforge.streamsupport/streamsupport/${streamVersion}/", 'java8.*')
+        link("https://www.javadoc.io/page/net.sourceforge.streamsupport/streamsupport/${streamVersion}/")
     }
 }
