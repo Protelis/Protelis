@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
+        classpath "org.danilopianini:javadoc.io-linker:0.1.0"
     }
 }
 
@@ -29,15 +30,14 @@ allprojects {
 
         doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     }
-
 }
 
 configure(allprojects - project(':protelis-interpreter')) {
-	dependencies {
-		testCompile (
-		    project(':protelis-test')
-		)
-	}
+    dependencies {
+        testCompile (
+                project(':protelis-test')
+                )
+    }
 }
 
 subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}
@@ -54,9 +54,7 @@ tasks.each { task ->
     }
 }
 
-dependencies {
-    compile subprojects
-}
+dependencies { compile subprojects }
 
 javadoc {
     dependsOn subprojects.javadoc
@@ -71,6 +69,10 @@ task fatJar(type: Jar) {
         exclude "META-INF/*.RSA"
     }
     with jar
+}
+
+allprojects {
+    apply plugin: 'org.danilopianini.javadoc.io-linker'
 }
 
 defaultTasks 'clean', 'build', 'check', 'javadoc', 'assemble', 'install', 'projectReport', 'buildDashboard', 'fatJar'

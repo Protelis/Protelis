@@ -34,12 +34,3 @@ dependencies {
     compile "com.google.code.findbugs:findbugs:$findBugsVersion"
     compile "net.sourceforge.streamsupport:streamsupport:${streamVersion}"
 }
-
-/*
- * TODO: dependencies - foreach - link
- */
-javadoc {
-    options {
-        link("https://www.javadoc.io/page/net.sourceforge.streamsupport/streamsupport/${streamVersion}/")
-    }
-}
