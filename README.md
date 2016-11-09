@@ -143,7 +143,7 @@ This will trigger the creation of the artifacts the executions of the tests, the
 #### Testing protelis-lang
 Though `protelis-lang` requires Java 1.7, running its tests **from Eclipse** requires Java 1.8.
 
-* Change `JavaSE-1.7` to `JavaSE-1.8"` in `protelis-lang/.classhpath`
+* Change `JavaSE-1.7` to `JavaSE-1.8` in `protelis-lang/.classhpath`
 * **Do not** commit this update.
 
 #### Release numbers explained
