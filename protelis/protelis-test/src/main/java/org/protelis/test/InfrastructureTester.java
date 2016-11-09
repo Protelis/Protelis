@@ -154,7 +154,8 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void runTest(final String file, final int exampleRuns, final Object expectedValue) throws InterruptedException, IOException {
+    public static void runTest(final String file, final int exampleRuns, final Object expectedValue)
+                    throws InterruptedException, IOException {
         generalTest(file, exampleRuns, false, new TestCount(expectedValue));
     }
 
@@ -225,6 +226,17 @@ public final class InfrastructureTester {
     }
 
     private static class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
+        private String getMessage(final Map<String, Object> simulationRes,
+                        final List<Pair<String, String>> expectedResult) {
+            String res = "[";
+            for (int i = 0; i < expectedResult.size(); i++) {
+                final Pair<String, String> pair = expectedResult.get(i);
+                res += "N" + pair.getLeft() + ": " + simulationRes.get(pair.getLeft())
+                                + (i < expectedResult.size() - 1 ? ", " : "");
+            }
+            return res + "]";
+        }
+
         @Override
         public void accept(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
             assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
@@ -234,7 +246,8 @@ public final class InfrastructureTester {
                 if (!pair.getRight().equals(DC)) {
                     final Object singleNodeResult = simulationRes.get(pair.getLeft());
                     assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
-                    final String err = "[Node" + pair.getLeft() + "] " + simulationRes.values();
+                    final String err = "Simulation result:\n" + getMessage(simulationRes, expectedResult) + "\n[Node"
+                                    + pair.getLeft() + "]";
                     if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
                         final double tmp = singleNodeResult instanceof Integer
                                         ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
