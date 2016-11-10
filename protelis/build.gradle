@@ -30,6 +30,44 @@ allprojects {
 
         doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     }
+    
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                pom.project {
+                    developers {
+                        developer {
+                            name 'Danilo Pianini'
+                            email 'danilo.pianini@unibo.it'
+                            url 'http://www.danilopianini.org'
+                        }
+                        developer {
+                            name 'Jacob Beal'
+                            email 'jakebeal@gmail.com'
+                            url 'http://web.mit.edu/jakebeal/www/'
+                        }
+                        developer {
+                            name 'Matteo Francia'
+                            email 'matteo.francia2@studio.unibo.it'
+                            url 'https://github.com/w4bo'
+                        }
+                    }
+                    contributors {
+                        contributor {
+                            name 'Mirko Viroli'
+                            email 'mirko.viroli@unibo.it'
+                            url 'http://mirkoviroli.apice.unibo.it/'
+                        }
+                        contributor {
+                            name 'Kyle Usbeck'
+                            email 'kusbeck@bbn.com'
+                            url 'https://dist-systems.bbn.com/people/kusbeck/'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 configure(allprojects - project(':protelis-interpreter')) {
