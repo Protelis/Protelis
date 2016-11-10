@@ -2,5 +2,5 @@
  * EXPECTED_RESULT: 0
  */
 import java.lang.Math.min
-import org.protelis.vm.impl.DummyContext.makeTestField
+import org.protelis.test.infrastructure.SimpleContext.makeTestField
 hood((a, b) -> {min(a, b)}, -1, makeTestField());

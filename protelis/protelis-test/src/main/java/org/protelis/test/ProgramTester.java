@@ -13,9 +13,9 @@ import org.apache.commons.io.IOUtils;
 import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.ProtelisLoader;
+import org.protelis.test.infrastructure.SimpleContext;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
-import org.protelis.vm.impl.SimpleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

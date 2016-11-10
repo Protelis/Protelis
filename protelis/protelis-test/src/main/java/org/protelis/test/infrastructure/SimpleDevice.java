@@ -62,6 +62,11 @@ public class SimpleDevice extends AbstractExecutionContext
         return react.getTau().toDouble();
     }
 
+    /*
+     * ATTENTION: getDeltaTime is always 1 to test the results more easily.
+     * 
+     * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
+     */
     @Override
     public Number getDeltaTime() {
         return 1;

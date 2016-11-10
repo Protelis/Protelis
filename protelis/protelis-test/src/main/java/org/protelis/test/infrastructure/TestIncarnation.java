@@ -8,7 +8,6 @@ import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
-import org.protelis.vm.impl.SimpleContext;
 
 import com.google.common.collect.Lists;
 

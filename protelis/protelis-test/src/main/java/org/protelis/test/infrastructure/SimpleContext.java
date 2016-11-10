@@ -6,17 +6,24 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.vm.impl;
+package org.protelis.test.infrastructure;
 
 import java.util.Random;
 
+import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.lang.datatype.Field;
+import org.protelis.vm.impl.AbstractExecutionContext;
+import org.protelis.vm.impl.SimpleExecutionEnvironment;
+import org.protelis.vm.impl.SimpleNetworkManager;
+
+import java8.util.stream.IntStreams;
 
 /**
- * A dummy Protelis VM to be used for testing.
+ * A **dummy** Protelis VM to be used for testing.
  *
  */
-public class SimpleContext extends AbstractExecutionContext {
+public final class SimpleContext extends AbstractExecutionContext {
 
     private final Random rng = new Random(0);
     private static final DeviceUID DUMMYUID = new DeviceUID() {
@@ -40,11 +47,17 @@ public class SimpleContext extends AbstractExecutionContext {
         return DUMMYUID;
     }
 
+    // ATTENTION: System.currentTimeMillis() is not reproducible
     @Override
     public Number getCurrentTime() {
         return System.currentTimeMillis() / 1000d;
     }
 
+    /*
+     * ATTENTION: getDeltaTime is always 1 to test the results more easily.
+     * 
+     * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
+     */
     @Override
     public Number getDeltaTime() {
         return 1;
@@ -63,6 +76,19 @@ public class SimpleContext extends AbstractExecutionContext {
     @Override
     public String toString() {
         return getClass().getSimpleName() + hashCode();
+    }
+
+    /**
+     * Test utility.
+     * 
+     * @return a field with populated with numbers from 0 to 99
+     */
+    public static Field makeTestField() {
+        final Field res = DatatypeFactory.createField(100);
+        IntStreams.range(0, 100).forEach(n -> res.addSample(new DeviceUID() {
+            private static final long serialVersionUID = 1L;
+        }, (double) n));
+        return res;
     }
 
 }
