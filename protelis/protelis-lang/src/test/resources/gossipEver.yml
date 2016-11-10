@@ -1,0 +1,28 @@
+# result:
+#  {0 true,  1 true,  2 true,  3 true,
+#   4 true,  5 true,  6 true,  7 true,
+#   8 true,  9 true, 10 true, 11 true}
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: gossipEver
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0, 0]
+    contents:
+      - molecule: temperature 
+        concentration: 10
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: temperature
+        concentration: 26
+    programs:
+      - *program

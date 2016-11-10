@@ -1,0 +1,6 @@
+// EXPECTED_RESULT: $CYCLE > 3
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+trueDuringLast(3, cyclicTimer(1)) && 
+    anyTime(trueDuringLast(3, cyclicTimer(3))) && 
+    !allTime(trueDuringLast(3, cyclicTimer(4)))

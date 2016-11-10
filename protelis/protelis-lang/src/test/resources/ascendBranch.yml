@@ -1,0 +1,45 @@
+# result:
+#  {0 dang, 1 dang,  2 safe,  3 safe,
+#   4 safe, 5 dang,  6 dang,  7 dang,
+#   8 safe, 9 safe, 10 safe, 11 safe}
+#
+# spanning tree:
+# 0 dang (end)
+#  \
+#   1 dang
+#    \ 
+#     5 dang
+#      \
+#       6 dang
+#        \
+#         7 dang (start)
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.2]
+
+program: &program
+  - time-distribution: 1
+    program: ascendBranch
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
+    contents:
+      - molecule: danger
+        concentration: 0.2
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: source
+        concentration: true
+      - in:
+          type: Circle
+          parameters: [3, 1, 0.5]
+        molecule: danger
+        concentration: 0.8
+    programs:
+      - *program

@@ -1,0 +1,4 @@
+import protelis:coord:accumulation
+import protelis:coord:spreading
+import protelis:lang:utils
+getParentId(distanceTo(env.has("source"))).toString()

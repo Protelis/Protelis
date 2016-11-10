@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: $CYCLE > 1
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+waitAndApply(0, () -> {true}, false) && waitAndApply(2, () -> {true}, false)

@@ -1,0 +1,17 @@
+dependencies {
+    compile (
+        project(':protelis-interpreter')
+    )
+    testCompile(
+        project(':protelis-test')
+    )
+}
+
+sourceSets {
+	test {
+	    resources {
+	        srcDir 'src/main/protelis'
+	        srcDir 'src/test/resources'
+	    }
+	}
+}

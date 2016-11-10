@@ -1,0 +1,3 @@
+import protelis:coord:accumulation
+import protelis:coord:spreading
+cMultiMax(self.getDeviceUID(), env.get("n"))

@@ -1,0 +1,3 @@
+import protelis:coord:accumulation
+import protelis:coord:spreading
+C(distanceTo(env.has("source")), (a, b) -> { a + b }, env.get("n"), 0)

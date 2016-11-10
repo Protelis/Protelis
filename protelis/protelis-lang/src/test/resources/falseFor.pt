@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: $CYCLE > 2
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+falseFor(3, false) && anyTime(falseFor(3, cyclicTimer(3)))

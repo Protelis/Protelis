@@ -1,0 +1,37 @@
+# result:
+#  {0 T, 1 T}
+# 
+# graph:
+# 0 <-> 1
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: checkChain
+              
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    contents:
+      - molecule: inbound
+        concentration: [1]
+      - molecule: myId
+        concentration: 0
+    programs:
+      - *program
+  - in:
+      type: Point
+      parameters: [1, 0]
+    contents:
+      - molecule: inbound
+        concentration: [0]
+      - molecule: myId
+        concentration: 1
+    programs:
+      - *program 

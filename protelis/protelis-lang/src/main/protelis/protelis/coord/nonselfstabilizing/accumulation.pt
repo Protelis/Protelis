@@ -1,0 +1,51 @@
+module protelis:coord:nonselfstabilizing:accumulation
+import protelis:coord:spreading
+import protelis:coord:accumulation
+
+/**
+ * Gossip a value manipulated according to f.
+ *
+ * @param sink  bool, whether the device is the root of the spanning tree
+ * @param value T, what to gossip
+ * @param f     (T, T) -> T, how to manipulate value
+ * @return      T, the value resulting from gossip
+ */
+public def cossip(sink, value, f) {
+    summarize(sink, f, value, value)
+}
+
+/**
+ * Gossip a value manipulated according to f.
+ *
+ * @param value T, what to gossip
+ * @param f     (T, T) -> T, how to manipulate value
+ * @return      T the value resulting from gossip
+ */
+public def gossip(value, f) {
+    rep (v <- value) {
+        f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, nbr(v)))
+    }
+}
+
+/**
+ * Gossip a value manipulated according to f.
+ *
+ * @param value T, what to gossip
+ * @param f     (T, T) -> T, how to manipulate value
+ * @return      T the value resulting from gossip
+ */
+public def Gossip(value, f) {
+    G(false, value, nbrRange, (v) -> { f.apply(v, value) })
+}
+
+/**
+ * Gossip whether the device has ever experienced a given condition.
+ *
+ * @param a bool, condition
+ * @return  bool, true if the device has experienced the condition, false otherwise
+ */
+public def gossipEver(a) {
+    rep (ever <- false) {
+        a || anyHood(nbr(ever))
+    }
+}

@@ -1,0 +1,157 @@
+module protelis:state:nonselfstabilizing:time
+import protelis:state:time
+/**
+ * @param event bool, event
+ * @return      bool, true if the event is always verified
+ */
+public def allTime(event) {
+    rep (t <- event) {
+        t && event
+    }
+}
+
+/**
+ * @param event bool, event
+ * @return      bool, whether the event has occurred at least once
+ */
+public def anyTime(event) {
+    rep (t <- event) {
+        t || event
+    }
+}
+
+/**
+ * Counter.
+ *
+ * @param start num, counter initial value
+ * @param inc   num, how much to increase the counter
+ * @return      num, current status of the counter
+ */
+public def counter(start, inc) {
+    rep (c <- start) {
+        c + inc
+    }
+}
+
+/**
+ * How many times an event occurred.
+ *
+ * @param event bool, event to be monitored
+ * @return      num, how many times an event occurred
+ */
+public def countTrue(event) {
+    rep (c <- 0) {
+        c + if (event) { 1 } else { 0 }
+    }
+}
+
+/**
+ * Flip two values at each round. Return b at first.
+ *
+ * @param a T, first value
+ * @param b T, second value
+ * @return  T, (ba)+ sequence of values
+ */
+public def flip(a, b) {
+    rep (c <- a) {
+        (a + b) - c
+    }
+}
+
+/**
+ * Time flow.
+ *
+ * @return num, time since the first tick
+ */
+public def timeSinceStart() {
+    counter(0, self.dt())
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @return        bool, true if the event occurred within last time period
+ */
+public def trueDuringLast(timeout, event) {
+    if (event) {
+        true
+    } else {
+        timeSinceStart() <= timeout
+    }
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @return        bool, true if the event did not occurred within last time period
+ */
+public def falseDuringLast(timeout, event) {
+    trueDuringLast(timeout, !event)
+}
+
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @return        bool, true if a true condition has persisted for time
+ */
+public def trueFor(time, event) {
+    if (event) {
+        timeSinceStart() >= time
+    } else {
+        false
+    }
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @return        bool, true if a false condition has persisted for time
+ */
+public def falseFor(time, event) {
+    trueFor(time, !event)
+}
+
+/**
+ * @param f         () -> T, what to execute first
+ * @param condition (T) -> bool, whether it is possible to execute continuation
+ * @param g         (T) -> T', what to execute next
+ * @return          T|T', apply f until condition becomes true, apply g next
+ */
+public def sequence(f, condition, g) {
+    rep (v <- [false, f.apply()]) {
+        if (v.get(0) || condition.apply(v.get(1))) {
+            [true, g.apply(v.get(1))]
+        } else {
+            [false, f.apply()]
+        }
+    }.get(1)
+}
+
+/**
+ * @param f         () -> T, what to execute first
+ * @param condition bool, boolean condition
+ * @param g         (T) -> T', what to execute next
+ * @return          T|T', apply f until condition becomes true in any device,
+ *                  apply g next
+ */
+public def sequenceIfAny(f, condition, g) {
+    sequence(f, (v) -> {
+        rep (ev <- condition) {
+            anyHood(nbr(ev)) || condition
+        }
+    }, g)
+}
+
+/**
+ * @param f         () -> T, what to execute first
+ * @param condition bool, boolean condition
+ * @param g         (T) -> T', what to execute next
+ * @return          T|T', apply f until condition becomes true in all the devices,
+ *                  apply g next
+ */
+public def sequenceIfAll(f, condition, g) {
+    sequence(f, (ev) -> {
+        allHood(nbr(condition)) && condition
+    }, g)
+}

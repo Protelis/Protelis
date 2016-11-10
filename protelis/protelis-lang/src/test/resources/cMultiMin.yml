@@ -1,0 +1,29 @@
+# result:
+#  {0 0.0, 1 $,  2 $,  3 $,
+#   4    $, 5 $,  6 $,  7 $,
+#   8    $, 9 $, 10 $, 11 $}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: cMultiMin
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
+    contents:
+      - molecule: n
+        concentration: 1.0
+      - in:
+          type: Circle
+          parameters: [3, 2, 0.5]
+        molecule: n
+        concentration: 0
+    programs:
+      - *program

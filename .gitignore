@@ -1,7 +1,8 @@
-/bin/
-/build/
+bin/
+build/
 /.gradle/
 /src-gen/
 *.directory
 gradle.prefs
 version.info
+.metadata/

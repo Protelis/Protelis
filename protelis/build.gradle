@@ -1,0 +1,108 @@
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
+        classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
+    }
+}
+
+allprojects {
+    apply plugin: 'org.danilopianini.build-commons'
+    configurations {
+        compile {
+            exclude module: 'org.eclipse.xtext.dependencies'
+            exclude group: 'asm', module: 'asm'
+        }
+        all*.exclude group: 'org.eclipse.xtext', module: 'org.eclipse.xtext.dependencies'
+    }
+    dependencies {
+        compile "com.google.code.findbugs:findbugs:$findBugsVersion"
+        compile "org.apache.commons:commons-math3:$math3Version"
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+
+        runtime "ch.qos.logback:logback-classic:$logbackVersion"
+
+        testCompile "junit:junit:$junitVersion"
+
+        testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+
+        doclet "org.jboss.apiviz:apiviz:$apivizVersion"
+    }
+    
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                pom.project {
+                    developers {
+                        developer {
+                            name 'Danilo Pianini'
+                            email 'danilo.pianini@unibo.it'
+                            url 'http://www.danilopianini.org'
+                        }
+                        developer {
+                            name 'Jacob Beal'
+                            email 'jakebeal@gmail.com'
+                            url 'http://web.mit.edu/jakebeal/www/'
+                        }
+                        developer {
+                            name 'Matteo Francia'
+                            email 'matteo.francia2@studio.unibo.it'
+                            url 'https://github.com/w4bo'
+                        }
+                    }
+                    contributors {
+                        contributor {
+                            name 'Mirko Viroli'
+                            email 'mirko.viroli@unibo.it'
+                            url 'http://mirkoviroli.apice.unibo.it/'
+                        }
+                        contributor {
+                            name 'Kyle Usbeck'
+                            email 'kusbeck@bbn.com'
+                            url 'https://dist-systems.bbn.com/people/kusbeck/'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}
+
+/*
+ * Running a task on the parent project implies running the same task first on any subproject
+ */
+tasks.each { task ->
+    subprojects.each { subproject ->
+        def subtask = subproject.tasks.findByPath("${task.name}")
+        if (subtask != null) {
+            task.dependsOn(subtask)
+        }
+    }
+}
+
+dependencies { compile subprojects }
+
+javadoc {
+    dependsOn subprojects.javadoc
+    source subprojects.javadoc.source
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-redist'
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+allprojects {
+    apply plugin: 'org.danilopianini.javadoc.io-linker'
+}
+
+defaultTasks 'clean', 'build', 'check', 'javadoc', 'assemble', 'install', 'projectReport', 'buildDashboard', 'fatJar'

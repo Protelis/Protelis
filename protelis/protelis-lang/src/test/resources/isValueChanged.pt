@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: $CYCLE > 1
+import protelis:state:time
+isValueChanged(cyclicTimer(1))
+//cyclicTimer(1): false, true, false, true, ...

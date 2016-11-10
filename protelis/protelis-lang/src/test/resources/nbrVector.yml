@@ -1,0 +1,19 @@
+# result:
+#  {0 1.0, 1 1.0}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.2]
+
+program: &program
+  - time-distribution: 1
+    program: nbrVector
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 0, 1, 1, 0, 0]
+    programs:
+      - *program

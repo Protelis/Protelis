@@ -1,0 +1,2 @@
+import protelis:coord:accumulation
+laplacianConsensus(env.get("foo"), env.get("epsilon"))

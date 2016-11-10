@@ -1,0 +1,2 @@
+import protelis:coord:graph
+circularDependency(env.get("myId"), env.get("inbound"))

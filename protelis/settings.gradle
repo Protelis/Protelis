@@ -1,0 +1,6 @@
+include(
+    'protelis-interpreter',
+    'protelis-lang',
+    'protelis-test'
+)
+rootProject.name = "${artifactId}"

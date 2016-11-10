@@ -6,7 +6,7 @@ Java-hosted execution of Protelis programs.
 
 ### Prerequisites
 
-Protelis requires Java 8+ in order to run.
+Protelis requires Java 7+ in order to run.
 
 
 ### Using Protelis in your project
@@ -88,7 +88,21 @@ The project has been developed using Eclipse, and can be easily imported in such
   * Wait for Eclipse to resolve all the features
   * Click "Confirm >"
   * Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
-
+* Set the line delimiter to LF (only for **Windows users**)
+  * In Eclipse, click window -> preferences
+  * In the search form enter "encoding", then press Enter
+  * Go to General -> Workspace
+  * In the section "New text file line delimiter" check "Other" and choose Unix
+  * Apply
+* Use space instead of tabs
+  * In Eclipse, click window -> preferences
+  * Go to General -> Editors -> Text Editors
+  * Check "insert spaces for tabs" option.
+  * Apply.
+  * Go to Java -> Code style -> Formatter
+  * Click Edit button
+  * In Indentation tab, under "General Settings", set "tab policy" to "Spaces only"
+  * Apply (you should probably rename the formatter settings).
 
 #### Import Procedure
 * Install git on your system, if you haven't yet

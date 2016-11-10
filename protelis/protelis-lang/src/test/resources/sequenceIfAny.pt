@@ -1,0 +1,3 @@
+import protelis:state:nonselfstabilizing:time
+import protelis:state:time
+sequenceIfAny(() -> { "bar" }, env.has("obstacle") && cyclicTimer(2), (v) -> { "foo" })

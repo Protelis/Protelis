@@ -1,0 +1,29 @@
+# result:
+#  {0  true, 1  true,  2 false,  3 false,
+#   4  true, 5  true,  6 false,  7 false,
+#   8 false, 9 false, 10 false, 11 false}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: closerThan
+              
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0, 0]
+    contents:
+      - molecule: range
+        concentration: 1.8
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: source
+        concentration: true
+    programs:
+      - *program

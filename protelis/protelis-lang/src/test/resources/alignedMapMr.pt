@@ -1,0 +1,22 @@
+import protelis:coord:spreading
+
+public def mr(discriminant, function, default) {
+    let v = function.apply();
+    let res = alignedMap(
+        nbr([[discriminant, [self, v]]]),
+        (key, field) -> { true }, // cond
+        (key, field) -> { 
+            // find my value among the others
+            hoodPlusSelf(
+                (a, b) -> { if(a.get(0) == self) {a} else {b}},
+                [self, v],
+                field
+            ).get(1);
+        }, [self, default]);
+    if(res == []) { default } else { res.get(0).get(1) }
+}
+
+mr(true, 
+    () -> { distanceTo(env.has("source")) },
+    0
+)

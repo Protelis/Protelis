@@ -1,0 +1,2 @@
+import protelis:state:time
+limitedMemory(env.get("value"), env.get("nul"), env.get("timeout"), env.get("decay"))

@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: if ($CYCLE == 1) { 0 } else { 1 }
+import protelis:state:time
+import protelis:state:nonselfstabilizing:time
+delta(timeSinceStart())
