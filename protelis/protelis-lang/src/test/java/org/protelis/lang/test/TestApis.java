@@ -859,14 +859,6 @@ public class TestApis {
     }
 
     /**
-     * Test sequence.pt.
-     */
-    @Test
-    public void testSequence2() {
-        testMultirun("sequence");
-    }
-
-    /**
      * Test sequenceIfAll.pt.
      */
     @Test
