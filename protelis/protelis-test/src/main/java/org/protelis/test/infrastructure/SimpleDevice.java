@@ -62,12 +62,8 @@ public class SimpleDevice extends AbstractExecutionContext
         return react.getTau().toDouble();
     }
 
-    /**
-     * Return delta time.
-     * 
-     * @return delta time
-     */
-    public Number dt() {
+    @Override
+    public Number getDeltaTime() {
         return 1;
     }
 

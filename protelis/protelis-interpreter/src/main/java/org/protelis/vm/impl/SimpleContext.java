@@ -10,11 +10,7 @@ package org.protelis.vm.impl;
 
 import java.util.Random;
 
-import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
-import org.protelis.lang.datatype.Field;
-
-import java8.util.stream.IntStreams;
 
 /**
  * A dummy Protelis VM to be used for testing.
@@ -49,10 +45,8 @@ public class SimpleContext extends AbstractExecutionContext {
         return System.currentTimeMillis() / 1000d;
     }
 
-    /**
-     * @return delta time
-     */
-    public Number dt() {
+    @Override
+    public Number getDeltaTime() {
         return 1;
     }
 
@@ -69,19 +63,6 @@ public class SimpleContext extends AbstractExecutionContext {
     @Override
     public String toString() {
         return getClass().getSimpleName() + hashCode();
-    }
-
-    /**
-     * Test utility.
-     * 
-     * @return a field with populated with numbers from 0 to 99
-     */
-    public static Field makeTestField() {
-        final Field res = DatatypeFactory.createField(100);
-        IntStreams.range(0, 100).forEach(n -> res.addSample(new DeviceUID() {
-            private static final long serialVersionUID = 1L;
-        }, (double) n));
-        return res;
     }
 
 }

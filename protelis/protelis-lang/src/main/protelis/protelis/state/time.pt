@@ -20,7 +20,7 @@ public def applyWhile(event, f, null) {
  * @return       num, remaining time
  */
 public def countDown(length) {
-    countDownWithDecay(length, self.dt())
+    countDownWithDecay(length, self.getDeltaTime())
 }
 
 /**
@@ -40,7 +40,7 @@ public def countDownWithDecay(length, dt) {
  * @return       bool, true if the timeout is expired, false otherwise
  */
 public def cyclicTimer(length) {
-    cyclicTimerWithDecay(length, self.dt())
+    cyclicTimerWithDecay(length, self.getDeltaTime())
 }
 
 /**
@@ -69,7 +69,7 @@ public def cyclicTimerWithDecay(length, decay) {
  * @return       T, apply f if the timeout is expired, null otherwise
  */
 public def cyclicFunction(length, f, null) {
-    cyclicFunctionWithDecay(length, self.dt(), f, null)
+    cyclicFunctionWithDecay(length, self.getDeltaTime(), f, null)
 }
 
 /**
@@ -126,20 +126,34 @@ public def exponentialBackoffFilter(signal, a) {
 }
 
 /**
- * @param signal T, signal to be monitored
- * @param time   num, consider the signal stable after this time
- * @return       bool, true if the signal does not change for at least time
+ * @param timeout num, timeout
+ * @return        bool, false after timeout, true otherwise
  */
-public def isSignalStable(signal, time) {
-    let t =
-        rep (old <- [signal, 0]) {
-            mux (signal == old.get(0)) {
-                [signal, old.get(1) + self.dt()]
-            } else {
-                [signal, 0]
-            }
-        }.get(1);
-    t >= time
+public def falseAfterTime(timeout) {
+    falseAfterTimeWithDt(timeout, self.getDeltaTime())
+}
+
+/**
+ * @param timeout num, timeout
+ * @param dt      num, dt
+ * @return        bool, false after timeout, true otherwise
+ */
+public def falseAfterTimeWithDt(timeout, dt) {
+    !trueAfterTimeWithDt(timeout, dt)
+}
+
+/**
+ * @param signal bool, binary signal to be monitored
+ * @return       bool, true if the signal had a falling edge, false otherwise
+ */
+public def isFallingEdge(signal) {
+    rep (old <- [signal, false]) {
+        mux (old.get(0) && !signal) {
+            [signal, true]
+        } else {
+            [signal, false]
+        }
+    }.get(1);
 }
 
 /**
@@ -170,17 +184,40 @@ public def isRisingEdge(signal) {
 }
 
 /**
- * @param signal bool, binary signal to be monitored
- * @return       bool, true if the signal had a falling edge, false otherwise
+ * @param signal T, signal to be monitored
+ * @param time   num, consider the signal stable after this time
+ * @return       bool, true if the signal does not change for at least time
  */
-public def isFallingEdge(signal) {
-    rep (old <- [signal, false]) {
-        mux (old.get(0) && !signal) {
-            [signal, true]
-        } else {
-            [signal, false]
-        }
-    }.get(1);
+public def isSignalStable(signal, time) {
+    isSignalStableWithDt(signal, time, self.getDeltaTime())
+}
+
+/**
+ * @param signal T, signal to be monitored
+ * @param time   num, consider the signal stable after this time
+ * @param dt     num, dt
+ * @return       bool, true if the signal does not change for at least time
+ */
+public def isSignalStableWithDt(signal, time, dt) {
+    let t =
+        rep (old <- [signal, 0]) {
+            mux (signal == old.get(0)) {
+                [signal, old.get(1) + dt]
+            } else {
+                [signal, 0]
+            }
+        }.get(1);
+    t >= time
+}
+
+/**
+ * @param signal T, value to be monitored
+ * @return       bool, whether v has changed given its previous state
+ */
+public def isValueChanged(signal) {
+    rep (old <- [signal, true]) {
+        [signal, !(signal == old.get(0))]
+    }.get(1)
 }
 
 /**
@@ -213,7 +250,6 @@ public def limitedMemory(value, null, timeout, dt) {
  */
 public def T(initial, zero, decay) {
     rep (v <- initial) {
-        // rep is initialized only during the first invocation
         min(initial, max(zero, decay.apply(v)))
     }
 }
@@ -223,25 +259,16 @@ public def T(initial, zero, decay) {
  * @return        bool, true after timeout, false otherwise
  */
 public def trueAfterTime(timeout) {
-    countDown(timeout) <= 0
+    trueAfterTimeWithDt(timeout, self.getDeltaTime())
 }
 
 /**
  * @param timeout num, timeout
- * @return        bool, false after timeout, true otherwise
+ * @param dt      num, dt
+ * @return        bool, true after timeout, false otherwise
  */
-public def falseAfterTime(timeout) {
-    !trueAfterTime(timeout)
-}
-
-/**
- * @param signal T, value to be monitored
- * @return       bool, whether v has changed given its previous state
- */
-public def isValueChanged(signal) {
-    rep (old <- [signal, true]) {
-        [signal, !(signal == old.get(0))]
-    }.get(1)
+public def trueAfterTimeWithDt(timeout, dt) {
+    countDownWithDecay(timeout, dt) <= 0
 }
 
 /**
@@ -249,7 +276,7 @@ public def isValueChanged(signal) {
  * @return        bool, whether the countdown is expired
  */
 public def wait(timeout) {
-    waitWithDecay(timeout, self.dt())
+    waitWithDecay(timeout, self.getDeltaTime())
 }
 
 /**
