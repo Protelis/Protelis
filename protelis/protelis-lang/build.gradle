@@ -2,6 +2,9 @@ dependencies {
     compile (
         project(':protelis-interpreter')
     )
+    testCompile(
+        project(':protelis-test')
+    )
 }
 
 sourceSets {
