@@ -70,14 +70,6 @@ allprojects {
     }
 }
 
-configure(allprojects - project(':protelis-interpreter')) {
-    dependencies {
-        testCompile (
-                project(':protelis-test')
-                )
-    }
-}
-
 subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}
 
 /*
