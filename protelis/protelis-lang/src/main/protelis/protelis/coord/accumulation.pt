@@ -428,7 +428,7 @@ public def hasParent(id) {
 public def imRoot() { -2 }
 
 /**
- * TODO: this function MUST NOT be public as it is an utilities for both protelis:coord:accumulation and
+ * This function MUST NOT be public as it is an utilities for both protelis:coord:accumulation and
  * protelis:coord:tree. This function reduces a field of ids
  */
 def idUnion(idField) {
