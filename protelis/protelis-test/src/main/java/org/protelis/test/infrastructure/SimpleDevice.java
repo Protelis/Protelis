@@ -2,7 +2,6 @@ package org.protelis.test.infrastructure;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -52,17 +51,6 @@ public class SimpleDevice extends AbstractExecutionContext
         this.node = node;
     }
 
-    /**
-     * Move in a direction specified by the 3-tuple vector in meters Uses a
-     * kludge vector in which +X = East, +Y = North.
-     * 
-     * @param vector
-     *            move the device of the given vector
-     */
-    public void move(final Tuple vector) {
-        throw new NotImplementedException("move is not supported at the moment");
-    }
-
     @Override
     public DeviceUID getDeviceUID() {
         assertNotNull("Device id can't be null", node);
@@ -91,6 +79,7 @@ public class SimpleDevice extends AbstractExecutionContext
     /**
      * Note: this should be going away in the future, to be replaced by standard
      * Java random.
+     * 
      * @return a double random value
      */
     @Override
