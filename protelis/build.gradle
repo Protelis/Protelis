@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
-        classpath "org.danilopianini:javadoc.io-linker:0.1.0"
+        classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
     }
 }
 
