@@ -1,5 +1,7 @@
 module protelis:coord:meta
 import protelis:lang:utils
+import protelis:coord:accumulation
+import protelis:coord:spreading
 
 /**
  * Splice devices into regions according to the discriminant and apply f.
@@ -57,4 +59,24 @@ public def preProcessAndApply(input, pre, f) {
  */
 public def postProcessAndApply(input, f, post) {
     post.apply(f.apply(input))
+}
+
+/**
+ * Publish/Subscribe pattern.
+ * 
+ * @param publisher   bool, who publish
+ * @param subscriber  bool, who is subscribing
+ * @param information T, what to share
+ * @param null        T, what to share if you are neither a subscriber nor a
+ *                    publisher
+ * @return            T, information if the device is a publisher, a
+ *                    subscriber or is in the shortest path between them.
+ *                    null otherwise
+ */
+public def publishSubscribe(publisher, subscriber, information, null) {
+      if (C(distanceTo(publisher), or, subscriber, false)) {
+          broadcast(publisher, information)
+      } else {
+          null
+      }
 }

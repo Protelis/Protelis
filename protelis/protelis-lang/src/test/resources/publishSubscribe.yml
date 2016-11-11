@@ -1,0 +1,37 @@
+# result:
+#  {0 foo, 1 foo,
+#   2 foo, 3 bar,
+#   4 foo, 5 bar}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: publishSubscribe
+
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 1, 2, 1, 1, 0.1, 0.1]
+    contents:
+      - in:
+          type: Circle
+          parameters: [0, 0, 0.5]
+        molecule: publisher
+        concentration: true
+      - in:
+          type: Circle
+          parameters: [1, 0, 0.5]
+        molecule: subscriber
+        concentration: true
+      - in:
+          type: Circle
+          parameters: [0, 2, 0.5]
+        molecule: subscriber
+        concentration: true
+    programs:
+      - *program

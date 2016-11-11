@@ -811,6 +811,14 @@ public class TestApis {
     }
 
     /**
+     * Test publishSubscribe.pt.
+     */
+    @Test
+    public void testPublishSubscribe() {
+        test("publishSubscribe");
+    }
+
+    /**
      * Test quorumSensing.pt.
      */
     @Test
