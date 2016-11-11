@@ -84,7 +84,11 @@ tasks.each { task ->
     }
 }
 
-dependencies { compile subprojects }
+dependencies {
+    compile subprojects.findAll {
+        !it.name.contains('test')
+    }
+}
 
 javadoc {
     dependsOn subprojects.javadoc
