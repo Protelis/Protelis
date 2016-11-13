@@ -6,6 +6,7 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.alchemist.model.implementations.nodes.GenericNode;
 import it.unibo.alchemist.model.interfaces.Environment;
 import it.unibo.alchemist.model.interfaces.Molecule;
@@ -17,6 +18,7 @@ public class ProtelisNode extends GenericNode<Object> implements DeviceUID, Exec
      * 
      */
     private static final long serialVersionUID = 1L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This class is not meant to be serialized.")
     private NetworkManager netmgr;
 
     /**

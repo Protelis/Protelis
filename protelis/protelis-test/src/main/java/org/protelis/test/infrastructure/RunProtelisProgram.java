@@ -21,7 +21,9 @@ import it.unibo.alchemist.model.interfaces.Reaction;
 
 /**
  */
-@SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "This is desired.")
+@SuppressFBWarnings(
+        value = { "EQ_DOESNT_OVERRIDE_EQUALS", "SE_BAD_FIELD" },
+        justification = "This class is not meant to be serialized, and not overriding equals() is desired.")
 public class RunProtelisProgram extends SimpleMolecule implements Action<Object> {
     /**
      * RESULT.
@@ -31,7 +33,6 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
     private final Environment<Object> environment;
     private final ProtelisNode node;
     private final org.protelis.vm.ProtelisProgram program;
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "All the random engines provided by Apache are Serializable")
     private final RandomGenerator random;
     private final ProtelisVM vm;
     private final CachingNetworkManager netmgr;
