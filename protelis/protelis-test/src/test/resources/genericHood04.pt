@@ -2,7 +2,7 @@
  * EXPECTED_RESULT: 99
  */
 import java.lang.Math.max
-import org.protelis.test.infrastructure.SimpleContext.makeTestField
+import org.protelis.test.infrastructure.DummyContext.makeTestField
 
 def maxF(a, b) {
     java::lang::Math::max(a, b)

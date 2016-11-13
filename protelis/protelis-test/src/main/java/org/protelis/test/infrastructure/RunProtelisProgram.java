@@ -70,7 +70,7 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
         random = rand;
         this.netmgr = new CachingNetworkManager();
         node.setNetworkManger(netmgr);
-        final ExecutionContext ctx = new SimpleDevice(env, n, r, rand, netmgr);
+        final ExecutionContext ctx = new DummyDevice(env, n, r, rand, netmgr);
         vm = new ProtelisVM(prog, ctx);
         round = 0;
     }

@@ -20,7 +20,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
  * A simple implementation of a Protelis-based device, encapsulating a
  * ProtelisVM and a network interface.
  */
-public class SimpleDevice extends AbstractExecutionContext
+public class DummyDevice extends AbstractExecutionContext
                 implements SpatiallyEmbeddedDevice, LocalizedDevice, TimeAwareDevice {
     private final RandomGenerator r;
     private final ProtelisNode node;
@@ -41,7 +41,7 @@ public class SimpleDevice extends AbstractExecutionContext
      * @param netmgr
      *            netmgr
      */
-    public SimpleDevice(final Environment<Object> environment, final ProtelisNode node, final Reaction<Object> reaction,
+    public DummyDevice(final Environment<Object> environment, final ProtelisNode node, final Reaction<Object> reaction,
                     final RandomGenerator random, final NetworkManager netmgr) {
         super(node, netmgr);
         r = random;
@@ -63,7 +63,11 @@ public class SimpleDevice extends AbstractExecutionContext
     }
 
     /*
-     * ATTENTION: getDeltaTime is always 1 to test the results more easily.
+     * ATTENTION: getDeltaTime is always 1 to easily test the results. If you need to
+     * estimate the difference between two reactions you can comment this method as it is already
+     * implemented in org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related
+     * to getDeltaTime will fail. You have to modify the tests to use the function
+     * extended with dt. E.g.: use `timeSinceStartWithDt(1)` instead of `timeSinceStart()`.
      * 
      * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */
@@ -74,7 +78,7 @@ public class SimpleDevice extends AbstractExecutionContext
 
     @Override
     protected AbstractExecutionContext instance() {
-        return new SimpleDevice(env, node, react, r, netmgr);
+        return new DummyDevice(env, node, react, r, netmgr);
     }
 
     /**

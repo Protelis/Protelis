@@ -23,7 +23,7 @@ import java8.util.stream.IntStreams;
  * A **dummy** Protelis VM to be used for testing.
  *
  */
-public final class SimpleContext extends AbstractExecutionContext {
+public final class DummyContext extends AbstractExecutionContext {
 
     private final Random rng = new Random(0);
     private static final DeviceUID DUMMYUID = new DeviceUID() {
@@ -38,7 +38,7 @@ public final class SimpleContext extends AbstractExecutionContext {
     /**
      *
      */
-    public SimpleContext() {
+    public DummyContext() {
         super(new SimpleExecutionEnvironment(), new SimpleNetworkManager());
     }
 
@@ -54,7 +54,11 @@ public final class SimpleContext extends AbstractExecutionContext {
     }
 
     /*
-     * ATTENTION: getDeltaTime is always 1 to test the results more easily.
+     * ATTENTION: getDeltaTime is always 1 to easily test the results. If you need to
+     * estimate the difference between two reactions you can comment this method as it is already
+     * implemented in org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related
+     * to getDeltaTime will fail. You have to modify the tests to use the function
+     * extended with dt. E.g.: use `timeSinceStartWithDt(1)` instead of `timeSinceStart()`.
      * 
      * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */
@@ -70,7 +74,7 @@ public final class SimpleContext extends AbstractExecutionContext {
 
     @Override
     protected AbstractExecutionContext instance() {
-        return new SimpleContext();
+        return new DummyContext();
     }
 
     @Override

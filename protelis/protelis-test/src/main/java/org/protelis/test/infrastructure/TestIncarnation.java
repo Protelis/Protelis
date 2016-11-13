@@ -134,7 +134,7 @@ public final class TestIncarnation implements Incarnation<Object> {
         try {
             final ProtelisProgram program = ProtelisLoader
                             .parse(Objects.requireNonNull(s, "The concentration can not be null."));
-            final ProtelisVM vm = new ProtelisVM(program, new SimpleContext());
+            final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
             vm.runCycle();
             return vm.getCurrentValue();
         } catch (IllegalArgumentException e) {
