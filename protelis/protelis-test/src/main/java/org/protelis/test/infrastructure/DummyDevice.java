@@ -63,11 +63,13 @@ public class DummyDevice extends AbstractExecutionContext
     }
 
     /*
-     * ATTENTION: getDeltaTime is always 1 to easily test the results. If you need to
-     * estimate the difference between two reactions you can comment this method as it is already
-     * implemented in org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related
-     * to getDeltaTime will fail. You have to modify the tests to use the function
-     * extended with dt. E.g.: use `timeSinceStartWithDt(1)` instead of `timeSinceStart()`.
+     * ATTENTION: getDeltaTime is always 1 to easily test the results. If you
+     * need to estimate the difference between two reactions you can comment
+     * this method as it is already implemented in
+     * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
+     * getDeltaTime will fail. You have to modify the tests to use the function
+     * extended with dt. E.g.: use `timeSinceStartWithDt(1)` instead of
+     * `timeSinceStart()`.
      * 
      * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */
@@ -95,6 +97,11 @@ public class DummyDevice extends AbstractExecutionContext
     @Override
     public Field nbrRange() {
         return buildField(otherNode -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) otherNode), node);
+    }
+
+    @Override
+    public Field nbrDelay() {
+        return buildField(otherNode -> 1.0, node);
     }
 
     @Override
