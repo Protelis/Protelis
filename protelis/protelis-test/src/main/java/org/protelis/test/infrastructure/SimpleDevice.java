@@ -74,12 +74,17 @@ public class SimpleDevice extends AbstractExecutionContext
         return react.getTau().toDouble();
     }
 
-    /**
-     * Return delta time.
+    /*
+     * ATTENTION: getDeltaTime has been overridden to easily test the results.
+     * If you need to estimate the difference between two reactions you can
+     * comment this method as it is already implemented in
+     * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
+     * getDeltaTime will fail.
      * 
-     * @return delta time
+     * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */
-    public Number dt() {
+    @Override
+    public Number getDeltaTime() {
         return 1;
     }
 

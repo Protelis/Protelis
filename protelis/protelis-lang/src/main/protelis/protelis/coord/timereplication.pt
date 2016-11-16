@@ -46,7 +46,7 @@ def alignedExecution(processes) {
 }
 
 public def timeReplicated(process, default, p, k) {
-    let clock = sharedTimer(p, self.dt());
+    let clock = sharedTimer(p, self.getDeltaTime());
     rep (processes <- []) {
         /*
          * Add process if the clock is new
