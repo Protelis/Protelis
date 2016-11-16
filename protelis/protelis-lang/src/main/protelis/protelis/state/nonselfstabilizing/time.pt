@@ -64,7 +64,7 @@ public def flip(a, b) {
  * @return num, time since the first tick
  */
 public def timeSinceStart() {
-    counter(0, self.dt())
+    counter(0, self.getDeltaTime())
 }
 
 /**
