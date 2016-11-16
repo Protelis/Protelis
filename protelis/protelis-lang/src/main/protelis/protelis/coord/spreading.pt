@@ -217,7 +217,7 @@ public def crfGradient(source, metric, range) {
             let ndv = nbr(potential);
             let d = ndv.get(0);
             let v = ndv.get(1);
-            let dt = self.dt();
+            let dt = self.getDeltaTime();
             mux (anyHood(addRangeWithLag(d, metric, v) < potential.get(0))) {
                 minHood([d + metric.apply(), 0])
             } else {
@@ -353,7 +353,7 @@ public def flexGradient(source, epsilon, rate, range, distortion, metric) {
             let msd = slopeInfo.get(1);
             let msr = slopeInfo.get(2);
             let ct = minHood(nbr(d) + max(minD, maxHood(metric.apply())));
-            mux ((d > range && d > ct * 2) || cyclicTimer((d + self.dt()) * rate)) {
+            mux ((d > range && d > ct * 2) || cyclicTimer((d + self.getDeltaTime()) * rate)) {
                 ct
             } else {
                 mux (maxSlope > (1 + epsilon)) {
@@ -457,7 +457,7 @@ public def gradient(source, init, metric, range) {
                 minHood([ndv.get(0) + metric.apply(), 0])
             } else {
                 let v0 = range / 2;
-                [d + v0 * self.dt(), v0]
+                [d + v0 * self.getDeltaTime(), v0]
             }
         }
     }.get(0)
@@ -509,7 +509,7 @@ public def nbrRangeHop() {
  * @return          num, field of distances from the current device
  */
 public def nbrRangeLag(metric, lagMetric, speed) {
-    metric.apply() + (lagMetric.apply() + self.dt()) * speed
+    metric.apply() + (lagMetric.apply() + self.getDeltaTime()) * speed
 }
 
 /**
