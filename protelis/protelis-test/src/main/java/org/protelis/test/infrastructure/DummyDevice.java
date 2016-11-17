@@ -63,13 +63,11 @@ public class DummyDevice extends AbstractExecutionContext
     }
 
     /*
-     * ATTENTION: getDeltaTime is always 1 to easily test the results. If you
-     * need to estimate the difference between two reactions you can comment
-     * this method as it is already implemented in
+     * ATTENTION: getDeltaTime has been overridden for testing purpose. If you
+     * need to estimate the actual difference between two reactions you can
+     * comment this method as it is already implemented in
      * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
-     * getDeltaTime will fail. You have to modify the tests to use the function
-     * extended with dt. E.g.: use `timeSinceStartWithDt(1)` instead of
-     * `timeSinceStart()`.
+     * getDeltaTime will fail.
      * 
      * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */

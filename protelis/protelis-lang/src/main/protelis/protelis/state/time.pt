@@ -129,6 +129,7 @@ public def exponentialBackoffFilter(signal, a) {
  * @param timeout num, timeout
  * @return        bool, false after timeout, true otherwise
  */
+
 public def falseAfterTime(timeout) {
     falseAfterTimeWithDt(timeout, self.getDeltaTime())
 }

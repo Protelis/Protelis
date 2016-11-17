@@ -206,22 +206,20 @@ public def closerThanWithMetric(source, metric, range) {
  *
  * @param source bool,  whether the device is a source
  * @param metric () -> num, how to estimate distances without lag
- * @param range  num, communication max range
+ * @param maxHop num, communication max range
  * @return       num, minimum distance from the source
  */
-public def crfGradient(source, metric, range) {
+public def crfGradient(source, metric, maxHop) {
     rep (potential <- [Infinity, 0]) {
         mux (source) {
             [0, 0]
         } else {
-            let ndv = nbr(potential);
-            let d = ndv.get(0);
-            let v = ndv.get(1);
+            let d = nbr(potential).get(0);
             let dt = self.getDeltaTime();
-            mux (anyHood(addRangeWithLag(d, metric, v) < potential.get(0))) {
+            mux (anyHood(addRangeWithLag(d, metric, potential.get(1)) < potential.get(0))) {
                 minHood([d + metric.apply(), 0])
             } else {
-                let v0 = if (dt == 0) { 1 } else { range / (dt * 12) };
+                let v0 = if (dt == 0) { maxHop } else { maxHop / (dt * 12) };
                 [potential.get(0) + v0 * dt, v0]
             }
         }
