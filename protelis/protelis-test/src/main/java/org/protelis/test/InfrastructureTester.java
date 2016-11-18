@@ -44,6 +44,16 @@ public final class InfrastructureTester {
      * Default runs.
      */
     public static final int EXAMPLE_RUNS = 1000;
+    /**
+     * To check self-stabilization over time, each test is executed in the range
+     * [EXAMPLE_RUNS, EXAMPLE_RUNS + STABILITY_CHECK).
+     */
+    private static final int STABILITY_CHECK = 100;
+    /**
+     * Determine the test speed and accuracy. Max accuracy: STEP = 1. Max speed:
+     * STEP = STABILITY_CHECK.
+     */
+    private static final int STEP = STABILITY_CHECK / 3;
     private static final double DELTA = 0.01;
     private static final Logger L = LoggerFactory.getLogger(InfrastructureTester.class);
 
@@ -156,7 +166,10 @@ public final class InfrastructureTester {
      */
     public static void runTest(final String file, final int exampleRuns, final Object expectedValue)
                     throws InterruptedException, IOException {
-        generalTest(file, exampleRuns, false, new TestCount(expectedValue));
+        for (int i = exampleRuns; i < exampleRuns + STABILITY_CHECK; i += STEP) {
+            L.debug("Step: {}", i);
+            generalTest(file, i, false, new TestCount(expectedValue));
+        }
     }
 
     /**
@@ -172,7 +185,10 @@ public final class InfrastructureTester {
      *             InterruptedException
      */
     public static void runTest(final String file, final int exampleRuns) throws InterruptedException, IOException {
-        generalTest(file, exampleRuns, false, new TestEqual());
+        for (int i = exampleRuns; i < exampleRuns + STABILITY_CHECK; i += STEP) {
+            L.debug("Step: {}", i);
+            generalTest(file, i, false, new TestEqual());
+        }
     }
 
     /**
