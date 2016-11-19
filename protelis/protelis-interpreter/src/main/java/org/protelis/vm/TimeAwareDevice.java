@@ -20,8 +20,7 @@ public interface TimeAwareDevice extends ExecutionContext {
     Field nbrDelay();
 
     /**
-     * Time backward view: how long ago information from you neighbor was
-     * received.
+     * Time backward view: how long ago information from neighbors was received.
      * 
      * For device's neighbors: nbrRange is the time of the computation minus the
      * timestamp on the packet. Dropped packets temporarily increase nbrLag. For
