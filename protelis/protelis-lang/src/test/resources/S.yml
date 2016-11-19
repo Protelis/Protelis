@@ -17,6 +17,6 @@ displacements:
       parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
     contents:
       - molecule: grain
-        concentration: 1
+        concentration: 1.5
     programs:
       - *program
