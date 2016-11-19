@@ -471,10 +471,19 @@ public def neighborhood() {
 }
 
 /**
- * Communication latency.
+ * Time forward view.
  *
- * @return num, communication latencies between this device and its
- * neighbors
+ * @return num, expected time from the device computation to
+ *         neighbor's next computation incorporating that information.
+ */
+public def nbrDelay() {
+    self.nbrDelay()
+}
+
+/**
+ * Time backward view.
+ *
+ * @return num, how long ago information from neighbors was received.
  */
 public def nbrLag() {
     self.nbrLag()

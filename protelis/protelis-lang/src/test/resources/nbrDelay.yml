@@ -1,0 +1,21 @@
+# result:
+#  {0 4, 1 4,  2 4,  3 4,
+#   4 4, 5 4,  6 4,  7 4,
+#   8 4, 9 4, 10 4, 11 4}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: nbrDelay
+
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0.0, 0.0]
+    programs:
+      - *program
