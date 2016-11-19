@@ -1,2 +1,12 @@
 import protelis:coord:spreading
-distanceToWithMetric(env.has("source"), () -> { nbrRangeLag(nbrRange, nbrLag, 1) })
+let res =
+    alignedMap(
+        nbr([["foo", "bar"], ["bar", "foo"]]),
+        (key, filter) -> { true },
+        (key, filter) -> { minHood(nbrLag()) },
+        Infinity
+    );
+minHood(self.nbrLag())
+    + minHood(nbrLag())
+    + if (res == Infinity) { Infinity }
+      else { res.get(0).get(1) + res.get(1).get(1) }

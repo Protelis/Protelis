@@ -76,6 +76,14 @@ public class TestApis {
     }
 
     /**
+     * Test alignedMapDistanceTo.pt.
+     */
+    @Test
+    public void testAlignedMapDistanceTo() {
+        test("alignedMapDistanceTo");
+    }
+
+    /**
      * Test alignedMapIff.pt.
      */
     @Test
@@ -443,6 +451,14 @@ public class TestApis {
     }
 
     /**
+     * Test distanceToWithMetric.pt.
+     */
+    @Test
+    public void testDistanceToWithMetric() {
+        test("distanceToWithMetric");
+    }
+
+    /**
      * Test distanceTo with obstacle.
      */
     @Test
@@ -747,6 +763,14 @@ public class TestApis {
     }
 
     /**
+     * Test nbrDelay.pt.
+     */
+    @Test
+    public void testNbrDelay() {
+        test("nbrDelay");
+    }
+
+    /**
      * Test nbrLag.pt.
      */
     @Test
@@ -755,7 +779,7 @@ public class TestApis {
     }
 
     /**
-     * Test self.nbrRange().
+     * Test nbrRange.pt.
      */
     @Test
     public void testNbrRange() {

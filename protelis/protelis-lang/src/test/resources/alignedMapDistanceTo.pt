@@ -1,0 +1,13 @@
+import protelis:coord:spreading
+let res = 
+    alignedMap(
+        nbr([["0", "bar"], ["3", "foo"]]),
+        (key, filter) -> { true },
+        (key, filter) -> { distanceTo(self.getDeviceUID().toString() == key) },
+        Infinity
+    );
+if (res == Infinity) { 
+    Infinity
+} else {
+    res.get(0).get(1) + res.get(1).get(1)
+}
