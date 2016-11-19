@@ -26,9 +26,7 @@ public class Self extends AbstractAnnotatedTree<ExecutionContext> {
 
     @Override
     public void eval(final ExecutionContext context) {
-        if (isErased()) {
-            setAnnotation(context);
-        }
+        setAnnotation(context);
     }
 
     @Override
