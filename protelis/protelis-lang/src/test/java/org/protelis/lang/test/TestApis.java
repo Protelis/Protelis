@@ -29,13 +29,13 @@ public class TestApis {
         }
     }
 
-    private static void test(final String file, final Object value) {
-        try {
-            InfrastructureTester.runTest(file, value);
-        } catch (InterruptedException | IOException e) {
-            L.error(e.getMessage(), e);
-        }
-    }
+    // private static void test(final String file, final Object value) {
+    // try {
+    // InfrastructureTester.runTest(file, value);
+    // } catch (InterruptedException | IOException e) {
+    // L.error(e.getMessage(), e);
+    // }
+    // }
 
     private static void testMultirun(final String file) {
         try {
@@ -879,7 +879,7 @@ public class TestApis {
      */
     @Test
     public void testS() {
-        test("S", true);
+        test("S");
     }
 
     /**
