@@ -1,3 +1,0 @@
-import java.lang.Math.min
-import protelis:coord:nonselfstabilizing:accumulation
-Gossip(env.get("n"), (a, b) -> { min(a, b) })

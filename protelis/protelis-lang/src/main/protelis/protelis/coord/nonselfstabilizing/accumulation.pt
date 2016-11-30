@@ -28,17 +28,6 @@ public def gossip(value, f) {
 }
 
 /**
- * Gossip a value manipulated according to f.
- *
- * @param value T, what to gossip
- * @param f     (T, T) -> T, how to manipulate value
- * @return      T the value resulting from gossip
- */
-public def Gossip(value, f) {
-    G(false, value, nbrRange, (v) -> { f.apply(v, value) })
-}
-
-/**
  * Gossip whether the device has ever experienced a given condition.
  *
  * @param a bool, condition

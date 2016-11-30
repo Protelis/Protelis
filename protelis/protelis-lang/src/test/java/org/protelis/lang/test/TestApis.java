@@ -603,14 +603,6 @@ public class TestApis {
     }
 
     /**
-     * Test gossip2.pt.
-     */
-    @Test
-    public void testGossip2() {
-        test("gossip2");
-    }
-
-    /**
      * Test gossip3.pt.
      */
     @Test
