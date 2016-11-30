@@ -294,7 +294,7 @@ public def distanceBetween(source, dest) {
  * @return       num, smallest distance between source and destination devices
  */
 public def distanceBetweenWithMetric(source, dest, metric) {
-    G(source, distanceToWithMetric(dest, metric), metric, identity)
+    broadcastWithMetric(source, distanceToWithMetric(dest, metric), metric)
 }
 
 /*
@@ -432,33 +432,6 @@ public def gradcast(source, gradient, local, accumulate) {
             minHood([nbr(gradient.apply()), accumulate.apply(nbr(value))]).get(1)
         }
     }
-}
-
-/**
- * Determine the smallest distance from the current device to the source.
- *
- * @param source bool, whether the device is a source
- * @param init   num, distance initial value
- * @param metric () -> num, estimate distance from other devices
- * @param range  num, communication range
- * @return       num, minimum distance from the closest source
- */
-public def gradient(source, init, metric, range) {
-    rep (distance <- [Infinity, 0]) {
-        mux (source) {
-            [init, 0]
-        } else {
-            let d = distance.get(0);
-            let v = distance.get(1);
-            mux (anyHood(addRangeWithLag(nbr(distance).get(0), metric, v) <= d)) {
-                let ndv = nbr(distance);
-                minHood([ndv.get(0) + metric.apply(), 0])
-            } else {
-                let v0 = range / 2;
-                [d + v0 * self.getDeltaTime(), v0]
-            }
-        }
-    }.get(0)
 }
 
 /**

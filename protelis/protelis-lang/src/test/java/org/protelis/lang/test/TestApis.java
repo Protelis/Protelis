@@ -635,14 +635,6 @@ public class TestApis {
     }
 
     /**
-     * Test gradient.pt.
-     */
-    @Test
-    public void testGradient() {
-        test("gradient");
-    }
-
-    /**
      * Test greatestLowerBound.pt.
      */
     @Test
