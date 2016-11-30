@@ -739,14 +739,6 @@ public class TestApis {
     }
 
     /**
-     * Test logic.pt.
-     */
-    @Test
-    public void testLogic() {
-        testProgram("logic");
-    }
-
-    /**
      * Test nbrDelay.pt.
      */
     @Test
@@ -960,6 +952,14 @@ public class TestApis {
     @Test
     public void testTrueFor() {
         testProgram("trueFor");
+    }
+
+    /**
+     * Test utils.pt.
+     */
+    @Test
+    public void testUtils() {
+        testProgram("utils");
     }
 
     /**

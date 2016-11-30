@@ -71,6 +71,33 @@ public def diff(a, b) {
 }
 
 /**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is equal to b, false otherwise
+ */
+public def equal(a, b) {
+    a == b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is greater than b, false otherwise
+ */
+public def greaterThan(a, b) {
+    a > b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is greater than or equal to b, false otherwise
+ */
+public def greaterEqual(a, b) {
+    a >= b
+}
+
+/**
  * *-hood wrapper.
  *
  * @param local        T, local value
@@ -131,6 +158,24 @@ public def identity(a) {
 /**
  * @param a T, first field
  * @param b T, second field
+ * @return  bool, true if a is less than b, false otherwise
+ */
+public def lessThan(a, b) {
+    a < b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is less than or equal to b, false otherwise
+ */
+public def lessEqual(a, b) {
+    a <= b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
  * @return  T, maximum between the two fields
  */
 public def max(a, b) {
@@ -185,6 +230,15 @@ public def norm(tuple, p) {
  */
 public def not(a) {
     !a
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is not equal to b, false otherwise
+ */
+public def notEqual(a, b) {
+    a != b
 }
 
 /**
