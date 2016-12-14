@@ -199,7 +199,19 @@ public def countDeviceInRegion(potential, condition, region) {
  * @return diameter num, of the connected component
  */
 public def diameter(source) {
-    let d = distanceTo(source);
+    diameterWithMetric(source, nbrRangeHop)
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
+ *
+ * @param source    bool, source of the connected component
+ * @param metric    () -> num, metric
+ * @return diameter num, of the connected component
+ */
+public def diameterWithMetric(source, metric) {
+    let d = distanceToWithMetric(source, metric);
     2 * rep (maxd <- 0) {
         max(if (d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
     }
