@@ -224,8 +224,19 @@ public def diameterWithMetric(source, metric) {
  * @param source    bool, source of the connected component
  * @return diameter num, of the connected component
  */
-public def diameterInArea(source, region) {
-    boundSpreading(region, () -> { diameter(source) }, 0)
+public def diameterInRegion(source, region) {
+    diameterInRegionWithMetric(source, region, nbrRangeHop)
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
+ *
+ * @param source    bool, source of the connected component
+ * @return diameter num, of the connected component
+ */
+public def diameterInRegionWithMetric(source, region, metric) {
+    boundSpreading(region, () -> { diameterWithMetric(source, metric) }, 0)
 }
 
 /**
