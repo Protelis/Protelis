@@ -338,14 +338,6 @@ public class TestApis {
     }
 
     /**
-     * Test CRFgradient2.pt.
-     */
-    @Test
-    public void testCRFGradient2() {
-        test("crfGradient2");
-    }
-
-    /**
      * Test cyclicFunction.pt.
      */
     @Test
