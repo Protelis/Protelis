@@ -1,11 +1,5 @@
 package org.protelis.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,188 +15,195 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.protelis.test.infrastructure.ProtelisNode;
 import org.protelis.test.infrastructure.RunProtelisProgram;
+import org.protelis.test.matcher.TestCount;
+import org.protelis.test.matcher.TestEqual;
+import org.protelis.test.observer.ExceptionObserver;
+import org.protelis.test.observer.SimpleExceptionObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unibo.alchemist.boundary.interfaces.OutputMonitor;
 import it.unibo.alchemist.core.implementations.Engine;
 import it.unibo.alchemist.core.implementations.Engine.StateCommand;
 import it.unibo.alchemist.core.interfaces.Simulation;
 import it.unibo.alchemist.loader.YamlLoader;
 import it.unibo.alchemist.model.interfaces.Environment;
+import it.unibo.alchemist.model.interfaces.Reaction;
+import it.unibo.alchemist.model.interfaces.Time;
 import java8.util.function.Function;
 
 /**
  * Test protelis simulations.
  */
 public final class InfrastructureTester {
-    private static final String EXAMPLE = "/example.yml";
 
-    private static final String DC = "$";
+    /**
+     * Skip this value while comparing results.
+     */
+    public static final String DC = "$";
+    /**
+     * Tolerance while comparing double values.
+     */
+    public static final double DELTA = 0.01;
+    private static final String EXAMPLE = "/example.yml";
     /**
      * Default runs.
      */
-    public static final int EXAMPLE_RUNS = 1000;
-    /**
-     * To check self-stabilization over time, each test is executed in the range
-     * [EXAMPLE_RUNS, EXAMPLE_RUNS + STABILITY_CHECK).
-     */
-    private static final int STABILITY_CHECK = 100;
-    /**
-     * Determine the test speed and accuracy. Max accuracy: STEP = 1. Max speed:
-     * STEP = STABILITY_CHECK.
-     */
-    private static final int STEP = STABILITY_CHECK / 3;
-    private static final double DELTA = 0.01;
+    public static final int SIMULATION_STEPS = 1000;
     private static final Logger L = LoggerFactory.getLogger(InfrastructureTester.class);
+    /**
+     * Check function stability for this number of steps.
+     */
+    public static final int STABILITY_STEPS = 100;
 
-    private InfrastructureTester() {
+    /**
+     * Matching results.
+     */
+    public static final class TestMatcher {
+        private static final String EXPECTED = "result:";
+        private static final String ML_NAME = "multilineComment";
+        private static final String ML_RUN = "multirun";
+        private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}",
+                        Pattern.DOTALL);
+        private static final Pattern MULTI_RESULT_PATTERN = Pattern.compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?",
+                        Pattern.DOTALL);
+        private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
+        private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
+
+        static {
+            final InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
+            try {
+                final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
+                assert getResult(new SimpleExceptionObserver(), test) != null;
+            } catch (IOException e) {
+                assert false;
+            }
+        }
+
+        /**
+         * @param obs
+         *            exception observer
+         * @param text
+         *            text to be matched
+         * @return result
+         */
+        public static TIntObjectMap<List<Pair<String, String>>> getMultiRunResult(final ExceptionObserver obs, final String text) {
+            assert !text.isEmpty() : obs.exceptionThrown(new IllegalArgumentException("Empty result"));
+            final TIntObjectMap<List<Pair<String, String>>> res = new TIntObjectHashMap<>();
+            final Matcher outer = EXTRACT_RESULT.matcher(text);
+            if (outer.find()) {
+                final String result = outer.group(ML_NAME);
+                final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
+                try {
+                    while (multiRun.find()) {
+                        L.debug("multiRun.group(): {}", multiRun.group());
+                        L.debug("multiRun.group(1): {}", multiRun.group(1));
+                        L.debug("multiRun.group(2): {}", multiRun.group(2));
+                        res.put(Integer.parseInt(multiRun.group(1)), getResultList(obs, multiRun.group(2)));
+                    }
+                } catch (IllegalStateException e) {
+                    obs.exceptionThrown(new IllegalArgumentException("This is not a multirun"));
+                }
+            } else {
+                obs.exceptionThrown(new IllegalArgumentException("Your test does not include the expected result"));
+            }
+            return res;
+        }
+
+        /**
+         * @param obs
+         *            exception observer
+         * @param text
+         *            text to be matched
+         * @return result
+         */
+        public static List<Pair<String, String>> getResult(final ExceptionObserver obs, final String text) {
+            assert !text.isEmpty() : obs.exceptionThrown(new IllegalArgumentException("Empty result"));
+            List<Pair<String, String>> res = new LinkedList<>();
+            final Matcher outer = EXTRACT_RESULT.matcher(text);
+            if (outer.find()) {
+                final String result = outer.group(ML_NAME);
+                res = getResultList(obs, result);
+            } else {
+                obs.exceptionThrown(new IllegalArgumentException("Your test does not include the expected result"));
+            }
+            return res;
+        }
+
+        /**
+         * @param obs
+         *            exception observer
+         * @param text
+         *            text
+         * @return result list
+         */
+        public static List<Pair<String, String>> getResultList(final ExceptionObserver obs, final String text) {
+            assert !text.isEmpty() : obs.exceptionThrown(new IllegalArgumentException("Empty result"));
+            final List<Pair<String, String>> res = new LinkedList<>();
+            final Matcher inner = RESULT_PATTERN.matcher(text);
+            while (inner.find()) {
+                assert inner.group() != null : obs.exceptionThrown(new IllegalArgumentException("There is no result"));
+                res.add(Pair.of(inner.group(1), inner.group(2)));
+            }
+            return res;
+        }
+
+        private TestMatcher() {
+        }
     }
 
-    /**
-     * Run a test.
-     */
-    private static void generalTest(final String file, final int runs, final boolean multirun, final Object f)
-                    throws IOException {
-        final InputStream is = InfrastructureTester.class.getResourceAsStream("/" + file + ".yml");
-        final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
-        final YamlLoader loader = new YamlLoader(test);
-
-        if (!multirun) {
-            assertTrue(runs + " is an invalid number of runs", runs >= 0);
-            final Environment<Object> env = loader.getWith(null);
-            final List<Pair<String, String>> expectedResult = TestMatcher.getResult(test);
-            testSingleRun(runs, env, expectedResult, f);
-        } else {
-            final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(test);
-            for (final int r : expectedResult.keys()) {
-                final Environment<Object> env = loader.getWith(null);
-                L.debug("run {}", r);
-                testSingleRun(r, env, expectedResult.get(r), f);
+    @SuppressWarnings("unchecked")
+    private static void checkResult(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
+                    final List<Pair<String, String>> expectedResult, final Object f, final Environment<Object> env, final long step) {
+        if (step >= totalSimulationSteps - stabilitySteps) {
+            L.debug("---- ROUND - {}", step);
+            final Map<String, Object> simulationRes = new HashMap<>();
+            env.getNodes().forEach(n -> {
+                final ProtelisNode pNode = (ProtelisNode) n;
+                simulationRes.put(pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
+                L.debug("[node{}] res:{}", pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
+            });
+            if (f instanceof BiConsumer) {
+                ((BiConsumer<Map<String, Object>, List<Pair<String, String>>>) f).accept(simulationRes, expectedResult);
+            } else if (f instanceof Function) {
+                final int occ = expectedResult.size();
+                final int found = ((Function<Map<String, Object>, Integer>) f).apply(simulationRes);
+                assert occ == found 
+                                : obs.exceptionThrown(new IllegalArgumentException("Expected occurences [" + occ + "] != Occurences found [" + found + "]"));
+            } else {
+                obs.exceptionThrown(new IllegalArgumentException("How can I test without a proper function?"));
             }
         }
     }
 
     /**
-     * Run a simulation until the given number of runs.
-     * 
-     * @param runs
-     *            number of runs
-     * @param env
-     *            environment
-     * @param expectedResult
-     *            expected result
-     * @param f
-     *            testing function
+     * Run a test.
      */
-    @SuppressWarnings("unchecked")
-    private static void testSingleRun(final int runs, final Environment<Object> env,
-                    final List<Pair<String, String>> expectedResult, final Object f) {
-        final Simulation<Object> sim = new Engine<Object>(env, runs);
-        sim.addCommand(new StateCommand<>().run().build());
-        sim.run();
-        final Map<String, Object> simulationRes = new HashMap<>();
-        sim.getEnvironment().getNodes().forEach(n -> {
-            final ProtelisNode pNode = (ProtelisNode) n;
-            simulationRes.put(pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
-            L.debug("[node{}] res:{}", pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
-        });
-        if (f instanceof BiConsumer) {
-            ((BiConsumer<Map<String, Object>, List<Pair<String, String>>>) f).accept(simulationRes, expectedResult);
-        } else if (f instanceof Function) {
-            final int occ = Integer.parseInt(expectedResult.get(0).getRight());
-            final int found = ((Function<Map<String, Object>, Integer>) f).apply(simulationRes);
-            assertEquals("Expected occurences [" + occ + "] != Occurences found [" + found + "]", occ, found);
-        } else {
-            fail("How can I test without a proper function?");
+    private static void generalTest(final ExceptionObserver obs, final String file, final int simulationSteps, final int stabilitySteps,
+                    final boolean multirun, final Object f) {
+        final InputStream is = InfrastructureTester.class.getResourceAsStream("/" + file + ".yml");
+        String test;
+        try {
+            test = IOUtils.toString(is, StandardCharsets.UTF_8);
+            final YamlLoader loader = new YamlLoader(test);
+            if (!multirun) {
+                assert simulationSteps >= 0 : obs.exceptionThrown(new IllegalArgumentException(simulationSteps + " is an invalid number of runs"));
+                final Environment<Object> env = loader.getWith(null);
+                final List<Pair<String, String>> expectedResult = TestMatcher.getResult(obs, test);
+                testSingleRun(obs, simulationSteps, stabilitySteps, env, expectedResult, f);
+            } else {
+                final TIntObjectMap<List<Pair<String, String>>> expectedResult = TestMatcher.getMultiRunResult(obs, test);
+                for (final int r : expectedResult.keys()) {
+                    final Environment<Object> env = loader.getWith(null);
+                    L.debug("run {}", r);
+                    testSingleRun(obs, r, 0, env, expectedResult.get(r), f);
+                }
+            }
+        } catch (IOException e) {
+            obs.exceptionThrown(new IllegalArgumentException(e.getMessage()));
         }
-
-    }
-
-    /**
-     * Test the given file.
-     * 
-     * @param file
-     *            file to bested
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
-     */
-    public static void runTest(final String file) throws InterruptedException, IOException {
-        runTest(file, EXAMPLE_RUNS);
-    }
-
-    /**
-     * Test a given property.
-     * 
-     * @param file
-     *            file to bested
-     * @param expectedValue
-     *            value to be checked
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
-     */
-    public static void runTest(final String file, final Object expectedValue) throws InterruptedException, IOException {
-        runTest(file, EXAMPLE_RUNS, expectedValue);
-    }
-
-    /**
-     * Test a given property.
-     * 
-     * @param file
-     *            file to bested
-     * @param exampleRuns
-     *            number of runs
-     * @param expectedValue
-     *            value to be checked
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
-     */
-    public static void runTest(final String file, final int exampleRuns, final Object expectedValue)
-                    throws InterruptedException, IOException {
-        for (int i = exampleRuns; i < exampleRuns + STABILITY_CHECK; i += STEP) {
-            L.debug("Step: {}", i);
-            generalTest(file, i, false, new TestCount(expectedValue));
-        }
-    }
-
-    /**
-     * Test the given file.
-     * 
-     * @param file
-     *            file to bested
-     * @param exampleRuns
-     *            number of runs
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
-     */
-    public static void runTest(final String file, final int exampleRuns) throws InterruptedException, IOException {
-        for (int i = exampleRuns; i < exampleRuns + STABILITY_CHECK; i += STEP) {
-            L.debug("Step: {}", i);
-            generalTest(file, i, false, new TestEqual());
-        }
-    }
-
-    /**
-     * Test the given file.
-     * 
-     * @param file
-     *            file to bested
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
-     */
-    public static void multiRun(final String file) throws InterruptedException, IOException {
-        generalTest(file, -1, true, new TestEqual());
     }
 
     /**
@@ -218,162 +219,133 @@ public final class InfrastructureTester {
     public static void main(final String[] args) throws InterruptedException, IOException {
         final InputStream is = InfrastructureTester.class.getResourceAsStream(EXAMPLE);
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
-        TestMatcher.getResult(test);
+        final SimpleExceptionObserver obs = new SimpleExceptionObserver();
+        TestMatcher.getResult(obs, test);
+        assert obs.getExceptionList().isEmpty();
         L.info("Done.");
     }
 
-    private static class TestCount implements Function<Map<String, Object>, Integer> {
-        private final Object expectedValue;
-
-        /**
-         * 
-         * @param expectedValue
-         *            expected value
-         */
-        TestCount(final Object expectedValue) {
-            this.expectedValue = expectedValue;
-        }
-
-        @Override
-        public Integer apply(final Map<String, Object> simulationRes) {
-            final Long count = simulationRes.values().stream().filter(v -> v.equals(this.expectedValue)).count();
-            return count.intValue();
-        }
-    }
-
-    private static class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
-        private String getMessage(final Map<String, Object> simulationRes,
-                        final List<Pair<String, String>> expectedResult) {
-            String res = "[";
-            for (int i = 0; i < expectedResult.size(); i++) {
-                final Pair<String, String> pair = expectedResult.get(i);
-                res += "N" + pair.getLeft() + ": " + simulationRes.get(pair.getLeft())
-                                + (i < expectedResult.size() - 1 ? ", " : "");
-            }
-            return res + "]";
-        }
-
-        @Override
-        public void accept(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
-            assertEquals("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
-                            + simulationRes.values().size() + "]", expectedResult.size(),
-                            simulationRes.values().size());
-            for (final Pair<String, String> pair : expectedResult) {
-                if (!pair.getRight().equals(DC)) {
-                    final Object singleNodeResult = simulationRes.get(pair.getLeft());
-                    assertNotNull("Node" + pair.getLeft() + ": result can't be null!", singleNodeResult);
-                    final String err = "Simulation result:\n" + getMessage(simulationRes, expectedResult) + "\n[Node"
-                                    + pair.getLeft() + "]";
-                    if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
-                        final double tmp = singleNodeResult instanceof Integer
-                                        ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
-                        assertEquals(err, (double) Double.parseDouble(pair.getRight()), tmp, DELTA);
-                    } else if (singleNodeResult instanceof Boolean) {
-                        final String v = pair.getRight();
-                        assertEquals(err, (boolean) Boolean.parseBoolean(v.equals("T") ? "true"
-                                        : v.equals("F") ? "false" : pair.getRight()), (boolean) singleNodeResult);
-                    } else {
-                        assertEquals(err, pair.getRight(), singleNodeResult);
-                    }
-                }
-            }
-        }
+    /**
+     * Test the given file.
+     * 
+     * @param file
+     *            file to bested
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void multiRunTest(final String file) {
+        final ExceptionObserver obs = new SimpleExceptionObserver();
+        generalTest(obs, file, -1, -1, true, new TestEqual(obs));
     }
 
     /**
-     * Matching results.
+     * Test the given file.
+     * 
+     * @param file
+     *            file to bested
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
      */
-    public static final class TestMatcher {
-        private static final String ML_NAME = "multilineComment";
-        private static final String ML_RUN = "multirun";
-        private static final String EXPECTED = "result:";
-        private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
-        private static final Pattern EXTRACT_RESULT = Pattern.compile(
-                        ".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}", Pattern.DOTALL);
-        /*
-         * \s*\#?\r?\n?\s*([\d\w]+)\s+([\d\w\.]+)\s*,?\s*\r?\n?
-         */
-        private static final Pattern MULTI_RESULT_PATTERN = Pattern
-                        .compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?", Pattern.DOTALL);
-        private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
+    public static void runTest(final String file) {
+        runTest(file, SIMULATION_STEPS, STABILITY_STEPS);
+    }
 
-        private TestMatcher() {
-        }
+    /**
+     * Test the given file.
+     * 
+     * @param file
+     *            file to bested
+     * @param exampleRuns
+     *            number of runs
+     * @param stabilitySteps
+     *            check function stability for this number of steps
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void runTest(final String file, final int exampleRuns, final int stabilitySteps) {
+        final ExceptionObserver obs = new SimpleExceptionObserver();
+        generalTest(obs, file, exampleRuns, stabilitySteps, false, new TestEqual(obs));
+    }
 
-        static {
-            final InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
-            try {
-                final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
-                assertNotNull(getResult(test));
-            } catch (IOException e) {
-                fail(e.getMessage());
+    /**
+     * Test a given property.
+     * 
+     * @param file
+     *            file to bested
+     * @param simulationSteps
+     *            number of runs
+     * @param stabilitySteps
+     *            check function stability for this number of steps
+     * @param expectedValue
+     *            value to be checked
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void runTest(final String file, final int simulationSteps, final int stabilitySteps, final Object expectedValue) {
+        generalTest(new SimpleExceptionObserver(), file, simulationSteps, stabilitySteps, false, new TestCount(expectedValue));
+    }
+
+    /**
+     * Test a given property.
+     * 
+     * @param file
+     *            file to bested
+     * @param expectedValue
+     *            value to be checked
+     * @throws IOException
+     *             IOexception
+     * @throws InterruptedException
+     *             InterruptedException
+     */
+    public static void runTest(final String file, final Object expectedValue) throws InterruptedException, IOException {
+        runTest(file, SIMULATION_STEPS, STABILITY_STEPS, expectedValue);
+    }
+
+    /**
+     * Run a simulation until the given number of runs.
+     * 
+     * @param totalSimulationSteps
+     *            number of runs
+     * @param env
+     *            environment
+     * @param expectedResult
+     *            expected result
+     * @param f
+     *            testing function
+     */
+    private static void testSingleRun(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
+                    final Environment<Object> env, final List<Pair<String, String>> expectedResult, final Object f) {
+        final Simulation<Object> sim = new Engine<Object>(env, totalSimulationSteps + stabilitySteps);
+        sim.addOutputMonitor(new OutputMonitor<Object>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void finished(final Environment<Object> env, final Time time, final long step) {
             }
-        }
 
-        /**
-         * 
-         * @param text
-         *            text to be matched
-         * @return result
-         */
-        public static TIntObjectMap<List<Pair<String, String>>> getMultiRunResult(final String text) {
-            assertFalse("Empty result", text.isEmpty());
-            final TIntObjectMap<List<Pair<String, String>>> res = new TIntObjectHashMap<>();
-            final Matcher outer = EXTRACT_RESULT.matcher(text);
-            if (outer.find()) {
-                final String result = outer.group(ML_NAME);
-                final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
-                try {
-                    while (multiRun.find()) {
-                        L.debug("multiRun.group(): {}", multiRun.group());
-                        L.debug("multiRun.group(1): {}", multiRun.group(1));
-                        L.debug("multiRun.group(2): {}", multiRun.group(2));
-                        res.put(Integer.parseInt(multiRun.group(1)), getResultList(multiRun.group(2)));
-                    }
-                } catch (IllegalStateException e) {
-                    fail("This is not a multirun");
-                }
-            } else {
-                fail("Your test does not include the expected result");
+            @Override
+            public void initialized(final Environment<Object> env) {
             }
-            return res;
-        }
 
-        /**
-         * 
-         * @param text
-         *            text to be matched
-         * @return result
-         */
-        public static List<Pair<String, String>> getResult(final String text) {
-            assertFalse("Empty result", text.isEmpty());
-            List<Pair<String, String>> res = new LinkedList<>();
-            final Matcher outer = EXTRACT_RESULT.matcher(text);
-            if (outer.find()) {
-                final String result = outer.group(ML_NAME);
-                res = getResultList(result);
-            } else {
-                fail("Your test does not include the expected result");
+            @Override
+            public void stepDone(final Environment<Object> env, final Reaction<Object> r, final Time time, final long step) {
+                checkResult(obs, totalSimulationSteps + stabilitySteps, stabilitySteps, expectedResult, f, env, step);
             }
-            return res;
-        }
+        });
+        sim.addCommand(new StateCommand<>().run().build());
+        sim.run();
+        assert !obs.getFirstException().isPresent() : obs.getFirstException().get().getMessage();
+    }
 
-        /**
-         * 
-         * @param text
-         *            text
-         * @return result list
-         */
-        public static List<Pair<String, String>> getResultList(final String text) {
-            assertFalse("Empty result", text.isEmpty());
-            final List<Pair<String, String>> res = new LinkedList<>();
-            final Matcher inner = RESULT_PATTERN.matcher(text);
-            while (inner.find()) {
-                assertNotNull("There is no result", inner.group());
-                res.add(Pair.of(inner.group(1), inner.group(2)));
-            }
-            return res;
-        }
+    private InfrastructureTester() {
     }
 
 }

@@ -1,7 +1,5 @@
 package org.protelis.lang.test;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,31 +16,15 @@ public class TestApis {
     private static final Logger L = Logger.getLogger(TestApis.class);
 
     private static void test(final String file) {
-        test(file, InfrastructureTester.EXAMPLE_RUNS);
+        test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
     }
 
-    private static void test(final String file, final int runs) {
-        try {
-            InfrastructureTester.runTest(file, runs);
-        } catch (InterruptedException | IOException e) {
-            L.error(e.getMessage(), e);
-        }
+    private static void test(final String file, final int simulationSteps, final int stabilitySteps) {
+        InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
     }
-
-    // private static void test(final String file, final Object value) {
-    // try {
-    // InfrastructureTester.runTest(file, value);
-    // } catch (InterruptedException | IOException e) {
-    // L.error(e.getMessage(), e);
-    // }
-    // }
 
     private static void testMultirun(final String file) {
-        try {
-            InfrastructureTester.multiRun(file);
-        } catch (InterruptedException | IOException e) {
-            L.error(e.getMessage(), e);
-        }
+        InfrastructureTester.multiRunTest(file);
     }
 
     private static void testProgram(final String file) {
