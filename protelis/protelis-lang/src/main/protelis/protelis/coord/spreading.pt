@@ -139,10 +139,24 @@ public def broadcastWithMetric(source, value, metric) {
 
 /**
  * Dynamically computes distributed routes between regions of a network, and
- * dynamically adapts to shape and changes of the network topology. Examples
- * of its use include long-range reliable communications, or advanced crowd
- * steering applications in pervasive computing. The �channel� is a Boolean
- * field that is true for devices near the shortest route from a given
+ * dynamically adapts to shape and changes of the network topology. The channel 
+ * is a Boolean field that is true for devices near the shortest route from a given
+ * (distributed) source to a (distributed) destination.
+ *
+ * @param source   bool, whether the device is a source
+ * @param dest     bool, whether the device is a destination
+ * @param thr      num, threshold for Double comparison (e.g. 0.01)
+ * @param width    num, how much to dilate the channel
+ * @return         bool, true if the device is on the shortest path, false otherwise
+ */
+public def channel(source, dest, thr, width) {
+    channelWithObstacle(source, dest, false, thr, width)
+}
+
+/**
+ * Dynamically computes distributed routes between regions of a network, and
+ * dynamically adapts to shape and changes of the network topology. The channel 
+ * is a Boolean field that is true for devices near the shortest route from a given
  * (distributed) source to a (distributed) destination.
  *
  * @param source   bool, whether the device is a source
@@ -152,14 +166,27 @@ public def broadcastWithMetric(source, value, metric) {
  * @param width    num, how much to dilate the channel
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
-public def channel(source, dest, obstacle, thr, width) {
-      boundSpreading(!obstacle, () -> {
-          let d = distanceBetween(source, dest);
-          if (d == Infinity) { false }
-          else {
-              distanceTo(distanceTo(source) + distanceTo(dest) <=  d + thr) <= width
-          }
-      }, false)
+public def channelWithObstacle(source, dest, obstacle, thr, width) {
+    boundSpreading(!obstacle, () -> {
+        let d = distanceBetween(source, dest);
+        if (d == Infinity) {
+            false
+        } else {
+            distanceTo(distanceTo(source) + distanceTo(dest) <=  d + thr) <= width
+        }
+    }, false)
+}
+
+/**
+ * Channel pattern.
+ *
+ * @param source   bool, whether the device is a source
+ * @param dest     bool, whether the device is a destination
+ * @param width    num, how much to dilate the channel
+ * @return         bool, true if the device is on the shortest path, false otherwise
+ */
+public def channel2(source, destination, width) {
+      channel2WithObstacle(source, destination, false, width)
 }
 
 /**
@@ -171,7 +198,7 @@ public def channel(source, dest, obstacle, thr, width) {
  * @param width    num, how much to dilate the channel
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
-public def channel2(source, destination, obstacle, width) {
+public def channel2WithObstacle(source, destination, obstacle, width) {
       boundSpreading(!obstacle, () -> {
           distanceTo(shortestPath(source, destination)) <= width
       }, false)
@@ -201,7 +228,7 @@ public def closerThanWithMetric(source, metric, range) {
  * Requires euclidean metric. The CRF-Gradient algorithm handles this problem
  * by splitting the calculation into constraint and restoring force behaviors.
  * When constraint is dominant, the value of a device gx(t) stays fixed or
- * decreases, set by the triangle inequality from its neighbors� values.  When
+ * decreases, set by the triangle inequality from its neighbors values.  When
  * restoring force is dominant, gx(t) rises at a fixed velocity v0.
  *
  * @param source bool,  whether the device is a source
@@ -524,7 +551,7 @@ public def rendezvous(source, dest) {
 
 /**
  * Dynamically computes the shortest route between regions of a network, and
- * dynamically adapts to shape and changes of the network topology. The �shortest path�
+ * dynamically adapts to shape and changes of the network topology. The shortest path
  * is a Boolean field that is true for devices near the shortest route from a given
  * (distributed) source to a (distributed) destination.
  *
