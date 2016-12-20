@@ -511,7 +511,7 @@ public def summarize(sink, reduce, local, null) {
  * @return       T, aggregated value
  */
 public def summarizeWithMetric(sink, metric, accumulate, local, null) {
-    broadcast(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null))
+    broadcastWithMetric(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null), metric)
 }
 
 /**
