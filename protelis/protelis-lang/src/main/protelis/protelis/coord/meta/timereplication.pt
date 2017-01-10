@@ -4,6 +4,7 @@ import org.apache.commons.math3.util.FastMath.pow
 import org.apache.commons.math3.util.FastMath.floor
 import org.apache.commons.math3.util.FastMath.min
 import protelis:coord:sharedtimer
+import protelis:coord:spreading
 
 /*
  * This function should return false if the clock is out of date
@@ -82,6 +83,5 @@ public def timeReplicated(process, default, p, k) {
  * @return        T, execute the newest function or default
  */
 public def timeReplicatedWithK(process, default, d, k) {
-    let p = (4 * d * self.getDeltaTime()) / (k - 1);
-    timeReplicated(process, default, p, k)
+    timeReplicated(process, default, roundTripTime(d)/(k-1), k)
 }
