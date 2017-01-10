@@ -13,7 +13,7 @@ import org.protelis.test.observer.ExceptionObserver;
  */
 public class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
     private final ExceptionObserver obs;
-    private final String errorTemplate = "\n --- Simulation result\n --- %s\n[N%s] expected: %s, found: %s";
+    private static final String ERROR_TEMPLATE = "\n --- Simulation result\n --- %s\n[N%s] expected: %s, found: %s";
     /**
      * @param obs
      *            exception observer
@@ -35,18 +35,18 @@ public class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<Stri
                         final Double tmp = singleNodeResult instanceof Integer ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
                         assert Math.abs(Double.parseDouble(pair.getRight()) - tmp) < InfrastructureTester.DELTA
                                         || Double.parseDouble(pair.getRight()) == tmp.doubleValue() 
-                                        : obs.exceptionThrown(new IllegalStateException(String.format(errorTemplate, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                                        : obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
                     } else if (singleNodeResult instanceof Boolean) {
                         final String v = pair.getRight();
                         final Boolean expected = Boolean.parseBoolean(v.equals("T") ? "true" : v.equals("F") ? "false" : pair.getRight());
                         assert expected.booleanValue() == ((Boolean) singleNodeResult).booleanValue() 
-                                        : obs.exceptionThrown(new IllegalStateException(String.format(errorTemplate, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                                        : obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
                     } else {
                         assert pair.getRight().equals(singleNodeResult) 
-                                    : obs.exceptionThrown(new IllegalStateException(String.format(errorTemplate, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                                    : obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
                     }
                 } catch (Exception e) {
-                    obs.exceptionThrown(new IllegalStateException(String.format(errorTemplate, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                    obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
                 }
             }
         }
