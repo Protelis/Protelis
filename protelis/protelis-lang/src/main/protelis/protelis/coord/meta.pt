@@ -1,7 +1,94 @@
 module protelis:coord:meta
-import protelis:lang:utils
 import protelis:coord:accumulation
+import protelis:coord:meta:timereplication
 import protelis:coord:spreading
+import protelis:lang:utils
+
+/**
+ * Constrain the spreading of f only across a region.
+ *
+ * @param region bool, whether the function is spreaded or not
+ * @param f      () -> T,  function to be spreaded
+ * @param null   T, default value where f is not spreaded
+ * @return       T, apply f inside the region, null outside
+ */
+public def boundSpreading(region, f, null) {
+    if (region) {
+        f.apply()
+    } else {
+        null
+    }
+}
+
+/**
+ * Constrain the spreading of f only within devices close to the source.
+ *
+ * @param range () -> bool, how to determine the range
+ * @param f     () -> T, function to be spreaded
+ * @param null  T, default value where f is not spreaded
+ * @return      T, apply f inside the region, null outside
+ */
+public def boundSpreadingWithRange(range, f, null) {
+    boundSpreading(range.apply(), f, null);
+}
+
+/*
+ * Gossip active sources.
+ * 
+ * @param source bool, whether the device is a source
+ * @param d      num, network diameter
+ * @param k      num, time replicated replicas
+ * @return       [deviceUID], list of sources' ids
+ */
+public def findSources(source, d, k) {
+    findSourcesWithId(source, getUID(), d, k);
+}
+
+/*
+ * Gossip active sources.
+ * 
+ * @param source bool, whether the device is a source
+ * @param id     T, source identifier
+ * @param d      num, network diameter
+ * @param k      num, time replicated replicas
+ * @return       [T], list of sources' ids
+ */
+public def findSourcesWithId(source, id, d, k) {
+    timeReplicatedWithK(
+        () -> {
+            rep(v <- []) {
+                v.union(unionHood(nbr(v)))
+                    .union(
+                        if (source) {
+                            [id]
+                        } else {
+                            []
+                        }
+                    )
+            }
+        },
+        [id],
+        d,
+        k
+    )
+}
+
+/**
+ * Run an instance of a function for every source id.
+ * 
+ * @param sources [T], sources in the system
+ * @param f       (T) -> T', function to be applied for every source
+ * @param null    T', default value
+ * @return        [T'], list of results coming from the executed instances
+ */
+public def multiInstance(sources, f, null) {
+    alignedMap(
+        nbr(sources.map(self, id -> {[id, null]})),
+        (key, field) -> { true },
+        (key, field) -> { f.apply(key) },
+        null
+    )
+}
 
 /**
  * Splice devices into regions according to the discriminant and apply f.
@@ -12,7 +99,7 @@ import protelis:coord:spreading
  * @param default      T', default value
  * @return             T', apply f or default
  */
-public def computeMultiRegion(discriminant, filter, function, default) {
+public def multiRegion(discriminant, filter, function, default) {
     if (filter.apply(discriminant)) {
         let res = alignedMap(
             nbr([[discriminant, default]]),
@@ -22,6 +109,18 @@ public def computeMultiRegion(discriminant, filter, function, default) {
         );
         if (res == []) { default } else { res.get(0).get(1) }
     } else { default }
+}
+
+/**
+ * Feed f with pre-processed data.
+ *
+ * @param input G, input
+ * @param pre  (G) -> H, how to pre-process
+ * @param f    (H) -> I, what to do
+ * @return      I, f(pre(input))
+ */
+public def preProcessAndApply(input, pre, f) {
+    f.apply(pre.apply(input))
 }
 
 /**
@@ -35,18 +134,6 @@ public def computeMultiRegion(discriminant, filter, function, default) {
  */
 public def processAndApply(input, pre, f, post) {
     post.apply(f.apply(pre.apply(input)))
-}
-
-/**
- * Feed f with pre-processed data.
- *
- * @param input G, input
- * @param pre  (G) -> H, how to pre-process
- * @param f    (H) -> I, what to do
- * @return      I, f(pre(input))
- */
-public def preProcessAndApply(input, pre, f) {
-    f.apply(pre.apply(input))
 }
 
 /**

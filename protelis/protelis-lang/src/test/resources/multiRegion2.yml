@@ -12,8 +12,8 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: computeMultiRegion2
-              
+    program: multiRegion2
+
 displacements:
   - in:
       type: Grid
