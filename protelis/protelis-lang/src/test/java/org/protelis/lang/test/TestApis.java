@@ -42,6 +42,14 @@ public class TestApis {
     };
 
     /**
+     * Test aggregation.pt.
+     */
+    @Test
+    public void testAggregation() {
+        test("aggregation");
+    }
+
+    /**
      * Test addRange.pt.
      */
     @Test
@@ -274,43 +282,43 @@ public class TestApis {
     }
 
     /**
-     * Test computeMultiRegion.pt.
+     * Test multiRegion.pt.
      */
     @Test
-    public void testComputeMultiRegion() {
-        test("computeMultiRegion");
+    public void testMultiRegion() {
+        test("multiRegion");
     }
 
     /**
-     * Test computeMultiRegion2.pt.
+     * Test multiRegion2.pt.
      */
     @Test
-    public void testComputeMultiRegion2() {
-        test("computeMultiRegion2");
+    public void testMultiRegion2() {
+        test("multiRegion2");
     }
 
     /**
      * Test computeMultiRegion3.pt.
      */
     @Test
-    public void testComputeMultiRegion3() {
-        test("computeMultiRegion3");
+    public void testMultiRegion3() {
+        test("multiRegion3");
     }
 
     /**
-     * Test countDevice.pt.
+     * Test countDevices.pt.
      */
     @Test
-    public void testCountDevice() {
-        test("countDevice");
+    public void testCountDevices() {
+        test("countDevices");
     }
 
     /**
-     * Test countDeviceInRegion.pt.
+     * Test countDevicesInRegion.pt.
      */
     @Test
-    public void testCountDeviceInRegion() {
-        test("countDeviceInRegion");
+    public void testCountDevicesInRegion() {
+        test("countDevicesInRegion");
     }
 
     /**
@@ -601,6 +609,30 @@ public class TestApis {
     }
 
     /**
+     * Test gradient.pt.
+     */
+    @Test
+    public void testGradient() {
+        test("gradient");
+    }
+
+    /**
+     * Test multiG.pt.
+     */
+    @Test
+    public void testMultiG() {
+        test("multiG");
+    }
+
+    /**
+     * Test multiGradient.pt.
+     */
+    @Test
+    public void testMultiGradient() {
+        test("multiGradient");
+    }
+
+    /**
      * Test greatestLowerBound.pt.
      */
     @Test
@@ -801,11 +833,11 @@ public class TestApis {
     }
 
     /**
-     * Test quorumSensingExtended.pt.
+     * Test quorumSensingWithCondition.pt.
      */
     @Test
-    public void testQuorumSensingExtended() {
-        test("quorumSensingExtended");
+    public void testQuorumSensingWithCondition() {
+        test("quorumSensingWithCondition");
     }
 
     /**
