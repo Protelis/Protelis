@@ -1,7 +1,19 @@
 module protelis:coord:accumulation
+import protelis:coord:meta
 import protelis:coord:spreading
-import protelis:state:time
 import protelis:lang:utils
+import protelis:state:time
+
+/**
+ * Aggregation of local information.
+ * 
+ * @param local  T, local information
+ * @param reduce (T, T) -> T, how to aggregate information
+ * @param        T, aggregated information
+ */
+public def aggregation(local, reduce) {
+    hood((a, b) -> { reduce.apply(a, b) }, local, nbr(local))
+}
 
 /**
  * Estimate and broadcast the average value within a spatial region.
@@ -157,16 +169,15 @@ public def consensus(init, f) {
 }
 
 /**
- * Count the devices with a given condition.
- * 
- * @param potential num, gradient of which gives aggregation direction
- * @param condition bool, discriminant
- * @return          num, number of devices
+ * Gossip a value manipulated according to f.
+ *
+ * @param sink  bool, whether the device is the root of the spanning tree
+ * @param value T, what to gossip
+ * @param f     (T, T) -> T, how to manipulate value
+ * @return      T, the value resulting from gossip
  */
-public def countDeviceWithCondition(potential, condition) {
-    summarizeWithPotential(potential, 0, sum, if (condition) { 1 } else { 0 }, 0)
-// broadcast(potential == 0, cMultiSum(potential, if (condition) { 1 } else { 0 }))
-// FAIL!!
+public def cossip(sink, value, f) {
+    summarize(sink, f, value, value)
 }
 
 /**
@@ -175,8 +186,8 @@ public def countDeviceWithCondition(potential, condition) {
  * @param potential num, gradient of which gives aggregation direction
  * @return          num, number of devices
  */
-public def countDevice(potential) {
-    countDeviceWithCondition(potential, true)
+public def countDevices(potential) {
+    countDevicesWithCondition(potential, true)
 }
 
 /**
@@ -187,8 +198,19 @@ public def countDevice(potential) {
  * @param region    bool, region discriminant
  * @return          num, number of devices
  */
-public def countDeviceInRegion(potential, condition, region) {
-    boundSpreading(region, () -> { countDeviceWithCondition(potential, condition) }, 0)
+public def countDevicesInRegion(potential, condition, region) {
+    boundSpreading(region, () -> { countDevicesWithCondition(potential, condition) }, 0)
+}
+
+/**
+ * Count the devices with a given condition.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param condition bool, discriminant
+ * @return          num, number of devices
+ */
+public def countDevicesWithCondition(potential, condition) {
+    C(potential, sum, if (condition) { 1 } else { 0 }, 0)
 }
 
 /**
@@ -536,26 +558,27 @@ public def summarizeWithPotential(potential, zero, accumulate, local, null) {
  * Quorum sensing.
  * 
  * @param potential num, gradient of which gives aggregation direction
+ * @param thr       num, threshold
  * @param under     (num) -> T, what to do if quorum is under threshold
  * @param over      (num) -> T, what to do otherwise
- * @param thr       num, threshold
  * @return          T
  */
-public def quorumSensing(potential, under, over, thr) {
-    quorumSensingExtended(potential, under, over, thr, true, true)
+public def quorumSensing(potential, zero, thr, under, over) {
+    quorumSensingWithCondition(potential, zero, thr, true, under, over)
 }
 
 /**
  * Quorum sensing.
  * 
  * @param potential num, gradient of which gives aggregation direction
+ * @param thr       num, threshold
+ * @param condition bool, whether to count a device or not
  * @param under     (num) -> T, what to do if quorum is under threshold
  * @param over      (num) -> T, what to do otherwise
- * @param thr       num, threshold
  * @return          T
  */
-public def quorumSensingExtended(potential, under, over, thr, condition, region) {
-    let c = countDeviceInRegion(potential, condition, region);
+public def quorumSensingWithCondition(potential, zero, thr, condition, under, over) {
+    let c = broadcast(potential == zero, countDevicesWithCondition(potential, condition));
     if (c < thr) {
         under.apply(c)
     } else {
