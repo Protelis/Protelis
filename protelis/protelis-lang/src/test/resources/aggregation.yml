@@ -1,0 +1,24 @@
+# result:
+#  {0 2.0, 1 3.0,  2 3.0,  3 2.0,
+#   4 3.0, 5 4.0,  6 4.0,  7 3.0,
+#   8 2.0, 9 3.0, 10 3.0, 11 2.0}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.2]
+
+program: &program
+  - time-distribution: 1
+    program: aggregation
+
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
+    contents:
+      - molecule: n
+        concentration: 1
+    programs:
+      - *program
