@@ -1,5 +1,6 @@
 module protelis:coord:spreading
 import org.apache.commons.math3.util.FastMath.floor
+import protelis:coord:meta
 import protelis:lang:utils
 import protelis:state:time
 
@@ -86,34 +87,6 @@ public def boundDistanceTo(region, source) {
     boundSpreading(region, () -> { distanceTo(source) }, Infinity)
 }
 
-/**
- * Constrain the spreading of f only across a region.
- *
- * @param region bool, whether the function is spreaded or not
- * @param f      () -> T,  function to be spreaded
- * @param null   T, default value where f is not spreaded
- * @return       T, apply f inside the region, null outside
- */
-public def boundSpreading(region, f, null) {
-    if (region) {
-        f.apply()
-    } else {
-        null
-    }
-}
-
-/**
- * Constrain the spreading of f only within devices close to the source.
- *
- * @param range () -> bool, how to determine the range
- * @param f     () -> T, function to be spreaded
- * @param null  T, default value where f is not spreaded
- * @return      T, apply f inside the region, null outside
- */
-public def boundSpreadingWithRange(range, f, null) {
-    boundSpreading(range.apply(), f, null);
-}
-
 /*
  * Broadcast value across a spanning tree starting from the source.
  *
@@ -146,11 +119,10 @@ public def broadcastWithMetric(source, value, metric) {
  * @param source   bool, whether the device is a source
  * @param dest     bool, whether the device is a destination
  * @param thr      num, threshold for Double comparison (e.g. 0.01)
- * @param width    num, how much to dilate the channel
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
-public def channel(source, dest, thr, width) {
-    channelWithObstacle(source, dest, false, thr, width)
+public def channel(source, dest, thr) {
+    distanceTo(source) + distanceTo(dest) <=  distanceBetween(source, dest) + thr
 }
 
 /**
@@ -163,18 +135,10 @@ public def channel(source, dest, thr, width) {
  * @param dest     bool, whether the device is a destination
  * @param obstacle bool, whether the device is an obstacle
  * @param thr      num, threshold for Double comparison (e.g. 0.01)
- * @param width    num, how much to dilate the channel
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
-public def channelWithObstacle(source, dest, obstacle, thr, width) {
-    boundSpreading(!obstacle, () -> {
-        let d = distanceBetween(source, dest);
-        if (d == Infinity) {
-            false
-        } else {
-            distanceTo(distanceTo(source) + distanceTo(dest) <=  d + thr) <= width
-        }
-    }, false)
+public def channelWithObstacle(source, dest, obstacle, thr) {
+    boundSpreading(!obstacle, () -> { channel(source, dest, thr) }, false)
 }
 
 /**
@@ -186,7 +150,7 @@ public def channelWithObstacle(source, dest, obstacle, thr, width) {
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
 public def channel2(source, destination, width) {
-      channel2WithObstacle(source, destination, false, width)
+    channel2WithObstacle(source, destination, false, width)
 }
 
 /**
@@ -259,7 +223,7 @@ public def crfGradientWithMetric(source, metric, maxHop) {
         } else {
             let d = nbr(potential).get(0);
             let dt = self.getDeltaTime();
-            mux (anyHood(addRangeWithLag(d, metric, potential.get(1)) < potential.get(0))) {
+            mux (anyHood(addRangeWithLag(d, metric, potential.get(1)) <= potential.get(0))) {
                 minHood([d + metric.apply(), 0])
             } else {
                 let v0 = if (dt == 0) { maxHop } else { maxHop / (dt * 12) };
@@ -359,6 +323,16 @@ public def distanceTo(source) {
  */
 public def distanceToWithMetric(source, metric) {
     G(source, 0, metric, (v) -> { v + metric.apply() })
+}
+
+/**
+ * Estimate worst propagation time considering a message round trip.
+ * 
+ * @param d num, network diameter
+ * @param k num, number of replicas. Must be greater than 1.
+ */
+public def roundTripTime(d) {
+    4 * d * self.getDeltaTime()
 }
 
 /**
@@ -478,12 +452,65 @@ public def gradcast(source, gradient, local, accumulate) {
 }
 
 /**
+ * Spread and extend information with distance from the source region.
+ * 
+ * @param source     bool, whether the current device is a source
+ * @param init       T, initial value of the computation
+ * @param metric     () -> num, estimate distance from other devices
+ * @param accumulate (T) -> T, how to accumulate the value
+ * @return           [num, T], distance value and accumulated value
+ */
+public def gradient(source, init, metric, accumulate) {
+    G(source, [0, init], metric,
+        v -> {
+            let x = Gnull(v, [Infinity, init]);
+            [ addRangeWithMetric(x.get(0), metric), accumulate.apply(x.get(1)) ]
+        }
+    )
+}
+
+/**
+ * Run an instance of G from every source.
+ * 
+ * @param sources    [deviceUID], list of active sources
+ * @param init       T, initial value of the computation
+ * @param metric     () -> num, estimate distance from other devices
+ * @param accumulate (T) -> T, how to accumulate the value
+ * @return           [[deviceUID, T]], list of information from multiple sources
+ */
+public def multiG(sources, init, metric, accumulate) {
+    multiInstance(
+        sources,
+        id -> { G(id == getUID(), init, metric, accumulate) },
+        init
+    )
+}
+
+/**
+ * Spread and extend information with distance from multiple source regions.
+ * 
+ * @param sources    [deviceUID], list of active sources
+ * @param init       T, initial value of the computation
+ * @param metric     () -> num, estimate distance from other devices
+ * @param accumulate (T) -> T, how to accumulate the value
+ * @return           [[deviceUID, [num, T]]], list of information from multiple
+ *                   gradients
+ */
+public def multiGradient(sources, init, metric, accumulate) {
+    multiInstance(
+        sources,
+        id -> { gradient(id == getUID(), init, metric, accumulate) },
+        [Infinity, init]
+    )
+}
+
+/**
  * Count the number of neighbors.
  *
  * @return num, number of neighbors
  */
 public def neighborhood() {
-     sumHood(nbr(1))
+    sumHood(nbr(1))
 }
 
 /**

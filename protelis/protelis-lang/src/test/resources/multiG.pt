@@ -1,0 +1,15 @@
+import protelis:coord:spreading
+import protelis:lang:utils
+def null() { ["nullId", 0] }
+let res = 
+    multiG(["0", "11"], 1, nbrRange, identity)
+        .reduce(
+            self,
+            null(),
+            (a, b) -> {
+                let x = if (a.get(1) == Infinity) { null() } else { a };
+                let y = if (b.get(1) == Infinity) { null() } else { b };
+                ["nullId", x.get(1) + y.get(1)]
+            }
+        );
+res.get(1)
