@@ -126,15 +126,15 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  * @return             T, reduced value
  */
 public def hoodWstateful(local, aggregator, default, fieldBuilder) {
-     rep (v <- local) {
-         aggregator.apply(local,
-             hood(
-                 (a, b) -> { aggregator.apply(a, b) },
-                 default,
-                 fieldBuilder.apply(v)
-             )
-         )
-     }
+    rep (v <- local) {
+        aggregator.apply(local,
+            hood(
+                (a, b) -> { aggregator.apply(a, b) },
+                default,
+                fieldBuilder.apply(v)
+            )
+        )
+    }
 }
 
 /**
@@ -206,6 +206,13 @@ public def min(a, b) {
     } else {
         b
     }
+}
+
+/**
+ * @return node's UID
+ */
+public def getUID() {
+    self.getDeviceUID().toString()
 }
 
 /**
