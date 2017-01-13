@@ -23,7 +23,12 @@ public def aggregation(local, reduce) {
  * @return      num,  average value
  */
 public def average(sink, value) {
-    summarize(sink, sum, value, 0) / neighborhood()
+    summarizeWithPotentialExt(
+        distanceTo(sink), 0, sum,
+        (a) -> { a.get(0) / a.get(1) },
+        [value, 1],
+        [value, 1]
+    )
 }
 
 /**
@@ -547,9 +552,13 @@ public def summarizeWithMetric(sink, metric, accumulate, local, null) {
  * @return          T, aggregated value
  */
 public def summarizeWithPotential(potential, zero, accumulate, local, null) {
+    summarizeWithPotentialExt(potential, zero, accumulate, identity, local, null)
+}
+
+public def summarizeWithPotentialExt(potential, zero, accumulate, f, local, null) {
     broadcastWithMetric(
         potential == zero,
-        C(potential, accumulate, local, null),
+        f.apply(C(potential, accumulate, local, null)),
         () -> { potential }
     )
 }
