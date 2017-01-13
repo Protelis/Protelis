@@ -11,7 +11,7 @@ import protelis:lang:utils
  * @return      num,  average value
  */
 public def average(sink, value) {
-    summarize(sink, sum, value, 0) / summarize(sink, sum, 1, 0)
+    summarize(sink, sum, value, 0) / countDevices()
 }
 
 /**
@@ -154,6 +154,13 @@ public def consensus(init, f) {
          // val + f.apply(sumHood PlusSelf(nbr(val) - val))
          val + f.apply(sumHood(nbr(val) - val))
      }
+}
+
+/**
+ * Estimate and broadcast the number of devices within a spatial region.
+ */
+public def countDevices() {
+    summarize(sink, sum, 1, 0)
 }
 
 /**
