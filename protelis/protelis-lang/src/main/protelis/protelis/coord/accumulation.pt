@@ -11,7 +11,7 @@ import protelis:lang:utils
  * @return      num,  average value
  */
 public def average(sink, value) {
-    summarize(sink, sum, value, 0) / neighborhood()
+    summarize(sink, sum, value, 0) / summarize(sink, sum, 1, 0)
 }
 
 /**
