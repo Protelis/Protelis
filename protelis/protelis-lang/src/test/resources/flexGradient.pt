@@ -1,4 +1,5 @@
 import protelis:coord:spreading
 import protelis:lang:utils
-
-flexGradient(env.has("source"), 0.1, 10, 1, 0.1, nbrRange)
+import protelis:state:nonselfstabilizing:time
+let source = env.has("source") || getUID() == "5" && timeSinceStart() <= 10;
+flexGradient(source, 0.1, 10, 1, 0.1, nbrRange)

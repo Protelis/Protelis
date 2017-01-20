@@ -1,5 +1,6 @@
 module protelis:state:nonselfstabilizing:time
 import protelis:state:time
+
 /**
  * @param event bool, event
  * @return      bool, true if the event is always verified
@@ -46,61 +47,22 @@ public def countTrue(event) {
 }
 
 /**
- * Flip two values at each round. Return b at first.
- *
- * @param a T, first value
- * @param b T, second value
- * @return  T, (ba)+ sequence of values
- */
-public def flip(a, b) {
-    rep (c <- a) {
-        (a + b) - c
-    }
-}
-
-/**
- * Time flow.
- *
- * @return num, time since the first tick
- */
-public def timeSinceStart() {
-    counter(0, self.getDeltaTime())
-}
-
-/**
- * @param timeout num, timeout
- * @param event   bool, event
- * @return        bool, true if the event occurred within last time period
- */
-public def trueDuringLast(timeout, event) {
-    if (event) {
-        true
-    } else {
-        timeSinceStart() <= timeout
-    }
-}
-
-/**
  * @param timeout num, timeout
  * @param event   bool, event
  * @return        bool, true if the event did not occurred within last time period
  */
 public def falseDuringLast(timeout, event) {
-    trueDuringLast(timeout, !event)
+    falseDuringLastWithDt(timeout, event, self.getDeltaTime())
 }
-
 
 /**
  * @param timeout num, timeout
  * @param event   bool, event
- * @return        bool, true if a true condition has persisted for time
+ * @param dt      num, dt
+ * @return        bool, true if the event did not occurred within last time period
  */
-public def trueFor(time, event) {
-    if (event) {
-        timeSinceStart() >= time
-    } else {
-        false
-    }
+public def falseDuringLastWithDt(timeout, event, dt) {
+    trueDuringLastWithDt(timeout, !event, dt)
 }
 
 /**
@@ -109,7 +71,76 @@ public def trueFor(time, event) {
  * @return        bool, true if a false condition has persisted for time
  */
 public def falseFor(time, event) {
-    trueFor(time, !event)
+    falseForWithDt(time, event, self.getDeltaTime())
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @param dt      num, dt
+ * @return        bool, true if a false condition has persisted for time
+ */
+public def falseForWithDt(time, event, dt) {
+    trueForWithDt(time, !event, dt)
+}
+
+/**
+ * Flip two values at each round. Return b at first.
+ *
+ * @param a num, first value
+ * @param b num, second value
+ * @return  num, (ba)+ sequence of values
+ */
+public def flip(a, b) {
+    rep (c <- a) {
+        (a + b) - c
+    }
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @return        bool, true if the event occurred within last time period
+ */
+public def trueDuringLast(timeout, event) {
+    trueDuringLastWithDt(timeout, event, self.getDeltaTime())
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @param dt      num, dt
+ * @return        bool, true if the event occurred within last time period
+ */
+public def trueDuringLastWithDt(timeout, event, dt) {
+    if (event) {
+        true
+    } else {
+        timeSinceStartWithDt(dt) <= timeout
+    }
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @return        bool, true if a true condition has persisted for time
+ */
+public def trueFor(time, event) {
+    trueForWithDt(time, event, self.getDeltaTime())
+}
+
+/**
+ * @param timeout num, timeout
+ * @param event   bool, event
+ * @param dt      num, dt
+ * @return        bool, true if a true condition has persisted for time
+ */
+public def trueForWithDt(time, event, dt) {
+    if (event) {
+        timeSinceStartWithDt(dt) >= time
+    } else {
+        false
+    }
 }
 
 /**
@@ -154,4 +185,22 @@ public def sequenceIfAll(f, condition, g) {
     sequence(f, (ev) -> {
         allHood(nbr(condition)) && condition
     }, g)
+}
+
+/**
+ * Time flow.
+ *
+ * @return num, time since start
+ */
+public def timeSinceStart() {
+    timeSinceStartWithDt(self.getDeltaTime())
+}
+
+/**
+ * Time flow.
+ * @param dt num, increase the counter of dt
+ * @return   num, time since start
+ */
+public def timeSinceStartWithDt(dt) {
+    counter(0, dt)
 }

@@ -1,5 +1,6 @@
 module protelis:coord:spreading
 import org.apache.commons.math3.util.FastMath.floor
+import protelis:coord:meta
 import protelis:lang:utils
 import protelis:state:time
 
@@ -86,34 +87,6 @@ public def boundDistanceTo(region, source) {
     boundSpreading(region, () -> { distanceTo(source) }, Infinity)
 }
 
-/**
- * Constrain the spreading of f only across a region.
- *
- * @param region bool, whether the function is spreaded or not
- * @param f      () -> T,  function to be spreaded
- * @param null   T, default value where f is not spreaded
- * @return       T, apply f inside the region, null outside
- */
-public def boundSpreading(region, f, null) {
-    if (region) {
-        f.apply()
-    } else {
-        null
-    }
-}
-
-/**
- * Constrain the spreading of f only within devices close to the source.
- *
- * @param range () -> bool, how to determine the range
- * @param f     () -> T, function to be spreaded
- * @param null  T, default value where f is not spreaded
- * @return      T, apply f inside the region, null outside
- */
-public def boundSpreadingWithRange(range, f, null) {
-    boundSpreading(range.apply(), f, null);
-}
-
 /*
  * Broadcast value across a spanning tree starting from the source.
  *
@@ -139,27 +112,45 @@ public def broadcastWithMetric(source, value, metric) {
 
 /**
  * Dynamically computes distributed routes between regions of a network, and
- * dynamically adapts to shape and changes of the network topology. Examples
- * of its use include long-range reliable communications, or advanced crowd
- * steering applications in pervasive computing. The �channel� is a Boolean
- * field that is true for devices near the shortest route from a given
+ * dynamically adapts to shape and changes of the network topology. The channel 
+ * is a Boolean field that is true for devices near the shortest route from a given
+ * (distributed) source to a (distributed) destination.
+ *
+ * @param source   bool, whether the device is a source
+ * @param dest     bool, whether the device is a destination
+ * @param thr      num, threshold for Double comparison (e.g. 0.01)
+ * @return         bool, true if the device is on the shortest path, false otherwise
+ */
+public def channel(source, dest, thr) {
+    distanceTo(source) + distanceTo(dest) <=  distanceBetween(source, dest) + thr
+}
+
+/**
+ * Dynamically computes distributed routes between regions of a network, and
+ * dynamically adapts to shape and changes of the network topology. The channel 
+ * is a Boolean field that is true for devices near the shortest route from a given
  * (distributed) source to a (distributed) destination.
  *
  * @param source   bool, whether the device is a source
  * @param dest     bool, whether the device is a destination
  * @param obstacle bool, whether the device is an obstacle
  * @param thr      num, threshold for Double comparison (e.g. 0.01)
+ * @return         bool, true if the device is on the shortest path, false otherwise
+ */
+public def channelWithObstacle(source, dest, obstacle, thr) {
+    boundSpreading(!obstacle, () -> { channel(source, dest, thr) }, false)
+}
+
+/**
+ * Channel pattern.
+ *
+ * @param source   bool, whether the device is a source
+ * @param dest     bool, whether the device is a destination
  * @param width    num, how much to dilate the channel
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
-public def channel(source, dest, obstacle, thr, width) {
-      boundSpreading(!obstacle, () -> {
-          let d = distanceBetween(source, dest);
-          if (d == Infinity) { false }
-          else {
-              distanceTo(distanceTo(source) + distanceTo(dest) <=  d + thr) <= width
-          }
-      }, false)
+public def channel2(source, destination, width) {
+    channel2WithObstacle(source, destination, false, width)
 }
 
 /**
@@ -171,7 +162,7 @@ public def channel(source, dest, obstacle, thr, width) {
  * @param width    num, how much to dilate the channel
  * @return         bool, true if the device is on the shortest path, false otherwise
  */
-public def channel2(source, destination, obstacle, width) {
+public def channel2WithObstacle(source, destination, obstacle, width) {
       boundSpreading(!obstacle, () -> {
           distanceTo(shortestPath(source, destination)) <= width
       }, false)
@@ -201,7 +192,23 @@ public def closerThanWithMetric(source, metric, range) {
  * Requires euclidean metric. The CRF-Gradient algorithm handles this problem
  * by splitting the calculation into constraint and restoring force behaviors.
  * When constraint is dominant, the value of a device gx(t) stays fixed or
- * decreases, set by the triangle inequality from its neighbors� values.  When
+ * decreases, set by the triangle inequality from its neighbors values.  When
+ * restoring force is dominant, gx(t) rises at a fixed velocity v0.
+ *
+ * @param source bool,  whether the device is a source
+ * @param maxHop num, communication max range
+ * @return       num, minimum distance from the source
+ */
+public def crfGradient(source, maxHop) {
+    crfGradientWithMetric(source, nbrRange, maxHop)
+}
+
+/**
+ * Self-healing gradcast algorithm that reconfigures in O(diameter) time.
+ * Requires euclidean metric. The CRF-Gradient algorithm handles this problem
+ * by splitting the calculation into constraint and restoring force behaviors.
+ * When constraint is dominant, the value of a device gx(t) stays fixed or
+ * decreases, set by the triangle inequality from its neighbors values.  When
  * restoring force is dominant, gx(t) rises at a fixed velocity v0.
  *
  * @param source bool,  whether the device is a source
@@ -209,14 +216,14 @@ public def closerThanWithMetric(source, metric, range) {
  * @param maxHop num, communication max range
  * @return       num, minimum distance from the source
  */
-public def crfGradient(source, metric, maxHop) {
+public def crfGradientWithMetric(source, metric, maxHop) {
     rep (potential <- [Infinity, 0]) {
         mux (source) {
             [0, 0]
         } else {
             let d = nbr(potential).get(0);
             let dt = self.getDeltaTime();
-            mux (anyHood(addRangeWithLag(d, metric, potential.get(1)) < potential.get(0))) {
+            mux (anyHood(addRangeWithLag(d, metric, potential.get(1)) <= potential.get(0))) {
                 minHood([d + metric.apply(), 0])
             } else {
                 let v0 = if (dt == 0) { maxHop } else { maxHop / (dt * 12) };
@@ -294,7 +301,7 @@ public def distanceBetween(source, dest) {
  * @return       num, smallest distance between source and destination devices
  */
 public def distanceBetweenWithMetric(source, dest, metric) {
-    G(source, distanceToWithMetric(dest, metric), metric, identity)
+    broadcastWithMetric(source, distanceToWithMetric(dest, metric), metric)
 }
 
 /*
@@ -316,6 +323,16 @@ public def distanceTo(source) {
  */
 public def distanceToWithMetric(source, metric) {
     G(source, 0, metric, (v) -> { v + metric.apply() })
+}
+
+/**
+ * Estimate worst propagation time considering a message round trip.
+ * 
+ * @param d num, network diameter
+ * @param k num, number of replicas. Must be greater than 1.
+ */
+public def roundTripTime(d) {
+    4 * d * self.getDeltaTime()
 }
 
 /**
@@ -435,30 +452,56 @@ public def gradcast(source, gradient, local, accumulate) {
 }
 
 /**
- * Determine the smallest distance from the current device to the source.
- *
- * @param source bool, whether the device is a source
- * @param init   num, distance initial value
- * @param metric () -> num, estimate distance from other devices
- * @param range  num, communication range
- * @return       num, minimum distance from the closest source
+ * Spread and extend information with distance from the source region.
+ * 
+ * @param source     bool, whether the current device is a source
+ * @param init       T, initial value of the computation
+ * @param metric     () -> num, estimate distance from other devices
+ * @param accumulate (T) -> T, how to accumulate the value
+ * @return           [num, T], distance value and accumulated value
  */
-public def gradient(source, init, metric, range) {
-    rep (distance <- [Infinity, 0]) {
-        mux (source) {
-            [init, 0]
-        } else {
-            let d = distance.get(0);
-            let v = distance.get(1);
-            mux (anyHood(addRangeWithLag(nbr(distance).get(0), metric, v) <= d)) {
-                let ndv = nbr(distance);
-                minHood([ndv.get(0) + metric.apply(), 0])
-            } else {
-                let v0 = range / 2;
-                [d + v0 * self.getDeltaTime(), v0]
-            }
+public def gradient(source, init, metric, accumulate) {
+    G(source, [0, init], metric,
+        v -> {
+            let x = Gnull(v, [Infinity, init]);
+            [ addRangeWithMetric(x.get(0), metric), accumulate.apply(x.get(1)) ]
         }
-    }.get(0)
+    )
+}
+
+/**
+ * Run an instance of G from every source.
+ * 
+ * @param sources    [deviceUID], list of active sources
+ * @param init       T, initial value of the computation
+ * @param metric     () -> num, estimate distance from other devices
+ * @param accumulate (T) -> T, how to accumulate the value
+ * @return           [[deviceUID, T]], list of information from multiple sources
+ */
+public def multiG(sources, init, metric, accumulate) {
+    multiInstance(
+        sources,
+        id -> { G(id == getUID(), init, metric, accumulate) },
+        init
+    )
+}
+
+/**
+ * Spread and extend information with distance from multiple source regions.
+ * 
+ * @param sources    [deviceUID], list of active sources
+ * @param init       T, initial value of the computation
+ * @param metric     () -> num, estimate distance from other devices
+ * @param accumulate (T) -> T, how to accumulate the value
+ * @return           [[deviceUID, [num, T]]], list of information from multiple
+ *                   gradients
+ */
+public def multiGradient(sources, init, metric, accumulate) {
+    multiInstance(
+        sources,
+        id -> { gradient(id == getUID(), init, metric, accumulate) },
+        [Infinity, init]
+    )
 }
 
 /**
@@ -467,14 +510,23 @@ public def gradient(source, init, metric, range) {
  * @return num, number of neighbors
  */
 public def neighborhood() {
-     sumHood(nbr(1))
+    sumHood(nbr(1))
 }
 
 /**
- * Communication latency.
+ * Time forward view.
  *
- * @return num, communication latencies between this device and its
- * neighbors
+ * @return num, expected time from the device computation to
+ *         neighbor's next computation incorporating that information.
+ */
+public def nbrDelay() {
+    self.nbrDelay()
+}
+
+/**
+ * Time backward view.
+ *
+ * @return num, how long ago information from neighbors was received.
  */
 public def nbrLag() {
     self.nbrLag()
@@ -542,7 +594,7 @@ public def rendezvous(source, dest) {
 
 /**
  * Dynamically computes the shortest route between regions of a network, and
- * dynamically adapts to shape and changes of the network topology. The �shortest path�
+ * dynamically adapts to shape and changes of the network topology. The shortest path
  * is a Boolean field that is true for devices near the shortest route from a given
  * (distributed) source to a (distributed) destination.
  *

@@ -1,0 +1,3 @@
+import protelis:coord:accumulation
+import protelis:lang:utils
+aggregation(env.get("n"), sum)

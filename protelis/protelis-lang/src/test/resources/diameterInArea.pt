@@ -1,0 +1,2 @@
+import protelis:coord:accumulation
+diameterInRegion(env.has("source"), env.has("region"))

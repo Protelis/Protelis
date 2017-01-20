@@ -140,6 +140,11 @@ If you want to generate the artifacts, you can rely on Gradle. Just point a term
 
 This will trigger the creation of the artifacts the executions of the tests, the generation of the documentation and of the project reports.
 
+#### Testing protelis-lang
+Though `protelis-lang` requires Java 1.7, running its tests **from Eclipse** requires Java 1.8.
+
+* Change `JavaSE-1.7` to `JavaSE-1.8` in `protelis-lang/.classhpath`
+* **Do not** commit this update.
 
 #### Release numbers explained
 We release often. We are not scared of high version numbers, as they are just numbers in the end.

@@ -1,7 +1,4 @@
+import protelis:coord:accumulation
 import protelis:coord:spreading
-import protelis:coord:timereplication
-
-timeReplicated(
-    () -> { distanceToWithMetric(env.has("source"), nbrRangeHop) }, Infinity, 3, 3
-)
-
+import protelis:coord:meta:timereplication
+timeReplicated(() -> { distanceTo(env.has("source")) }, Infinity, 6, 3)

@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: [if($CYCLE < 5) { 5 - $CYCLE } else { 0 }, "foo"]
+import protelis:state:time
+evaporation(5, "foo", 1)

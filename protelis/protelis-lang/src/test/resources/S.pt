@@ -2,4 +2,4 @@ import protelis:coord:sparsechoice
 import protelis:coord:spreading
 import protelis:lang:utils
 
-S(env.get("grain"), nbrRange)
+S(6, nbrRange)

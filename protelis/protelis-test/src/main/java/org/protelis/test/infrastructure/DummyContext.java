@@ -6,21 +6,24 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.vm.impl;
+package org.protelis.test.infrastructure;
 
 import java.util.Random;
 
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
+import org.protelis.vm.impl.AbstractExecutionContext;
+import org.protelis.vm.impl.SimpleExecutionEnvironment;
+import org.protelis.vm.impl.SimpleNetworkManager;
 
 import java8.util.stream.IntStreams;
 
 /**
- * A dummy Protelis VM to be used for testing.
+ * A **dummy** Protelis VM to be used for testing.
  *
  */
-public class SimpleContext extends AbstractExecutionContext {
+public final class DummyContext extends AbstractExecutionContext {
 
     private final Random rng = new Random(0);
     private static final DeviceUID DUMMYUID = new DeviceUID() {
@@ -35,7 +38,7 @@ public class SimpleContext extends AbstractExecutionContext {
     /**
      *
      */
-    public SimpleContext() {
+    public DummyContext() {
         super(new SimpleExecutionEnvironment(), new SimpleNetworkManager());
     }
 
@@ -44,14 +47,15 @@ public class SimpleContext extends AbstractExecutionContext {
         return DUMMYUID;
     }
 
+    // ATTENTION: System.currentTimeMillis() is not reproducible
     @Override
     public Number getCurrentTime() {
         return System.currentTimeMillis() / 1000d;
     }
 
     /*
-     * ATTENTION: getDeltaTime has been overridden to easily test the results.
-     * If you need to estimate the difference between two reactions you can
+     * ATTENTION: getDeltaTime has been overridden for testing purpose. If you
+     * need to estimate the actual difference between two reactions you can
      * comment this method as it is already implemented in
      * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
      * getDeltaTime will fail.
@@ -70,7 +74,7 @@ public class SimpleContext extends AbstractExecutionContext {
 
     @Override
     protected AbstractExecutionContext instance() {
-        return new SimpleContext();
+        return new DummyContext();
     }
 
     @Override

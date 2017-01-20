@@ -2,7 +2,7 @@ import protelis:coord:meta
 import protelis:coord:spreading
 
 let d = env.get("partition");
-computeMultiRegion(d, 
+multiRegion(d, 
     (key) -> { key ==  d },
     () -> { distanceToWithMetric(env.get("source"), nbrRangeHop) },
     NaN

@@ -1,7 +1,19 @@
 module protelis:coord:accumulation
+import protelis:coord:meta
 import protelis:coord:spreading
-import protelis:state:time
 import protelis:lang:utils
+import protelis:state:time
+
+/**
+ * Aggregation of local information.
+ * 
+ * @param local  T, local information
+ * @param reduce (T, T) -> T, how to aggregate information
+ * @param        T, aggregated information
+ */
+public def aggregation(local, reduce) {
+    hood((a, b) -> { reduce.apply(a, b) }, local, nbr(local))
+}
 
 /**
  * Estimate and broadcast the average value within a spatial region.
@@ -11,7 +23,12 @@ import protelis:lang:utils
  * @return      num,  average value
  */
 public def average(sink, value) {
-    summarize(sink, sum, value, 0) / neighborhood()
+    summarizeWithPotentialExt(
+        distanceTo(sink), 0, sum,
+        (a) -> { a.get(0) / a.get(1) },
+        [value, 1],
+        [value, 1]
+    )
 }
 
 /**
@@ -57,34 +74,6 @@ public def C(potential, reduce, local, null) {
             )
         )
     }
-}
-
-/**
- * The potential-source converges to the sum of other device values.
- * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
- * can  cause  loss  or  duplication  of  values  with
- * major transient impact on its result. When the accumulation
- * operation for C is either idempotent (e.g., logical and, or)
- * or  separable  (e.g.,  summation),  this  can  be  mitigated  by
- * using all paths down the potential function rather than just
- * one. Can implement  any  other  idempotent  or  separable  function.
- *
- * @param potential num, sum values descending this potential
- * @param local     num, value
- * @return          num, aggregated value
- */
-public def cMultiSum(potential, local) {
-     cMultiDivisible(
-         potential,
-         local,
-         0,
-         sum,
-         (v) -> { v },
-         (v) -> { sumHood(
-             mux (nbr(potential) < potential) { nbr(local) } else { 0 }
-         ) },
-         (dividend, divisor) -> { dividend / divisor }
-     )
 }
 
 /**
@@ -143,6 +132,34 @@ public def cMultiMax(potential, local) {
 }
 
 /**
+ * The potential-source converges to the sum of other device values.
+ * C  collects  values  over  a  spanning  tree.  Even  small  perturbations
+ * can  cause  loss  or  duplication  of  values  with
+ * major transient impact on its result. When the accumulation
+ * operation for C is either idempotent (e.g., logical and, or)
+ * or  separable  (e.g.,  summation),  this  can  be  mitigated  by
+ * using all paths down the potential function rather than just
+ * one. Can implement  any  other  idempotent  or  separable  function.
+ *
+ * @param potential num, sum values descending this potential
+ * @param local     num, value
+ * @return          num, aggregated value
+ */
+public def cMultiSum(potential, local) {
+     cMultiDivisible(
+         potential,
+         local,
+         0,
+         sum,
+         (v) -> { v },
+         (v) -> { sumHood(
+             mux (nbr(potential) < potential) { nbr(local) } else { 0 }
+         ) },
+         (dividend, divisor) -> { dividend / divisor }
+     )
+}
+
+/**
  * Devices agree on a common value.
  *
  * @param init  num, initial device value
@@ -157,17 +174,96 @@ public def consensus(init, f) {
 }
 
 /**
- * Estimate the diameter of the connected component joined by the current
- * device.
+ * Gossip a value manipulated according to f.
+ *
+ * @param sink  bool, whether the device is the root of the spanning tree
+ * @param value T, what to gossip
+ * @param f     (T, T) -> T, how to manipulate value
+ * @return      T, the value resulting from gossip
+ */
+public def cossip(sink, value, f) {
+    summarize(sink, f, value, value)
+}
+
+/**
+ * Count the devices.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @return          num, number of devices
+ */
+public def countDevices(potential) {
+    countDevicesWithCondition(potential, true)
+}
+
+/**
+ * Count the devices in a region.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param condition bool, device discriminant
+ * @param region    bool, region discriminant
+ * @return          num, number of devices
+ */
+public def countDevicesInRegion(potential, condition, region) {
+    boundSpreading(region, () -> { countDevicesWithCondition(potential, condition) }, 0)
+}
+
+/**
+ * Count the devices with a given condition.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param condition bool, discriminant
+ * @return          num, number of devices
+ */
+public def countDevicesWithCondition(potential, condition) {
+    C(potential, sum, if (condition) { 1 } else { 0 }, 0)
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
  *
  * @param source    bool, source of the connected component
  * @return diameter num, of the connected component
  */
 public def diameter(source) {
-    let d = distanceTo(source);
+    diameterWithMetric(source, nbrRangeHop)
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
+ *
+ * @param source    bool, source of the connected component
+ * @param metric    () -> num, metric
+ * @return diameter num, of the connected component
+ */
+public def diameterWithMetric(source, metric) {
+    let d = distanceToWithMetric(source, metric);
     2 * rep (maxd <- 0) {
         max(if (d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
     }
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
+ *
+ * @param source    bool, source of the connected component
+ * @return diameter num, of the connected component
+ */
+public def diameterInRegion(source, region) {
+    diameterInRegionWithMetric(source, region, nbrRangeHop)
+}
+
+/**
+ * Gossip and estimate the diameter of the connected component joined by 
+ * the current device.
+ *
+ * @param source    bool, source of the connected component
+ * @return diameter num, of the connected component
+ */
+public def diameterInRegionWithMetric(source, region, metric) {
+    boundSpreading(region, () -> { diameterWithMetric(source, metric) }, 0)
 }
 
 /**
@@ -382,7 +478,7 @@ public def hasParent(id) {
 public def imRoot() { -2 }
 
 /**
- * TODO: this function MUST NOT be public as it is an utilities for both protelis:coord:accumulation and
+ * This function MUST NOT be public as it is an utilities for both protelis:coord:accumulation and
  * protelis:coord:tree. This function reduces a field of ids
  */
 def idUnion(idField) {
@@ -442,7 +538,7 @@ public def summarize(sink, reduce, local, null) {
  * @return       T, aggregated value
  */
 public def summarizeWithMetric(sink, metric, accumulate, local, null) {
-    broadcast(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null))
+    broadcastWithMetric(sink, C(distanceToWithMetric(sink, metric), accumulate, local, null), metric)
 }
 
 /**
@@ -456,9 +552,45 @@ public def summarizeWithMetric(sink, metric, accumulate, local, null) {
  * @return          T, aggregated value
  */
 public def summarizeWithPotential(potential, zero, accumulate, local, null) {
+    summarizeWithPotentialExt(potential, zero, accumulate, identity, local, null)
+}
+
+public def summarizeWithPotentialExt(potential, zero, accumulate, f, local, null) {
     broadcastWithMetric(
         potential == zero,
-        C(potential, accumulate, local, null),
+        f.apply(C(potential, accumulate, local, null)),
         () -> { potential }
     )
+}
+
+/**
+ * Quorum sensing.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param thr       num, threshold
+ * @param under     (num) -> T, what to do if quorum is under threshold
+ * @param over      (num) -> T, what to do otherwise
+ * @return          T
+ */
+public def quorumSensing(potential, zero, thr, under, over) {
+    quorumSensingWithCondition(potential, zero, thr, true, under, over)
+}
+
+/**
+ * Quorum sensing.
+ * 
+ * @param potential num, gradient of which gives aggregation direction
+ * @param thr       num, threshold
+ * @param condition bool, whether to count a device or not
+ * @param under     (num) -> T, what to do if quorum is under threshold
+ * @param over      (num) -> T, what to do otherwise
+ * @return          T
+ */
+public def quorumSensingWithCondition(potential, zero, thr, condition, under, over) {
+    let c = broadcast(potential == zero, countDevicesWithCondition(potential, condition));
+    if (c < thr) {
+        under.apply(c)
+    } else {
+        over.apply(c)
+    }
 }
