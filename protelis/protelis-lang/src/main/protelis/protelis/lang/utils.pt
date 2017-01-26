@@ -179,7 +179,7 @@ public def lessEqual(a, b) {
  * @return  T, maximum between the two fields
  */
 public def max(a, b) {
-    if (a.compareTo(b) > 0 ) {
+    mux (a > b) {
         a
     } else {
         b
@@ -201,7 +201,7 @@ public def mean(local, field) {
  * @return  num, minimum between the two fields
  */
 public def min(a, b) {
-    if (a.compareTo(b) < 0 ) {
+    mux (a < b) {
         a
     } else {
         b
