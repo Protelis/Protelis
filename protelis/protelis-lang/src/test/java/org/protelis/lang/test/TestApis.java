@@ -617,6 +617,14 @@ public class TestApis {
     }
 
     /**
+     * Test multiC.pt.
+     */
+    @Test
+    public void testMultiC() {
+        test("multiC");
+    }
+
+    /**
      * Test multiG.pt.
      */
     @Test
