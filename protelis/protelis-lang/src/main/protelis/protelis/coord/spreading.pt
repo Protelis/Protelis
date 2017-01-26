@@ -1,6 +1,5 @@
 module protelis:coord:spreading
 import org.apache.commons.math3.util.FastMath.floor
-import java.lang.Math.max
 import protelis:coord:meta
 import protelis:lang:utils
 import protelis:state:time
@@ -339,8 +338,8 @@ public def roundTripTime(d) {
 
 // ---- Used by flexGradient
 def flex_distorce(minD, metric) { 
-    java::lang::Math::max(minD, metric.apply())
-} 
+    max(metric.apply(), minD)
+}
 def flex_slope(d, minD, metric) {
     maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)])
 }
