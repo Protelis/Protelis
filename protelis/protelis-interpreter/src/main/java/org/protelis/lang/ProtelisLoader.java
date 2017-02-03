@@ -253,13 +253,13 @@ public final class ProtelisLoader {
         synchronized (XTEXT) {
             Resource r = XTEXT.getResource(uri, false);
             if (r == null) {
-                try (final InputStream in = new StringInputStream(program)) {
+                try (InputStream in = new StringInputStream(program)) {
                     loadStringResources(XTEXT, in);
                 } catch (IOException e) {
                     throw new IllegalStateException("Couldn't get resources associated with anonymous program", e);
                 }
                 r = XTEXT.createResource(uri);
-                try (final InputStream in = new StringInputStream(program)) {
+                try (InputStream in = new StringInputStream(program)) {
                     r.load(in, XTEXT.getLoadOptions());
                 } catch (IOException e) {
                     throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
