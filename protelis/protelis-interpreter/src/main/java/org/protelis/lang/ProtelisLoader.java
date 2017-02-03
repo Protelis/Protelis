@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,6 +92,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.base.Charsets;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
@@ -120,6 +123,9 @@ public final class ProtelisLoader {
     private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
     private static final String PROTELIS_FILE_EXTENSION = "pt";
     private static final String HOOD_END = "Hood";
+    private static final Cache<String, Resource> LOADED_RESOURCES = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build();
 
     private ProtelisLoader() {
     }
@@ -224,7 +230,7 @@ public final class ProtelisLoader {
             final String programURI,
             final Set<String> alreadyInQueue) throws IOException {
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
-        if (!alreadyInQueue.contains(realURI)) {
+        if (LOADED_RESOURCES.getIfPresent(realURI) == null && !alreadyInQueue.contains(realURI)) {
             alreadyInQueue.add(realURI);
             final URI uri = URI.createURI(realURI);
             final org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
@@ -239,7 +245,7 @@ public final class ProtelisLoader {
                 final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
                 loadResourcesRecursively(target, classpathResource, alreadyInQueue);
             }
-            target.getResource(uri, true);
+            LOADED_RESOURCES.put(realURI, target.getResource(uri, true));
         }
     }
 
