@@ -219,7 +219,9 @@ public final class ProtelisLoader {
         loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
     }
 
-    private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI,
+    private static void loadResourcesRecursively(
+            final XtextResourceSet target,
+            final String programURI,
             final Set<String> alreadyInQueue) throws IOException {
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
         if (!alreadyInQueue.contains(realURI)) {
