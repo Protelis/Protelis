@@ -228,6 +228,7 @@ public final class ProtelisLoader {
             final org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
             final InputStream is = protelisFile.getInputStream();
             final String ss = IOUtils.toString(is, "UTF-8");
+            is.close();
             final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
             while (matcher.find()) {
                 final int start = matcher.start(1);
