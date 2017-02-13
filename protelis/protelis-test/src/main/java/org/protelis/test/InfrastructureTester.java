@@ -22,6 +22,7 @@ import org.protelis.test.observer.SimpleExceptionObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import it.unibo.alchemist.boundary.interfaces.OutputMonitor;
@@ -321,20 +322,16 @@ public final class InfrastructureTester {
      * @param f
      *            testing function
      */
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This is not going to get serialized")
     private static void testSingleRun(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
                     final Environment<Object> env, final List<Pair<String, String>> expectedResult, final Object f) {
         final Simulation<Object> sim = new Engine<Object>(env, totalSimulationSteps + stabilitySteps);
         sim.addOutputMonitor(new OutputMonitor<Object>() {
             private static final long serialVersionUID = 1L;
-
             @Override
-            public void finished(final Environment<Object> env, final Time time, final long step) {
-            }
-
+            public void finished(final Environment<Object> env, final Time time, final long step) { }
             @Override
-            public void initialized(final Environment<Object> env) {
-            }
-
+            public void initialized(final Environment<Object> env) { }
             @Override
             public void stepDone(final Environment<Object> env, final Reaction<Object> r, final Time time, final long step) {
                 checkResult(obs, totalSimulationSteps + stabilitySteps, stabilitySteps, expectedResult, f, env, step);
