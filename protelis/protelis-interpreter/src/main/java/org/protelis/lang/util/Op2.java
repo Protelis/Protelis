@@ -243,6 +243,9 @@ public enum Op2 {
     }
 
     private static Object plus(final Object a, final Object b) {
+        if (a instanceof CharSequence || b instanceof CharSequence) {
+            return a.toString() + b.toString();
+        }
         try {
             return arithmetic("+", a, b, (v1, v2) -> v1 + v2);
         } catch (UnsupportedOperationException e) {
