@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,6 +95,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.google.common.base.Charsets;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
@@ -126,6 +129,14 @@ public final class ProtelisLoader {
     private static final Cache<String, Resource> LOADED_RESOURCES = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.SECONDS)
             .build();
+    private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build(new CacheLoader<Object, Reference>() {
+                @Override
+                public Reference load(final Object key) throws Exception {
+                    return new Reference(key);
+                }
+            });
 
     private ProtelisLoader() {
     }
@@ -584,11 +595,15 @@ public final class ProtelisLoader {
     }
 
     private static Reference toR(final Object o) {
-        return new Reference(o);
+        try {
+            return REFERENCES.get(o);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("Unable to create a reference for " + o, e);
+        }
     }
 
     private static List<Reference> toR(final List<?> l) {
-        return stream(l).map(Reference::new).collect(Collectors.toList());
+        return stream(l).map(ProtelisLoader::toR).collect(Collectors.toList());
     }
 
 }
