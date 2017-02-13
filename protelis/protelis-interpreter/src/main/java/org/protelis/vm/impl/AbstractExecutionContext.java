@@ -12,11 +12,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java8.util.Maps;
+import java.util.Map.Entry;
 import java.util.Objects;
-import java8.util.function.Function;
 
-import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -37,8 +35,8 @@ import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
-
-import static java8.util.stream.StreamSupport.stream;
+import java8.util.Maps;
+import java8.util.function.Function;
 
 /**
  * Partial implementation of ExecutionContext, containing functionality expected
@@ -173,15 +171,13 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
                     + "This is probably a bug in Protelis");
         }
         final Field res = DatatypeFactory.createField(theta.size() + 1);
-        stream(theta.entrySet())
-                .map(e -> new Pair<>(e.getKey(), e.getValue().get(codePath)))
-                .filter(e -> e.getValue() != null)
-                /*
-                 * This cast is OK by construction, if no bug is there and no
-                 * wild casts are done by the caller.
-                 */
-                .forEachOrdered(e -> res.addSample(e.getKey(), computeValue.apply((T) e.getValue())));
-        res.addSample(getDeviceUID(), computeValue.apply(localValue));
+        for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
+            final Object received = e.getValue().get(codePath);
+            if (received != null) {
+                res.addSample(e.getKey(), computeValue.apply((T) received));
+            }
+        }
+        res.addSample(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
         return res;
     }
 
