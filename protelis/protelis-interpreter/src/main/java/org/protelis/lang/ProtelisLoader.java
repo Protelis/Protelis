@@ -133,7 +133,7 @@ public final class ProtelisLoader {
             .expireAfterAccess(1, TimeUnit.SECONDS)
             .build(new CacheLoader<Object, Reference>() {
                 @Override
-                public Reference load(final Object key) throws Exception {
+                public Reference load(final Object key) {
                     return new Reference(key);
                 }
             });
