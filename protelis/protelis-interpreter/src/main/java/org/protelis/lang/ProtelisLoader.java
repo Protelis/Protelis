@@ -545,35 +545,6 @@ public final class ProtelisLoader {
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Comment out, substitute with a faster linear scan.
-     * Reason: the Protelis resource set for a whole JVM is a singleton!
-     * (the XTEXT field)
-     * 
-     */
-//    private static Iterable<Diagnostic> recursivelyCollectErrors(
-//            final Resource resource,
-//            final Collection<Diagnostic> errors,
-//            final Set<URI> completed) {
-//        /*
-//         * Mark as visited
-//         */
-//        completed.add(resource.getURI());
-//        /*
-//         * Walk linked resources
-//         */
-//        for (final Resource r : resource.getResourceSet().getResources()) {
-//            if (!completed.contains(r.getURI())) {
-//                recursivelyCollectErrors(r, errors, completed);
-//            }
-//        }
-//        /*
-//         * Add local errors (last, so that the "deeper" errors are listed first)
-//         */
-//        errors.addAll(resource.getErrors());
-//        return errors;
-//    }
-
     private static void recursivelyInitFunctions(final Module module,
             final Map<FunctionDef, FunctionDefinition> nameToFun) {
         recursivelyInitFunctions(module, nameToFun, new LinkedHashSet<>());
