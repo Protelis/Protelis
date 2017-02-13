@@ -65,12 +65,12 @@ public def C(potential, reduce, local, null) {
              * TODO: switch to accumulateHood
              */
             hood(
-                // HoodOp
                 (a, b) -> { reduce.apply(a, b) },
                 // expression that will be evaluated if the field is empty
                 null,
-                // argument to evaluate (must return a Field)
-                mux (nbr(getParent(potential, identity)) == self) { nbr(v) } else { null }
+                mux (nbr(getParent(potential, (v) -> { v.getDeviceUID() })) == self.getDeviceUID()) { 
+                    nbr(v)
+                } else { null }
             )
         )
     }

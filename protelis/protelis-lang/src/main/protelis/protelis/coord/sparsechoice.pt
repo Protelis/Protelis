@@ -18,23 +18,22 @@ def breakUsingUids(uid, grain, metric) {
 }
 
 def distanceCompetition(d, lead, uid, grain, metric) {
-    let res =
-        mux (d > grain) {
-            uid
+    mux (d > grain) {
+        uid
+    } else {
+        let thr = 0.5 * grain;
+        mux (d >= thr) {
+            default()
         } else {
-            let thr = 0.5 * grain;
-            mux (d >= thr) {
-                default()
-            } else {
-                minHood(
-                    mux (nbr(d) + metric.apply() >= thr) {
-                        default()
-                    } else {
-                        nbr(lead)
-                    }
-                )
-            }
-        };
+            minHood(
+                mux (nbr(d) + metric.apply() >= thr) {
+                    default()
+                } else {
+                    nbr(lead)
+                }
+            )
+        }
+    }
 }
 
 def randomUid() {
@@ -55,4 +54,3 @@ def randomUid() {
 public def S(grain, metric) {
     breakUsingUids(randomUid(), grain, metric)
 }
-

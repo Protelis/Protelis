@@ -1,0 +1,21 @@
+# result:
+#  {0 13, 1 $,  2 $, 3  $,
+#   4 $, 5 $,  6 $,  7  $,
+#   8 $, 9 $, 10 $, 11 13}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.8]
+
+program: &program
+  - time-distribution: 1
+    program: multiC
+
+displacements:
+  - in:
+      type: Grid
+      parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
+    programs:
+      - *program

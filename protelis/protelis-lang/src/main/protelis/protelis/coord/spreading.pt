@@ -335,16 +335,26 @@ public def roundTripTime(d) {
     4 * d * self.getDeltaTime()
 }
 
+
+// ---- Used by flexGradient
+def flex_distorce(minD, metric) { 
+    max(metric.apply(), minD)
+}
+def flex_slope(d, minD, metric) {
+    maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)])
+}
+
 /**
- * Used by flexGradient
+ * Flex-Gradient.
+ *
+ * @param source     bool, whether the device is a source
+ * @param epsilon    num, tolerance
+ * @param rate       num, communication rate
+ * @param range      num, communication range
+ * @param distortion num, distortion
  */
-def slope(d, minD, metric) {
-    let nrange = metric.apply();
-    if (nrange > 0) {
-        let ndv = nbr(d);
-        let m = max(minD, maxHood(nrange));
-        maxHood([(d - ndv)/m, ndv, m])
-    } else { [0, d, 0] }
+public def flexGradient(source, epsilon, rate, range, distortion) {
+    flexGradientWithMetric(source, epsilon, rate, range, distortion, nbrRange)
 }
 
 /**
@@ -357,28 +367,22 @@ def slope(d, minD, metric) {
  * @param distortion num, distortion
  * @param metric     () -> num, estimate distance from other devices
  */
-public def flexGradient(source, epsilon, rate, range, distortion, metric) {
+public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metric) {
     rep (d <- Infinity) {
-        mux (source) {
-            0
-        } else {
-            let minD = range * distortion;
-            let slopeInfo = slope(d, minD, metric);
-            let maxSlope = slopeInfo.get(0);
-            let msd = slopeInfo.get(1);
-            let msr = slopeInfo.get(2);
-            let ct = minHood(nbr(d) + max(minD, maxHood(metric.apply())));
-            mux ((d > range && d > ct * 2) || cyclicTimer((d + self.getDeltaTime()) * rate)) {
+        mux (source) { 0 } 
+        else {
+            let dist = range * distortion;
+            let slope = flex_slope(d, dist, metric);
+            let ct = minHood(nbr(d) + flex_distorce(dist, metric));
+            if (d == ct || (d > range && d > ct * 2) || cyclicTimer(rate)) {
                 ct
             } else {
-                mux (maxSlope > (1 + epsilon)) {
-                    msd + msr * (1 + epsilon)
-                } else {
-                    mux (maxSlope < (1 - epsilon)) {
-                        msd + msr * (1 - epsilon)
-                    } else {
-                        d
-                    }
+                if (slope.get(0) > (1 + epsilon)) {
+                    slope.get(1) + slope.get(2) * (1 + epsilon)
+                } else { 
+                    if (slope.get(0) < (1 - epsilon)) { 
+                        slope.get(1) + slope.get(2) * (1 - epsilon)
+                    } else { d }
                 }
             }
         }
