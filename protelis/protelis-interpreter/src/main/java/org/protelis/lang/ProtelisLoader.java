@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,6 +93,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.base.Charsets;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
@@ -120,6 +126,17 @@ public final class ProtelisLoader {
     private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
     private static final String PROTELIS_FILE_EXTENSION = "pt";
     private static final String HOOD_END = "Hood";
+    private static final Cache<String, Resource> LOADED_RESOURCES = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build();
+    private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build(new CacheLoader<Object, Reference>() {
+                @Override
+                public Reference load(final Object key) {
+                    return new Reference(key);
+                }
+            });
 
     private ProtelisLoader() {
     }
@@ -219,15 +236,18 @@ public final class ProtelisLoader {
         loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
     }
 
-    private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI,
+    private static void loadResourcesRecursively(
+            final XtextResourceSet target,
+            final String programURI,
             final Set<String> alreadyInQueue) throws IOException {
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
-        if (!alreadyInQueue.contains(realURI)) {
+        if (LOADED_RESOURCES.getIfPresent(realURI) == null && !alreadyInQueue.contains(realURI)) {
             alreadyInQueue.add(realURI);
             final URI uri = URI.createURI(realURI);
             final org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
             final InputStream is = protelisFile.getInputStream();
             final String ss = IOUtils.toString(is, "UTF-8");
+            is.close();
             final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
             while (matcher.find()) {
                 final int start = matcher.start(1);
@@ -236,7 +256,7 @@ public final class ProtelisLoader {
                 final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
                 loadResourcesRecursively(target, classpathResource, alreadyInQueue);
             }
-            target.getResource(uri, true);
+            LOADED_RESOURCES.put(realURI, target.getResource(uri, true));
         }
     }
 
@@ -252,13 +272,13 @@ public final class ProtelisLoader {
         synchronized (XTEXT) {
             Resource r = XTEXT.getResource(uri, false);
             if (r == null) {
-                try (final InputStream in = new StringInputStream(program)) {
+                try (InputStream in = new StringInputStream(program)) {
                     loadStringResources(XTEXT, in);
                 } catch (IOException e) {
                     throw new IllegalStateException("Couldn't get resources associated with anonymous program", e);
                 }
                 r = XTEXT.createResource(uri);
-                try (final InputStream in = new StringInputStream(program)) {
+                try (InputStream in = new StringInputStream(program)) {
                     r.load(in, XTEXT.getLoadOptions());
                 } catch (IOException e) {
                     throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
@@ -536,35 +556,6 @@ public final class ProtelisLoader {
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Comment out, substitute with a faster linear scan.
-     * Reason: the Protelis resource set for a whole JVM is a singleton!
-     * (the XTEXT field)
-     * 
-     */
-//    private static Iterable<Diagnostic> recursivelyCollectErrors(
-//            final Resource resource,
-//            final Collection<Diagnostic> errors,
-//            final Set<URI> completed) {
-//        /*
-//         * Mark as visited
-//         */
-//        completed.add(resource.getURI());
-//        /*
-//         * Walk linked resources
-//         */
-//        for (final Resource r : resource.getResourceSet().getResources()) {
-//            if (!completed.contains(r.getURI())) {
-//                recursivelyCollectErrors(r, errors, completed);
-//            }
-//        }
-//        /*
-//         * Add local errors (last, so that the "deeper" errors are listed first)
-//         */
-//        errors.addAll(resource.getErrors());
-//        return errors;
-//    }
-
     private static void recursivelyInitFunctions(final Module module,
             final Map<FunctionDef, FunctionDefinition> nameToFun) {
         recursivelyInitFunctions(module, nameToFun, new LinkedHashSet<>());
@@ -604,11 +595,15 @@ public final class ProtelisLoader {
     }
 
     private static Reference toR(final Object o) {
-        return new Reference(o);
+        try {
+            return REFERENCES.get(o);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("Unable to create a reference for " + o, e);
+        }
     }
 
     private static List<Reference> toR(final List<?> l) {
-        return stream(l).map(Reference::new).collect(Collectors.toList());
+        return stream(l).map(ProtelisLoader::toR).collect(Collectors.toList());
     }
 
 }
