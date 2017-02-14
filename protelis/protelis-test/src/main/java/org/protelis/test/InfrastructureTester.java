@@ -1,5 +1,10 @@
 package org.protelis.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -7,7 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +36,8 @@ import it.unibo.alchemist.loader.YamlLoader;
 import it.unibo.alchemist.model.interfaces.Environment;
 import it.unibo.alchemist.model.interfaces.Reaction;
 import it.unibo.alchemist.model.interfaces.Time;
+import java8.util.function.BiConsumer;
 import java8.util.function.Function;
-
 /**
  * Test protelis simulations.
  */
@@ -65,10 +69,8 @@ public final class InfrastructureTester {
         private static final String EXPECTED = "result:";
         private static final String ML_NAME = "multilineComment";
         private static final String ML_RUN = "multirun";
-        private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}",
-                        Pattern.DOTALL);
-        private static final Pattern MULTI_RESULT_PATTERN = Pattern.compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?",
-                        Pattern.DOTALL);
+        private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}", Pattern.DOTALL);
+        private static final Pattern MULTI_RESULT_PATTERN = Pattern.compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?", Pattern.DOTALL);
         private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
@@ -76,9 +78,9 @@ public final class InfrastructureTester {
             final InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
             try {
                 final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
-                assert getResult(new SimpleExceptionObserver(), test) != null;
+                assertNotNull(getResult(new SimpleExceptionObserver(), test));
             } catch (IOException e) {
-                assert false;
+                fail();
             }
         }
 
@@ -90,24 +92,28 @@ public final class InfrastructureTester {
          * @return result
          */
         public static TIntObjectMap<List<Pair<String, String>>> getMultiRunResult(final ExceptionObserver obs, final String text) {
-            assert !text.isEmpty() : obs.exceptionThrown(new IllegalArgumentException("Empty result"));
             final TIntObjectMap<List<Pair<String, String>>> res = new TIntObjectHashMap<>();
-            final Matcher outer = EXTRACT_RESULT.matcher(text);
-            if (outer.find()) {
-                final String result = outer.group(ML_NAME);
-                final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
-                try {
-                    while (multiRun.find()) {
-                        L.debug("multiRun.group(): {}", multiRun.group());
-                        L.debug("multiRun.group(1): {}", multiRun.group(1));
-                        L.debug("multiRun.group(2): {}", multiRun.group(2));
-                        res.put(Integer.parseInt(multiRun.group(1)), getResultList(obs, multiRun.group(2)));
+            try {
+                assertFalse(!text.isEmpty());
+                final Matcher outer = EXTRACT_RESULT.matcher(text);
+                if (outer.find()) {
+                    final String result = outer.group(ML_NAME);
+                    final Matcher multiRun = MULTI_RESULT_PATTERN.matcher(result);
+                    try {
+                        while (multiRun.find()) {
+                            L.debug("multiRun.group(): {}", multiRun.group());
+                            L.debug("multiRun.group(1): {}", multiRun.group(1));
+                            L.debug("multiRun.group(2): {}", multiRun.group(2));
+                            res.put(Integer.parseInt(multiRun.group(1)), getResultList(obs, multiRun.group(2)));
+                        }
+                    } catch (IllegalStateException e) {
+                        obs.exceptionThrown(new IllegalArgumentException("This is not a multirun"));
                     }
-                } catch (IllegalStateException e) {
-                    obs.exceptionThrown(new IllegalArgumentException("This is not a multirun"));
+                } else {
+                    obs.exceptionThrown(new IllegalArgumentException("Your test does not include the expected result"));
                 }
-            } else {
-                obs.exceptionThrown(new IllegalArgumentException("Your test does not include the expected result"));
+            } catch (AssertionError e) {
+                obs.exceptionThrown(new IllegalArgumentException("Empty result"));
             }
             return res;
         }
@@ -120,14 +126,18 @@ public final class InfrastructureTester {
          * @return result
          */
         public static List<Pair<String, String>> getResult(final ExceptionObserver obs, final String text) {
-            assert !text.isEmpty() : obs.exceptionThrown(new IllegalArgumentException("Empty result"));
             List<Pair<String, String>> res = new LinkedList<>();
-            final Matcher outer = EXTRACT_RESULT.matcher(text);
-            if (outer.find()) {
-                final String result = outer.group(ML_NAME);
-                res = getResultList(obs, result);
-            } else {
-                obs.exceptionThrown(new IllegalArgumentException("Your test does not include the expected result"));
+            try {
+                assertFalse(text.isEmpty());
+                final Matcher outer = EXTRACT_RESULT.matcher(text);
+                if (outer.find()) {
+                    final String result = outer.group(ML_NAME);
+                    res = getResultList(obs, result);
+                } else {
+                    obs.exceptionThrown(new IllegalArgumentException("Your test does not include the expected result"));
+                }
+            } catch (AssertionError e) {
+                obs.exceptionThrown(new IllegalArgumentException("Empty result"));
             }
             return res;
         }
@@ -140,12 +150,16 @@ public final class InfrastructureTester {
          * @return result list
          */
         public static List<Pair<String, String>> getResultList(final ExceptionObserver obs, final String text) {
-            assert !text.isEmpty() : obs.exceptionThrown(new IllegalArgumentException("Empty result"));
             final List<Pair<String, String>> res = new LinkedList<>();
-            final Matcher inner = RESULT_PATTERN.matcher(text);
-            while (inner.find()) {
-                assert inner.group() != null : obs.exceptionThrown(new IllegalArgumentException("There is no result"));
-                res.add(Pair.of(inner.group(1), inner.group(2)));
+            try {
+                assertFalse(text.isEmpty());
+                final Matcher inner = RESULT_PATTERN.matcher(text);
+                while (inner.find()) {
+                    assertNotNull(inner.group());
+                    res.add(Pair.of(inner.group(1), inner.group(2)));
+                }
+            } catch (AssertionError e) {
+                obs.exceptionThrown(new IllegalArgumentException("Empty result"));
             }
             return res;
         }
@@ -170,8 +184,11 @@ public final class InfrastructureTester {
             } else if (f instanceof Function) {
                 final int occ = expectedResult.size();
                 final int found = ((Function<Map<String, Object>, Integer>) f).apply(simulationRes);
-                assert occ == found 
-                                : obs.exceptionThrown(new IllegalArgumentException("Expected occurences [" + occ + "] != Occurences found [" + found + "]"));
+                try {
+                    assertTrue(occ == found);
+                } catch (AssertionError e) {
+                    obs.exceptionThrown(new IllegalArgumentException("Expected occurences [" + occ + "] != Occurences found [" + found + "]"));
+                }
             } else {
                 obs.exceptionThrown(new IllegalArgumentException("How can I test without a proper function?"));
             }
@@ -189,7 +206,7 @@ public final class InfrastructureTester {
             test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final YamlLoader loader = new YamlLoader(test);
             if (!multirun) {
-                assert simulationSteps >= 0 : obs.exceptionThrown(new IllegalArgumentException(simulationSteps + " is an invalid number of runs"));
+                assertTrue(simulationSteps + " is an invalid number of runs", simulationSteps >= 0);
                 final Environment<Object> env = loader.getWith(null);
                 final List<Pair<String, String>> expectedResult = TestMatcher.getResult(obs, test);
                 testSingleRun(obs, simulationSteps, stabilitySteps, env, expectedResult, f);
@@ -202,7 +219,7 @@ public final class InfrastructureTester {
                 }
             }
         } catch (IOException e) {
-            obs.exceptionThrown(new IllegalArgumentException(e.getMessage()));
+            fail(e.getMessage());
         }
     }
 
@@ -221,7 +238,7 @@ public final class InfrastructureTester {
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         final SimpleExceptionObserver obs = new SimpleExceptionObserver();
         TestMatcher.getResult(obs, test);
-        assert obs.getExceptionList().isEmpty();
+        assertTrue(obs.getExceptionList().isEmpty());
         L.info("Done.");
     }
 
@@ -342,7 +359,7 @@ public final class InfrastructureTester {
         });
         sim.addCommand(new StateCommand<>().run().build());
         sim.run();
-        assert !obs.getFirstException().isPresent() : obs.getFirstException().get().getMessage();
+        assertFalse(obs.getFirstException().isPresent() ? obs.getFirstException().get().getMessage() : "", obs.getFirstException().isPresent());
     }
 
     private InfrastructureTester() {

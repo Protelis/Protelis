@@ -2,11 +2,14 @@ package org.protelis.test.matcher;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.tuple.Pair;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import org.protelis.test.InfrastructureTester;
 import org.protelis.test.observer.ExceptionObserver;
+
+import java8.util.function.BiConsumer;
 
 /**
  * Check if the simulation and expected results match.
@@ -24,31 +27,31 @@ public class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<Stri
 
     @Override
     public void accept(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
-        assert expectedResult.size() == simulationRes.values().size() : obs.exceptionThrown(new IllegalArgumentException(
-                        "expectedResult.length [" + expectedResult.size() + "] != simulationResult.length [" + simulationRes.values().size() + "]"));
-        for (final Pair<String, String> pair : expectedResult) {
-            if (!pair.getRight().equals(InfrastructureTester.DC)) {
-                final Object singleNodeResult = simulationRes.get(pair.getLeft());
-                assert singleNodeResult != null : obs.exceptionThrown(new IllegalArgumentException("Node" + pair.getLeft() + ": result can't be null!"));
-                try {
-                    if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
-                        final Double tmp = singleNodeResult instanceof Integer ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
-                        assert Math.abs(Double.parseDouble(pair.getRight()) - tmp) < InfrastructureTester.DELTA
-                                        || Double.parseDouble(pair.getRight()) == tmp.doubleValue() 
-                                        : obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
-                    } else if (singleNodeResult instanceof Boolean) {
-                        final String v = pair.getRight();
-                        final Boolean expected = Boolean.parseBoolean(v.equals("T") ? "true" : v.equals("F") ? "false" : pair.getRight());
-                        assert expected.booleanValue() == ((Boolean) singleNodeResult).booleanValue() 
-                                        : obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
-                    } else {
-                        assert pair.getRight().equals(singleNodeResult) 
-                                    : obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+        try {
+            assertEquals(expectedResult.size(), simulationRes.values().size());
+            for (final Pair<String, String> pair : expectedResult) {
+                if (!pair.getRight().equals(InfrastructureTester.DC)) {
+                    final Object singleNodeResult = simulationRes.get(pair.getLeft());
+                    try {
+                        assertNotNull(singleNodeResult);
+                        if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
+                            final Double tmp = singleNodeResult instanceof Integer ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
+                            assertEquals(Double.parseDouble(pair.getRight()), tmp, InfrastructureTester.DELTA);
+                        } else if (singleNodeResult instanceof Boolean) {
+                            final String v = pair.getRight();
+                            final Boolean expected = Boolean.parseBoolean(v.equals("T") ? "true" : v.equals("F") ? "false" : pair.getRight());
+                            assertEquals(expected.booleanValue(), ((Boolean) singleNodeResult).booleanValue());
+                        } else {
+                            assertEquals(pair.getRight(), singleNodeResult);
+                        }
+                    } catch (Exception | AssertionError e) {
+                        obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                        break;
                     }
-                } catch (Exception e) {
-                    obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
                 }
             }
+        } catch (AssertionError e) {
+            obs.exceptionThrown(new IllegalStateException("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length [" + simulationRes.values().size() + "]"));
         }
     }
 

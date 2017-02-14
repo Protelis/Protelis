@@ -1,0 +1,13 @@
+# result: {0 true}
+incarnation: test
+
+program: &program
+  - time-distribution: 1
+    program: broken
+
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    programs:
+      - *program
