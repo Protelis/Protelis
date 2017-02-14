@@ -76,15 +76,6 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
     }
 
     @Override
-    public RunProtelisProgram cloneOnNewNode(final Node<Object> n, final Reaction<Object> r) {
-        if (n instanceof ProtelisNode) {
-            return new RunProtelisProgram(environment, (ProtelisNode) n, r, random, program);
-        }
-        throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass() + ". A "
-                        + ProtelisNode.class + " is required.");
-    }
-
-    @Override
     public void execute() {
         vm.runCycle();
         node.setConcentration(this, vm.getCurrentValue());
@@ -126,5 +117,14 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
          * A Protelis program never writes in other nodes
          */
         return Context.LOCAL;
+    }
+
+    @Override
+    public Action<Object> cloneAction(final Node<Object> n, final Reaction<Object> r) {
+        if (n instanceof ProtelisNode) {
+            return new RunProtelisProgram(environment, (ProtelisNode) n, r, random, program);
+        }
+        throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass() + ". A "
+                        + ProtelisNode.class + " is required.");
     }
 }
