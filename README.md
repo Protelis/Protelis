@@ -80,13 +80,16 @@ The project has been developed using Eclipse, and can be easily imported in such
   * In the search form enter "findbugs", then press Enter
   * One of the retrieved entries should be "FindBugs Eclipse Plugin", click Install
   * Click "< Install More"
-  * In the search form enter "pmd", then press Enter
-  * One of the retrieved entries should be "pmd-eclipse-plugin". **Do not** confuse it with eclipse-pmd. click Install
   * In the search form enter "checkstyle", then press Enter
   * One of the retrieved entries should be "Checkstyle Plug-in" with a written icon whose text is "eclipse-cs", click Install
   * Click "Install Now >"
   * Wait for Eclipse to resolve all the features
   * Click "Confirm >"
+  * Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
+  * PMD must be installed directly from the official update site. Click "Help", then "Install new software".
+  * In the URL bar, paste `https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/`
+  * Press enter
+  * Select PMD for Eclipse 4
   * Follow the instructions, accept the license, wait for Eclipse to download and install the product, accept the installation and restart the IDE.
 * Set the line delimiter to LF (only for **Windows users**)
   * In Eclipse, click window -> preferences
