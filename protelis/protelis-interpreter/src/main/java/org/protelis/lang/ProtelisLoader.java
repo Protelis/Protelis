@@ -106,6 +106,7 @@ import java8.util.J8Arrays;
 import java8.util.Maps;
 import java8.util.Optional;
 import java8.util.function.BiFunction;
+import java8.util.function.BinaryOperator;
 import java8.util.function.Function;
 import java8.util.function.Functions;
 import java8.util.stream.Collectors;
@@ -367,7 +368,8 @@ public final class ProtelisLoader {
          * consequence function bodies must be evaluated sequentially.
          */
         final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
-                .collect(Collectors.toMap(ProtelisLoader::toR, nameToFun::get));
+                .collect(Collectors
+                    .toMap(ProtelisLoader::toR, nameToFun::get, throwException(), LinkedHashMap::new));
         Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), refToFun)));
         /*
          * Create the main program
@@ -604,6 +606,12 @@ public final class ProtelisLoader {
 
     private static List<Reference> toR(final List<?> l) {
         return stream(l).map(ProtelisLoader::toR).collect(Collectors.toList());
+    }
+
+    private static <T> BinaryOperator<T> throwException() {
+        return (x, y) -> {
+            throw new IllegalStateException("This is a bug in Protelis.");
+        };
     }
 
 }
