@@ -61,7 +61,7 @@ public interface Field extends Serializable {
      * @return The single device selected by reduction over the set of all
      *         devices
      */
-    DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude);
+    DeviceUID reduceKeys(BinaryOperator<DeviceUID> op, DeviceUID exclude);
 
     /**
      * Apply an operator to reduce over the set of all values, selecting a
@@ -78,7 +78,7 @@ public interface Field extends Serializable {
      *            the excluded device
      * @return The single value created by reduction over the set of all values
      */
-    Object reduceVals(final BinaryOperator<Object> op, final DeviceUID exclude, final Object defaultVal);
+    Object reduceVals(BinaryOperator<Object> op, DeviceUID exclude, Object defaultVal);
 
     /**
      * Apply an operator to reduce over the set of all device/value pairs,
@@ -92,8 +92,8 @@ public interface Field extends Serializable {
      *            are to be considered
      * @return The single pair selected by reduction over the set of all pairs
      */
-    Pair<DeviceUID, Object> reducePairs(final BinaryOperator<Pair<DeviceUID, Object>> accumulator,
-            final DeviceUID exclude);
+    Pair<DeviceUID, Object> reducePairs(BinaryOperator<Pair<DeviceUID, Object>> accumulator,
+            DeviceUID exclude);
 
     /**
      * @return An iterator over the set of neighbors.

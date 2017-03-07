@@ -11,14 +11,14 @@ public interface ExecutionEnvironment {
      *            the variable name
      * @return true if the variable is present
      */
-    boolean has(final String id);
+    boolean has(String id);
 
     /**
      * @param id
      *            the variable name
      * @return the value of the variable if present, false otherwise
      */
-    Object get(final String id);
+    Object get(String id);
 
     /**
      * @param id
@@ -27,7 +27,7 @@ public interface ExecutionEnvironment {
      *            a parameterizable default value
      * @return the value of the variable if present, defaultValue otherwise
      */
-    Object get(final String id, final Object defaultValue);
+    Object get(String id, Object defaultValue);
 
     /**
      * @param id
@@ -37,7 +37,7 @@ public interface ExecutionEnvironment {
      * @return true if there was previously a value associated with id, and
      *         false if not.
      */
-    boolean put(final String id, final Object v);
+    boolean put(String id, Object v);
 
     /**
      * @param id
@@ -45,7 +45,7 @@ public interface ExecutionEnvironment {
      * @return Returns the value to which this map previously associated the
      *         key, or null if the map contained no mapping for the key.
      */
-    Object remove(final String id);
+    Object remove(String id);
 
     /**
      * Called just after the VM is executed, to finalize information of the

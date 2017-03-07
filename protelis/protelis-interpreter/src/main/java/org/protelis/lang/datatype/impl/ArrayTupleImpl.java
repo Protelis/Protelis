@@ -407,4 +407,8 @@ public class ArrayTupleImpl implements Tuple {
         return J8Arrays.stream(arrayContents).max(COMPARE_TO).orElse(def);
     }
 
+    @Override
+    public Object[] toArray() {
+        return arrayContents.clone();
+    }
 }
