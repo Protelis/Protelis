@@ -409,6 +409,6 @@ public class ArrayTupleImpl implements Tuple {
 
     @Override
     public Object[] toArray() {
-    	return arrayContents.clone();
+        return arrayContents.clone();
     }
 }
