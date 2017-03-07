@@ -281,5 +281,9 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
      *         otherwise
      */
     Object max(Object def);
-
+    
+    /**
+     * @return an array with a copy of the contents of the tuple
+     */
+    Object[] toArray();
 }

@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: Java array of [2, 3, 10], which is length 3
+import java.util.Arrays.toString 
+
+toString([2, 3, 10].toArray());
