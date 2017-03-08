@@ -4,8 +4,6 @@ language: java
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y graphviz openjdk-7-jdk
-  - openssl aes-256-cbc -K $encrypted_e9b2eb0f7f1a_key -iv $encrypted_e9b2eb0f7f1a_iv -in prepare_environment.sh.enc -out prepare_environment.sh -d
-  - sh prepare_environment.sh
 env:
   global:
     - JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
@@ -16,11 +14,8 @@ env:
     - secure: "acaM42nAfxH9PqMa8DzptC9+0UP5CxIvhQW+FrTW3SkDDI2b4rdAmpOlg7dsaiuYXVwEwRKDwu+HmGayClC1JTeEjwXV6adH/2DPS7GwdZlxinX66PMxrOtJ8kfyuyr/LbTHNv4kvnVngGf7iyx9b9/7+1Yygs8znI71GNUY7SOg0nDVmk/aXZKWk3dg4OO3F1NEmwVDrWVHL+PIznZjpPiUZfmi+KJA+uJDAB6QnhBV78YlVi5FBG3NZG7V35ecFpIZ1w0Hqdst7QneRN4Sra3hJ22r8VJDWc4bcdVZ5dcXIOzTHIqeL9O4/oIOBHqgHjgIpYiXp93HSwoJD+PRXvF7JVXrebiIT6QT2+iLM7ph+Wj/suxTTsymhYI7iMBzRP0WDpsywBdx+LR7oBpoa32/v6KxCkdzt0RslUeMtRBRTltzAl9Sh9zcbw3RQtyBEpwtLwKF6+zfSUulTCP/JNMOHtfoYIv7+ZvgjRHXe0Jt3Ad/1HbHDpth9udYiBb3O9/bBWYl/rqxUAwGIGR9+pWPOIfIumZptI12eIiYOU2KLJ5P3/KRe9zIjVmH426TRrC1L/CQs4+N8Rt0S6nS5mkJ/tumxitfpmh+A+lt14P9sKxud8TCZpfHfmD1YOWwQA25oa3Kj+pErV1zm/zlHuGdmUYoeOkHOIL3Ruyx+OY="
 
 script:
-  - cd protelis
-  - "./gradlew check projectReport uploadArchives"
-  - "./gradlew fatJar"
-  - mkdir report
-  - cp --parent */build/reports build/reports report -R
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash travis_build.sh; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash travis_build_pull_request.sh; fi'
 
 before_deploy: echo Preparing for deploy
 deploy:

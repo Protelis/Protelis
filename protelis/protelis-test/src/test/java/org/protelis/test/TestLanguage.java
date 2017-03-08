@@ -659,6 +659,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test the Tuple array conversion method.
+     */
+    @Test
+    public void testTupleToArray() {
+        ProgramTester.runFileWithExplicitResult("/TupleArray01.pt", "[2.0, 3.0, 10.0]");
+    }
+
+    /**
      * Test the unary '!' operator.
      */
     @Test

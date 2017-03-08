@@ -1,7 +1,5 @@
 package org.protelis.lang.test;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,31 +16,15 @@ public class TestApis {
     private static final Logger L = Logger.getLogger(TestApis.class);
 
     private static void test(final String file) {
-        test(file, InfrastructureTester.EXAMPLE_RUNS);
+        test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
     }
 
-    private static void test(final String file, final int runs) {
-        try {
-            InfrastructureTester.runTest(file, runs);
-        } catch (InterruptedException | IOException e) {
-            L.error(e.getMessage(), e);
-        }
-    }
-
-    private static void test(final String file, final Object value) {
-        try {
-            InfrastructureTester.runTest(file, value);
-        } catch (InterruptedException | IOException e) {
-            L.error(e.getMessage(), e);
-        }
+    private static void test(final String file, final int simulationSteps, final int stabilitySteps) {
+        InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
     }
 
     private static void testMultirun(final String file) {
-        try {
-            InfrastructureTester.multiRun(file);
-        } catch (InterruptedException | IOException e) {
-            L.error(e.getMessage(), e);
-        }
+        InfrastructureTester.multiRunTest(file);
     }
 
     private static void testProgram(final String file) {
@@ -60,6 +42,14 @@ public class TestApis {
     };
 
     /**
+     * Test aggregation.pt.
+     */
+    @Test
+    public void testAggregation() {
+        test("aggregation");
+    }
+
+    /**
      * Test addRange.pt.
      */
     @Test
@@ -73,6 +63,14 @@ public class TestApis {
     @Test
     public void testAddRangeWithLag() {
         test("addRangeWithLag");
+    }
+
+    /**
+     * Test alignedMapDistanceTo.pt.
+     */
+    @Test
+    public void testAlignedMapDistanceTo() {
+        test("alignedMapDistanceTo");
     }
 
     /**
@@ -284,27 +282,43 @@ public class TestApis {
     }
 
     /**
-     * Test computeMultiRegion.pt.
+     * Test multiRegion.pt.
      */
     @Test
-    public void testComputeMultiRegion() {
-        test("computeMultiRegion");
+    public void testMultiRegion() {
+        test("multiRegion");
     }
 
     /**
-     * Test computeMultiRegion2.pt.
+     * Test multiRegion2.pt.
      */
     @Test
-    public void testComputeMultiRegion2() {
-        test("computeMultiRegion2");
+    public void testMultiRegion2() {
+        test("multiRegion2");
     }
 
     /**
      * Test computeMultiRegion3.pt.
      */
     @Test
-    public void testComputeMultiRegion3() {
-        test("computeMultiRegion3");
+    public void testMultiRegion3() {
+        test("multiRegion3");
+    }
+
+    /**
+     * Test countDevices.pt.
+     */
+    @Test
+    public void testCountDevices() {
+        test("countDevices");
+    }
+
+    /**
+     * Test countDevicesInRegion.pt.
+     */
+    @Test
+    public void testCountDevicesInRegion() {
+        test("countDevicesInRegion");
     }
 
     /**
@@ -329,14 +343,6 @@ public class TestApis {
     @Test
     public void testCRFGradient() {
         test("crfGradient");
-    }
-
-    /**
-     * Test CRFgradient2.pt.
-     */
-    @Test
-    public void testCRFGradient2() {
-        test("crfGradient2");
     }
 
     /**
@@ -387,6 +393,14 @@ public class TestApis {
     }
 
     /**
+     * Test diameterInArea.pt.
+     */
+    @Test
+    public void testDiameterInArea() {
+        test("diameterInArea");
+    }
+
+    /**
      * Test dilate.pt.
      */
     @Test
@@ -419,6 +433,14 @@ public class TestApis {
     }
 
     /**
+     * Test distanceToWithMetric.pt.
+     */
+    @Test
+    public void testDistanceToWithMetric() {
+        test("distanceToWithMetric");
+    }
+
+    /**
      * Test distanceTo with obstacle.
      */
     @Test
@@ -427,11 +449,19 @@ public class TestApis {
     }
 
     /**
+     * Test evaporation.pt.
+     */
+    @Test
+    public void testEvaporation() {
+        testProgram("evaporation");
+    }
+
+    /**
      * Test ebfFilter.pt.
      */
     @Test
     public void testExponentialBackoffFilter() {
-        testProgram("ebfFilter");
+        testProgram("exponentialBackoffFilter");
     }
 
     /**
@@ -555,14 +585,6 @@ public class TestApis {
     }
 
     /**
-     * Test gossip2.pt.
-     */
-    @Test
-    public void testGossip2() {
-        test("gossip2");
-    }
-
-    /**
      * Test gossip3.pt.
      */
     @Test
@@ -592,6 +614,30 @@ public class TestApis {
     @Test
     public void testGradient() {
         test("gradient");
+    }
+
+    /**
+     * Test multiC.pt.
+     */
+    @Test
+    public void testMultiC() {
+        test("multiC");
+    }
+
+    /**
+     * Test multiG.pt.
+     */
+    @Test
+    public void testMultiG() {
+        test("multiG");
+    }
+
+    /**
+     * Test multiGradient.pt.
+     */
+    @Test
+    public void testMultiGradient() {
+        test("multiGradient");
     }
 
     /**
@@ -707,11 +753,11 @@ public class TestApis {
     }
 
     /**
-     * Test logic.pt.
+     * Test nbrDelay.pt.
      */
     @Test
-    public void testLogic() {
-        testProgram("logic");
+    public void testNbrDelay() {
+        test("nbrDelay");
     }
 
     /**
@@ -723,7 +769,7 @@ public class TestApis {
     }
 
     /**
-     * Test self.nbrRange().
+     * Test nbrRange.pt.
      */
     @Test
     public void testNbrRange() {
@@ -779,6 +825,30 @@ public class TestApis {
     }
 
     /**
+     * Test publishSubscribe.pt.
+     */
+    @Test
+    public void testPublishSubscribe() {
+        test("publishSubscribe");
+    }
+
+    /**
+     * Test quorumSensing.pt.
+     */
+    @Test
+    public void testQuorumSensing() {
+        test("quorumSensing");
+    }
+
+    /**
+     * Test quorumSensingWithCondition.pt.
+     */
+    @Test
+    public void testQuorumSensingWithCondition() {
+        test("quorumSensingWithCondition");
+    }
+
+    /**
      * Test range.pt.
      */
     @Test
@@ -799,7 +869,7 @@ public class TestApis {
      */
     @Test
     public void testS() {
-        test("S", true);
+        test("S");
     }
 
     /**
@@ -808,14 +878,6 @@ public class TestApis {
     @Test
     public void testSequence() {
         testProgram("sequence");
-    }
-
-    /**
-     * Test sequence.pt.
-     */
-    @Test
-    public void testSequence2() {
-        testMultirun("sequence");
     }
 
     /**
@@ -904,6 +966,14 @@ public class TestApis {
     @Test
     public void testTrueFor() {
         testProgram("trueFor");
+    }
+
+    /**
+     * Test utils.pt.
+     */
+    @Test
+    public void testUtils() {
+        testProgram("utils");
     }
 
     /**

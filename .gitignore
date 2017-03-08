@@ -6,3 +6,5 @@ build/
 gradle.prefs
 version.info
 .metadata/
+.recommenders/
+

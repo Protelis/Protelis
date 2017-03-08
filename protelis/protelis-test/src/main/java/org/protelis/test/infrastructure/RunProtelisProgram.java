@@ -70,18 +70,9 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
         random = rand;
         this.netmgr = new CachingNetworkManager();
         node.setNetworkManger(netmgr);
-        final ExecutionContext ctx = new SimpleDevice(env, n, r, rand, netmgr);
+        final ExecutionContext ctx = new DummyDevice(env, n, r, rand, netmgr);
         vm = new ProtelisVM(prog, ctx);
         round = 0;
-    }
-
-    @Override
-    public RunProtelisProgram cloneOnNewNode(final Node<Object> n, final Reaction<Object> r) {
-        if (n instanceof ProtelisNode) {
-            return new RunProtelisProgram(environment, (ProtelisNode) n, r, random, program);
-        }
-        throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass() + ". A "
-                        + ProtelisNode.class + " is required.");
     }
 
     @Override
@@ -126,5 +117,14 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
          * A Protelis program never writes in other nodes
          */
         return Context.LOCAL;
+    }
+
+    @Override
+    public Action<Object> cloneAction(final Node<Object> n, final Reaction<Object> r) {
+        if (n instanceof ProtelisNode) {
+            return new RunProtelisProgram(environment, (ProtelisNode) n, r, random, program);
+        }
+        throw new IllegalStateException("Can not load a Protelis program on a " + n.getClass() + ". A "
+                        + ProtelisNode.class + " is required.");
     }
 }

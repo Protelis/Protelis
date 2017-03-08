@@ -71,6 +71,33 @@ public def diff(a, b) {
 }
 
 /**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is equal to b, false otherwise
+ */
+public def equal(a, b) {
+    a == b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is greater than b, false otherwise
+ */
+public def greaterThan(a, b) {
+    a > b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is greater than or equal to b, false otherwise
+ */
+public def greaterEqual(a, b) {
+    a >= b
+}
+
+/**
  * *-hood wrapper.
  *
  * @param local        T, local value
@@ -99,15 +126,15 @@ public def hoodW(local, aggregator, default, fieldBuilder) {
  * @return             T, reduced value
  */
 public def hoodWstateful(local, aggregator, default, fieldBuilder) {
-     rep (v <- local) {
-         aggregator.apply(local,
-             hood(
-                 (a, b) -> { aggregator.apply(a, b) },
-                 default,
-                 fieldBuilder.apply(v)
-             )
-         )
-     }
+    rep (v <- local) {
+        aggregator.apply(local,
+            hood(
+                (a, b) -> { aggregator.apply(a, b) },
+                default,
+                fieldBuilder.apply(v)
+            )
+        )
+    }
 }
 
 /**
@@ -131,10 +158,28 @@ public def identity(a) {
 /**
  * @param a T, first field
  * @param b T, second field
+ * @return  bool, true if a is less than b, false otherwise
+ */
+public def lessThan(a, b) {
+    a < b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is less than or equal to b, false otherwise
+ */
+public def lessEqual(a, b) {
+    a <= b
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
  * @return  T, maximum between the two fields
  */
 public def max(a, b) {
-    if (a.compareTo(b) > 0 ) {
+    mux (a > b) {
         a
     } else {
         b
@@ -156,11 +201,18 @@ public def mean(local, field) {
  * @return  num, minimum between the two fields
  */
 public def min(a, b) {
-    if (a.compareTo(b) < 0 ) {
+    mux (a < b) {
         a
     } else {
         b
     }
+}
+
+/**
+ * @return node's UID
+ */
+public def getUID() {
+    self.getDeviceUID().toString()
 }
 
 /**
@@ -185,6 +237,15 @@ public def norm(tuple, p) {
  */
 public def not(a) {
     !a
+}
+
+/**
+ * @param a T, first field
+ * @param b T, second field
+ * @return  bool, true if a is not equal to b, false otherwise
+ */
+public def notEqual(a, b) {
+    a != b
 }
 
 /**

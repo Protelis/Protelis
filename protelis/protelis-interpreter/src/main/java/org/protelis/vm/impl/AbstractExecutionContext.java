@@ -8,15 +8,14 @@
  *******************************************************************************/
 package org.protelis.vm.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java8.util.Maps;
-import java.util.Objects;
-import java8.util.function.Function;
+import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
 
-import org.apache.commons.math3.util.Pair;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -31,14 +30,14 @@ import org.protelis.vm.util.CodePath;
 import org.protelis.vm.util.Stack;
 import org.protelis.vm.util.StackImpl;
 
-import com.google.common.collect.MapMaker;
+import com.google.common.collect.Lists;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
-
-import static java8.util.stream.StreamSupport.stream;
+import java8.util.Maps;
+import java8.util.function.Function;
 
 /**
  * Partial implementation of ExecutionContext, containing functionality expected
@@ -47,8 +46,6 @@ import static java8.util.stream.StreamSupport.stream;
  */
 public abstract class AbstractExecutionContext implements ExecutionContext {
 
-    private static final MapMaker MAPMAKER = new MapMaker();
-
     private final TByteList callStack = new TByteArrayList();
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
@@ -56,8 +53,10 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private Stack gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Object> toSend;
+    private final List<AbstractExecutionContext> restrictedContexts = Lists.newArrayList(); 
     private Number previousRoundTime;
     private final ExecutionEnvironment env;
+    private int exportsSize;
 
     /**
      * Create a new AbstractExecutionContext.
@@ -88,9 +87,14 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         previousRoundTime = getCurrentTime();
         env.commit();
         nm.shareState(toSend);
+        exportsSize = toSend.size();
         gamma = null;
         theta = null;
         toSend = null;
+        for (final AbstractExecutionContext rctx: restrictedContexts) {
+            rctx.commit();
+        }
+        restrictedContexts.clear();
     }
 
     @Override
@@ -102,8 +106,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         callStack.clear();
         callStack.add((byte) 1);
         env.setup();
-        toSend = MAPMAKER.makeMap();
-        gamma = new StackImpl(new LinkedHashMap<>(functions));
+        toSend = newLinkedHashMapWithExpectedSize(exportsSize);
+        gamma = new StackImpl(functions);
         theta = Collections.unmodifiableMap(nm.getNeighborState());
     }
 
@@ -141,7 +145,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
     @Override
     public final AbstractExecutionContext restrictDomain(final Field f) {
-        final Map<DeviceUID, Map<CodePath, Object>> restricted = new HashMap<>(theta.size());
+        final Map<DeviceUID, Map<CodePath, Object>> restricted = newLinkedHashMapWithExpectedSize(theta.size());
         final DeviceUID localDevice = getDeviceUID();
         for (final DeviceUID n : f.nodeIterator()) {
             if (!n.equals(localDevice)) {
@@ -153,6 +157,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.gamma = gamma;
         restrictedInstance.toSend = toSend;
         restrictedInstance.callStack.addAll(callStack);
+        restrictedInstance.functions = functions;
+        restrictedContexts.add(restrictedInstance);
         return restrictedInstance;
     }
 
@@ -173,15 +179,13 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
                     + "This is probably a bug in Protelis");
         }
         final Field res = DatatypeFactory.createField(theta.size() + 1);
-        stream(theta.entrySet())
-                .map(e -> new Pair<>(e.getKey(), e.getValue().get(codePath)))
-                .filter(e -> e.getValue() != null)
-                /*
-                 * This cast is OK by construction, if no bug is there and no
-                 * wild casts are done by the caller.
-                 */
-                .forEachOrdered(e -> res.addSample(e.getKey(), computeValue.apply((T) e.getValue())));
-        res.addSample(getDeviceUID(), computeValue.apply(localValue));
+        for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
+            final Object received = e.getValue().get(codePath);
+            if (received != null) {
+                res.addSample(e.getKey(), computeValue.apply((T) received));
+            }
+        }
+        res.addSample(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
         return res;
     }
 

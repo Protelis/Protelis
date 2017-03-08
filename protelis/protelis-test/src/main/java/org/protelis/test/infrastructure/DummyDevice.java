@@ -2,7 +2,6 @@ package org.protelis.test.infrastructure;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -21,7 +20,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
  * A simple implementation of a Protelis-based device, encapsulating a
  * ProtelisVM and a network interface.
  */
-public class SimpleDevice extends AbstractExecutionContext
+public class DummyDevice extends AbstractExecutionContext
                 implements SpatiallyEmbeddedDevice, LocalizedDevice, TimeAwareDevice {
     private final RandomGenerator r;
     private final ProtelisNode node;
@@ -42,7 +41,7 @@ public class SimpleDevice extends AbstractExecutionContext
      * @param netmgr
      *            netmgr
      */
-    public SimpleDevice(final Environment<Object> environment, final ProtelisNode node, final Reaction<Object> reaction,
+    public DummyDevice(final Environment<Object> environment, final ProtelisNode node, final Reaction<Object> reaction,
                     final RandomGenerator random, final NetworkManager netmgr) {
         super(node, netmgr);
         r = random;
@@ -50,17 +49,6 @@ public class SimpleDevice extends AbstractExecutionContext
         this.env = environment;
         this.netmgr = netmgr;
         this.node = node;
-    }
-
-    /**
-     * Move in a direction specified by the 3-tuple vector in meters Uses a
-     * kludge vector in which +X = East, +Y = North.
-     * 
-     * @param vector
-     *            move the device of the given vector
-     */
-    public void move(final Tuple vector) {
-        throw new NotImplementedException("move is not supported at the moment");
     }
 
     @Override
@@ -75,8 +63,8 @@ public class SimpleDevice extends AbstractExecutionContext
     }
 
     /*
-     * ATTENTION: getDeltaTime has been overridden to easily test the results.
-     * If you need to estimate the difference between two reactions you can
+     * ATTENTION: getDeltaTime has been overridden for testing purpose. If you
+     * need to estimate the actual difference between two reactions you can
      * comment this method as it is already implemented in
      * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
      * getDeltaTime will fail.
@@ -90,12 +78,13 @@ public class SimpleDevice extends AbstractExecutionContext
 
     @Override
     protected AbstractExecutionContext instance() {
-        return new SimpleDevice(env, node, react, r, netmgr);
+        return new DummyDevice(env, node, react, r, netmgr);
     }
 
     /**
      * Note: this should be going away in the future, to be replaced by standard
      * Java random.
+     * 
      * @return a double random value
      */
     @Override
@@ -106,6 +95,11 @@ public class SimpleDevice extends AbstractExecutionContext
     @Override
     public Field nbrRange() {
         return buildField(otherNode -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) otherNode), node);
+    }
+
+    @Override
+    public Field nbrDelay() {
+        return buildField(otherNode -> 1.0, node);
     }
 
     @Override

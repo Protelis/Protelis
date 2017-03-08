@@ -1,0 +1,13 @@
+# result: {0}
+incarnation: test
+
+program: &program
+  - time-distribution: 1
+    program: binary01
+
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    programs:
+      - *program

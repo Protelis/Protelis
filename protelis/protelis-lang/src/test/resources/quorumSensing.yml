@@ -1,7 +1,7 @@
 # result:
-#  {0 1.0, 1 1.0,  2 1.0,  3 1.0,
-#   4 1.0, 5 1.0,  6 1.0,  7 1.0,
-#   8 1.0, 9 1.0, 10 1.0, 11 1.0}
+#  {0 12, 1 12,  2 12,  3 12,
+#   4 12, 5 12,  6 12,  7 12,
+#   8 12, 9 12, 10 12, 11 12}
 
 incarnation: test
 
@@ -11,19 +11,17 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: gossip2
+    program: quorumSensing
               
 displacements:
   - in:
       type: Grid
-      parameters: [0, 0, 3, 2, 1, 1, 0.2, 0.2]
+      parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
     contents:
-      - molecule: n
-        concentration: 3.0
       - in:
           type: Circle
           parameters: [0, 0, 0.5]
-        molecule: n
-        concentration: 1.0
+        molecule: source
+        concentration: true
     programs:
       - *program

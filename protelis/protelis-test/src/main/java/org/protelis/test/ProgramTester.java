@@ -13,9 +13,9 @@ import org.apache.commons.io.IOUtils;
 import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.ProtelisLoader;
+import org.protelis.test.infrastructure.DummyContext;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
-import org.protelis.vm.impl.SimpleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +114,7 @@ public final class ProgramTester {
                     result = extractor.group(SL_NAME);
                 }
                 final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
-                final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new SimpleContext());
+                final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
                 vm.runCycle();
                 assertEquals(vm.getCurrentValue(),
                                 execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult);
@@ -154,7 +154,7 @@ public final class ProgramTester {
         } catch (Exception e) {
             fail();
         }
-        final ProtelisVM vm = new ProtelisVM(program, new SimpleContext());
+        final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
             L.debug("[rnd {}] res: {}", i, vm.getCurrentValue());

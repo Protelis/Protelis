@@ -39,6 +39,7 @@ public final class Reference implements Serializable {
                 }
             }
             uid = hash;
+            strRep = var.getName();
         } else if (obj instanceof JvmOperation) {
             final JvmOperation method = (JvmOperation) obj;
             strRep = method.getQualifiedName();

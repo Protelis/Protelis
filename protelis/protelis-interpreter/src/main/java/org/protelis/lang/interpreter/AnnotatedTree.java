@@ -63,7 +63,7 @@ public interface AnnotatedTree<T> extends Serializable {
      * @param frameId
      *            id marker for new frame
      */
-    void evalInNewStackFrame(final ExecutionContext context, final byte frameId);
+    void evalInNewStackFrame(ExecutionContext context, byte frameId);
 
     /**
      * @param i

@@ -1,0 +1,87 @@
+module protelis:coord:meta:timereplication
+import org.apache.commons.math3.util.FastMath.max
+import org.apache.commons.math3.util.FastMath.pow
+import org.apache.commons.math3.util.FastMath.floor
+import org.apache.commons.math3.util.FastMath.min
+import protelis:coord:sharedtimer
+import protelis:coord:spreading
+
+/*
+ * This function should return false if the clock is out of date
+ * (namely: no device in the network is still on that clock).
+ */
+def isCurrent(currentClock, clock, k) {
+    currentClock - clock < k
+}
+
+def isNewClock(processes, clock) {
+    processes
+        .map(self, process -> {process.get(0)})
+        .filter(self, pid -> {clock == pid})
+        .isEmpty()
+}
+
+def clock(tuple) {
+    tuple.get(0)
+}
+
+def emptyProcess(default) {
+    rep (p <- [Infinity, () -> {"EMPTY"}, default]) {
+        p
+    }
+}
+
+def alignedExecution(processes, default) {
+    alignedMap(
+        nbr(processes.map(self, p -> { [p.get(0), p] } )),
+        (pid, pField) -> { true },
+        (pid, pField) -> {
+            let p = hoodPlusSelf(
+                (a, b) -> {if (a.compareTo(b) < 0) {a} else {b}},
+                emptyProcess(default),
+                pField
+            );
+            [p.get(0), p.get(1), p.get(1).apply()]
+        },
+        emptyProcess(default)
+    ).map(self, tProc -> { tProc.get(1) } );
+}
+
+/**
+ * Replicate a function over time.
+ * 
+ * p is inversely proportional to k.
+ * p = (4 * d * self.getDeltaTime()) / (k - 1), where d is the network diameter.
+ * @param process () -> T, function to be replicated
+ * @param default T, default value
+ * @param p       num, time to live of each replica
+ * @param k       num, number of replicas
+ * @return        T, execute the newest function or default
+ */
+public def timeReplicated(process, default, p, k) {
+    let clock = sharedTimer(p, self.getDeltaTime());
+    rep (processes <- []) {
+        // Add process if the clock is new
+        if (isNewClock(processes, clock)) {
+            processes = processes.append([clock, process, default])
+        } else {0};
+        // Align on clock, execute process
+        alignedExecution(processes.filter(self, process -> {clock - process.get(0) < p * k }), default)
+    }
+    .min(emptyProcess(default))
+    .get(2)
+}
+
+/**
+ * Replicate a function over time.
+ * 
+ * p is equal to (4 * d * self.getDeltaTime()) / (k - 1).
+ * @param process () -> T, function to be replicated
+ * @param default T, default value
+ * @param d       num, network diameter
+ * @param k       num, number of replicas. Must be greater than 1.
+ * @return        T, execute the newest function or default
+ */
+public def timeReplicatedWithK(process, default, d, k) {
+    timeReplicated(process, default, roundTripTime(d)/(k-1), k)
+}

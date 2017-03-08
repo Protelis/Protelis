@@ -1,0 +1,12 @@
+import protelis:coord:accumulation
+import protelis:coord:meta
+import protelis:coord:spreading
+import protelis:lang:utils
+
+let res = 
+    multiInstance(
+        ["0", "11"],
+        id -> { C(distanceTo(id == getUID()), sum, 1, 0) },
+        Infinity
+    );
+res.get(0).get(1) + res.get(1).get(1);

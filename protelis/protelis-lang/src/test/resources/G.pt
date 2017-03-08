@@ -1,4 +1,4 @@
 import protelis:coord:spreading
 import protelis:lang:utils
 
-G(env.has("source"), self.getDeviceUID().toString(), nbrRange, identity)
+G(env.has("source"), getUID(), nbrRange, identity)

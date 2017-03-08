@@ -1,2 +1,2 @@
 import protelis:coord:accumulation
-average(env.has("source"), 1)
+average(env.has("source"), 2)

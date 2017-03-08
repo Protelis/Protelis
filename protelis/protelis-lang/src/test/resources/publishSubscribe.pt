@@ -1,0 +1,3 @@
+import protelis:coord:meta
+
+publishSubscribe(env.has("publisher"), env.has("subscriber"), "foo", "bar")
