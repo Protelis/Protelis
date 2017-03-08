@@ -174,7 +174,7 @@ public def channel2WithObstacle(source, destination, obstacle, width) {
  * @return       bool, true if the device is closer than range to the source
  */
 public def closerThan(source, range) {
-    distanceToWithMetric(source, nbrRange) < range
+    closerThanWithMetric(source, nbrRange, range)
 }
 
 /**
