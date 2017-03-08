@@ -22,8 +22,6 @@ allprojects {
         compile "org.apache.commons:commons-math3:$math3Version"
         compile "org.slf4j:slf4j-api:$slf4jVersion"
 
-        runtime "ch.qos.logback:logback-classic:$logbackVersion"
-
         testCompile "junit:junit:$junitVersion"
 
         testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
