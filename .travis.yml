@@ -16,7 +16,7 @@ env:
 
 script:
   - cd protelis
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ../travis/run_on_pull_requests; else ../travis/run_on_non_pull_requests; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ../run_on_pull_requests.sh; else bash ../run_on_non_pull_requests.sh; fi'
 
 before_deploy: echo Preparing for deploy
 deploy:
