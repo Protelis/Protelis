@@ -294,7 +294,7 @@ public def distanceBetween(source, dest) {
  * @return       num, smallest distance between source and destination devices
  */
 public def distanceBetweenWithMetric(source, dest, metric) {
-    G(source, distanceToWithMetric(dest, metric), metric, identity)
+    broadcast(source, distanceToWithMetric(dest, metric))
 }
 
 /*
