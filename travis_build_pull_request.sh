@@ -1,3 +1,4 @@
 #!/bin/bash
 set -e
-./gradlew
+cd protelis
+./gradlew check install
