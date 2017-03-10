@@ -164,12 +164,11 @@ public final class ReflectionUtils {
             final Method[] candidates = clazz.getMethods();
             final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
             for (final Method m : candidates) {
-                final Class<?>[] params = m.getParameterTypes();
-                if (params.length == argClass.length && methodName.equals(m.getName())) {
+                if (compatibleLength(m, argClass) && methodName.equals(m.getName())) {
                     int p = 0;
                     boolean compatible = true;
                     for (int i = 0; compatible && i < argClass.length; i++) {
-                        final Class<?> expected = params[i];
+                        final Class<?> expected = nthArgumentType(m, i);
                         final Class<?> actual = argClass[i];
                         if (expected.isAssignableFrom(actual)) {
                             /*
