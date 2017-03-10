@@ -27,7 +27,7 @@ public def average(sink, value) {
         distanceTo(sink), 0, sum,
         (a) -> { a.get(0) / a.get(1) },
         [value, 1],
-        [value, 1]
+        [0, 0]
     )
 }
 
