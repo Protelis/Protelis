@@ -85,9 +85,9 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
          * Filter to same name and same number of arguments (or compatible, for varargs)
          */
         final List<Method> matches = methods.filter(
-        		m -> (m.getParameterTypes().length == parameterCount || 
-        			(m.isVarArgs() && m.getParameterTypes().length >= parameterCount - 1)))
-        		.filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
+                m -> (m.getParameterTypes().length == parameterCount
+                      || (m.isVarArgs() && m.getParameterTypes().length >= parameterCount - 1)))
+                .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
         if (matches.isEmpty()) {
             throw new IllegalStateException("No method matches " + clazz + "." + methodName);
         }
