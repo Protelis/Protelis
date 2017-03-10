@@ -10,6 +10,7 @@ package org.protelis.lang.util;
 
 import static java8.util.stream.StreamSupport.stream;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -280,15 +281,15 @@ public final class ReflectionUtils {
             final Method toInvoke,
             final Object target,
             final Object[] args) {
-        final Class<?>[] expectedArgs = toInvoke.getParameterTypes();
-        if (expectedArgs.length != args.length) {
+        if (!compatibleLength(toInvoke, args)) {
             throw new IllegalArgumentException("Number of parameters of " + toInvoke
                     + " does not match the provided array " + Arrays.toString(args));
         }
         final boolean fieldTarget = target instanceof Field;
         final TIntList fieldIndexes = new TIntArrayList(args.length);
         for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof Field && !Field.class.isAssignableFrom(expectedArgs[i])) {
+            if (args[i] instanceof Field
+                    && !Field.class.isAssignableFrom(nthArgumentType(toInvoke, i))) {
                 fieldIndexes.add(i);
             }
         }
@@ -315,8 +316,10 @@ public final class ReflectionUtils {
      *         if something goes wrong.
      */
     public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
+        Object[] useArgs = repackageIfVarArgs(method, args);
+        System.err.println("method = "+method+", target = "+target+", useArgs = "+Arrays.toString(useArgs));
         try {
-            return method.invoke(target, args);
+            return method.invoke(target, useArgs);
         } catch (Exception exc) {
             /*
              * Failure: maybe some cast was required?
@@ -324,18 +327,60 @@ public final class ReflectionUtils {
             final Class<?>[] params = method.getParameterTypes();
             for (int i = 0; i < params.length; i++) {
                 final Class<?> expected = params[i];
-                final Object actual = args[i];
+                final Object actual = useArgs[i];
                 if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
-                    args[i] = PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
+                    useArgs[i] = PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
                 }
             }
             try {
-                return method.invoke(target, args);
+                return method.invoke(target, useArgs);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 L.error("Error invoking method", e);
                 throw new IllegalStateException(
-                        "Cannot invoke " + method + " with arguments " + Arrays.toString(args) + " on " + target, e);
+                        "Cannot invoke " + method + " with arguments " + Arrays.toString(useArgs) + " on " + target, e);
             }
+        }
+    }
+
+    private static boolean compatibleLength(final Method m, final Object[] args) {
+        if (m.isVarArgs()) {
+            return args.length >= (m.getParameterTypes().length - 1);
+        } else {
+            return m.getParameterTypes().length == args.length;
+        }
+    }
+
+    private static Class<?> nthArgumentType(final Method m, final int n) {
+        final Class<?>[] expectedArgs = m.getParameterTypes();
+        if (m.isVarArgs() && n >= (expectedArgs.length - 1)) {
+            Class<?> varargType = expectedArgs[expectedArgs.length - 1];
+            return varargType.getComponentType();
+        } else {
+            return expectedArgs[n];
+        }
+    }
+
+    private static Object[] repackageIfVarArgs(final Method m, final Object[] args) {
+        if (!m.isVarArgs()) {
+            return args;
+        } else {
+            final Class<?>[] expectedArgs = m.getParameterTypes();
+            // We will repackage into an array of the expected length
+            Object[] newargs = new Object[expectedArgs.length];
+            for (int i = 0; i < expectedArgs.length - 1; i++) { // repackage all the base args
+                newargs[i] = args[i];
+            }
+            // Determine how many arguments need repackaging
+            int numVarArgs = args.length - (expectedArgs.length - 1);
+            // Make an array of the appropriate type, then fill it in
+            Class<?> varargType = expectedArgs[expectedArgs.length - 1];
+            Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
+            for (int i = 0; i < numVarArgs; i++) {
+                vararg[i] = args[i + expectedArgs.length - 1];
+            }
+            // Put the new array in the last argument and return
+            newargs[newargs.length - 1] = vararg;
+            return newargs;
         }
     }
 

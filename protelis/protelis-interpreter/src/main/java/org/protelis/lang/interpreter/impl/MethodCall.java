@@ -82,18 +82,12 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
             methods = methods.filter(m -> !Modifier.isStatic(m.getModifiers()));
         }
         /*
-         * Same number of arguments
+         * Filter to same name and same number of arguments (or compatible, for varargs)
          */
-        if (getBranches().size() != parameterCount + (ztatic ? 0 : 1)) {
-            throw new IllegalArgumentException(clazz + "." + methodName + " expects " + parameterCount + "arguments."
-                    + getBranches() + "was provided instead.");
-        }
-        //OLD m.getParameterCount()
-        final List<Method> matches = methods.filter(m -> m.getParameterTypes().length == parameterCount)
-                .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
-        /*
-         * Same name
-         */
+        final List<Method> matches = methods.filter(
+        		m -> (m.getParameterTypes().length == parameterCount || 
+        			(m.isVarArgs() && m.getParameterTypes().length >= parameterCount - 1)))
+        		.filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
         if (matches.isEmpty()) {
             throw new IllegalStateException("No method matches " + clazz + "." + methodName);
         }

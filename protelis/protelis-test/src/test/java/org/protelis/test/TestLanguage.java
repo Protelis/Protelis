@@ -414,6 +414,14 @@ public class TestLanguage {
     }
 
     /**
+     * Confirm that call can be made to Java functions with varargs.
+     */
+    @Test
+    public void testMethod08() {
+        ProgramTester.runFile("/method08.pt");
+    }
+
+    /**
      * Test showing that when unqualified imported Protelis method names
      * conflict, first imported shadows later imports.
      */
