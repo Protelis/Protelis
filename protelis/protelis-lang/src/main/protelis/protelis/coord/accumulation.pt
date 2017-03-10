@@ -192,7 +192,7 @@ public def cossip(sink, value, f) {
  * @return          num, number of devices
  */
 public def countDevices(potential) {
-    countDevicesWithCondition(potential, true)
+    C(potential, sum, 1, 0)
 }
 
 /**
