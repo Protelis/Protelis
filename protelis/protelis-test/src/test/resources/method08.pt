@@ -1,10 +1,10 @@
 // EXPECTED_RESULT: 18
 
 import java.lang.String.format
-import java.util.Arrays.asList
+import com.google.common.collect.Lists.newArrayList
 
 // Check call of over-length and minimum-length varargs method
-let l = asList(5,3,7,2,1); // Check call of varargs with multiple args
-l.addAll(asList()); // Check call of varargs with zero args
+let l = newArrayList(5,3,7,2,1); // Check call of varargs with multiple args
+l.addAll(newArrayList()); // Check call of varargs with zero args
 // Check call of dynamically selected varargs method 
 l.get(2) + format("Stringy %s %s", "a", "b").length();
