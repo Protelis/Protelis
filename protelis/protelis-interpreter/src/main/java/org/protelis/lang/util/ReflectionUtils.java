@@ -316,8 +316,6 @@ public final class ReflectionUtils {
      */
     public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
         Object[] useArgs = repackageIfVarArgs(method, args);
-        // TODO: this is necessary for getting through interface masking, but problematic
-        method.setAccessible(true);
         try {
             return method.invoke(target, useArgs);
         } catch (Exception exc) {
