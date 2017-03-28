@@ -7,4 +7,4 @@ gradle.prefs
 version.info
 .metadata/
 .recommenders/
-
+*/*/.settings/*.prefs
