@@ -158,6 +158,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.toSend = toSend;
         restrictedInstance.callStack.addAll(callStack);
         restrictedInstance.functions = functions;
+        restrictedInstance.exportsSize = exportsSize;
+        restrictedInstance.previousRoundTime = previousRoundTime;
         restrictedContexts.add(restrictedInstance);
         return restrictedInstance;
     }

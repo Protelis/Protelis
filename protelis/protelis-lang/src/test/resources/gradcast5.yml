@@ -11,17 +11,11 @@ network-model:
 
 program: &program
   - time-distribution: 1
-    program: gradcast
+    program: gradcast5
 
 displacements:
   - in:
       type: Grid
       parameters: [0, 0, 3, 2, 1, 1, 0, 0]
-    contents:
-      - in:
-          type: Circle
-          parameters: [0, 0, 0.5]
-        molecule: source
-        concentration: true
     programs:
       - *program
