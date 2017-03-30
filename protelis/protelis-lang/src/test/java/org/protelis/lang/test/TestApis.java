@@ -625,6 +625,22 @@ public class TestApis {
     }
 
     /**
+     * Test gradcast4.pt.
+     */
+    @Test
+    public void testGradcast4() {
+        test("gradcast4");
+    }
+
+    /**
+     * Test gradcast5.pt.
+     */
+    @Test
+    public void testGradcast5() {
+        test("gradcast5");
+    }
+
+    /**
      * Test gradient.pt.
      */
     @Test

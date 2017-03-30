@@ -432,12 +432,12 @@ public def Gnull(v, default) {
  * Gradcast.
  *
  * @param source     bool, whether the device is a source
- * @param gradient   num, gradient to follow
  * @param local      T, local value
+ * @param gradient   num, gradient to follow
  * @param accumulate (T) -> T, how to accumulate local values
  * @return           T, accumulated value
  */
-public def gradcast(source, gradient, local, accumulate) {
+public def gradcast(source, local, gradient, accumulate) {
     rep (value <- local) {
         mux (source) {
             local
