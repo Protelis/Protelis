@@ -1,0 +1,3 @@
+import protelis:coord:spreading
+import protelis:lang:utils
+gradcast(env.has("source"), distanceTo(env.has("source")), 0, addRange)

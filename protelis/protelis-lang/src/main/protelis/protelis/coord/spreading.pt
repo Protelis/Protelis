@@ -188,12 +188,8 @@ public def closerThanWithMetric(source, metric, range) {
 }
 
 /**
- * Self-healing gradcast algorithm that reconfigures in O(diameter) time.
- * Requires euclidean metric. The CRF-Gradient algorithm handles this problem
- * by splitting the calculation into constraint and restoring force behaviors.
- * When constraint is dominant, the value of a device gx(t) stays fixed or
- * decreases, set by the triangle inequality from its neighbors values.  When
- * restoring force is dominant, gx(t) rises at a fixed velocity v0.
+ * Self-healing gradient algorithm that reconfigures in O(diameter) time.
+ * Requires euclidean metric.
  *
  * @param source bool,  whether the device is a source
  * @param maxHop num, communication max range
@@ -204,12 +200,8 @@ public def crfGradient(source, maxHop) {
 }
 
 /**
- * Self-healing gradcast algorithm that reconfigures in O(diameter) time.
- * Requires euclidean metric. The CRF-Gradient algorithm handles this problem
- * by splitting the calculation into constraint and restoring force behaviors.
- * When constraint is dominant, the value of a device gx(t) stays fixed or
- * decreases, set by the triangle inequality from its neighbors values.  When
- * restoring force is dominant, gx(t) rises at a fixed velocity v0.
+ * Self-healing gradient algorithm that reconfigures in O(diameter) time.
+ * Requires euclidean metric.
  *
  * @param source bool,  whether the device is a source
  * @param metric () -> num, how to estimate distances without lag
@@ -450,7 +442,7 @@ public def gradcast(source, gradient, local, accumulate) {
         mux (source) {
             local
         } else {
-            minHood([nbr(gradient.apply()), accumulate.apply(nbr(value))]).get(1)
+            minHood([nbr(gradient), accumulate.apply(nbr(value))]).get(1)
         }
     }
 }
