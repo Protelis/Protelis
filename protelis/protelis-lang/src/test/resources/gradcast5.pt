@@ -1,0 +1,9 @@
+import protelis:coord:spreading
+import protelis:coord:meta
+import protelis:lang:utils
+def vip(gradient) {
+    multiInstance(["0"], id-> {gradient.apply(id == getUID())}, [Infinity, Infinity]).get(0).get(1)
+}
+vip((source) -> { crfGradient(source, 1) });
+//multiInstance(["0"], id-> {crfGradient(getUID() == id, 1)}, [Infinity, Infinity]).get(0).get(1)
+//crfGradient(getUID() == "0", 1)

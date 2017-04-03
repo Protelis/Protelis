@@ -414,6 +414,34 @@ public class TestLanguage {
     }
 
     /**
+     * Confirm that call can be made to Java functions with varargs.
+     */
+    @Test
+    public void testMethod08() {
+        ProgramTester.runFile("/method08.pt");
+    }
+
+    /**
+     * Make sure that exceptions in method calls are passed up, rather than being
+     * transformed into a "cannot call" exception.
+     */
+    @Test
+    public void testMethod09() {
+        boolean rightCause = false;
+        try {
+            ProgramTester.runFile("/method09.pt");
+        } catch (Exception e) {
+            // Should be an illegal state, caused by an invocation target, caused by a bad index
+            if (e.getCause().getCause() instanceof ArrayIndexOutOfBoundsException) {
+                rightCause = true;
+            }
+        }
+        if (!rightCause) {
+            fail("Didn't find an OutOfBounds exception");
+        }
+    }
+
+    /**
      * Test showing that when unqualified imported Protelis method names
      * conflict, first imported shadows later imports.
      */

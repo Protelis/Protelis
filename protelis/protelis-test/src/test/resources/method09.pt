@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: OutOfBounds error
+
+[1,2,3,4,5].get(12) // Try to access out of bounds
