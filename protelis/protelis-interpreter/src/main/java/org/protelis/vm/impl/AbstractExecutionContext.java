@@ -104,11 +104,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         }
         assert previousRoundTime != null : "Round time is null.";
         callStack.clear();
-        callStack.add((byte) 1);
         env.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         gamma = new StackImpl(functions);
         theta = Collections.unmodifiableMap(nm.getNeighborState());
+        newCallStackFrame((byte) 1);
     }
 
     @Override
