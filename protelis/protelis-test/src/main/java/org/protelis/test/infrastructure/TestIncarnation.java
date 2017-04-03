@@ -93,7 +93,6 @@ public final class TestIncarnation implements Incarnation<Object> {
         return new DiracComb<>(new DoubleTime(rand.nextDouble() / frequency), frequency);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Reaction<Object> createReaction(final RandomGenerator rand, final Environment<Object> env,
                     final Node<Object> node, final TimeDistribution<Object> time, final String param) {
