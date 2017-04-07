@@ -104,11 +104,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         }
         assert previousRoundTime != null : "Round time is null.";
         callStack.clear();
-        callStack.add((byte) 1);
         env.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         gamma = new StackImpl(functions);
         theta = Collections.unmodifiableMap(nm.getNeighborState());
+        newCallStackFrame((byte) 1);
     }
 
     @Override
@@ -158,6 +158,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.toSend = toSend;
         restrictedInstance.callStack.addAll(callStack);
         restrictedInstance.functions = functions;
+        restrictedInstance.exportsSize = exportsSize;
+        restrictedInstance.previousRoundTime = previousRoundTime;
         restrictedContexts.add(restrictedInstance);
         return restrictedInstance;
     }
