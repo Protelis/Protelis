@@ -28,6 +28,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
     public static final String APPLY = "apply";
     private static final long serialVersionUID = -9128116355271771986L;
     private static final byte LEFT_POS = -1;
+    private static final byte ARGS_POS = -2;
     private final boolean isApply;
     private final String methodName;
     private final AnnotatedTree<?> left;
@@ -82,6 +83,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
          * If it is a function pointer, then create a new function call
          */
         final Object target = left.getAnnotation();
+        context.newCallStackFrame(ARGS_POS);
         if (isApply && target instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) target;
             /*
@@ -110,6 +112,7 @@ public class DotOperator extends AbstractSATree<FunctionCall, Object> {
             final Object[] args = getBranchesAnnotations();
             setAnnotation(ReflectionUtils.invokeFieldable(target.getClass(), methodName, target, args));
         }
+        context.returnFromCallFrame();
     }
 
     @Override
