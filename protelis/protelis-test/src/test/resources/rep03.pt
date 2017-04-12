@@ -1,0 +1,4 @@
+// EXPECTED_RESULT: $CYCLE
+rep(val <- 0) {
+	val + 1
+}

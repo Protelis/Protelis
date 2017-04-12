@@ -529,8 +529,7 @@ public class TestLanguage {
      */
     @Test
     public void testRep01() {
-        ProgramTester.runFileWithMultipleRuns("/rep01.pt",
-                        IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
+        ProgramTester.runFileWithMultipleRuns("/rep01.pt", IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
     }
 
     /**
@@ -543,6 +542,22 @@ public class TestLanguage {
             ProgramTester.runFile("/rep02.pt", i, prev);
             prev = prev * (prev + 1);
         }
+    }
+
+    /**
+     * Test rep as the only script instruction.
+     */
+    @Test
+    public void testRep03() {
+        ProgramTester.runFileWithMultipleRuns("/rep03.pt");
+    }
+
+    /**
+     * Test infix addition.
+     */
+    @Test
+    public void testStatement0() {
+        ProgramTester.runFile("/statement0.pt");
     }
 
     /**

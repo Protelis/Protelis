@@ -346,6 +346,14 @@ public class TestApis {
     }
 
     /**
+     * Test CRFgradient2.pt.
+     */
+    @Test
+    public void testCRFGradient2() {
+        test("crfGradient2");
+    }
+
+    /**
      * Test cyclicFunction.pt.
      */
     @Test
@@ -433,6 +441,14 @@ public class TestApis {
     }
 
     /**
+     * Test distanceTo2.pt.
+     */
+    @Test
+    public void testDistanceTo2() {
+        test("distanceTo2");
+    }
+
+    /**
      * Test distanceToWithMetric.pt.
      */
     @Test
@@ -494,6 +510,14 @@ public class TestApis {
     @Test
     public void testFlexGradient() {
         test("flexGradient");
+    }
+
+    /**
+     * Test flexGradient2.pt.
+     */
+    @Test
+    public void testFlexGradient2() {
+        test("flexGradient2");
     }
 
     /**
@@ -606,6 +630,38 @@ public class TestApis {
     @Test
     public void testGradcast() {
         test("gradcast");
+    }
+
+    /**
+     * Test gradcast2.pt.
+     */
+    @Test
+    public void testGradcast2() {
+        test("gradcast2");
+    }
+
+    /**
+     * Test gradcast3.pt.
+     */
+    @Test
+    public void testGradcast3() {
+        test("gradcast3");
+    }
+
+    /**
+     * Test gradcast4.pt.
+     */
+    @Test
+    public void testGradcast4() {
+        test("gradcast4");
+    }
+
+    /**
+     * Test gradcast5.pt.
+     */
+    @Test
+    public void testGradcast5() {
+        test("gradcast5");
     }
 
     /**

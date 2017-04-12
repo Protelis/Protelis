@@ -12,13 +12,12 @@ network-model:
 program: &program
   - time-distribution: 1
     program: boundBroadcast
-              
+
 displacements:
   - in:
       type: Grid
       parameters: [0, 0, 3, 2, 1, 1, 0.1, 0.1]
     contents:
-    
       - in:
           type: Circle
           parameters: [0, 0, 0.5]
