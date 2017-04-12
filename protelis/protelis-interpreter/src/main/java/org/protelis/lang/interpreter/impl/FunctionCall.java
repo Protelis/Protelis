@@ -37,8 +37,7 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
         fd = functionDefinition;
         if (fd.getArgNumber() != args.size()) {
             throw new IllegalArgumentException(fd + " must be invoked with " + fd.getArgNumber()
-                    + " arguments. You have tried with " + args + ", which are " + args.size() + ". You know "
-                    + args.size() + " is not equal to " + fd.getArgNumber() + ", don't you?");
+                    + " arguments, but was invoked with " + args + ", which are " + args.size());
         }
         stackCode = fd.getStackCode();
     }
