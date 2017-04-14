@@ -21,18 +21,6 @@ public def boundSpreading(region, f, null) {
     }
 }
 
-/**
- * Constrain the spreading of f only within devices close to the source.
- *
- * @param range () -> bool, how to determine the range
- * @param f     () -> T, function to be spreaded
- * @param null  T, default value where f is not spreaded
- * @return      T, apply f inside the region, null outside
- */
-public def boundSpreadingWithRange(range, f, null) {
-    boundSpreading(range.apply(), f, null);
-}
-
 /*
  * Gossip active sources.
  * 
