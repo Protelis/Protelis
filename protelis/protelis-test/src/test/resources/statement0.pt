@@ -1,0 +1,6 @@
+/*
+ * EXPECTED_RESULT: 0
+ */
+env.put('a', maxHood(nbr(0)));
+nbr(0)+nbr(0);
+0

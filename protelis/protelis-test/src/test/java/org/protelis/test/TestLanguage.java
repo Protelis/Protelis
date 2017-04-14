@@ -556,6 +556,14 @@ public class TestLanguage {
      * Test infix addition.
      */
     @Test
+    public void testStatement0() {
+        ProgramTester.runFile("/statement0.pt");
+    }
+
+    /**
+     * Test infix addition.
+     */
+    @Test
     public void testSum() {
         ProgramTester.runFile("/sum.pt");
     }
