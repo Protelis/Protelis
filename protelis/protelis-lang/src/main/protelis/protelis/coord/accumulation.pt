@@ -41,8 +41,8 @@ public def average(sink, value) {
  * @return      num,  average value
  */
 public def boundAverage(sink, local, range, null) {
-    boundSpreadingWithRange(
-        () -> { closerThan(sink, range) },
+    boundSpreading(
+        closerThan(sink, range),
         () -> { average(sink, local) },
         null
     )

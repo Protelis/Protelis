@@ -643,9 +643,7 @@ public def vm(source, range, f, null) {
  * @return       T, apply f if device is inside the spreading region, null outside
  */
 public def vmWithMetric(source, metric, range, f, null) {
-    boundSpreadingWithRange(() -> {
-        closerThanWithMetric(source, metric, range)
-    }, f, null)
+    boundSpreading(closerThanWithMetric(source, metric, range), f, null)
 }
 
 /**

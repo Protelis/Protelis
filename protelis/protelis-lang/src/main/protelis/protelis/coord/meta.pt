@@ -21,18 +21,6 @@ public def boundSpreading(region, f, null) {
     }
 }
 
-/**
- * Constrain the spreading of f only within devices close to the source.
- *
- * @param range () -> bool, how to determine the range
- * @param f     () -> T, function to be spreaded
- * @param null  T, default value where f is not spreaded
- * @return      T, apply f inside the region, null outside
- */
-public def boundSpreadingWithRange(range, f, null) {
-    boundSpreading(range.apply(), f, null);
-}
-
 /*
  * Gossip active sources.
  * 
@@ -167,7 +155,7 @@ public def postProcessAndApply(input, f, post) {
 /**
  * Publish/Subscribe pattern.
  * 
- * @param publisher   bool, who publish
+ * @param publisher   bool, who publishes
  * @param subscriber  bool, who is subscribing
  * @param information T, what to share
  * @param null        T, what to share if you are neither a subscriber nor a
@@ -177,9 +165,26 @@ public def postProcessAndApply(input, f, post) {
  *                    null otherwise
  */
 public def publishSubscribe(publisher, subscriber, information, null) {
-      if (C(distanceTo(publisher), or, subscriber, false)) {
-          broadcast(publisher, information)
-      } else {
-          null
-      }
+    publishSubscribeWithPotential(distanceTo(publisher), subscriber, information, null)
+}
+
+/**
+ * Publish/Subscribe pattern.
+ * 
+ * @param potential   num, aggregation direction (publisher are devices whose
+ *                    potential is 0)
+ * @param subscriber  bool, who is subscribing
+ * @param information T, what to share
+ * @param null        T, what to share if you are neither a subscriber nor a
+ *                    publisher
+ * @return            T, information if the device is a publisher, a
+ *                    subscriber or is in the shortest path between them.
+ *                    null otherwise
+ */
+public def publishSubscribeWithPotential(potential, subscriber, information, null) {
+    if (C(potential, or, subscriber, false)) {
+        gradcast(potential == 0, information, potential, identity)
+    } else {
+        null
+    }
 }
