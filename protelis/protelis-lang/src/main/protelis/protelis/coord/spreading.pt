@@ -366,7 +366,7 @@ public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metr
             let dist = range * distortion;
             let slope = flex_slope(d, dist, metric);
             let ct = minHood(nbr(d) + flex_distorce(dist, metric));
-            if (d == ct || (d > range && d > ct * 2) || cyclicTimer(rate)) {
+            if (slope.get(1) < 0 || d == ct || (d > range && d > ct * 2) || cyclicTimer(rate)) {
                 ct
             } else {
                 if (slope.get(0) > (1 + epsilon)) {
