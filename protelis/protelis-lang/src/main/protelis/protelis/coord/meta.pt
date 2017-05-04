@@ -25,27 +25,11 @@ public def boundSpreading(region, f, null) {
  * Gossip active sources.
  * 
  * @param source bool, whether the device is a source
- * @param d      num, network diameter
- * @param k      num, time replicated replicas
- * @return       [deviceUID], list of sources' ids
- */
-public def findSourcesExt(source, d, k) {
-    findSourcesWithId(source, getUID(), d, k);
-}
-
-/*
- * Gossip active sources.
- * 
- * @param source bool, whether the device is a source
  * @return       [deviceUID], list of sources' ids
  */
 public def findSources(source) {
     let k = 5;
-    findSourcesExt(
-        source,
-        roundTripTime(diameter(S(Infinity, nbrRange))) / (k - 1),
-        k
-    );
+    findSourcesWithId(source, getUID(), roundTripTime(diameter(S(Infinity, nbrRange))) / (k - 1), k);
 }
 
 /*
