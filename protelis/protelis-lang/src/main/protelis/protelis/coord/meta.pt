@@ -46,19 +46,9 @@ public def findSourcesWithId(source, id, d, k) {
         () -> {
             rep(v <- []) {
                 v.union(unionHood(nbr(v)))
-                    .union(
-                        if (source) {
-                            [id]
-                        } else {
-                            []
-                        }
-                    )
+                    .union(if (source) { [id] } else { [] })
             }
-        },
-        [id],
-        d,
-        k
-    )
+        }, [id], d, k)
 }
 
 /**
