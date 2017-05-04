@@ -333,7 +333,8 @@ def flex_distorce(minD, metric) {
     max(metric.apply(), minD)
 }
 def flex_slope(d, minD, metric) {
-    maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)])
+   let slope = maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)]);
+   max(slope, [-Infinity, Infinity, 0])
 }
 
 /**
@@ -366,7 +367,7 @@ public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metr
             let dist = range * distortion;
             let slope = flex_slope(d, dist, metric);
             let ct = minHood(nbr(d) + flex_distorce(dist, metric));
-            if (slope.get(1) < 0 || d == ct || (d > range && d > ct * 2) || cyclicTimer(rate)) {
+            if (d == ct || (d > range && d > ct * 2) || cyclicTimer(rate)) {
                 ct
             } else {
                 if (slope.get(0) > (1 + epsilon)) {
