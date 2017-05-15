@@ -473,13 +473,13 @@ public class TestLanguage {
         ProgramTester.runFile("/minhood02.pt");
     }
 
-    /**
-     * Test minHood.
-     */
-    @Test
-    public void testMinHood03() {
-        ProgramTester.runFile("/minhood03.pt");
-    }
+//    /**
+//     * Test minHood.
+//     */
+//    @Test
+//    public void testMinHood03() {
+//        ProgramTester.runFile("/minhood03.pt");
+//    }
 
     /**
      * Test showing that when unqualified imported Protelis method names
