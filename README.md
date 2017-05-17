@@ -50,7 +50,7 @@ Complete build reports can be downloaded [here][reports]
 
 
 ## Build Status
-[![Build Status](https://travis-ci.org/Protelis/Protelis.svg?branch=master)](https://travis-ci.org/Protelis/Protelis.svg?branch=master)
+[![Build Status](https://travis-ci.org/Protelis/Protelis.svg?branch=master)](https://travis-ci.org/Protelis/Protelis)
 
 
 ### Main project
