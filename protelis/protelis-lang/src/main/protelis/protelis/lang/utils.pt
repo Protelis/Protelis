@@ -277,6 +277,15 @@ public def sum(a, b) {
 }
 
 /**
+ * @param a [T], tuple
+ * @param b [T], tuple
+ * @return  [T], concatenation of two tuples
+ */
+public def union(a, b) {
+    a.union(b)
+}
+
+/**
  * @return num, 0
  */
 public def zero() {

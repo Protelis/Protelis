@@ -513,6 +513,14 @@ public class TestApis {
     }
 
     /**
+     * Test flexGradient3.pt.
+     */
+    @Test
+    public void testFlexGradient3() {
+        test("flexGradient3");
+    }
+
+    /**
      * Test flip.pt.
      */
     @Test

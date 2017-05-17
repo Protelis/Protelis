@@ -358,6 +358,22 @@ public class TestLanguage {
     }
 
     /**
+     * Test maxHood.
+     */
+    @Test
+    public void testMaxHood01() {
+        ProgramTester.runFile("/maxhood01.pt");
+    }
+
+    /**
+     * Test maxHood.
+     */
+    @Test
+    public void testMaxHood02() {
+        ProgramTester.runFile("/maxhood02.pt");
+    }
+
+    /**
      * Test fully-qualified call of individually imported static Java method.
      */
     @Test
@@ -440,6 +456,30 @@ public class TestLanguage {
             fail("Didn't find an OutOfBounds exception");
         }
     }
+
+    /**
+     * Test minHood.
+     */
+    @Test
+    public void testMinHood01() {
+        ProgramTester.runFile("/minhood01.pt");
+    }
+
+    /**
+     * Test minHood.
+     */
+    @Test
+    public void testMinHood02() {
+        ProgramTester.runFile("/minhood02.pt");
+    }
+
+//    /**
+//     * Test minHood.
+//     */
+//    @Test
+//    public void testMinHood03() {
+//        ProgramTester.runFile("/minhood03.pt");
+//    }
 
     /**
      * Test showing that when unqualified imported Protelis method names
@@ -723,6 +763,14 @@ public class TestLanguage {
     @Test
     public void testUnary02() {
         ProgramTester.runFileWithExplicitResult("/unary02.pt", -Math.PI);
+    }
+
+    /**
+     * Test constants: -Infinity.
+     */
+    @Test
+    public void testUnionHood01() {
+        ProgramTester.runFile("/unionhood01.pt");
     }
 
 }
