@@ -50,7 +50,7 @@ Complete build reports can be downloaded [here][reports]
 
 
 ## Build Status
-[![Build Status](https://drone.io/github.com/Protelis/Protelis/status.png)](https://drone.io/github.com/Protelis/Protelis/latest)
+[![Build Status](https://travis-ci.org/Protelis/Protelis.svg?branch=master)](https://travis-ci.org/Protelis/Protelis.svg?branch=master)
 
 
 ### Main project
