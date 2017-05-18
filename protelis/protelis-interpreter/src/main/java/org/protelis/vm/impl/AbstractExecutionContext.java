@@ -30,6 +30,9 @@ import org.protelis.vm.util.CodePath;
 import org.protelis.vm.util.Stack;
 import org.protelis.vm.util.StackImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 
 import gnu.trove.list.TByteList;
@@ -46,6 +49,7 @@ import java8.util.function.Function;
  */
 public abstract class AbstractExecutionContext implements ExecutionContext {
 
+    private static final Logger L = LoggerFactory.getLogger(AbstractExecutionContext.class);
     private final TByteList callStack = new TByteArrayList();
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
@@ -171,15 +175,6 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
          * Compute where we stand
          */
         final CodePath codePath = new CodePath(callStack);
-        /*
-         * If there is a request to build a field, then it means this is a
-         * nbr-like operation
-         */
-        if (Maps.putIfAbsent(toSend, codePath, localValue) != null) {
-            throw new IllegalStateException(
-                    "This program has attempted to build a field twice with the same code path."
-                    + "This is probably a bug in Protelis");
-        }
         final Field res = DatatypeFactory.createField(theta.size() + 1);
         for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
             final Object received = e.getValue().get(codePath);
@@ -188,6 +183,18 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
             }
         }
         res.addSample(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
+        /*
+         * If there is a request to build a field, then it means this is a
+         * nbr-like operation
+         */
+        if (Maps.putIfAbsent(toSend, codePath, localValue) != null) {
+            L.error("The map is {}", toSend);
+            L.error("The codePath you are trying to insert is {}", codePath);
+            L.error("The value you are trying to insert is {}, while the current one is {}", localValue, toSend.get(codePath)); 
+            throw new IllegalStateException(
+                    "This program has attempted to build a field twice with the same code path."
+                    + "This is probably a bug in Protelis");
+        }
         return res;
     }
 
