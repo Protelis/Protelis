@@ -368,7 +368,7 @@ public def getChildrenIds(potential) {
  * @see imRoot, noParent
  */
 public def getParent(potential, f) {
-    getParentExtendend(potential, f, value -> { NaN }, NaN).get(0)
+    getParentExtended(potential, f, value -> { NaN }, NaN).get(0)
 }
 
 /**
@@ -382,7 +382,7 @@ public def getParent(potential, f) {
  * @return          [num|T,T'], [imRoot()|noParent()|f(parent), g(value)]
  * @see imRoot, noParent
  */
-public def getParentExtendend(potential, f, g, local) {
+public def getParentExtended(potential, f, g, local) {
     getParentsExtended(potential, v -> { minHood(v) }, f, g, local, local)
 }
 

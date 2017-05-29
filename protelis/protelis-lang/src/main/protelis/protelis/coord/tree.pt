@@ -37,7 +37,7 @@ public def spanningTree(potential) {
  */
 public def spanningTreeExtended(potential, function, init) {
     rep (parent <- [imRoot(), init]) {
-        getParentExtendend(
+        getParentExtended(
             potential,
             identity,
             (value) -> { function.apply(value) },
