@@ -53,12 +53,8 @@ public class ArrayTupleImpl implements Tuple {
         return compareLexicographically(a, b);
     };
     private static final long serialVersionUID = 5453783531251313649L;
-    private static int compareLexicographically(final Object a, final Object b) {
-        return a.toString().compareTo(b.toString());
-    }
     private final Object[] arrayContents;
     private int hash;
-
     private String string;
 
     /**
@@ -430,5 +426,9 @@ public class ArrayTupleImpl implements Tuple {
             }
             return o;
         }).toArray());
+    }
+
+    private static int compareLexicographically(final Object a, final Object b) {
+        return a.toString().compareTo(b.toString());
     }
 }
