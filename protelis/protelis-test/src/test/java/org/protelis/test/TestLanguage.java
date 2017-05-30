@@ -766,11 +766,19 @@ public class TestLanguage {
     }
 
     /**
-     * Test constants: -Infinity.
+     * Test unionHood.
      */
     @Test
     public void testUnionHood01() {
         ProgramTester.runFile("/unionhood01.pt");
+    }
+
+    /**
+     * Test unionHood with only local contribution.
+     */
+    @Test
+    public void testUnionHood02() {
+        ProgramTester.runFile("/unionhood02.pt");
     }
 
 }
