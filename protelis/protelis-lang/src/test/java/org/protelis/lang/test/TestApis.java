@@ -162,14 +162,6 @@ public class TestApis {
     }
 
     /**
-     * Test boundSpreadingWithRange.pt.
-     */
-    @Test
-    public void testBoundSpreadingWithRange() {
-        test("boundSpreadingWithRange");
-    }
-
-    /**
      * Test broadcast.pt.
      */
     @Test
@@ -457,10 +449,10 @@ public class TestApis {
     }
 
     /**
-     * Test distanceTo with obstacle.
+     * Test boundDistanceTo.pt.
      */
     @Test
-    public void testDistanceToWithObstacle() {
+    public void testBoundDistanceTo() {
         test("boundDistanceTo");
     }
 
@@ -518,6 +510,14 @@ public class TestApis {
     @Test
     public void testFlexGradient2() {
         test("flexGradient2");
+    }
+
+    /**
+     * Test flexGradient3.pt.
+     */
+    @Test
+    public void testFlexGradient3() {
+        test("flexGradient3");
     }
 
     /**

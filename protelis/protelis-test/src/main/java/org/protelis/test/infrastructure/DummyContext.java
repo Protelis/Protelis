@@ -95,4 +95,18 @@ public final class DummyContext extends AbstractExecutionContext {
         return res;
     }
 
+    /**
+     * Test utility.
+     * 
+     * @param entries
+     *            how many entries for the field
+     * @return a field with populated with numbers from 0 to 99
+     */
+    @SuppressWarnings("serial")
+    public Field makeTestField(final int entries) {
+        final Field res = DatatypeFactory.createField(entries);
+        IntStreams.range(0, entries).forEach(n -> res.addSample(new DeviceUID() { }, (double) n));
+        return res;
+    }
+
 }

@@ -196,11 +196,11 @@ public enum HoodOp {
     }
 
     private static Object union(final Field f, final DeviceUID n) {
-        return f.reduceVals((a, b) -> {
+        final Object reduced = f.reduceVals((a, b) -> {
                 final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.createTuple(a);
                 final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.createTuple(b);
                 return Tuples.union(at, bt);
             }, n, UNION.defs.apply(f));
+        return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
-
 }
