@@ -1,0 +1,2 @@
+// EXPECTED_RESULT: [0] 
+unionHood(self.makeTestField(1))

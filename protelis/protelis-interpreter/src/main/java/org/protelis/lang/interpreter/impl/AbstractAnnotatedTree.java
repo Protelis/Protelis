@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java8.util.function.BiConsumer;
 import java8.util.function.Consumer;
 import java8.util.stream.IntStream;
-import java8.util.stream.IntStreams;;
+import java8.util.stream.IntStreams;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.

@@ -333,7 +333,8 @@ def flex_distorce(minD, metric) {
     max(metric.apply(), minD)
 }
 def flex_slope(d, minD, metric) {
-    maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)])
+   let slope = maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)]);
+   max(slope, [-Infinity, Infinity, 0])
 }
 
 /**
@@ -643,9 +644,7 @@ public def vm(source, range, f, null) {
  * @return       T, apply f if device is inside the spreading region, null outside
  */
 public def vmWithMetric(source, metric, range, f, null) {
-    boundSpreadingWithRange(() -> {
-        closerThanWithMetric(source, metric, range)
-    }, f, null)
+    boundSpreading(closerThanWithMetric(source, metric, range), f, null)
 }
 
 /**

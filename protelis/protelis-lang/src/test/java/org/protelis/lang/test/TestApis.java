@@ -1,6 +1,5 @@
 package org.protelis.lang.test;
 
-import org.apache.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -8,12 +7,14 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.protelis.test.InfrastructureTester;
 import org.protelis.test.ProgramTester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Testing Protelis core libraries.
  */
 public class TestApis {
-    private static final Logger L = Logger.getLogger(TestApis.class);
+    private static final Logger L = LoggerFactory.getLogger(TestApis.class);
 
     private static void test(final String file) {
         test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
@@ -35,7 +36,9 @@ public class TestApis {
      * Print the current method name.
      */
     @Rule
-    public TestRule watcher = new TestWatcher() {
+    //CHECKSTYLE:OFF
+    public final TestRule watcher = new TestWatcher() {
+    //CHECKSTYLE:ON
         protected void starting(final Description description) {
             L.info(description.getMethodName());
         }
@@ -159,14 +162,6 @@ public class TestApis {
     @Test
     public void testBoundSpreading() {
         test("boundSpreading");
-    }
-
-    /**
-     * Test boundSpreadingWithRange.pt.
-     */
-    @Test
-    public void testBoundSpreadingWithRange() {
-        test("boundSpreadingWithRange");
     }
 
     /**
@@ -457,10 +452,10 @@ public class TestApis {
     }
 
     /**
-     * Test distanceTo with obstacle.
+     * Test boundDistanceTo.pt.
      */
     @Test
-    public void testDistanceToWithObstacle() {
+    public void testBoundDistanceTo() {
         test("boundDistanceTo");
     }
 
@@ -518,6 +513,14 @@ public class TestApis {
     @Test
     public void testFlexGradient2() {
         test("flexGradient2");
+    }
+
+    /**
+     * Test flexGradient3.pt.
+     */
+    @Test
+    public void testFlexGradient3() {
+        test("flexGradient3");
     }
 
     /**

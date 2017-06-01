@@ -10,6 +10,7 @@ package org.protelis.lang.util;
 
 import static org.protelis.lang.util.OpUtils.unsupported;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java8.util.function.UnaryOperator;
@@ -26,11 +27,11 @@ public enum Op1 {
     /**
      * Not.
      */
-    NOT("!", Op1::not),
+    NOT("!", (UnaryOperator<Object> & Serializable) Op1::not),
     /**
      * Sign inversion.
      */
-    MINUS("-", Op1::minus);
+    MINUS("-", (UnaryOperator<Object> & Serializable) Op1::minus);
 
     private static final int[] FIELDS = new int[] { 0 };
     private static final Map<String, Op1> MAP = new ConcurrentHashMap<>();

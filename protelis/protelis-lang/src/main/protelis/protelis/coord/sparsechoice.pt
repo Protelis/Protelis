@@ -7,13 +7,7 @@ def default() {
 
 def breakUsingUids(uid, grain, metric) {
     rep (lead <- uid) {
-        distanceCompetition(
-            distanceToWithMetric(uid == lead, metric),
-            lead,
-            uid,
-            grain,
-            metric
-        )
+        distanceCompetition(distanceToWithMetric(uid == lead, metric), lead, uid, grain, metric)
     } == uid
 }
 

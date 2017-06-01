@@ -351,7 +351,7 @@ public final class ReflectionUtils {
     private static Class<?> nthArgumentType(final Method m, final int n) {
         final Class<?>[] expectedArgs = m.getParameterTypes();
         if (m.isVarArgs() && n >= (expectedArgs.length - 1)) {
-            Class<?> varargType = expectedArgs[expectedArgs.length - 1];
+            final Class<?> varargType = expectedArgs[expectedArgs.length - 1];
             return varargType.getComponentType();
         } else {
             return expectedArgs[n];
@@ -364,14 +364,13 @@ public final class ReflectionUtils {
         } else {
             final Class<?>[] expectedArgs = m.getParameterTypes();
             // We will repackage into an array of the expected length
-            Object[] newargs = new Object[expectedArgs.length];
-            for (int i = 0; i < expectedArgs.length - 1; i++) { // repackage all the base args
-                newargs[i] = args[i];
-            }
+            final Object[] newargs = new Object[expectedArgs.length];
+            // repackage all the base args
+            System.arraycopy(args, 0, newargs, 0, Math.max(expectedArgs.length - 1, 0));
             // Determine how many arguments need repackaging
-            int numVarArgs = args.length - (expectedArgs.length - 1);
+            final int numVarArgs = args.length - (expectedArgs.length - 1);
             // Make an array of the appropriate type, then fill it in
-            Class<?> varargType = expectedArgs[expectedArgs.length - 1];
+            final Class<?> varargType = expectedArgs[expectedArgs.length - 1];
             Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
             for (int i = 0; i < numVarArgs; i++) {
                 vararg[i] = args[i + expectedArgs.length - 1];

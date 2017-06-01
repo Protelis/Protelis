@@ -11,6 +11,8 @@ package org.protelis.lang.util;
 import static org.protelis.lang.util.OpUtils.unsupported;
 
 import java8.util.J8Arrays;
+
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java8.util.function.BiFunction;
@@ -34,37 +36,37 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public enum Op2 {
 
     /** Logical AND operation. */
-    AND("&&", Op2::and),
+    AND("&&", (BinaryOperator<Object> & Serializable) Op2::and),
     /** Arithmetic division operation. */
-    DIVIDE("/", Op2::divide),
+    DIVIDE("/", (BinaryOperator<Object> & Serializable) Op2::divide),
     /** Equality comparison operation. */
-    EQUALS("==", Op2::equals),
+    EQUALS("==", (BinaryOperator<Object> & Serializable) Op2::equals),
     /** Inequality comparison operation. */
-    NOT_EQUALS("!=", (a, b) -> !Op2.equals(a, b)),
+    NOT_EQUALS("!=", (BinaryOperator<Object> & Serializable) (a, b) -> !Op2.equals(a, b)),
     /** Greater-than comparison operation. */
-    GREATER(">", Op2::greater),
+    GREATER(">", (BinaryOperator<Object> & Serializable) Op2::greater),
     /** Greater-than-or-equal comparison operation. */
-    GREATER_EQUALS(">=", Op2::greaterEquals),
+    GREATER_EQUALS(">=", (BinaryOperator<Object> & Serializable) Op2::greaterEquals),
     /** Maximum of two numbers or other Comparable objects. */
-    MAX("min", Op2::max),
+    MAX("min", (BinaryOperator<Object> & Serializable) Op2::max),
     /** Minimum of two numbers or other Comparable objects. */
-    MIN("min", Op2::min),
+    MIN("min", (BinaryOperator<Object> & Serializable) Op2::min),
     /** Arithmetic subtraction operation. */
-    MINUS("-", Op2::minus),
+    MINUS("-", (BinaryOperator<Object> & Serializable) Op2::minus),
     /** Modulus operation. */
-    MODULUS("%", Op2::modulus),
+    MODULUS("%", (BinaryOperator<Object> & Serializable) Op2::modulus),
     /** Logical OR operation. */
-    OR("||", Op2::or),
+    OR("||", (BinaryOperator<Object> & Serializable) Op2::or),
     /** Arithmetic addition operation. */
-    PLUS("+", Op2::plus),
+    PLUS("+", (BinaryOperator<Object> & Serializable) Op2::plus),
     /** Exponent operation. */
-    POWER("^", Op2::pow),
+    POWER("^", (BinaryOperator<Object> & Serializable) Op2::pow),
     /** Less-than comparison operation. */
-    SMALLER("<", Op2::smaller),
+    SMALLER("<", (BinaryOperator<Object> & Serializable) Op2::smaller),
     /** Less-than-or-equal comparison operation. */
-    SMALLER_EQUALS("<=", Op2::smallerEquals),
+    SMALLER_EQUALS("<=", (BinaryOperator<Object> & Serializable) Op2::smallerEquals),
     /** Arithmetic multiplication operation. */
-    TIMES("*", Op2::times);
+    TIMES("*", (BinaryOperator<Object> & Serializable) Op2::times);
 
     private static final Logger L = LoggerFactory.getLogger(Op2.class);
     private static final String UNCHECKED = "unchecked";
