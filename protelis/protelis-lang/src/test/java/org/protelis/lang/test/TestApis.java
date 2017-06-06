@@ -349,6 +349,22 @@ public class TestApis {
     }
 
     /**
+     * Test bisGradient.pt.
+     */
+    @Test
+    public void testBISGradient() {
+        test("bisGradient");
+    }
+
+    /**
+     * Test bisGradient2.pt.
+     */
+    @Test
+    public void testBISGradient2() {
+        test("bisGradient2");
+    }
+
+    /**
      * Test cyclicFunction.pt.
      */
     @Test

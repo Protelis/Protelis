@@ -1,0 +1,5 @@
+import protelis:coord:spreading
+import protelis:lang:utils
+import protelis:state:nonselfstabilizing:time
+let source = env.has("source") || getUID() == "5" && timeSinceStart() <= 50;
+bisGradient(source, 1.5, 0.5)
