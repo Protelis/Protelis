@@ -1,0 +1,19 @@
+# result:
+#  {0 Infinity}
+
+incarnation: test
+
+network-model:
+  type: EuclideanDistance
+  parameters: [1.5]
+
+program: &program
+  - time-distribution: 1
+    program: bisGradient
+
+displacements:
+  - in:
+      type: Point
+      parameters: [0, 0]
+    programs:
+      - *program
