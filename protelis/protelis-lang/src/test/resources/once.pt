@@ -1,0 +1,3 @@
+// EXPECTED_RESULT: 1
+import protelis:state:nonselfstabilizing:time
+once(() -> {counter(0,1)})
