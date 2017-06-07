@@ -857,6 +857,14 @@ public class TestApis {
     }
 
     /**
+     * Test once.pt.
+     */
+    @Test
+    public void testOnce() {
+        testProgram("once");
+    }
+
+    /**
      * Test postProcessAndApply.pt.
      */
     @Test
