@@ -82,7 +82,7 @@ public enum HoodOp {
     UNION(HoodOp::union,
           DatatypeFactory::createTuple,
           of(create(Object.class, DatatypeFactory::createTuple)),
-          of());
+          of(create(Object.class, DatatypeFactory::createTuple)));
 
     private final BiFunction<Field, DeviceUID, Object> function;
     private final Function<Field, Object> defs; // NOPMD
@@ -195,12 +195,13 @@ public enum HoodOp {
         return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size());
     }
 
-    private static Object union(final Field f, final DeviceUID n) {
-        return f.reduceVals((a, b) -> {
+    private static Tuple union(final Field f, final DeviceUID n) {
+        final Object reduced = f.reduceVals((a, b) -> {
                 final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.createTuple(a);
                 final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.createTuple(b);
                 return Tuples.union(at, bt);
             }, n, UNION.defs.apply(f));
+        return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
 
 }

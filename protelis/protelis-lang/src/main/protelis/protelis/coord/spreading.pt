@@ -226,6 +226,37 @@ public def crfGradientWithMetric(source, metric, maxHop) {
 }
 
 /**
+ * Self-healing gradient algorithm with single-path reaction speed.
+ *
+ * @param source bool,  whether the device is a source
+ * @param radius num, communication max range
+ * @param speed  num, estimate of single-path speed
+ * @return       num, minimum distance from the source
+ */
+public def bisGradient(source, radius, speed) {
+    bisGradientWithMetric(source, nbrRange, radius, speed)
+}
+
+/**
+ * Self-healing gradient algorithm with single-path reaction speed.
+ *
+ * @param source bool,  whether the device is a source
+ * @param metric () -> num, how to estimate distances without lag
+ * @param radius num, communication max range
+ * @param speed  num, estimate of single-path speed
+ * @return       num, minimum distance from the source
+ */
+public def bisGradientWithMetric(source, metric, radius, speed) {
+    let val = if (source) {0} else {Infinity};
+    let loc = [val, val];
+    rep (old <- loc) {
+        let nx = nbr(old.get(0)) + metric.apply();
+        let nt = nbr(old.get(1)) + self.nbrLag() + nbr(self.getDeltaTime());
+        min(minHood([max(nx, nt*speed-radius), nt]), loc)
+    }.get(0)
+}
+
+/**
  * Dilate a spatial region.
  *
  * @param region bool, whether the device is inside the region
@@ -333,7 +364,8 @@ def flex_distorce(minD, metric) {
     max(metric.apply(), minD)
 }
 def flex_slope(d, minD, metric) {
-    maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)])
+   let slope = maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)]);
+   max(slope, [-Infinity, Infinity, 0])
 }
 
 /**
@@ -643,9 +675,7 @@ public def vm(source, range, f, null) {
  * @return       T, apply f if device is inside the spreading region, null outside
  */
 public def vmWithMetric(source, metric, range, f, null) {
-    boundSpreadingWithRange(() -> {
-        closerThanWithMetric(source, metric, range)
-    }, f, null)
+    boundSpreading(closerThanWithMetric(source, metric, range), f, null)
 }
 
 /**
