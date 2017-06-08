@@ -167,7 +167,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
+    public static ProtelisProgram parse(final String program) {
         try {
             if (REGEX_PROTELIS_MODULE.matcher(Objects.requireNonNull(program, "The Protelis Program can not be null"))
                     .matches()) {
