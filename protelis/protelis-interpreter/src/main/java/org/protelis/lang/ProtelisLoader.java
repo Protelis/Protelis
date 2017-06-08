@@ -168,6 +168,9 @@ public final class ProtelisLoader {
      *             when the program has errors
      */
     public static ProtelisProgram parse(final String program) {
+        if (Objects.requireNonNull(program, "null is not a valid Protelis program, not a valid Protelis module").isEmpty()) {
+            throw new IllegalArgumentException("The empty string is not a valid program, nor a valid module name");
+        }
         try {
             if (REGEX_PROTELIS_MODULE.matcher(Objects.requireNonNull(program, "The Protelis Program can not be null"))
                     .matches()) {
