@@ -13,7 +13,7 @@ public class DeviceUUID implements DeviceUID, Comparable<DeviceUUID> {
      * Generate a random UUID.
      */
     public DeviceUUID() {
-        this.uid = UUID.randomUUID();
+        this(UUID.randomUUID());
     }
 
     /**
