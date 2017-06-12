@@ -10,7 +10,7 @@ public class DeviceUUID extends AbstractComparableDeviceUID<UUID> {
      * Generate a random UUID.
      */
     public DeviceUUID() {
-        super(UUID.randomUUID());
+        this(UUID.randomUUID());
     }
 
     /**
