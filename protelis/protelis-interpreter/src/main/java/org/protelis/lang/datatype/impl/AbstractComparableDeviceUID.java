@@ -28,13 +28,14 @@ public class AbstractComparableDeviceUID<T extends Comparable<T>> implements Dev
 
     @Override
     public boolean equals(final Object alt) {
-        if (this == alt) {
-            return true;
-        } else if (alt instanceof AbstractComparableDeviceUID<?>) {
-            return this.uid.equals(((AbstractComparableDeviceUID<T>) alt).uid);
-        } else {
-            return false;
+        if (alt != null) {
+            if (this == alt) {
+                return true;
+            } else if (this.getClass() == alt.getClass()) {
+                return this.uid.equals(((AbstractComparableDeviceUID<T>) alt).uid);
+            }
         }
+        return false;
     }
 
     @Override
