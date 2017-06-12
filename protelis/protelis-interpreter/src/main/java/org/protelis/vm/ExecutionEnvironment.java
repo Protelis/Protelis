@@ -1,5 +1,7 @@
 package org.protelis.vm;
 
+import java.util.Set;
+
 /**
  * The {@link ExecutionEnvironment} is responsible of managing environment variables.
  *
@@ -46,6 +48,11 @@ public interface ExecutionEnvironment {
      *         key, or null if the map contained no mapping for the key.
      */
     Object remove(String id);
+
+    /**
+     * @return An unmodifiable set of the keys in the ExecutionEnvironment
+     */
+    Set<String> keySet();
 
     /**
      * Called just after the VM is executed, to finalize information of the
