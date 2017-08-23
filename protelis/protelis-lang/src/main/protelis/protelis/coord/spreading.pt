@@ -345,7 +345,7 @@ public def distanceTo(source) {
  * @return       num, field of minimum distances to the closest source
  */
 public def distanceToWithMetric(source, metric) {
-    G(source, 0, metric, (v) -> { v + metric.apply() })
+    G(source, if (source) {0} else {Infinity}, metric, (v) -> { v + metric.apply() })
 }
 
 /**
@@ -415,6 +415,7 @@ public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metr
 
 /*
  * Propagate values across a spanning tree starting from the closest source.
+ * If there are no sources and no neighbors, default to initial value
  *
  * @param source     bool, whether the current device is a source
  * @param initial    T, initial value of the computation
