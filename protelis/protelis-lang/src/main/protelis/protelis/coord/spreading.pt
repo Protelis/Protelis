@@ -432,13 +432,18 @@ public def G(source, initial, metric, accumulate) {
             // The other device potentials are requested
             let ndv = nbr(distanceValue);
             // G returns the value related to the minimum potential
-            // TODO do we need a default?
-            minHood([
-                // potential estimation
-                ndv.get(0) + metric.apply(),
-                // values estimation
-                accumulate.apply(ndv.get(1))
-            ])
+            let minTuple = 
+ 	           minHood([
+    	            // potential estimation
+        	        ndv.get(0) + metric.apply(),
+            	    // values estimation
+                	accumulate.apply(ndv.get(1))
+	            ]);
+	        if (minTuple.get(0) == Infinity) { // if there were no neighbors
+		        [Infinity, initial] // default: reset to initial value
+	        } else {
+	        	minTuple
+	        }
         }
     }.get(1) // return the accumulated value
 }

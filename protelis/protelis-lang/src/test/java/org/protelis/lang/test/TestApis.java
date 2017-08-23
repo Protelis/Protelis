@@ -173,6 +173,14 @@ public class TestApis {
     }
 
     /**
+     * Test broadcast.pt with isolated nodes.
+     */
+    @Test
+    public void testBroadcast2() {
+        test("broadcast2");
+    }
+
+    /**
      * Test C.pt.
      */
     @Test
