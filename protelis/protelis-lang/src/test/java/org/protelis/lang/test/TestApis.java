@@ -692,6 +692,14 @@ public class TestApis {
     }
 
     /**
+     * Test hopDistanceTo function.
+     */
+    @Test
+    public void testHopDistanceTo() {
+        test("hopDistanceTo");
+    }
+
+    /**
      * Test multiC.pt.
      */
     @Test
