@@ -73,11 +73,6 @@ public final class DummyContext extends AbstractExecutionContext {
     }
 
     @Override
-    protected AbstractExecutionContext instance() {
-        return new DummyContext();
-    }
-
-    @Override
     public String toString() {
         return getClass().getSimpleName() + hashCode();
     }

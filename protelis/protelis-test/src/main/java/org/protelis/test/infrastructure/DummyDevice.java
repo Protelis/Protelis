@@ -76,11 +76,6 @@ public class DummyDevice extends AbstractExecutionContext
         return 1;
     }
 
-    @Override
-    protected AbstractExecutionContext instance() {
-        return new DummyDevice(env, node, react, r, netmgr);
-    }
-
     /**
      * Note: this should be going away in the future, to be replaced by standard
      * Java random.
