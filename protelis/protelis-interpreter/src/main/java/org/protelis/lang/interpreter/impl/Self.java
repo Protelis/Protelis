@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.vm.ExecutionContext;
+import org.protelis.vm.impl.ChildExecutionContext;
 
 /**
  * Access to the evaluation context, which is used for interfacing with sensors,
@@ -26,7 +27,11 @@ public class Self extends AbstractAnnotatedTree<ExecutionContext> {
 
     @Override
     public void eval(final ExecutionContext context) {
-        setAnnotation(context);
+        if (context instanceof ChildExecutionContext) {
+            eval(((ChildExecutionContext) context).getParent());
+        } else {
+            setAnnotation(context);
+        }
     }
 
     @Override

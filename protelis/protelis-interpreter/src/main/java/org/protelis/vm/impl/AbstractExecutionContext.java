@@ -145,7 +145,9 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * 
      * @return Child execution context
      */
-    protected abstract AbstractExecutionContext instance();
+    protected AbstractExecutionContext instance() {
+        return new ChildExecutionContext(this);
+    }
 
     @Override
     public final AbstractExecutionContext restrictDomain(final Field f) {
