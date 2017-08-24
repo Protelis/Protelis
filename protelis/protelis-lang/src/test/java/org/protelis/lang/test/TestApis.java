@@ -700,6 +700,14 @@ public class TestApis {
     }
 
     /**
+     * Test hopBroadcast function.
+     */
+    @Test
+    public void testHopBroadcast() {
+        test("hopBroadcast");
+    }
+
+    /**
      * Test hopDistanceTo function.
      */
     @Test

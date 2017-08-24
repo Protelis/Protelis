@@ -504,6 +504,18 @@ public def gradient(source, init, metric, accumulate) {
 }
 
 /*
+ * Broadcast value across a spanning tree starting from the source.
+ * For determining information paths, distances are measured in hops.
+ *
+ * @param source bool, whether the current device is a source
+ * @param value  T, what to broadcast
+ * @return       T, broadcasted value
+ */
+public def hopBroadcast(source, value) {
+    broadcastWithMetric(source, value, () -> { 1 });
+}
+
+/*
  * Distance from the current to the closest source, measured in hops
  *
  * @param source bool, whether the current device is a source
