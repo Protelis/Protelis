@@ -26,7 +26,6 @@ public class DummyDevice extends AbstractExecutionContext
     private final ProtelisNode node;
     private final Environment<Object> env;
     private final Reaction<Object> react;
-    private final NetworkManager netmgr;
 
     /**
      * 
@@ -47,7 +46,6 @@ public class DummyDevice extends AbstractExecutionContext
         r = random;
         this.react = reaction;
         this.env = environment;
-        this.netmgr = netmgr;
         this.node = node;
     }
 

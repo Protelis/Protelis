@@ -16,7 +16,7 @@ import org.protelis.lang.datatype.DeviceUID;
  * accesses to its parent.
  */
 public class ChildExecutionContext extends AbstractExecutionContext {
-    private AbstractExecutionContext parent;
+    private final AbstractExecutionContext parent;
 
     /**
      * Create a new child context.
