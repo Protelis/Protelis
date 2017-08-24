@@ -440,7 +440,7 @@ public def G(source, initial, metric, accumulate) {
             	    // values estimation
                 	accumulate.apply(ndv.get(1))
 	            ]);
-	        if (minTuple.get(0) == Infinity) { // if there were no neighbors
+	        if (minTuple.get(0) == Infinity) { // if no neighbors or no path to source
 		        [Infinity, initial] // default: reset to initial value
 	        } else {
 	        	minTuple
