@@ -10,6 +10,7 @@ package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import org.junit.Assert;
 
 import java.util.Collections;
 
@@ -715,6 +716,41 @@ public class TestLanguage {
         ProgramTester.runFile("/tuple06.pt");
         ProgramTester.runFile("/tuple07.pt");
         ProgramTester.runFile("/tuple08.pt");
+    }
+
+    /**
+     * Test tuple comparisons.
+     */
+    @Test
+    public void testTupleComparisons() {
+        // Single element comparison
+        Assert.assertEquals(false, ProgramTester.runProgram("[1] > [2]", 1));
+        // Multi-element lexicographic comparison
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2] > [1, 3]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2] < [1, 13]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 1] > [1, 2]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, -1] > [1, 2]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] > [1, 2, 0]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2] == [1, 2]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2] == [1, 2, 0]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 0] == [1, 2, 0]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2] > [1, 2, -1]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 0] > [1, 2, -1]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0,  0] < [1, 2, -1]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2] >= [1, 2]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 1] >= [1, 2, 0]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] <= [1, 2]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0, 0] <= [1, 2, -1]", 1));
+        // comparison involving infinity
+        Assert.assertEquals(true, ProgramTester.runProgram("[Infinity] == [Infinity]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[Infinity, 1] < [Infinity, 2]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, Infinity] < [2, 0]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[-Infinity, 1] < [-Infinity, 2]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram("[Infinity] > [-Infinity]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[Infinity] > [Infinity]", 1));
+        // comparison of nested tuples
+        Assert.assertEquals(true, ProgramTester.runProgram("[1, [2], 1] >= [1, [2], 0]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram("[1, [2], 1] >= [1, [2, 1], 0]", 1));
     }
 
     /**

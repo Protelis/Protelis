@@ -5,7 +5,7 @@ processAndApply(
     nbr(1), // input
     (inputField) -> { sumHood(inputField) }, // pre-process
     (processedInput) -> { 
-        G(env.has("source"), false, nbrRange, (v) -> { processedInput > 3 })
+        G(env.has("source"), processedInput > 3, nbrRange, (v) -> { processedInput > 3 })
     }, // f
     (functionOutput) -> { 
         if (functionOutput) { "dang" } else { "safe" }
