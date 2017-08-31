@@ -98,6 +98,16 @@ public def flip(a, b) {
 }
 
 /**
+ * Evaluate an expression once, then store and return the result thereafter
+ * 
+ * @param f local function of no arguments, run once and then its result is stored
+ * @return the value produced by evaluating f
+ */
+public def once(f) {
+	rep (v <- f.apply()) { v }
+}
+
+/**
  * @param timeout num, timeout
  * @param event   bool, event
  * @return        bool, true if the event occurred within last time period
