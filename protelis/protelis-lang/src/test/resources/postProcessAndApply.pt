@@ -4,7 +4,7 @@ import protelis:coord:spreading
 postProcessAndApply(
     nbr(1), // input
     (input) -> { 
-        G(env.has("source"), false, nbrRange, (v) -> { sumHood(input) > 3 })
+        G(env.has("source"), sumHood(input) > 3, nbrRange, (v) -> { sumHood(input) > 3 })
     }, // f
     (functionOutput) -> { 
         if (functionOutput) { "dang" } else { "safe" }

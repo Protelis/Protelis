@@ -345,7 +345,7 @@ public def distanceTo(source) {
  * @return       num, field of minimum distances to the closest source
  */
 public def distanceToWithMetric(source, metric) {
-    G(source, 0, metric, (v) -> { v + metric.apply() })
+    G(source, if (source) {0} else {Infinity}, metric, (v) -> { v + metric.apply() })
 }
 
 /**
@@ -415,6 +415,7 @@ public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metr
 
 /*
  * Propagate values across a spanning tree starting from the closest source.
+ * If there are no sources and no neighbors, default to initial value
  *
  * @param source     bool, whether the current device is a source
  * @param initial    T, initial value of the computation
@@ -432,13 +433,18 @@ public def G(source, initial, metric, accumulate) {
             // The other device potentials are requested
             let ndv = nbr(distanceValue);
             // G returns the value related to the minimum potential
-            // TODO do we need a default?
-            minHood([
-                // potential estimation
-                ndv.get(0) + metric.apply(),
-                // values estimation
-                accumulate.apply(ndv.get(1))
-            ])
+            let minTuple = 
+ 	           minHood([
+    	            // potential estimation
+        	        ndv.get(0) + metric.apply(),
+            	    // values estimation
+                	accumulate.apply(ndv.get(1))
+	            ]);
+	        if (minTuple.get(0) == Infinity) { // if no neighbors or no path to source
+		        [Infinity, initial] // default: reset to initial value
+	        } else {
+	        	minTuple
+	        }
         }
     }.get(1) // return the accumulated value
 }
@@ -495,6 +501,28 @@ public def gradient(source, init, metric, accumulate) {
             [ addRangeWithMetric(x.get(0), metric), accumulate.apply(x.get(1)) ]
         }
     )
+}
+
+/*
+ * Broadcast value across a spanning tree starting from the source.
+ * For determining information paths, distances are measured in hops.
+ *
+ * @param source bool, whether the current device is a source
+ * @param value  T, what to broadcast
+ * @return       T, broadcasted value
+ */
+public def hopBroadcast(source, value) {
+    broadcastWithMetric(source, value, () -> { 1 });
+}
+
+/*
+ * Distance from the current to the closest source, measured in hops
+ *
+ * @param source bool, whether the current device is a source
+ * @return       num, number of hops to the closest source
+ */
+public def hopDistanceTo(source) {
+	distanceToWithMetric(source, () -> {1})
 }
 
 /**

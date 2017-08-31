@@ -3,7 +3,7 @@ package org.protelis.lang.datatype.impl;
 import org.protelis.lang.datatype.DeviceUID;
 
 /**
- * Simple UID container class.
+ * Simple container class for immutable, comparable UIDs.
  * @param <T>  Type to be used for storing UID
  */
 public class AbstractComparableDeviceUID<T extends Comparable<T>> implements DeviceUID, Comparable<AbstractComparableDeviceUID<T>> {
