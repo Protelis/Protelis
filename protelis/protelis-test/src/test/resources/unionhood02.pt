@@ -1,0 +1,2 @@
+// EXPECTED_RESULT: [] 
+unionHood(nbr(1))

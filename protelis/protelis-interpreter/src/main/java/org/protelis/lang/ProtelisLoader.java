@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -102,16 +103,12 @@ import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java8.util.J8Arrays;
 import java8.util.Maps;
 import java8.util.Optional;
 import java8.util.function.BiFunction;
 import java8.util.function.BinaryOperator;
-import java8.util.function.Function;
 import java8.util.function.Functions;
 import java8.util.stream.Collectors;
-import java8.util.stream.RefStreams;
-import java8.util.stream.Stream;
 import java8.util.stream.StreamSupport;
 
 /**
@@ -170,7 +167,10 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
+    public static ProtelisProgram parse(final String program) {
+        if (Objects.requireNonNull(program, "null is not a valid Protelis program, not a valid Protelis module").isEmpty()) {
+            throw new IllegalArgumentException("The empty string is not a valid program, nor a valid module name");
+        }
         try {
             if (REGEX_PROTELIS_MODULE.matcher(Objects.requireNonNull(program, "The Protelis Program can not be null"))
                     .matches()) {
@@ -377,12 +377,6 @@ public final class ProtelisLoader {
         return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), refToFun), refToFun);
     }
 
-    private static <E> Stream<E> flatten(
-            final E target,
-            final Function<? super E, ? extends Stream<? extends E>> extractor) {
-        return RefStreams.concat(RefStreams.of(target), extractor.apply(target).flatMap(el -> flatten(el, extractor)));
-    }
-
     private static List<AnnotatedTree<?>> callArgs(final Call call, final Map<Reference, FunctionDefinition> env) {
         return exprListArgs(call.getArgs(), env);
     }
@@ -410,11 +404,13 @@ public final class ProtelisLoader {
         ASSIGNMENT(Assignment.class,
             (e, m) -> new CreateVar(toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
         BLOCK(Block.class,
-            (e, m) -> new All(
-                flatten((Block) e, b -> b.getOthers() == null ? RefStreams.empty() : RefStreams.<Block>of(b.getOthers()))
-                .map(b -> b.getFirst())
-                .map(s -> translate(s, m))
-                .collect(Collectors.toList()))),
+            (e, m) -> {
+                final List<AnnotatedTree<?>> statements = new LinkedList<>();
+                for (Block b = (Block) e; b != null; b = b.getOthers()) {
+                    statements.add(translate(b.getFirst(), m));
+                }
+                return new All(statements);
+            }),
         BOOLEAN(BooleanVal.class,
                 (e, m) -> new Constant<>(((BooleanVal) e).isVal())),
         BUILTIN_HOOD(BuiltinHoodOp.class,
@@ -425,10 +421,14 @@ public final class ProtelisLoader {
                         HoodOp.get(hood.getName().replace(HOOD_END, "")),
                         hood.isInclusive());
             }),
-        CALL_METHOD(Call.class,
-            (e, m) -> new MethodCall((JvmOperation) ((Call) e).getReference(), callArgs((Call) e, m))),
-        CALL_FUNCTION(Call.class,
-            (e, m) -> new FunctionCall(m.get(toR(((Call) e).getReference())), callArgs((Call) e, m))),
+        CALL(Call.class, (e, m) -> {
+            final Call call = (Call) e;
+            final EObject ref = call.getReference();
+            if (ref instanceof JvmOperation) {
+                return new MethodCall((JvmOperation) ref, callArgs(call, m));
+            }
+            return new FunctionCall(m.get(toR(ref)), callArgs(call, m));
+        }),
         DECLARATION(VarDef.class,
             (e, m) -> new CreateVar(toR(e), translate(((VarDef) e).getRight(), m), true)),
         DOUBLE(DoubleVal.class,
@@ -527,23 +527,10 @@ public final class ProtelisLoader {
 
         @SuppressWarnings("unchecked")
         public static <T> AnnotatedTree<T> translate(final EObject o, final Map<Reference, FunctionDefinition> functions) {
-            final Optional<AnnotatedTree<T>> result = J8Arrays.stream(values())
-                .filter(dispatch -> dispatch.type.isAssignableFrom(o.getClass()))
-                .map(dispatch -> {
-                    try {
-                        return Optional.of((AnnotatedTree<T>) dispatch.translator.apply(o, functions));
-                    } catch (final IllegalArgumentException e) {
-                        L.debug("Illegal argument " + dispatch, e);
-                        throw new IllegalArgumentException(e);
-                    } catch (RuntimeException e) {
-                        return Optional.<AnnotatedTree<T>>empty();
-                    }
-                })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
-            if (result.isPresent()) {
-                return result.get();
+            for (final Dispatch d: values()) {
+                if (d.type.isAssignableFrom(o.getClass())) {
+                    return (AnnotatedTree<T>) d.translator.apply(o, functions);
+                }
             }
             throw new IllegalStateException(o + " could not be mapped to a Protelis interpreter entity.");
         }

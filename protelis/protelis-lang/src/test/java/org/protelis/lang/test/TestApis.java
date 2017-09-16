@@ -1,6 +1,5 @@
 package org.protelis.lang.test;
 
-import org.apache.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -8,12 +7,14 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.protelis.test.InfrastructureTester;
 import org.protelis.test.ProgramTester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Testing Protelis core libraries.
  */
 public class TestApis {
-    private static final Logger L = Logger.getLogger(TestApis.class);
+    private static final Logger L = LoggerFactory.getLogger(TestApis.class);
 
     private static void test(final String file) {
         test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
@@ -35,7 +36,9 @@ public class TestApis {
      * Print the current method name.
      */
     @Rule
-    public TestRule watcher = new TestWatcher() {
+    //CHECKSTYLE:OFF
+    public final TestRule watcher = new TestWatcher() {
+    //CHECKSTYLE:ON
         protected void starting(final Description description) {
             L.info(description.getMethodName());
         }
@@ -167,6 +170,14 @@ public class TestApis {
     @Test
     public void testBroadcast() {
         test("broadcast");
+    }
+
+    /**
+     * Test broadcast.pt with isolated nodes.
+     */
+    @Test
+    public void testBroadcast2() {
+        test("broadcast2");
     }
 
     /**
@@ -343,6 +354,22 @@ public class TestApis {
     @Test
     public void testCRFGradient2() {
         test("crfGradient2");
+    }
+
+    /**
+     * Test bisGradient.pt.
+     */
+    @Test
+    public void testBISGradient() {
+        test("bisGradient");
+    }
+
+    /**
+     * Test bisGradient2.pt.
+     */
+    @Test
+    public void testBISGradient2() {
+        test("bisGradient2");
     }
 
     /**
@@ -673,6 +700,22 @@ public class TestApis {
     }
 
     /**
+     * Test hopBroadcast function.
+     */
+    @Test
+    public void testHopBroadcast() {
+        test("hopBroadcast");
+    }
+
+    /**
+     * Test hopDistanceTo function.
+     */
+    @Test
+    public void testHopDistanceTo() {
+        test("hopDistanceTo");
+    }
+
+    /**
      * Test multiC.pt.
      */
     @Test
@@ -854,6 +897,14 @@ public class TestApis {
     @Test
     public void testNeighborhood() {
         test("neighborhood");
+    }
+
+    /**
+     * Test once.pt.
+     */
+    @Test
+    public void testOnce() {
+        testProgram("once");
     }
 
     /**
