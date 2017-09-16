@@ -15,17 +15,15 @@ def distanceCompetition(d, lead, uid, grain, metric) {
     mux (d > grain) {
         uid
     } else {
-        let thr = 0.5 * grain;
+        let thr = 0.25 * grain;
         mux (d >= thr) {
             default()
         } else {
-            minHood(
-                mux (nbr(d) + metric.apply() >= thr) {
-                    default()
-                } else {
-                    nbr(lead)
-                }
-            )
+            mux (d >= thr) {
+                default()
+            } else {
+                minHood PlusSelf(nbr(lead))
+            }
         }
     }
 }
