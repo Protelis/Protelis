@@ -1,0 +1,3 @@
+import protelis:coord:spreading
+let source = env.has("source");
+broadcast(source, mux(source){"foo"}else{"bar"})

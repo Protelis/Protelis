@@ -173,6 +173,14 @@ public class TestApis {
     }
 
     /**
+     * Test broadcast.pt with isolated nodes.
+     */
+    @Test
+    public void testBroadcast2() {
+        test("broadcast2");
+    }
+
+    /**
      * Test C.pt.
      */
     @Test
@@ -689,6 +697,22 @@ public class TestApis {
     @Test
     public void testGradient() {
         test("gradient");
+    }
+
+    /**
+     * Test hopBroadcast function.
+     */
+    @Test
+    public void testHopBroadcast() {
+        test("hopBroadcast");
+    }
+
+    /**
+     * Test hopDistanceTo function.
+     */
+    @Test
+    public void testHopDistanceTo() {
+        test("hopDistanceTo");
     }
 
     /**

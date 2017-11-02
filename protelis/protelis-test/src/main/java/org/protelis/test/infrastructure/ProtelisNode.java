@@ -1,6 +1,9 @@
 package org.protelis.test.infrastructure;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.ExecutionEnvironment;
@@ -96,6 +99,16 @@ public class ProtelisNode extends GenericNode<Object> implements DeviceUID, Exec
      */
     public NetworkManager getNetworkManager() {
         return netmgr;
+    }
+
+    @Override
+    public Set<String> keySet() {
+        Set<String> sSet = new HashSet<String>();
+        // Note: this is highly inefficient
+        for (Molecule key : getContents().keySet()) {
+            sSet.add(key.getName());
+        }
+        return Collections.unmodifiableSet(sSet);
     }
 
 }
