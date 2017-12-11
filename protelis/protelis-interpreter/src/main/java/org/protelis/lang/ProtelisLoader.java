@@ -117,16 +117,34 @@ import java8.util.stream.StreamSupport;
 public final class ProtelisLoader {
 
     private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
-    private static final XtextResourceSet XTEXT = createResourceSet();
+    private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
+        @Override
+        protected XtextResourceSet initialValue() {
+            new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri(".");
+            final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
+            final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
+            xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+            return xtext;
+        }
+    };
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
-    private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+",
-            Pattern.DOTALL);
-    private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
+    private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.DOTALL);
+    private static final ThreadLocal<PathMatchingResourcePatternResolver> RESOLVER = new ThreadLocal<PathMatchingResourcePatternResolver>() {
+        @Override
+        protected PathMatchingResourcePatternResolver initialValue() {
+            return new PathMatchingResourcePatternResolver();
+        }
+    };
     private static final String PROTELIS_FILE_EXTENSION = "pt";
     private static final String HOOD_END = "Hood";
-    private static final Cache<String, Resource> LOADED_RESOURCES = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.SECONDS)
-            .build();
+    private static final ThreadLocal<Cache<String, Resource>> LOADED_RESOURCES = new ThreadLocal<Cache<String, Resource>>() {
+        @Override
+        protected Cache<String, Resource> initialValue() {
+            return CacheBuilder.newBuilder()
+                    .expireAfterAccess(1, TimeUnit.SECONDS)
+                    .build();
+        }
+    };
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.SECONDS)
             .build(new CacheLoader<Object, Reference>() {
@@ -167,10 +185,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parse(final String program) {
-        if (Objects.requireNonNull(program, "null is not a valid Protelis program, not a valid Protelis module").isEmpty()) {
-            throw new IllegalArgumentException("The empty string is not a valid program, nor a valid module name");
-        }
+    public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
         try {
             if (REGEX_PROTELIS_MODULE.matcher(Objects.requireNonNull(program, "The Protelis Program can not be null"))
                     .matches()) {
@@ -226,10 +241,10 @@ public final class ProtelisLoader {
     }
 
     private static Resource resourceFromURIString(final String programURI) throws IOException {
-        loadResourcesRecursively(XTEXT, programURI);
+        loadResourcesRecursively(XTEXT.get(), programURI);
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
         final URI uri = URI.createURI(realURI);
-        return XTEXT.getResource(uri, true);
+        return XTEXT.get().getResource(uri, true);
     }
 
     private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI)
@@ -242,10 +257,10 @@ public final class ProtelisLoader {
             final String programURI,
             final Set<String> alreadyInQueue) throws IOException {
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
-        if (LOADED_RESOURCES.getIfPresent(realURI) == null && !alreadyInQueue.contains(realURI)) {
+        if (LOADED_RESOURCES.get().getIfPresent(realURI) == null && !alreadyInQueue.contains(realURI)) {
             alreadyInQueue.add(realURI);
             final URI uri = URI.createURI(realURI);
-            final org.springframework.core.io.Resource protelisFile = RESOLVER.getResource(realURI);
+            final org.springframework.core.io.Resource protelisFile = RESOLVER.get().getResource(realURI);
             final InputStream is = protelisFile.getInputStream();
             final String ss = IOUtils.toString(is, "UTF-8");
             is.close();
@@ -257,7 +272,7 @@ public final class ProtelisLoader {
                 final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
                 loadResourcesRecursively(target, classpathResource, alreadyInQueue);
             }
-            LOADED_RESOURCES.put(realURI, target.getResource(uri, true));
+            LOADED_RESOURCES.get().put(realURI, target.getResource(uri, true));
         }
     }
 
@@ -271,16 +286,16 @@ public final class ProtelisLoader {
         + Hashing.sha512().hashString(program, StandardCharsets.UTF_8)
         + ".pt");
         synchronized (XTEXT) {
-            Resource r = XTEXT.getResource(uri, false);
+            Resource r = XTEXT.get().getResource(uri, false);
             if (r == null) {
                 try (InputStream in = new StringInputStream(program)) {
-                    loadStringResources(XTEXT, in);
+                    loadStringResources(XTEXT.get(), in);
                 } catch (IOException e) {
                     throw new IllegalStateException("Couldn't get resources associated with anonymous program", e);
                 }
-                r = XTEXT.createResource(uri);
+                r = XTEXT.get().createResource(uri);
                 try (InputStream in = new StringInputStream(program)) {
-                    r.load(in, XTEXT.getLoadOptions());
+                    r.load(in, XTEXT.get().getLoadOptions());
                 } catch (IOException e) {
                     throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
                 }
@@ -300,14 +315,6 @@ public final class ProtelisLoader {
             final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
             loadResourcesRecursively(target, classpathResource, alreadyInQueue);
         }
-    }
-
-    private static XtextResourceSet createResourceSet() {
-        new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri(".");
-        final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
-        final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
-        xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-        return xtext;
     }
 
     /**
