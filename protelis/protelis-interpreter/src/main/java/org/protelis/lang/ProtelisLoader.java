@@ -185,7 +185,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parse(final String program) throws IllegalArgumentException {
+    public static ProtelisProgram parse(final String program) {
         if (Objects.requireNonNull(program, "null is not a valid Protelis program, not a valid Protelis module").isEmpty()) {
             throw new IllegalArgumentException("The empty string is not a valid program, nor a valid module name");
         }
