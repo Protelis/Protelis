@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
@@ -37,6 +38,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
+import java8.util.J8Arrays;
 import java8.util.Optional;
 
 /**
@@ -149,60 +151,75 @@ public final class ReflectionUtils {
         Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
         Objects.requireNonNull(methodName, "Method name can not be null.");
         Objects.requireNonNull(argClass, "Method arguments can not be null.");
+        final Method[] candidates = J8Arrays.stream(clazz.getMethods())
+    		// Parameter number
+            .filter(m -> compatibleLength(m, argClass))
+            // Method name
+            .filter(m -> m.getName().equals(methodName))
+            // Only pick accessibile methods, mapping to superclass/interfaces if needed
+            .map(MethodUtils::getAccessibleMethod)
+            .filter(it -> it != null)
+            .toArray(Method[]::new);
+        if (candidates.length == 0) {
+            throw new IllegalArgumentException("No accessible method named " + methodName
+                    + " with " + argClass.length + " parameters is available in " + clazz);
+        }
+        if (candidates.length == 1 && argClass.length == 0) {
+        	/*
+        	 * In case of 0-arity, the single candidate can be selected directly
+        	 */
+            return candidates[0];
+        }
         /*
-         * If there is a matching method, return it
+         * Deal with Java method overloading scoring methods
          */
-        try {
-            return clazz.getMethod(methodName, argClass);
-        } catch (NoSuchMethodException | SecurityException e) {
-            /*
-             * Look it up on the cache
-             */
-            /*
-             * Deal with Java method overloading scoring methods
-             */
-            final Method[] candidates = clazz.getMethods();
-            final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
-            for (final Method m : candidates) {
-                if (compatibleLength(m, argClass) && methodName.equals(m.getName())) {
-                    int p = 0;
-                    boolean compatible = true;
-                    for (int i = 0; compatible && i < argClass.length; i++) {
-                        final Class<?> expected = nthArgumentType(m, i);
-                        final Class<?> actual = argClass[i];
-                        if (expected.isAssignableFrom(actual)) {
-                            /*
-                             * No downcast nor coercion required, there is compatibility
-                             */
-                            p += 3;
-                        } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
-                            p += computePointsForWrapper(expected, actual);
-                        } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
-                            p += computePointsForWrapper(actual, expected);
-                        } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
-                            /*
-                             * At least one is not a number: conversion with precision loss does not apply.
-                             */
-                            compatible = false;
-                        }
-                    }
-                    if (compatible) {
-                        lm.add(new Pair<>(p, m));
-                    }
+        final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
+        for (final Method m: candidates) {
+            int p = 0;
+            boolean compatible = true;
+            for (int i = 0; compatible && i < argClass.length; i++) {
+                final Class<?> expected = nthArgumentType(m, i);
+                final Class<?> actual = argClass[i];
+                if (expected.isAssignableFrom(actual)) {
+                    /*
+                     * No downcast nor coercion required, there is compatibility
+                     */
+                    p += 3;
+                } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
+                    p += computePointsForWrapper(expected, actual);
+                } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
+                    p += computePointsForWrapper(actual, expected);
+                } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
+                    /*
+                     * At least one is not a number: conversion with precision loss does not apply.
+                     */
+                    compatible = false;
                 }
             }
-            /*
-             * Find best
-             */
-            final Optional<Method> best = stream(lm).max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
-                    .map(Pair::getSecond);
-            if (best.isPresent()) {
-                return best.get();
+            if (compatible) {
+                /*
+                 * Early intercept the case of single candidate
+                 */
+                if (candidates.length == 1) {
+                    return m;
+                }
+                lm.add(new Pair<>(p, m));
             }
         }
-        throw new IllegalStateException();
+        /*
+         * Find best
+         */
+        final Optional<Method> best = stream(lm)
+                .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
+                .map(Pair::getSecond);
+        if (best.isPresent()) {
+            return best.get();
+        }
+        throw new IllegalStateException("Method selection for " + methodName
+                + " inside " + clazz
+                + " has been restricted to " + Arrays.toString(candidates)
+                + " however none of them is compatible with arguments " + Arrays.toString(argClass));
     }
-
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
         final Class<?> wrapped = ClassUtils.primitiveToWrapper(primitive);
         if (wrapped.equals(wrapper)) {
