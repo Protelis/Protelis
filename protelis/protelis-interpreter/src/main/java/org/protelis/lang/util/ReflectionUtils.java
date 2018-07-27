@@ -333,9 +333,9 @@ public final class ReflectionUtils {
             try {
                 return method.invoke(target, useArgs);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                L.error("Error invoking method", e);
-                throw new IllegalStateException(
-                        "Cannot invoke " + method + " with arguments " + Arrays.toString(useArgs) + " on " + target, e);
+            	final String errorMessage = "Cannot invoke " + method + " with arguments " + Arrays.toString(useArgs) + " on " + target;
+                L.error(errorMessage, e);
+                throw new IllegalStateException(errorMessage, e);
             }
         }
     }
