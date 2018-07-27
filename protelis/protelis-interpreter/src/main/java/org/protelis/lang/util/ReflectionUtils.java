@@ -46,8 +46,8 @@ import java8.util.Optional;
  */
 public final class ReflectionUtils {
 
-    private static final Logger L = LoggerFactory.getLogger(ReflectionUtils.class);
     private static final int CACHE_MAX_SIZE = 1000;
+    private static final Logger L = LoggerFactory.getLogger(ReflectionUtils.class);
     private static final LoadingCache<Triple<Class<?>, String, List<Class<?>>>, Method> METHOD_CACHE = CacheBuilder
             .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(1, TimeUnit.HOURS)
             .build(new CacheLoader<Triple<Class<?>, String, List<Class<?>>>, Method>() {
@@ -62,164 +62,14 @@ public final class ReflectionUtils {
     private ReflectionUtils() {
     }
 
-    /**
-     * @param methodName
-     *            the method to be invoked
-     * @param target
-     *            the target object. It can not be null
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestNotStatic(final Object target, final String methodName, final Object[] args) {
-        Objects.requireNonNull(target);
-        return invokeBestMethod(target.getClass(), methodName, target, args);
-    }
-
-    /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestStatic(final Class<?> clazz, final String methodName, final Object... args) {
-        return invokeBestMethod(clazz, methodName, null, args);
-    }
-
-    /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final Object... args) {
-        return searchBestMethod(clazz, methodName, Arrays.asList(args));
-    }
-
-    /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param args
-     *            the arguments for the method. If a {@link Field} is passed,
-     *            then the expected type of the field is used.
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
-        final List<Class<?>> originalClasses = new ArrayList<>(args.size());
-        final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
-        boolean atLeastOneField = false;
-        for (final Object arg: args) {
-            final Class<?> argClass = arg.getClass();
-            if (arg instanceof Field) {
-                fieldedClasses.add(((Field) arg).getExpectedType());
-                atLeastOneField = true;
-            } else {
-                fieldedClasses.add(argClass);
-            }
-            originalClasses.add(argClass);
-        }
-        try {
-            return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, originalClasses));
-        } catch (UncheckedExecutionException | ExecutionException outerException) {
-            if (atLeastOneField) {
-                try {
-                    return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, fieldedClasses));
-                } catch (ExecutionException e) {
-                    throw new NoSuchMethodError("No" + methodName + originalClasses
-                            + " nor " + methodName + fieldedClasses + " exist in " + clazz
-                            + ".\nYou tried to invoke it with arguments " + args);
-                }
-            }
-            throw new NoSuchMethodError(methodName + originalClasses + " does not exist in " + clazz
-                    + ".\nYou tried to invoke it with arguments " + args);
+    private static boolean compatibleLength(final Method m, final Object[] args) {
+        if (m.isVarArgs()) {
+            return args.length >= (m.getParameterTypes().length - 1);
+        } else {
+            return m.getParameterTypes().length == args.length;
         }
     }
 
-    private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
-        Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
-        Objects.requireNonNull(methodName, "Method name can not be null.");
-        Objects.requireNonNull(argClass, "Method arguments can not be null.");
-        final Method[] candidates = J8Arrays.stream(clazz.getMethods())
-    		// Parameter number
-            .filter(m -> compatibleLength(m, argClass))
-            // Method name
-            .filter(m -> m.getName().equals(methodName))
-            // Only pick accessibile methods, mapping to superclass/interfaces if needed
-            .map(MethodUtils::getAccessibleMethod)
-            .filter(it -> it != null)
-            .toArray(Method[]::new);
-        if (candidates.length == 0) {
-            throw new IllegalArgumentException("No accessible method named " + methodName
-                    + " with " + argClass.length + " parameters is available in " + clazz);
-        }
-        if (candidates.length == 1 && argClass.length == 0) {
-        	/*
-        	 * In case of 0-arity, the single candidate can be selected directly
-        	 */
-            return candidates[0];
-        }
-        /*
-         * Deal with Java method overloading scoring methods
-         */
-        final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
-        for (final Method m: candidates) {
-            int p = 0;
-            boolean compatible = true;
-            for (int i = 0; compatible && i < argClass.length; i++) {
-                final Class<?> expected = nthArgumentType(m, i);
-                final Class<?> actual = argClass[i];
-                if (expected.isAssignableFrom(actual)) {
-                    /*
-                     * No downcast nor coercion required, there is compatibility
-                     */
-                    p += 3;
-                } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
-                    p += computePointsForWrapper(expected, actual);
-                } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
-                    p += computePointsForWrapper(actual, expected);
-                } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
-                    /*
-                     * At least one is not a number: conversion with precision loss does not apply.
-                     */
-                    compatible = false;
-                }
-            }
-            if (compatible) {
-                /*
-                 * Early intercept the case of single candidate
-                 */
-                if (candidates.length == 1) {
-                    return m;
-                }
-                lm.add(new Pair<>(p, m));
-            }
-        }
-        /*
-         * Find best
-         */
-        final Optional<Method> best = stream(lm)
-                .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
-                .map(Pair::getSecond);
-        if (best.isPresent()) {
-            return best.get();
-        }
-        throw new IllegalStateException("Method selection for " + methodName
-                + " inside " + clazz
-                + " has been restricted to " + Arrays.toString(candidates)
-                + " however none of them is compatible with arguments " + Arrays.toString(argClass));
-    }
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
         final Class<?> wrapped = ClassUtils.primitiveToWrapper(primitive);
         if (wrapped.equals(wrapper)) {
@@ -252,6 +102,34 @@ public final class ReflectionUtils {
         return invokeMethod(searchBestMethod(clazz, methodName, args), target, args);
     }
 
+    /**
+     * @param methodName
+     *            the method to be invoked
+     * @param target
+     *            the target object. It can not be null
+     * @param args
+     *            the arguments for the method
+     * @return the result of the invocation, or an {@link IllegalStateException}
+     *         if something goes wrong.
+     */
+    public static Object invokeBestNotStatic(final Object target, final String methodName, final Object[] args) {
+        Objects.requireNonNull(target);
+        return invokeBestMethod(target.getClass(), methodName, target, args);
+    }
+
+    /**
+     * @param clazz
+     *            the class where to search for suitable methods
+     * @param methodName
+     *            the method to be invoked
+     * @param args
+     *            the arguments for the method
+     * @return the result of the invocation, or an {@link IllegalStateException}
+     *         if something goes wrong.
+     */
+    public static Object invokeBestStatic(final Class<?> clazz, final String methodName, final Object... args) {
+        return invokeBestMethod(clazz, methodName, null, args);
+    }
     /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
@@ -357,12 +235,78 @@ public final class ReflectionUtils {
         }
     }
 
-    private static boolean compatibleLength(final Method m, final Object[] args) {
-        if (m.isVarArgs()) {
-            return args.length >= (m.getParameterTypes().length - 1);
-        } else {
-            return m.getParameterTypes().length == args.length;
+    private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
+        Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
+        Objects.requireNonNull(methodName, "Method name can not be null.");
+        Objects.requireNonNull(argClass, "Method arguments can not be null.");
+        final Method[] candidates = J8Arrays.stream(clazz.getMethods())
+    		// Parameter number
+            .filter(m -> compatibleLength(m, argClass))
+            // Method name
+            .filter(m -> m.getName().equals(methodName))
+            // Only pick accessibile methods, mapping to superclass/interfaces if needed
+            .map(MethodUtils::getAccessibleMethod)
+            .filter(it -> it != null)
+            .toArray(Method[]::new);
+        if (candidates.length == 0) {
+            throw new IllegalArgumentException("No accessible method named " + methodName
+                    + " with " + argClass.length + " parameters is available in " + clazz);
         }
+        if (candidates.length == 1 && argClass.length == 0) {
+        	/*
+        	 * In case of 0-arity, the single candidate can be selected directly
+        	 */
+            return candidates[0];
+        }
+        /*
+         * Deal with Java method overloading scoring methods
+         */
+        final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
+        for (final Method m: candidates) {
+            int p = 0;
+            boolean compatible = true;
+            for (int i = 0; compatible && i < argClass.length; i++) {
+                final Class<?> expected = nthArgumentType(m, i);
+                final Class<?> actual = argClass[i];
+                if (expected.isAssignableFrom(actual)) {
+                    /*
+                     * No downcast nor coercion required, there is compatibility
+                     */
+                    p += 3;
+                } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
+                    p += computePointsForWrapper(expected, actual);
+                } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
+                    p += computePointsForWrapper(actual, expected);
+                } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
+                    /*
+                     * At least one is not a number: conversion with precision loss does not apply.
+                     */
+                    compatible = false;
+                }
+            }
+            if (compatible) {
+                /*
+                 * Early intercept the case of single candidate
+                 */
+                if (candidates.length == 1) {
+                    return m;
+                }
+                lm.add(new Pair<>(p, m));
+            }
+        }
+        /*
+         * Find best
+         */
+        final Optional<Method> best = stream(lm)
+                .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
+                .map(Pair::getSecond);
+        if (best.isPresent()) {
+            return best.get();
+        }
+        throw new IllegalStateException("Method selection for " + methodName
+                + " inside " + clazz
+                + " has been restricted to " + Arrays.toString(candidates)
+                + " however none of them is compatible with arguments " + Arrays.toString(argClass));
     }
 
     private static Class<?> nthArgumentType(final Method m, final int n) {
@@ -396,6 +340,62 @@ public final class ReflectionUtils {
             newargs[newargs.length - 1] = vararg;
             return newargs;
         }
+    }
+
+    /**
+     * @param clazz
+     *            the class where to search for suitable methods
+     * @param methodName
+     *            the method to be invoked
+     * @param args
+     *            the arguments for the method. If a {@link Field} is passed,
+     *            then the expected type of the field is used.
+     * @return the result of the invocation, or an {@link IllegalStateException}
+     *         if something goes wrong.
+     */
+    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
+        final List<Class<?>> originalClasses = new ArrayList<>(args.size());
+        final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
+        boolean atLeastOneField = false;
+        for (final Object arg: args) {
+            final Class<?> argClass = arg.getClass();
+            if (arg instanceof Field) {
+                fieldedClasses.add(((Field) arg).getExpectedType());
+                atLeastOneField = true;
+            } else {
+                fieldedClasses.add(argClass);
+            }
+            originalClasses.add(argClass);
+        }
+        try {
+            return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, originalClasses));
+        } catch (UncheckedExecutionException | ExecutionException outerException) {
+            if (atLeastOneField) {
+                try {
+                    return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, fieldedClasses));
+                } catch (ExecutionException e) {
+                    throw new NoSuchMethodError("No" + methodName + originalClasses
+                            + " nor " + methodName + fieldedClasses + " exist in " + clazz
+                            + ".\nYou tried to invoke it with arguments " + args);
+                }
+            }
+            throw new NoSuchMethodError(methodName + originalClasses + " does not exist in " + clazz
+                    + ".\nYou tried to invoke it with arguments " + args);
+        }
+    }
+
+    /**
+     * @param clazz
+     *            the class where to search for suitable methods
+     * @param methodName
+     *            the method to be invoked
+     * @param args
+     *            the arguments for the method
+     * @return the result of the invocation, or an {@link IllegalStateException}
+     *         if something goes wrong.
+     */
+    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final Object... args) {
+        return searchBestMethod(clazz, methodName, Arrays.asList(args));
     }
 
 }
