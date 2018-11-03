@@ -83,6 +83,14 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
     @Override
     public final void commit() {
+        // send precisely once
+        nm.shareState(toSend);
+        exportsSize = toSend.size();
+        // commit and clear including recursion into restricted contexts
+        commitRecursively();
+    }
+
+    public final void commitRecursively() {
         Objects.requireNonNull(env);
         Objects.requireNonNull(gamma);
         Objects.requireNonNull(theta);
@@ -90,13 +98,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         Objects.requireNonNull(functions);
         previousRoundTime = getCurrentTime();
         env.commit();
-        nm.shareState(toSend);
-        exportsSize = toSend.size();
         gamma = null;
         theta = null;
         toSend = null;
         for (final AbstractExecutionContext rctx: restrictedContexts) {
-            rctx.commit();
+            rctx.commitRecursively();
         }
         restrictedContexts.clear();
     }
