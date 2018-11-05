@@ -32,7 +32,7 @@ import org.protelis.vm.ExecutionContext;
  * as a set of publish-subscribe streams. This allows devices with different
  * sets of keys to align the expressions that share keys together.
  */
-public class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
+public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
 
     private static final long serialVersionUID = -7655993075803732148L;
     private static final String APPLY = "apply";
