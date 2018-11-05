@@ -1,6 +1,5 @@
 package org.protelis.lang.util;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +34,7 @@ public final class JavaInteroperabilityUtils {
      * @param clazz
      *            the class where to search for the method
      * @param method
-     *            a valid {@link Method} name
+     *            a valid {@link java.lang.reflect.Method} name
      * @param args
      *            the arguments for the method
      * @return the result of the evaluation
@@ -61,7 +60,7 @@ public final class JavaInteroperabilityUtils {
      * @param clazz
      *            the class where to search for the method
      * @param method
-     *            a valid {@link Method} name
+     *            a valid {@link java.lang.reflect.Method} name
      * @param args
      *            the arguments for the method
      * @return the result of the evaluation
@@ -82,7 +81,7 @@ public final class JavaInteroperabilityUtils {
      *            the {@link AnnotatedTree} on which annotation the method will
      *            be invoked
      * @param method
-     *            a valid {@link Method} name
+     *            a valid {@link java.lang.reflect.Method} name
      * @param args
      *            the arguments for the method
      * @return the result of the evaluation
