@@ -16,7 +16,7 @@ import it.unibo.alchemist.model.interfaces.Molecule;
 
 /**
  */
-public class ProtelisNode extends GenericNode<Object> implements DeviceUID, ExecutionEnvironment {
+public final class ProtelisNode extends GenericNode<Object> implements DeviceUID, ExecutionEnvironment {
     /**
      * 
      */
@@ -103,9 +103,9 @@ public class ProtelisNode extends GenericNode<Object> implements DeviceUID, Exec
 
     @Override
     public Set<String> keySet() {
-        Set<String> sSet = new HashSet<String>();
+        final Set<String> sSet = new HashSet<String>();
         // Note: this is highly inefficient
-        for (Molecule key : getContents().keySet()) {
+        for (final Molecule key : getContents().keySet()) {
             sSet.add(key.getName());
         }
         return Collections.unmodifiableSet(sSet);
