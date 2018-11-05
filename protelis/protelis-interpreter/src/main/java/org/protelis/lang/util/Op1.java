@@ -27,18 +27,18 @@ public enum Op1 {
     /**
      * Not.
      */
-    NOT("!", (UnaryOperator<Object> & Serializable) Op1::not),
+    NOT("!", Op1::not),
     /**
      * Sign inversion.
      */
-    MINUS("-", (UnaryOperator<Object> & Serializable) Op1::minus);
+    MINUS("-", Op1::minus);
 
     private static final int[] FIELDS = new int[] { 0 };
     private static final Map<String, Op1> MAP = new ConcurrentHashMap<>();
-    private final UnaryOperator<Object> fun;
+    private final UnaryOperation fun;
     private final String opName;
 
-    Op1(final String name, final UnaryOperator<Object> function) {
+    Op1(final String name, final UnaryOperation function) {
         fun = function;
         opName = name;
     }
@@ -89,4 +89,6 @@ public enum Op1 {
         }
         return unsupported("!", o);
     }
+
+    private interface UnaryOperation extends UnaryOperator<Object>, Serializable { }
 }

@@ -16,6 +16,7 @@ import java8.util.J8Arrays;
 import java.io.Serializable;
 import java.util.Map;
 import java8.util.Optional;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.danilopianini.lang.TriFunction;
@@ -30,13 +31,13 @@ public enum Op3 {
     /**
      * Functional mux.
      */
-    MUX("mux", (TriFunction<Object, Object, Object, Object> & Serializable) Op3::mux);
+    MUX("mux", Op3::mux);
 
     private static final Map<String, Op3> MAP = new ConcurrentHashMap<>();
-    private final TriFunction<Object, Object, Object, Object> fun;
+    private final TernaryOperation fun;
     private final String opName;
 
-    Op3(final String name, final TriFunction<Object, Object, Object, Object> function) {
+    Op3(final String name, final TernaryOperation function) {
         fun = function;
         opName = name;
     }
@@ -100,4 +101,7 @@ public enum Op3 {
             return c;
         }
     }
+
+    private interface TernaryOperation extends TriFunction<Object, Object, Object, Object>, Serializable { }
+
 }

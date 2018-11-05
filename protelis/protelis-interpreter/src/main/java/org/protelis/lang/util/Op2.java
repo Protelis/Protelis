@@ -36,37 +36,37 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public enum Op2 {
 
     /** Logical AND operation. */
-    AND("&&", (BinaryOperator<Object> & Serializable) Op2::and),
+    AND("&&", Op2::and),
     /** Arithmetic division operation. */
-    DIVIDE("/", (BinaryOperator<Object> & Serializable) Op2::divide),
+    DIVIDE("/", Op2::divide),
     /** Equality comparison operation. */
-    EQUALS("==", (BinaryOperator<Object> & Serializable) Op2::equals),
+    EQUALS("==", Op2::equals),
     /** Inequality comparison operation. */
-    NOT_EQUALS("!=", (BinaryOperator<Object> & Serializable) (a, b) -> !Op2.equals(a, b)),
+    NOT_EQUALS("!=", (a, b) -> !Op2.equals(a, b)),
     /** Greater-than comparison operation. */
-    GREATER(">", (BinaryOperator<Object> & Serializable) Op2::greater),
+    GREATER(">", Op2::greater),
     /** Greater-than-or-equal comparison operation. */
-    GREATER_EQUALS(">=", (BinaryOperator<Object> & Serializable) Op2::greaterEquals),
+    GREATER_EQUALS(">=", Op2::greaterEquals),
     /** Maximum of two numbers or other Comparable objects. */
-    MAX("min", (BinaryOperator<Object> & Serializable) Op2::max),
+    MAX("min", Op2::max),
     /** Minimum of two numbers or other Comparable objects. */
-    MIN("min", (BinaryOperator<Object> & Serializable) Op2::min),
+    MIN("min", Op2::min),
     /** Arithmetic subtraction operation. */
-    MINUS("-", (BinaryOperator<Object> & Serializable) Op2::minus),
+    MINUS("-", Op2::minus),
     /** Modulus operation. */
-    MODULUS("%", (BinaryOperator<Object> & Serializable) Op2::modulus),
+    MODULUS("%", Op2::modulus),
     /** Logical OR operation. */
-    OR("||", (BinaryOperator<Object> & Serializable) Op2::or),
+    OR("||", Op2::or),
     /** Arithmetic addition operation. */
-    PLUS("+", (BinaryOperator<Object> & Serializable) Op2::plus),
+    PLUS("+", Op2::plus),
     /** Exponent operation. */
-    POWER("^", (BinaryOperator<Object> & Serializable) Op2::pow),
+    POWER("^", Op2::pow),
     /** Less-than comparison operation. */
-    SMALLER("<", (BinaryOperator<Object> & Serializable) Op2::smaller),
+    SMALLER("<", Op2::smaller),
     /** Less-than-or-equal comparison operation. */
-    SMALLER_EQUALS("<=", (BinaryOperator<Object> & Serializable) Op2::smallerEquals),
+    SMALLER_EQUALS("<=", Op2::smallerEquals),
     /** Arithmetic multiplication operation. */
-    TIMES("*", (BinaryOperator<Object> & Serializable) Op2::times);
+    TIMES("*", Op2::times);
 
     private static final Logger L = LoggerFactory.getLogger(Op2.class);
     private static final String UNCHECKED = "unchecked";
@@ -75,10 +75,10 @@ public enum Op2 {
     private static final int[] RIGHT = new int[] { 1 };
     private static final int[] NONE = new int[] {};
     private static final Map<String, Op2> MAP = new ConcurrentHashMap<>();
-    private final BinaryOperator<Object> fun;
+    private final BinaryOperation fun;
     private final String opName;
 
-    Op2(final String name, final BinaryOperator<Object> function) {
+    Op2(final String name, final BinaryOperation function) {
         fun = function;
         opName = name;
     }
@@ -309,5 +309,7 @@ public enum Op2 {
     private static Object times(final Object a, final Object b) {
         return arithmetic("*", a, b, (v1, v2) -> v1 * v2);
     }
+
+    private interface BinaryOperation extends BinaryOperator<Object>, Serializable { }
 
 }
