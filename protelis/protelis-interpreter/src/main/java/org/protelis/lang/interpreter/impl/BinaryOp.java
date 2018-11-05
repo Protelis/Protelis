@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Two-argument (inline) operator, such as addition.
  */
-public class BinaryOp extends AbstractAnnotatedTree<Object> {
+public final class BinaryOp extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op2 op;

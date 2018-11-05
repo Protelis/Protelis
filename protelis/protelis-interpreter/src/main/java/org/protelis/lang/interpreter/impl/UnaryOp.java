@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
  * Unary (prefix) operator, such as negation.
  *
  */
-public class UnaryOp extends AbstractAnnotatedTree<Object> {
+public final class UnaryOp extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op1 op;

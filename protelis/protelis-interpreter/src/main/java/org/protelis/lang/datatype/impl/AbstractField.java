@@ -25,17 +25,17 @@ public abstract class AbstractField implements Field {
     private static final long serialVersionUID = 7507440716878809781L;
 
     @Override
-    public DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude) {
+    public final DeviceUID reduceKeys(final BinaryOperator<DeviceUID> op, final DeviceUID exclude) {
         return reduce(nodeIterator(), op, exclude, null);
     }
 
     @Override
-    public Object reduceVals(final BinaryOperator<Object> op, final DeviceUID exclude, final Object defaultVal) {
+    public final Object reduceVals(final BinaryOperator<Object> op, final DeviceUID exclude, final Object defaultVal) {
         return reduce(valIterator(), op, exclude == null ? null : getSample(exclude), defaultVal);
     }
 
     @Override
-    public Pair<DeviceUID, Object> reducePairs(
+    public final Pair<DeviceUID, Object> reducePairs(
             final BinaryOperator<Pair<DeviceUID, Object>> accumulator,
             final DeviceUID exclude) {
         return reduce(
@@ -89,6 +89,9 @@ public abstract class AbstractField implements Field {
         return result.orElse(defaultVal);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
@@ -106,7 +109,7 @@ public abstract class AbstractField implements Field {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public final boolean equals(final Object o) {
         if (HashUtils.pointerEquals(this, o)) {
             return true;
         }
@@ -125,7 +128,7 @@ public abstract class AbstractField implements Field {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         int[] hash = new int[size()];
         int i = 0;
         for (final Pair<DeviceUID, Object> pv : coupleIterator()) {

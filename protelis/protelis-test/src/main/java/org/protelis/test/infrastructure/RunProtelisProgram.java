@@ -24,7 +24,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
 @SuppressFBWarnings(
         value = { "EQ_DOESNT_OVERRIDE_EQUALS", "SE_BAD_FIELD" },
         justification = "This class is not meant to be serialized, and not overriding equals() is desired.")
-public class RunProtelisProgram extends SimpleMolecule implements Action<Object> {
+public final class RunProtelisProgram extends SimpleMolecule implements Action<Object> {
     /**
      * RESULT.
      */
@@ -92,14 +92,14 @@ public class RunProtelisProgram extends SimpleMolecule implements Action<Object>
     /**
      * @return the environment
      */
-    protected final Environment<Object> getEnvironment() {
+    protected Environment<Object> getEnvironment() {
         return environment;
     }
 
     /**
      * @return the node
      */
-    protected final ProtelisNode getNode() {
+    protected ProtelisNode getNode() {
         return node;
     }
 

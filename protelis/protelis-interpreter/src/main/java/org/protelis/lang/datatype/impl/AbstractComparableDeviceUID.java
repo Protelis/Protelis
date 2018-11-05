@@ -1,5 +1,7 @@
 package org.protelis.lang.datatype.impl;
 
+import java.util.Objects;
+
 import org.protelis.lang.datatype.DeviceUID;
 
 /**
@@ -15,7 +17,7 @@ public class AbstractComparableDeviceUID<T extends Comparable<T>> implements Dev
      *            the string to use as the UID
      */
     public AbstractComparableDeviceUID(final T uid) {
-        this.uid = uid;
+        this.uid = Objects.requireNonNull(uid);
     }
 
     /**
@@ -27,29 +29,29 @@ public class AbstractComparableDeviceUID<T extends Comparable<T>> implements Dev
     }
 
     @Override
-    public boolean equals(final Object alt) {
+    public final boolean equals(final Object alt) {
         if (alt != null) {
             if (this == alt) {
                 return true;
             } else if (this.getClass() == alt.getClass()) {
-                return this.uid.equals(((AbstractComparableDeviceUID<T>) alt).uid);
+                return this.uid.equals(((AbstractComparableDeviceUID<?>) alt).uid);
             }
         }
         return false;
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return this.uid.hashCode();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return uid.toString();
     }
 
     @Override
-    public int compareTo(final AbstractComparableDeviceUID<T> other) {
+    public final int compareTo(final AbstractComparableDeviceUID<T> other) {
         return uid.compareTo(other.uid);
     }
 }

@@ -105,13 +105,16 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     @Override
-    public void reset() {
+    public final void reset() {
         for (final AnnotatedTree<?> b : branches) {
             b.reset();
         }
         annotation = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void erase() {
         for (final AnnotatedTree<?> b : branches) {
@@ -131,7 +134,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     @Override
-    public boolean isErased() {
+    public final boolean isErased() {
         return erased;
     }
 
@@ -288,7 +291,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     @Override
-    public void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
+    public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
         context.newCallStackFrame(frameId);
         eval(context);
         context.returnFromCallFrame();

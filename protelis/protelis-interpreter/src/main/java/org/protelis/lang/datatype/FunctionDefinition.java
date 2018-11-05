@@ -23,7 +23,7 @@ import gnu.trove.list.array.TByteArrayList;
 /**
  * First-class Protelis function.
  */
-public class FunctionDefinition implements Serializable {
+public final class FunctionDefinition implements Serializable {
 
     private static final long serialVersionUID = -4996419276551742628L;
     private final FasterString functionName;
@@ -64,7 +64,7 @@ public class FunctionDefinition implements Serializable {
     /**
      * @return number of arguments
      */
-    public final int getArgNumber() {
+    public int getArgNumber() {
         return argNumber;
     }
 

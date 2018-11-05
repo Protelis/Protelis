@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Evaluate a Protelis sub-program.
  */
-public class Eval extends AbstractAnnotatedTree<Object> {
+public final class Eval extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = 8811510896686579514L;
     private static final Logger L = LoggerFactory.getLogger(Eval.class);

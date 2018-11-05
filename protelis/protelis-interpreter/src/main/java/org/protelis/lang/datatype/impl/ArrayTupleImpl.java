@@ -39,7 +39,7 @@ import com.google.common.collect.Sets;
 /**
  * Implementation of a Tuple using an array data structure.
  */
-public class ArrayTupleImpl implements Tuple {
+public final class ArrayTupleImpl implements Tuple {
 
     @SuppressWarnings("unchecked")
     private static final Comparator<Object> COMPARE_TO = (a, b) -> {

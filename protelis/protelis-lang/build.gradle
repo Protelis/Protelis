@@ -1,10 +1,6 @@
 dependencies {
-    compile (
-        project(':protelis-interpreter')
-    )
-    testCompile(
-        project(':protelis-test')
-    )
+    implementation project(':protelis-interpreter')
+	testImplementation project(':protelis-test')
 }
 
 sourceSets {

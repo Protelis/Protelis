@@ -20,7 +20,7 @@ import static java8.util.stream.StreamSupport.stream;
 /**
  * Field implementation based on neighbor/value pairs stored in a hash table.
  */
-public class FieldMapImpl extends AbstractField {
+public final class FieldMapImpl extends AbstractField {
 
     private static final long serialVersionUID = -2947000086262191216L;
     private final Map<DeviceUID, Object> fieldContents;

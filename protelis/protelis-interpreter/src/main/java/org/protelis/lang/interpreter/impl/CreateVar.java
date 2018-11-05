@@ -15,7 +15,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Declare a variable from a "let" expression.
  */
-public class CreateVar extends AbstractAnnotatedTree<Object> {
+public final class CreateVar extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
     private final Reference var;

@@ -14,7 +14,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Access a variable.
  */
-public class Variable extends AbstractAnnotatedTree<Object> {
+public final class Variable extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -3739014755916345132L;
     private final Reference name;

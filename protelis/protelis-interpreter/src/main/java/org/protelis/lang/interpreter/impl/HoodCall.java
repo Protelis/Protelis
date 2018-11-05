@@ -19,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Reduce a field into a local value by reduction using a {@link HoodOp}.
  */
-public class HoodCall extends AbstractAnnotatedTree<Object> {
+public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
     private final HoodOp function;

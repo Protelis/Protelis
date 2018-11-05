@@ -10,6 +10,7 @@ buildscript {
 
 allprojects {
     apply plugin: 'org.danilopianini.build-commons'
+	apply plugin: 'java-library'
     configurations {
         compile {
             exclude module: 'org.eclipse.xtext.dependencies'
@@ -18,49 +19,47 @@ allprojects {
         all*.exclude group: 'org.eclipse.xtext', module: 'org.eclipse.xtext.dependencies'
     }
     dependencies {
-        compile "com.google.code.findbugs:findbugs:$findBugsVersion"
-        compile "org.apache.commons:commons-math3:$math3Version"
-        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        implementation "com.google.code.findbugs:findbugs:$findBugsVersion"
+        implementation "org.apache.commons:commons-math3:$math3Version"
+        implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
-        testCompile "junit:junit:$junitVersion"
+        testImplementation "junit:junit:$junitVersion"
 
-        testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+        testRuntimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
 
         doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     }
     
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                pom.project {
-                    developers {
-                        developer {
-                            name 'Danilo Pianini'
-                            email 'danilo.pianini@unibo.it'
-                            url 'http://www.danilopianini.org'
-                        }
-                        developer {
-                            name 'Jacob Beal'
-                            email 'jakebeal@gmail.com'
-                            url 'http://web.mit.edu/jakebeal/www/'
-                        }
-                        developer {
-                            name 'Matteo Francia'
-                            email 'matteo.francia2@studio.unibo.it'
-                            url 'https://github.com/w4bo'
-                        }
+    publishing.publications {
+        main(MavenPublication) {
+            pom {
+                developers {
+                    developer {
+                        name = 'Danilo Pianini'
+                        email = 'danilo.pianini@unibo.it'
+                        url = 'http://www.danilopianini.org'
                     }
-                    contributors {
-                        contributor {
-                            name 'Mirko Viroli'
-                            email 'mirko.viroli@unibo.it'
-                            url 'http://mirkoviroli.apice.unibo.it/'
-                        }
-                        contributor {
-                            name 'Kyle Usbeck'
-                            email 'kusbeck@bbn.com'
-                            url 'https://dist-systems.bbn.com/people/kusbeck/'
-                        }
+                    developer {
+                        name = 'Jacob Beal'
+                        email = 'jakebeal@gmail.com'
+                        url = 'http://web.mit.edu/jakebeal/www/'
+                    }
+                    developer {
+                        name = 'Matteo Francia'
+                        email = 'matteo.francia2@studio.unibo.it'
+                        url = 'https://github.com/w4bo'
+                    }
+                }
+                contributors {
+                    contributor {
+                        name = 'Mirko Viroli'
+                        email = 'mirko.viroli@unibo.it'
+                        url = 'http://mirkoviroli.apice.unibo.it/'
+                    }
+                    contributor {
+                        name = 'Kyle Usbeck'
+                        email = 'kusbeck@bbn.com'
+                        url = 'https://dist-systems.bbn.com/people/kusbeck/'
                     }
                 }
             }
@@ -107,4 +106,4 @@ allprojects {
     apply plugin: 'org.danilopianini.javadoc.io-linker'
 }
 
-defaultTasks 'clean', 'build', 'check', 'javadoc', 'assemble', 'install', 'projectReport', 'buildDashboard', 'fatJar'
+defaultTasks 'clean', 'build', 'check', 'javadoc', 'projectReport', 'buildDashboard', 'fatJar', 'signMainPublication'

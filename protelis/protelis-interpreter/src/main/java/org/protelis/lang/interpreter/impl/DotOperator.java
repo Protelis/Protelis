@@ -19,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Call an external Java non-static method.
  */
-public class DotOperator extends AbstractSATree<FunctionCall, Object> {
+public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
 
     /**
      * Special method name, that causes a Protelis function invocation if the

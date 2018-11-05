@@ -14,7 +14,7 @@ import java8.util.function.BiConsumer;
 /**
  * Check if the simulation and expected results match.
  */
-public class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
+public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
     private final ExceptionObserver obs;
     private static final String ERROR_TEMPLATE = "\n --- Simulation result\n --- %s\n[N%s] expected: %s, found: %s";
     /**

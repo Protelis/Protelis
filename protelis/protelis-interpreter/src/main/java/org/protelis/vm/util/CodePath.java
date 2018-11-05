@@ -24,7 +24,7 @@ import com.google.common.hash.Hashing;
  * hashCode can be used to uniquely identify CodePath objects, allowing
  * lightweight transmission and comparison.
  */
-public class CodePath implements Serializable {
+public final class CodePath implements Serializable {
 
     private static final long serialVersionUID = 5914261026069038877L;
     private static final HashFunction HASH_FUNCTION = Hashing.murmur3_32();

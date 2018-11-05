@@ -11,7 +11,7 @@ package org.protelis.lang.interpreter.impl;
 /**
  * A numerical constant.
  */
-public class NumericConstant extends Constant<Double> {
+public final class NumericConstant extends Constant<Double> {
 
     private static final long serialVersionUID = 7005881609489257450L;
 

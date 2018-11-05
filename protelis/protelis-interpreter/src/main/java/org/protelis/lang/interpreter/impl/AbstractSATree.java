@@ -50,7 +50,7 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
     }
 
     @Override
-    public S getSuperscript() {
+    public final S getSuperscript() {
         return superscript;
     }
 

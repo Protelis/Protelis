@@ -17,7 +17,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Implementation of 'nbr' operator.
  */
-public class NBRCall extends AbstractAnnotatedTree<Field> {
+public final class NBRCall extends AbstractAnnotatedTree<Field> {
 
     private static final long serialVersionUID = 5255917527687990281L;
     private static final byte BRANCH = 1;

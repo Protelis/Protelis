@@ -13,13 +13,11 @@ package org.protelis.vm;
 
 import java.util.Map;
 import java8.util.function.Function;
-import java8.util.function.Supplier;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.util.Reference;
-import org.protelis.vm.util.CodePath;
 
 /**
  * Interface between a ProtelisVM and environment in which it is executing. The
@@ -93,7 +91,7 @@ public interface ExecutionContext {
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
      * A neighbor is considered to be aligned it it has reached the exact same
-     * {@link CodePath}. The field will always contain at least one value,
+     * {@link org.protelis.vm.util.CodePath}. The field will always contain at least one value,
      * namely the value of the local device.
      * 
      * @param computeValue
@@ -102,7 +100,7 @@ public interface ExecutionContext {
      *            constructing this field: the field consists of the values
      *            returned from applying computeValue to each of device's value
      * @param localValue
-     *            a {@link Supplier} which will be used to compute the local
+     *            a {@link java8.util.function.Supplier} which will be used to compute the local
      *            value for this field
      * @param <T>
      *            the type of the input

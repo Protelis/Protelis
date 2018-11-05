@@ -22,7 +22,7 @@ import gnu.trove.list.array.TIntArrayList;
 /**
  * Construct a Tuple.
  */
-public class CreateTuple extends AbstractAnnotatedTree<Object> {
+public final class CreateTuple extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -5018807023306859866L;
 

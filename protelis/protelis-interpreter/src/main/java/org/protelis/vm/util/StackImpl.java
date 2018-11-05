@@ -21,7 +21,7 @@ import org.protelis.lang.util.Reference;
 /**
  * Basic implementation of a {@link Stack}.
  */
-public class StackImpl implements Stack {
+public final class StackImpl implements Stack {
 
     private final Deque<Map<Reference, Object>> stack = new LinkedList<>();
 
