@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.util.FasterString;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -211,8 +210,7 @@ public final class ProtelisLoader {
      *            performed by Xtext transparently. {@link URI}s of type
      *            "platform:/" are supported, for those who work within an
      *            Eclipse environment.
-     * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
-     *         {@link FunctionDefinition} (containing the available functions)
+     * @return a {@link ProtelisProgram}
      * @throws IllegalArgumentException
      *             when the program has errors
      */
@@ -323,8 +321,7 @@ public final class ProtelisLoader {
     /**
      * @param resource
      *            the {@link Resource} containing the program to execute
-     * @return a {@link Pair} of {@link AnnotatedTree} (the program) and
-     *         {@link FunctionDefinition} (containing the available functions)
+     * @return a {@link ProtelisProgram}
      */
     public static ProtelisProgram parse(final Resource resource) {
         Objects.requireNonNull(resource);
