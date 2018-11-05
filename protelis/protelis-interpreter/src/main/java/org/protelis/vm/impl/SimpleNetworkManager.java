@@ -22,7 +22,7 @@ import org.protelis.vm.util.CodePath;
  * Stub network manager for testing, in which there are no neighbors and no
  * messages are ever sent.
  */
-public class SimpleNetworkManager implements NetworkManager {
+public final class SimpleNetworkManager implements NetworkManager {
 
     @Override
     public Map<DeviceUID, Map<CodePath, Object>> getNeighborState() {
