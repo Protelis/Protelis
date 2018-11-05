@@ -90,6 +90,9 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         commitRecursively();
     }
 
+    /**
+     * recursively commits on restricted contexts.
+     */
     public final void commitRecursively() {
         Objects.requireNonNull(env);
         Objects.requireNonNull(gamma);
@@ -228,6 +231,9 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         return functions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Number getDeltaTime() {
         /*
@@ -241,7 +247,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public ExecutionEnvironment getExecutionEnvironment() {
+    public final ExecutionEnvironment getExecutionEnvironment() {
         return env;
     }
 
