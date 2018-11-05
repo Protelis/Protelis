@@ -9,7 +9,7 @@ import org.protelis.lang.ProtelisLoader;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.ProtelisVM;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule;
 import it.unibo.alchemist.model.implementations.reactions.Event;
@@ -99,7 +99,7 @@ public final class TestIncarnation implements Incarnation<Object> {
         LangUtils.requireNonNull(node, time);
         final Reaction<Object> result = new Event<>(node, time);
         if (param != null) {
-            result.setActions(Lists.newArrayList(createAction(rand, env, node, time, result, param)));
+            result.setActions(ImmutableList.of(createAction(rand, env, node, time, result, param)));
         }
         return result;
     }
