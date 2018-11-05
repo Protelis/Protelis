@@ -51,27 +51,6 @@
 			value="Don't use Math.random(): makes the simulations impossible to reproduce." />
 	</module>
 	<module name="RegexpSingleline">
-		<property name="severity" value="error" />
-		<property name="format" value="class\s*\.\s*forName\s*\(" />
-		<property name="fileExtensions" value="java,xtend,scala,kt" />
-		<property name="message"
-			value="Use the appropriate library to load classes and resources." />
-	</module>
-	<module name="RegexpSingleline">
-		<property name="severity" value="error" />
-		<property name="format" value="class\s*\.\s*getResource" />
-		<property name="fileExtensions" value="java,xtend,scala,kt" />
-		<property name="message"
-			value="Use the appropriate library to load classes and resources." />
-	</module>
-	<module name="RegexpSingleline">
-		<property name="severity" value="error" />
-		<property name="format" value="class\s*\.\s*getClassLoader" />
-		<property name="fileExtensions" value="java,xtend,scala,kt" />
-		<property name="message"
-			value="Use the appropriate library to load classes and resources." />
-	</module>
-	<module name="RegexpSingleline">
 		<property name="severity" value="warning" />
 		<property name="format" value="@author" />
 		<property name="fileExtensions" value="java,xtend,scala,kt" />
