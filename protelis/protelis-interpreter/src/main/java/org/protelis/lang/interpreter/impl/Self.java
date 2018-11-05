@@ -15,7 +15,7 @@ import org.protelis.vm.ExecutionContext;
  * actuators, and the rest of the external non-static programmatic environment
  * outside of Protelis.
  */
-public class Self extends AbstractAnnotatedTree<ExecutionContext> {
+public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
 
     private static final long serialVersionUID = -5050040892058340950L;
 

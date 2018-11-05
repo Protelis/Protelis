@@ -12,15 +12,14 @@ import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.util.HoodOp;
 import org.protelis.lang.util.JavaInteroperabilityUtils;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * Reduce a field into a local value by reduction using a {@link HoodOp}.
+ * Reduce a field into a local value by reduction using a {@link org.protelis.lang.util.HoodOp}.
  */
-public class GenericHoodCall extends AbstractAnnotatedTree<Object> {
+public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
     private final AnnotatedTree<FunctionDefinition> function;

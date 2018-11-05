@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
  *
  * @param <T>
  */
-public class If<T> extends AbstractAnnotatedTree<T> {
+public final class If<T> extends AbstractAnnotatedTree<T> {
 
     private static final long serialVersionUID = -4830593657731078743L;
     private static final byte COND = 0, THEN = 1, ELSE = 2;

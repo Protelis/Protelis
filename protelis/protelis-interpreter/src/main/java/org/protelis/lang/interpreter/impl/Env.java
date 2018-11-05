@@ -10,7 +10,7 @@ import org.protelis.vm.ExecutionEnvironment;
 /**
  *
  */
-public class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
+public final class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
 
     private static final long serialVersionUID = 636239540800669478L;
 

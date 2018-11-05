@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Call a Protelis function.
  */
-public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
+public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 
     private static final long serialVersionUID = 4143090001260538814L;
     private final FunctionDefinition fd;
@@ -58,7 +58,7 @@ public class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
     /**
      * @return the function body
      */
-    protected final AnnotatedTree<?> getBody() {
+    protected AnnotatedTree<?> getBody() {
         return fd.getBody();
     }
 

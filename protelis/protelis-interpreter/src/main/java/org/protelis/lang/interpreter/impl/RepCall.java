@@ -20,7 +20,7 @@ import org.protelis.vm.ExecutionContext;
  * 
  * @param <T>
  */
-public class RepCall<T> extends AbstractSATree<T, T> {
+public final class RepCall<T> extends AbstractSATree<T, T> {
 
     private static final long serialVersionUID = 8643287734245198408L;
     private static final byte W_BRANCH = 0;

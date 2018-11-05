@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Three-argument syntactic operator such as multiplexing (mux).
  */
-public class TernaryOp extends AbstractAnnotatedTree<Object> {
+public final class TernaryOp extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op3 op;

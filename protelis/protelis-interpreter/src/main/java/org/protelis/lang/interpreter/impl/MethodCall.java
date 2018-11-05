@@ -19,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Call an external Java static method.
  */
-public class MethodCall extends AbstractAnnotatedTree<Object> {
+public final class MethodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -2299070628855971997L;
     private final boolean ztatic;
@@ -125,5 +125,4 @@ public class MethodCall extends AbstractAnnotatedTree<Object> {
         in.defaultReadObject();
         extractMethod();
     }
-
 }

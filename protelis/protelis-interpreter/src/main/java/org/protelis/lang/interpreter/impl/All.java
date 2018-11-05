@@ -16,7 +16,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Evaluate a sequence of statements, returning the value of the last statement.
  */
-public class All extends AbstractAnnotatedTree<Object> {
+public final class All extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -210610136469863525L;
     private final int last;

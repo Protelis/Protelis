@@ -32,13 +32,16 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
         constantValue = obj;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Constant<T> copy() {
         return new Constant<>(constantValue);
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public final void eval(final ExecutionContext context) {
         if (isErased()) {
             setAnnotation(constantValue);
         }
@@ -47,10 +50,13 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
     /**
      * @return the constant value
      */
-    protected T getInternalObject() {
+    protected final T getInternalObject() {
         return constantValue;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void asString(final StringBuilder sb, final int i) {
         sb.append(constantValue);
