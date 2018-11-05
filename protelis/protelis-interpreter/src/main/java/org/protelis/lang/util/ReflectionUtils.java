@@ -228,7 +228,9 @@ public final class ReflectionUtils {
             try {
                 return method.invoke(target, useArgs);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            	final String errorMessage = "Cannot invoke " + method + " with arguments " + Arrays.toString(useArgs) + " on " + target;
+                final String errorMessage = "Cannot invoke " + method
+                        + " with arguments " + Arrays.toString(useArgs)
+                        + " on " + target;
                 L.error(errorMessage, e);
                 throw new IllegalStateException(errorMessage, e);
             }
@@ -240,7 +242,7 @@ public final class ReflectionUtils {
         Objects.requireNonNull(methodName, "Method name can not be null.");
         Objects.requireNonNull(argClass, "Method arguments can not be null.");
         final Method[] candidates = J8Arrays.stream(clazz.getMethods())
-    		// Parameter number
+            // Parameter number
             .filter(m -> compatibleLength(m, argClass))
             // Method name
             .filter(m -> m.getName().equals(methodName))
@@ -253,9 +255,9 @@ public final class ReflectionUtils {
                     + " with " + argClass.length + " parameters is available in " + clazz);
         }
         if (candidates.length == 1 && argClass.length == 0) {
-        	/*
-        	 * In case of 0-arity, the single candidate can be selected directly
-        	 */
+            /*
+             * In case of 0-arity, the single candidate can be selected directly
+             */
             return candidates[0];
         }
         /*
