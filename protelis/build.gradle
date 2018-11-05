@@ -10,6 +10,7 @@ buildscript {
 
 allprojects {
     apply plugin: 'org.danilopianini.build-commons'
+	apply plugin: 'java-library'
     configurations {
         compile {
             exclude module: 'org.eclipse.xtext.dependencies'
@@ -18,13 +19,13 @@ allprojects {
         all*.exclude group: 'org.eclipse.xtext', module: 'org.eclipse.xtext.dependencies'
     }
     dependencies {
-        compile "com.google.code.findbugs:findbugs:$findBugsVersion"
-        compile "org.apache.commons:commons-math3:$math3Version"
-        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        implementation "com.google.code.findbugs:findbugs:$findBugsVersion"
+        implementation "org.apache.commons:commons-math3:$math3Version"
+        implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
-        testCompile "junit:junit:$junitVersion"
+        testImplementation "junit:junit:$junitVersion"
 
-        testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+        testRuntimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
 
         doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     }
