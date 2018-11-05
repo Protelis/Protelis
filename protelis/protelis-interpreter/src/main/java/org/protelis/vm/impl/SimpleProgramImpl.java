@@ -27,7 +27,7 @@ import org.protelis.vm.ProtelisProgram;
 /**
  * Base implementation of {@link ProtelisProgram}.
  */
-public class SimpleProgramImpl implements ProtelisProgram {
+public final class SimpleProgramImpl implements ProtelisProgram {
 
     private static final long serialVersionUID = -986976491484860840L;
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
