@@ -1,5 +1,13 @@
-// EXPECTED_RESULT: $CYCLE > 2
+// EXPECTED_RESULT: $CYCLE > 5 && ($CYCLE - 6) % 6 < 3
 import protelis:state:time
 import protelis:state:nonselfstabilizing:time
-    allTime(isRecentEvent(cyclicTimer(2), 3)) &&
-    !allTime(isRecentEvent(cyclicTimer(3), 3))
+/*
+ * Explanation:
+ * 
+ * the event is initially not yet happened, so the function must return false
+ * until the cyclic timer goes true for a cycle: at this point the behaviour
+ * alternates three cycles of true (one because triggered by cyclicTimer,
+ * two additional for the limited memory) and three cycles of false
+ * (the cyclic timer is not switching, and the memory is finished).
+ */
+isRecentEvent(cyclicTimer(5), 3)
