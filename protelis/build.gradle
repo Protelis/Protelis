@@ -121,4 +121,10 @@ allprojects {
     apply plugin: 'org.danilopianini.javadoc.io-linker'
 }
 
+apply plugin: com.gradle.scan.plugin.BuildScanPlugin
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+}
+
 defaultTasks 'clean', 'build', 'check', 'javadoc', 'projectReport', 'buildDashboard', 'fatJar', 'signMainPublication'
