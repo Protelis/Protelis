@@ -15,7 +15,17 @@ buildscript {
     }
 }
 
+ext {
+    isJava7Legacy = project.hasProperty("java7Legacy") ||
+        System.properties['JAVA7_HOME']
+}
+
 allprojects {
+    if (isJava7Legacy) {
+        def isBeta = project.version.endsWith('-beta')
+        project.version = project.version - "-beta" + "-j7" + (isBeta? '-beta' : '')
+    }
+
     apply plugin: 'org.danilopianini.build-commons'
 
     configurations {
@@ -98,8 +108,7 @@ javadoc {
 }
 
 task fatJar(type: Jar) {
-    baseName = project.name + '-redist'
-    baseName = "${rootProject.name}-redist"
+    baseName = "${rootProject.artifactId}-redist"
     zip64 = true
     from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {
         // remove all signature files

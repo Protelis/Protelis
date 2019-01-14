@@ -3,15 +3,19 @@ buildscript {
      mavenCentral()
   }
   dependencies {
-     classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+      if (isJava7Legacy) {
+          classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+      }
   }
 }
 
-apply plugin: 'me.tatarka.retrolambda'
-retrolambda {
-  javaVersion JavaVersion.VERSION_1_7
-  defaultMethods true
-  incremental true
+if (isJava7Legacy) {
+    apply plugin: 'me.tatarka.retrolambda'
+    retrolambda {
+      javaVersion JavaVersion.VERSION_1_7
+      defaultMethods true
+      incremental true
+    }
 }
 
 sourceCompatibility = 1.8
