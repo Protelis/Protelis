@@ -9,7 +9,7 @@ import org.danilopianini.lang.HashUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.parser.protelis.FunctionDef;
-import org.protelis.parser.protelis.Module;
+import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.VarDef;
 
 /**
@@ -46,7 +46,7 @@ public final class Reference implements Serializable {
             uid = HashUtils.hash64(strRep);
         } else if (obj instanceof FunctionDef) {
             final FunctionDef function = (FunctionDef) obj;
-            final Module container = (Module) function.eContainer();
+            final ProtelisModule container = (ProtelisModule) function.eContainer();
             final String name = Optional.ofNullable(container.getName()).orElse("default-module") + ":";
             strRep = name + function.getName();
             uid = HashUtils.hash64(strRep);

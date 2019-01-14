@@ -1,3 +1,19 @@
+apply plugin: 'project-report'
+subprojects {
+    apply plugin: 'java-library'
+}
+
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
+        classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
+        classpath "com.gradle:build-scan-plugin:${buildScanPluginVersion}"
+    }
+}
 buildscript {
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
@@ -10,16 +26,13 @@ buildscript {
 
 allprojects {
     apply plugin: 'org.danilopianini.build-commons'
-	apply plugin: 'java-library'
+	
     configurations {
-        compile {
-            exclude module: 'org.eclipse.xtext.dependencies'
-            exclude group: 'asm', module: 'asm'
-        }
-        all*.exclude group: 'org.eclipse.xtext', module: 'org.eclipse.xtext.dependencies'
+        all*.exclude group: 'org.ow2.asm', module: 'asm-debug-all'
+        all*.exclude group: 'asm', module: 'asm'
     }
+    
     dependencies {
-        implementation "com.google.code.findbugs:findbugs:$findBugsVersion"
         implementation "org.apache.commons:commons-math3:$math3Version"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
@@ -68,6 +81,10 @@ allprojects {
 }
 
 subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}
+/*
+ * Remove tasks that should not exist in subprojects
+ */
+subprojects.each { it.tasks.remove(wrapper) }
 
 /*
  * Running a task on the parent project implies running the same task first on any subproject
@@ -94,10 +111,20 @@ javadoc {
 
 task fatJar(type: Jar) {
     baseName = project.name + '-redist'
-    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
+    baseName = "${rootProject.name}-redist"
+    zip64 = true
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {
+        // remove all signature files
+        exclude "META-INF/"
+        exclude "ant_tasks/"
+        exclude "about_files/"
+        exclude "help/about/"
+        exclude 'build'
+        exclude '.gradle'
+        exclude 'build.gradle'
+        exclude 'gradle'
+        exclude 'gradlew'
+        exclude 'gradlew.bat'
     }
     with jar
 }
