@@ -14,15 +14,6 @@ buildscript {
         classpath "com.gradle:build-scan-plugin:${buildScanPluginVersion}"
     }
 }
-buildscript {
-    repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
-        classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
-    }
-}
 
 allprojects {
     apply plugin: 'org.danilopianini.build-commons'
