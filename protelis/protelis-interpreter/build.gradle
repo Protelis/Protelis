@@ -7,7 +7,6 @@ buildscript {
   }
 }
 
-apply from: 'maven.gradle'
 apply plugin: 'me.tatarka.retrolambda'
 retrolambda {
   javaVersion JavaVersion.VERSION_1_7
