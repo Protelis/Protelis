@@ -23,16 +23,19 @@ env:
     - JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
 
 matrix:
-  include:
-    - jdk: openjdk8
-      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
-    - jdk: openjdk8
+  exclude:
     - jdk: oraclejdk8
+      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: openjdk9
+      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: openjdk10
+      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: openjdk11
+      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: oraclejdk11
+      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: openjdk12
+      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
 
 before_install:
   - sudo apt-get -qq update
