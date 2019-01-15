@@ -16,8 +16,10 @@ buildscript {
 }
 
 ext {
-    isJava7Legacy = project.hasProperty("java7Legacy") ||
-        System.properties['JAVA7_HOME']
+    isJava7Legacy = project.hasProperty("java7Legacy") || System.env.JAVA7LEGACY == "true"
+    if (isJava7Legacy) {
+        println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
+    }
 }
 
 allprojects {
