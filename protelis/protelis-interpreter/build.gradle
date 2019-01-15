@@ -31,6 +31,5 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:$lang3Version"
     implementation "org.danilopianini:javalib:$javalibVersion"
     implementation "org.springframework:spring-core:$springVersion"
-    implementation "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
     implementation "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
 }
