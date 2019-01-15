@@ -32,4 +32,13 @@ dependencies {
     implementation "org.danilopianini:javalib:$javalibVersion"
     implementation "org.springframework:spring-core:$springVersion"
     implementation "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
+    /*
+     * Legacy dependencies picking
+     */
+    if (isJava7Legacy) {
+        println("Configuring legacy dependencies")
+        implementation "com.google.code.findbugs:findbugs:$spotBugsLegacy"
+    } else {
+        implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
+    }
 }
