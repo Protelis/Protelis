@@ -30,6 +30,9 @@ allprojects {
 
     apply plugin: 'org.danilopianini.build-commons'
 
+    jacoco {
+        toolVersion = jacocoVersion
+    }
     configurations {
         all*.exclude group: 'org.ow2.asm', module: 'asm-debug-all'
         all*.exclude group: 'asm', module: 'asm'
