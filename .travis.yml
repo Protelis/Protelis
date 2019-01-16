@@ -7,7 +7,6 @@ jdk:
   - openjdk9
   - openjdk10
   - openjdk11
-  - oraclejdk11
   - openjdk12
 
 env:
@@ -32,8 +31,6 @@ matrix:
       env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: openjdk11
       env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
-    - jdk: oraclejdk11
-      env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
     - jdk: openjdk12
       env: JAVA7LEGACY=true JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
 
@@ -48,7 +45,6 @@ script:
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash travis_build.sh; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash travis_build_pull_request.sh; fi'
 
-before_deploy: echo Preparing for deploy
 deploy:
   - provider: releases
     skip_cleanup: true
