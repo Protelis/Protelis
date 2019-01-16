@@ -24,11 +24,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
+
+import java8.util.J8Arrays;
+import java8.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java8.util.function.Supplier;
+import java8.util.stream.Collectors;
+import java8.util.stream.RefStreams;
+import java8.util.stream.Stream;
+import java8.util.stream.StreamSupport;
+
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.danilopianini.lang.PrimitiveUtils;
@@ -212,14 +217,14 @@ public class YamlLoader implements Loader, Serializable {
                 .ofNullable((Map<String, Map<String, Object>>) varObj)
                 .orElse(Collections.emptyMap());
         L.debug("Variables: {}", originalVars);
-        reverseLookupTable = originalVars.entrySet().stream()
+        reverseLookupTable = StreamSupport.stream(originalVars.entrySet())
                 .collect(Collectors.toMap(e -> univoqueId(e.getValue()), Entry::getKey));
         L.debug("Reverse lookup table: {}", reverseLookupTable);
-        lookupTable = originalVars.entrySet().stream()
+        lookupTable = StreamSupport.stream(originalVars.entrySet())
                 .filter(e -> e.getValue() instanceof Map && !((Map<?, ?>) e.getValue()).containsKey(FORMULA))
                 .collect(Collectors.toMap(Entry::getKey, e -> makeVar(e.getValue())));
         L.debug("Lookup table: {}", lookupTable);
-        computableVariables = originalVars.entrySet().stream()
+        computableVariables = StreamSupport.stream(originalVars.entrySet())
                 .filter(e -> e.getValue() instanceof Map && ((Map<?, ?>) e.getValue()).containsKey(FORMULA))
                 .collect(Collectors.toMap(Entry::getKey, e -> makeDepVar(e.getValue())));
         /*
@@ -326,7 +331,7 @@ public class YamlLoader implements Loader, Serializable {
          */
         final Object extrObj = contents.get(EXPORT);
         if (extrObj instanceof List) {
-            extractors = Collections.unmodifiableList(((List<?>) extrObj).parallelStream()
+            extractors = Collections.unmodifiableList(StreamSupport.parallelStream((List<?>) extrObj)
                 .map(obj -> {
                     if (obj instanceof String) {
                         final String strDesc = (String) obj;
@@ -392,9 +397,10 @@ public class YamlLoader implements Loader, Serializable {
     }
 
     private List<?> extractParams(final Map<String, Object> yaml) {
-        return Optional.ofNullable((List<?>) yaml.get(PARAMS))
-                .orElse(Collections.emptyList())
-                .parallelStream()
+        return StreamSupport.stream(
+                    Optional.ofNullable((List<?>) yaml.get(PARAMS))
+                    .orElse(Collections.emptyList())
+                )
                 .map(this::makePlaceHolderIfNeeded)
                 .collect(Collectors.toList());
     }
@@ -412,7 +418,7 @@ public class YamlLoader implements Loader, Serializable {
     @SuppressWarnings(UNCHECKED)
     @Override
     public <T> Environment<T> getWith(final Map<String, Double> values) {
-        final Map<String, Double> actualVars = lookupTable.entrySet().stream().collect(Collectors.toMap(
+        final Map<String, Double> actualVars = StreamSupport.stream(lookupTable.entrySet()).collect(Collectors.toMap(
             Entry::getKey,
             entry -> Optional.ofNullable(values.get(entry.getKey())).orElse(entry.getValue().getDefault())
         ));
@@ -522,9 +528,8 @@ public class YamlLoader implements Loader, Serializable {
                                 + programObj.getClass().getSimpleName() + " instead.");
                     }
                 }
-                final List<Map<String, Object>> programs = ((List<List<Map<String, Object>>>) programsObj)
-                        .parallelStream()
-                        .flatMap(pool -> pool.stream())
+                final List<Map<String, Object>> programs = StreamSupport.stream((List<List<Map<String, Object>>>) programsObj)
+                        .flatMap(pool -> StreamSupport.stream(pool))
                         .collect(Collectors.toList());
                 final Object nodeDescriptor = displacement.get(NODE);
                 final Supplier<Node<T>> nodeSupplier = makeSupplier(
@@ -679,8 +684,8 @@ public class YamlLoader implements Loader, Serializable {
             /*
              * Merge existing actions and those listed.
              */
-            final List<Action<T>> actions = Stream.concat(reaction.getActions().stream(), 
-                actList.stream()
+            final List<Action<T>> actions = RefStreams.concat(StreamSupport.stream(reaction.getActions()), 
+                    StreamSupport.stream(actList)
                     .map(actObj -> Optional.ofNullable(
                         makeSupplier(
                                 () -> incarnation.createAction(rand, env, node, td, reaction, stringOrNull(actObj)),
@@ -707,8 +712,8 @@ public class YamlLoader implements Loader, Serializable {
             /*
              * Merge existing conditions and those listed.
              */
-            final List<Condition<T>> conditions = Stream.concat(reaction.getConditions().stream(), 
-                condList.stream()
+            final List<Condition<T>> conditions = RefStreams.concat(StreamSupport.stream(reaction.getConditions()), 
+                    StreamSupport.stream(condList)
                     .map(condObj -> Optional.ofNullable(
                         makeSupplier(
                             () -> incarnation.createCondition(rand, env, node, td, reaction, stringOrNull(condObj)),
@@ -795,7 +800,7 @@ public class YamlLoader implements Loader, Serializable {
             .count();
     }
     private static Stream<Class<?>> makeClassStream(final Object... objects) {
-        return Arrays.stream(objects)
+        return J8Arrays.stream(objects)
             .filter(o -> o != null)
             .map(Object::getClass);
     }
@@ -811,7 +816,7 @@ public class YamlLoader implements Loader, Serializable {
             final TimeDistribution<?> timedist,
             final Reaction<?> reaction) {
         @SuppressWarnings(UNCHECKED)
-        final Optional<O> result = Arrays.stream(clazz.getConstructors())
+        final Optional<O> result = J8Arrays.stream(clazz.getConstructors())
             .sorted((c1, c2) -> {
                 final int n1 = countUndecidableParameters(c1, incarnation, rand, env, posMaker, node, timedist, reaction);
                 final int n2 = countUndecidableParameters(c2, incarnation, rand, env, posMaker, node, timedist, reaction);
