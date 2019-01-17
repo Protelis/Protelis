@@ -62,11 +62,4 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
         return definition;
     }
 
-//    /**
-//     * @return the variable name
-//     */
-//    public FasterString getVarName() {
-//        return var;
-//    }
-
 }
