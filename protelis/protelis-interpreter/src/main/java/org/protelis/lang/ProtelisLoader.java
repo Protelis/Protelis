@@ -119,7 +119,6 @@ public final class ProtelisLoader {
     private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
         @Override
         protected XtextResourceSet initialValue() {
-            new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri(".");
             final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
             final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
             xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
