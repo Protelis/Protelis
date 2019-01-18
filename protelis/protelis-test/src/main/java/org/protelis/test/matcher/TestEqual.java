@@ -56,11 +56,16 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
     }
 
     private String getMessage(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
-        String res = "[";
+        final StringBuilder res = new StringBuilder(50);
+        res.append('[');
         for (int i = 0; i < expectedResult.size(); i++) {
             final Pair<String, String> pair = expectedResult.get(i);
-            res += "N" + pair.getLeft() + ": " + simulationRes.get(pair.getLeft()) + (i < expectedResult.size() - 1 ? ", " : "");
+            res.append('N')
+                .append(pair.getLeft())
+                .append(": ")
+                .append(simulationRes.get(pair.getLeft()))
+                .append(i < expectedResult.size() - 1 ? ", " : "");
         }
-        return res + "]";
+        return res.append(']').toString();
     }
 }
