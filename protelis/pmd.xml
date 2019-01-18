@@ -54,7 +54,11 @@
 	<rule ref="rulesets/java/basic.xml/CheckResultSet" />
 	<rule ref="rulesets/java/basic.xml/CheckSkipResult" />
 	<rule ref="rulesets/java/basic.xml/ClassCastExceptionWithToArray" />
-	<rule ref="rulesets/java/naming.xml/ClassNamingConventions" />
+    <rule ref="rulesets/java/naming.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+" />
+        </properties>
+    </rule>
 	<rule ref="rulesets/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal" />
 	<rule ref="rulesets/java/design.xml/CloseResource" />
 	<rule ref="rulesets/vm/basic.xml/CollapsibleIfStatements" />
