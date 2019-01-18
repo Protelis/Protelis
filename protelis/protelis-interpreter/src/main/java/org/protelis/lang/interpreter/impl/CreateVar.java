@@ -50,8 +50,7 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
 
     @Override
     protected void asString(final StringBuilder sb, final int i) {
-        sb.append(var);
-        sb.append(" = \n");
+        sb.append(var).append(" = \n");
         getBranch(0).toString(sb, i + 1);
     }
 
