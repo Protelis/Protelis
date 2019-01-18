@@ -115,8 +115,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     protected void asString(final StringBuilder sb, final int i) {
-        sb.append(methodName);
-        sb.append('(');
+        sb.append(methodName).append('(');
         fillBranches(sb, i, ',');
         sb.append(')');
     }
