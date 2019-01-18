@@ -444,17 +444,13 @@ public class TestLanguage {
      */
     @Test
     public void testMethod09() {
-        boolean rightCause = false;
         try {
             ProgramTester.runFile("/method09.pt");
-        } catch (Exception e) {
+        } catch (Exception e) { // NOPMD: here we want to catch the exception and analyze it
             // Should be an illegal state, caused by an invocation target, caused by a bad index
-            if (e.getCause().getCause() instanceof ArrayIndexOutOfBoundsException) {
-                rightCause = true;
+            if (!(e.getCause().getCause() instanceof ArrayIndexOutOfBoundsException)) {
+                fail("Didn't find an OutOfBounds exception");
             }
-        }
-        if (!rightCause) {
-            fail("Didn't find an OutOfBounds exception");
         }
     }
 
