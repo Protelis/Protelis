@@ -206,7 +206,7 @@ public enum Op2 {
                     return selector.apply(a, b);
                 }
                 return selector.apply(b, a);
-            } catch (RuntimeException e) {
+            } catch (RuntimeException e) { // NOPMD: RuntimeException caught willingly
                 /*
                  * Comparison of different types, fallback to lexicographic
                  * comparison
@@ -265,7 +265,7 @@ public enum Op2 {
     @SuppressWarnings(UNCHECKED)
     private static <I, O> O arithmetic(final String op, final I a, final I b, final BiFunction<Double, Double, O> f) {
         if (a instanceof Double && b instanceof Double) {
-            return f.apply(((Double) a), ((Double) b));
+            return f.apply((Double) a, (Double) b);
         }
         final boolean aNum = a instanceof Number;
         final boolean bNum = b instanceof Number;
