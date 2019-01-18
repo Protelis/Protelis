@@ -232,7 +232,7 @@ public final class ReflectionUtils {
                         + " with arguments " + Arrays.toString(useArgs)
                         + " on " + target;
                 L.error(errorMessage, e);
-                throw new UnsupportedOperationException(errorMessage, e);
+                throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
             }
         }
     }
@@ -376,7 +376,7 @@ public final class ReflectionUtils {
                 try {
                     return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, fieldedClasses));
                 } catch (ExecutionException e) {
-                    throw new UnsupportedOperationException("No" + methodName + originalClasses
+                    throw new UnsupportedOperationException("No" + methodName + originalClasses // NOPMD: false positive
                             + " nor " + methodName + fieldedClasses + " exist in " + clazz
                             + ".\nYou tried to invoke it with arguments " + args, e);
                 }
