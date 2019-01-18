@@ -69,6 +69,7 @@
         <exclude name="CommentSize" />
     </rule>
     <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidLiteralsInIfCondition" />
         <exclude name="BeanMembersShouldSerialize" />
         <exclude name="DataflowAnomalyAnalysis" />
         <exclude name="MissingBreakInSwitch" />
