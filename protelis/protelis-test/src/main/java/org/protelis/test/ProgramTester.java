@@ -154,11 +154,7 @@ public final class ProgramTester {
      */
     public static Object runProgram(final String s, final int runs) {
         final ProtelisProgram program = ProtelisLoader.parse(s);
-        try {
-            FileUtilities.serializeObject(program);
-        } catch (Exception e) {
-            fail();
-        }
+        FileUtilities.serializeObject(program);
         final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
