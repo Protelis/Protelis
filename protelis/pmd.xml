@@ -74,6 +74,7 @@
         <exclude name="DataflowAnomalyAnalysis" />
         <exclude name="MissingBreakInSwitch" />
         <exclude name="NonStaticInitializer" />
+        <exclude name="NullAssignment" />
         <exclude name="ReturnEmptyArrayRatherThanNull" />
         <exclude name="TestClassWithoutTestCases" />
     </rule>
