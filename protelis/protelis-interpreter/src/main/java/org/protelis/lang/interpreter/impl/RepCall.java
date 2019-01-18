@@ -85,9 +85,7 @@ public final class RepCall<T> extends AbstractSATree<T, T> {
 
     @Override
     protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append("rep (");
-        sb.append(xName);
-        sb.append(" <- \n");
+        sb.append("rep (").append(xName).append(" <- \n");
         getBranch(W_BRANCH).toString(sb, indent + 1);
         sb.append(") {\n");
         getBranch(A_BRANCH).toString(sb, indent + 1);
