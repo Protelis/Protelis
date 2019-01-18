@@ -76,7 +76,7 @@ import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.GenericHood;
 import org.protelis.parser.protelis.Import;
 import org.protelis.parser.protelis.Lambda;
-import org.protelis.parser.protelis.Module;
+import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.Mux;
 import org.protelis.parser.protelis.NBR;
 import org.protelis.parser.protelis.Pi;
@@ -119,7 +119,6 @@ public final class ProtelisLoader {
     private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
         @Override
         protected XtextResourceSet initialValue() {
-            new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri(".");
             final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
             final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
             xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
@@ -354,7 +353,7 @@ public final class ProtelisLoader {
             }
             throw new IllegalArgumentException(sb.toString());
         }
-        final Module root = (Module) resource.getContents().get(0);
+        final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
         assert root != null;
         Objects.requireNonNull(root.getProgram(), "The provided resource does not contain any main program, and can not be executed.");
         /*
@@ -470,13 +469,18 @@ public final class ProtelisLoader {
                 final AnnotatedTree<?> nullResult = translate(hood.getDefault(), m);
                 final AnnotatedTree<Field> field = translate(hood.getArg(), m);
                 final EObject ref = hood.getReference();
-                if (hood.getReference() == null) {
+                if (ref == null) {
                     return new GenericHoodCall(inclusive, translate(hood.getOp(), m), nullResult, field);
                 }
-                if (ref instanceof JvmOperation) {
-                    return new GenericHoodCall(inclusive, (JvmOperation) ref, nullResult, field);
+                if (ref instanceof VarUse) {
+                    final VarUse refVar = (VarUse) ref;
+                    if (refVar.getReference() instanceof JvmOperation) {
+                        return new GenericHoodCall(inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
+                    }
+                    return new GenericHoodCall(inclusive, translate(ref, m), nullResult, field);
+                } else {
+                    throw new IllegalStateException("Unexpected type of function in hood call: " + ref.getClass());
                 }
-                return new GenericHoodCall(inclusive, new Constant<>(m.get(toR(hood.getReference()))), nullResult, field);
             }),
         IF(org.protelis.parser.protelis.If.class,
             (e, m) -> {
@@ -495,7 +499,7 @@ public final class ProtelisLoader {
                 final AnnotatedTree<?> body = translate(l.getBody(), m);
                 final String base = Base64.encodeBase64String(
                         Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
-                final FunctionDefinition lambda = new FunctionDefinition("��" + base, toR(args));
+                final FunctionDefinition lambda = new FunctionDefinition("$anon$" + base, toR(args));
                 lambda.setBody(body);
                 return new Constant<>(lambda);
             }),
@@ -552,15 +556,15 @@ public final class ProtelisLoader {
                 .collect(Collectors.toList());
     }
 
-    private static void recursivelyInitFunctions(final Module module,
+    private static void recursivelyInitFunctions(final ProtelisModule module,
             final Map<FunctionDef, FunctionDefinition> nameToFun) {
         recursivelyInitFunctions(module, nameToFun, new LinkedHashSet<>());
     }
 
     private static void recursivelyInitFunctions(
-            final Module module,
+            final ProtelisModule module,
             final Map<FunctionDef, FunctionDefinition> nameToFun,
-            final Set<Module> completed) {
+            final Set<ProtelisModule> completed) {
         if (!completed.contains(module)) {
             completed.add(module);
             /*

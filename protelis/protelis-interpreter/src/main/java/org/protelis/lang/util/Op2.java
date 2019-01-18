@@ -40,9 +40,9 @@ public enum Op2 {
     /** Arithmetic division operation. */
     DIVIDE("/", Op2::divide),
     /** Equality comparison operation. */
-    EQUALS("==", Op2::equals),
+    EQUALS("==", Op2::areEquals),
     /** Inequality comparison operation. */
-    NOT_EQUALS("!=", (a, b) -> !Op2.equals(a, b)),
+    NOT_EQUALS("!=", (a, b) -> !Op2.areEquals(a, b)),
     /** Greater-than comparison operation. */
     GREATER(">", Op2::greater),
     /** Greater-than-or-equal comparison operation. */
@@ -140,7 +140,7 @@ public enum Op2 {
     }
 
     @SuppressFBWarnings("FE_FLOATING_POINT_EQUALITY")
-    private static boolean equals(final Object a, final Object b) {
+    private static boolean areEquals(final Object a, final Object b) {
         if (a == null && b == null) {
             return true;
         }
@@ -206,7 +206,7 @@ public enum Op2 {
                     return selector.apply(a, b);
                 }
                 return selector.apply(b, a);
-            } catch (RuntimeException e) {
+            } catch (RuntimeException e) { // NOPMD: RuntimeException caught willingly
                 /*
                  * Comparison of different types, fallback to lexicographic
                  * comparison
@@ -265,7 +265,7 @@ public enum Op2 {
     @SuppressWarnings(UNCHECKED)
     private static <I, O> O arithmetic(final String op, final I a, final I b, final BiFunction<Double, Double, O> f) {
         if (a instanceof Double && b instanceof Double) {
-            return f.apply(((Double) a), ((Double) b));
+            return f.apply((Double) a, (Double) b);
         }
         final boolean aNum = a instanceof Number;
         final boolean bNum = b instanceof Number;

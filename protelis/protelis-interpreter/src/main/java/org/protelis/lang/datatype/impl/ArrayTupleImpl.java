@@ -46,7 +46,7 @@ public final class ArrayTupleImpl implements Tuple {
         if (a instanceof Comparable && b instanceof Comparable) {
             try {
                 return ((Comparable<Object>) a).compareTo((Comparable<?>) b);
-            } catch (RuntimeException e) {
+            } catch (RuntimeException e) { // NOPMD: this is done by purpose
                 return compareLexicographically(a, b);
             }
         }
@@ -101,7 +101,7 @@ public final class ArrayTupleImpl implements Tuple {
             final Object o2 = o.get(i);
             if (o1 instanceof Comparable && o2 instanceof Comparable) {
                 try {
-                    res = ((Comparable<Object>) o1).compareTo(((Comparable<?>) o2));
+                    res = ((Comparable<Object>) o1).compareTo((Comparable<?>) o2);
                 } catch (ClassCastException ex) {
                     /*
                      * Uncomparable, go lexicographically

@@ -59,8 +59,7 @@ public final class BinaryOp extends AbstractAnnotatedTree<Object> {
         getBranch(0).toString(sb, i);
         sb.append('\n');
         indent(sb, i);
-        sb.append(op.toString());
-        sb.append('\n');
+        sb.append(op.toString()).append('\n');
         getBranch(1).toString(sb, i);
     }
 

@@ -1,35 +1,51 @@
+apply plugin: 'project-report'
+subprojects {
+    apply plugin: 'java-library'
+}
+
 buildscript {
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
         classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
+        classpath "com.gradle:build-scan-plugin:${buildScanPluginVersion}"
+    }
+}
+
+ext {
+    isJava7Legacy = project.hasProperty("java7Legacy") || System.env.JAVA7LEGACY == "true"
+    if (isJava7Legacy) {
+        println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
     }
 }
 
 allprojects {
-    apply plugin: 'org.danilopianini.build-commons'
-	apply plugin: 'java-library'
-    configurations {
-        compile {
-            exclude module: 'org.eclipse.xtext.dependencies'
-            exclude group: 'asm', module: 'asm'
-        }
-        all*.exclude group: 'org.eclipse.xtext', module: 'org.eclipse.xtext.dependencies'
+    if (isJava7Legacy) {
+        def isBeta = project.version.endsWith('-beta')
+        project.version = project.version - "-beta" + "-j7" + (isBeta? '-beta' : '')
     }
+
+    apply plugin: 'org.danilopianini.build-commons'
+
+    jacoco {
+        toolVersion = jacocoVersion
+    }
+    configurations {
+        all*.exclude group: 'org.ow2.asm', module: 'asm-debug-all'
+        all*.exclude group: 'asm', module: 'asm'
+    }
+
     dependencies {
-        implementation "com.google.code.findbugs:findbugs:$findBugsVersion"
         implementation "org.apache.commons:commons-math3:$math3Version"
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
-
         testImplementation "junit:junit:$junitVersion"
-
         testRuntimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
-
         doclet "org.jboss.apiviz:apiviz:$apivizVersion"
     }
-    
+
     publishing.publications {
         main(MavenPublication) {
             pom {
@@ -68,6 +84,10 @@ allprojects {
 }
 
 subprojects.each { subproject -> rootProject.evaluationDependsOn(subproject.path)}
+/*
+ * Remove tasks that should not exist in subprojects
+ */
+subprojects.each { it.tasks.remove(wrapper) }
 
 /*
  * Running a task on the parent project implies running the same task first on any subproject
@@ -93,17 +113,36 @@ javadoc {
 }
 
 task fatJar(type: Jar) {
-    baseName = project.name + '-redist'
-    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
+    baseName = "${rootProject.artifactId}-redist"
+    zip64 = true
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {
+        // remove all signature files
+        exclude "META-INF/"
+        exclude "ant_tasks/"
+        exclude "about_files/"
+        exclude "help/about/"
+        exclude 'build'
+        exclude '.gradle'
+        exclude 'build.gradle'
+        exclude 'gradle'
+        exclude 'gradlew'
+        exclude 'gradlew.bat'
     }
     with jar
 }
 
 allprojects {
-    apply plugin: 'org.danilopianini.javadoc.io-linker'
+    def jdocTasks = ['javadoc', 'uploadArchives', 'projectReport', 'buildDashboard', 'javadocJar']
+    def selectedTasks = gradle.startParameter.taskNames ?: defaultTasks
+    if (!selectedTasks.disjoint(jdocTasks)) {
+        apply plugin: 'org.danilopianini.javadoc.io-linker'
+    }
+}
+
+apply plugin: com.gradle.scan.plugin.BuildScanPlugin
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
 }
 
 defaultTasks 'clean', 'build', 'check', 'javadoc', 'projectReport', 'buildDashboard', 'fatJar', 'signMainPublication'

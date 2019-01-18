@@ -20,7 +20,7 @@ import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.Reference;
-import org.protelis.parser.protelis.Module;
+import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
 
@@ -45,10 +45,10 @@ public final class SimpleProgramImpl implements ProtelisProgram {
      *            available functions
      */
     public SimpleProgramImpl(
-            final Module source,
+            final ProtelisModule source,
             final AnnotatedTree<?> program,
             final Map<Reference, FunctionDefinition> functions) {
-        this(Optional.of(source).map(Module::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
+        this(Optional.of(source).map(ProtelisModule::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
     }
 
     /**

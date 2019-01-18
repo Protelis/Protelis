@@ -3,34 +3,42 @@ buildscript {
      mavenCentral()
   }
   dependencies {
-     classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+      if (isJava7Legacy) {
+          classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+      }
   }
 }
 
-apply from: 'maven.gradle'
-apply plugin: 'me.tatarka.retrolambda'
-retrolambda {
-  javaVersion JavaVersion.VERSION_1_7
-  defaultMethods true
-  incremental true
+if (isJava7Legacy) {
+    apply plugin: 'me.tatarka.retrolambda'
+    retrolambda {
+      javaVersion JavaVersion.VERSION_1_7
+      defaultMethods true
+      incremental true
+    }
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    api "org.protelis:protelis.parser:$parserVersion"
     api "net.sourceforge.streamsupport:streamsupport:${streamVersion}"
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIOVersion"
-    implementation "org.apache.commons:commons-math3:$math3Version"
     implementation "net.sf.trove4j:trove4j:$trove4jVersion"
     implementation "com.google.guava:guava:$guavaVersion"
     implementation "org.apache.commons:commons-lang3:$lang3Version"
-    implementation "org.danilopianini:javalib-java7:$javalib7Version"
     implementation "org.danilopianini:javalib:$javalibVersion"
     implementation "org.springframework:spring-core:$springVersion"
-    implementation "org.eclipse.emf:org.eclipse.emf.mwe.core:$mweVersion"
-    implementation "org.eclipse.emf:org.eclipse.emf.mwe.utils:$mweVersion"
-    implementation "com.google.code.findbugs:findbugs:$findBugsVersion"
+    /*
+     * Legacy dependencies picking
+     */
+    if (isJava7Legacy) {
+        println("Configuring legacy dependencies")
+        api "org.protelis:protelis.parser:${parserVersion}.java7legacy"
+        implementation "com.google.code.findbugs:findbugs:$spotBugsLegacy"
+    } else {
+        api "org.protelis:protelis.parser:$parserVersion"
+        implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
+    }
 }

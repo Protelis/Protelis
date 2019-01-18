@@ -1,7 +1,7 @@
 dependencies {
-	api project(':protelis-interpreter')
+    api project(':protelis-interpreter')
     implementation "it.unibo.alchemist:alchemist-interfaces:$alchemistVersion"
-	implementation "it.unibo.alchemist:alchemist-loading:$alchemistVersion"
-	implementation "junit:junit:$junitVersion"
+    implementation "it.unibo.alchemist:alchemist-loading:$alchemistVersion"
+    implementation "junit:junit:$junitVersion"
     implementation "org.apache.commons:commons-lang3:$lang3Version"
 }

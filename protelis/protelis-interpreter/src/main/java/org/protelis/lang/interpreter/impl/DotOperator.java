@@ -90,14 +90,11 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
              * Currently, there is no change in the codepath when superscript is
              * executed: f.apply(...) is exactly equivalent to f(...).
              */
-            final FunctionCall fc;
             final boolean hasCall = getSuperscript() instanceof FunctionCall;
             final FunctionCall prevFC = hasCall ? (FunctionCall) getSuperscript() : null;
-            if (hasCall && fd.equals(prevFC.getFunctionDefinition())) {
-                fc = prevFC;
-            } else {
-                fc = new FunctionCall(fd, deepCopyBranches());
-            }
+            final FunctionCall fc = hasCall && fd.equals(prevFC.getFunctionDefinition())
+                ? prevFC
+                : new FunctionCall(fd, deepCopyBranches());
             setSuperscript(fc);
             fc.eval(context);
             setAnnotation(fc.getAnnotation());
@@ -121,9 +118,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         left.toString(sb, indent);
         sb.append('\n');
         indent(sb, indent);
-        sb.append('.');
-        sb.append(methodName);
-        sb.append(" (");
+        sb.append('.').append(methodName).append(" (");
         fillBranches(sb, indent, ',');
         sb.append(')');
     }

@@ -1,4 +1,5 @@
 #!/bin/bash
 set -e
 cd protelis
-./gradlew check install
+./gradlew check install fatJar
+

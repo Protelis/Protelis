@@ -29,11 +29,14 @@ public final class ProgramTester {
     private static final String SL_NAME = "singleLineComment";
     private static final String ML_NAME = "multilineComment";
     private static final String EXPECTED = "EXPECTED_RESULT:";
-    private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*(?<" + ML_NAME
+    /*
+     * .*?\/\*.*?EXPECTED\s*(?<ML_NAME>.*?)\s*\/\/\s*EXPECTED\s*(?<SL_NAME>.*?)\s*\n
+     */
+    private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?\\/\\*.*?" + EXPECTED + "\\s*(?<" + ML_NAME
                     + ">.*?)\\s*\\*\\/|\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
     private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
     private static final int MIN_CYCLE_NUM = 1;
-    private static final int MAX_CYCLE_NUM = 10;
+    private static final int MAX_CYCLE_NUM = 100;
     private static final Logger L = LoggerFactory.getLogger(ProgramTester.class);
 
     private ProgramTester() {
@@ -116,8 +119,10 @@ public final class ProgramTester {
                 final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
                 final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
                 vm.runCycle();
-                assertEquals(vm.getCurrentValue(),
-                                execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult);
+                assertEquals(
+                    vm.getCurrentValue(),
+                    execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult
+                );
             } else {
                 fail("Your test does not include the expected result");
             }
@@ -149,11 +154,7 @@ public final class ProgramTester {
      */
     public static Object runProgram(final String s, final int runs) {
         final ProtelisProgram program = ProtelisLoader.parse(s);
-        try {
-            FileUtilities.serializeObject(program);
-        } catch (Exception e) {
-            fail();
-        }
+        FileUtilities.serializeObject(program);
         final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();

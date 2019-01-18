@@ -1,15 +1,11 @@
 package org.protelis.test;
 
-import static org.junit.Assert.assertFalse;
-
 import org.junit.Test;
 
 /**
  * Testing Protelis core libraries.
  */
 public class TestParseError {
-    private final Exception e = new IllegalArgumentException("Must fail!");
-
     private static void test(final String file) {
         test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
     }
@@ -24,30 +20,17 @@ public class TestParseError {
      * @throws Exception
      *             in case test does not fail
      */
-    @Test
-    public void testParseError1() throws Exception {
-        try {
-            test("parseError1");
-            throw e;
-        } catch (Exception e) {
-            assertFalse(e.getMessage().isEmpty());
-        }
+    @Test(expected = Exception.class)
+    public void testParseError1() {
+        test("parseError1");
     }
 
     /**
      * Test parseError2.
-     * 
-     * @throws Exception
-     *             in case test does not fail
      */
-    @Test
-    public void testParseError2() throws Exception {
-        try {
-            test("parseError2");
-            throw e;
-        } catch (AssertionError e) {
-            assertFalse(e.getMessage().isEmpty());
-        }
+    @Test(expected = AssertionError.class)
+    public void testParseError2() {
+        test("parseError2");
     }
 
     /**
@@ -56,14 +39,9 @@ public class TestParseError {
      * @throws Exception
      *             in case test does not fail
      */
-    @Test
-    public void testParseError3() throws Exception {
-        try {
-            test("parseError3");
-            throw e;
-        } catch (AssertionError e) {
-            assertFalse(e.getMessage().isEmpty());
-        }
+    @Test(expected = AssertionError.class)
+    public void testParseError3() {
+        test("parseError3");
     }
 
     /**
@@ -72,14 +50,9 @@ public class TestParseError {
      * @throws Exception
      *             in case test does not fail
      */
-    @Test
-    public void testParseError4() throws Exception {
-        try {
-            test("parseError4");
-            throw e;
-        } catch (AssertionError e) {
-            assertFalse(e.getMessage().isEmpty());
-        }
+    @Test(expected = AssertionError.class)
+    public void testParseError4() {
+        test("parseError4");
     }
 
 // TODO check this error
@@ -105,14 +78,9 @@ public class TestParseError {
      * @throws Exception
      *             in case test does not fail
      */
-    @Test
+    @Test(expected = AssertionError.class)
     public void testParseError6() throws Exception {
-        try {
-            test("parseError6");
-            throw e;
-        } catch (AssertionError e) {
-            assertFalse(e.getMessage().isEmpty());
-        }
+        test("parseError6");
     }
 
     /**

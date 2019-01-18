@@ -163,11 +163,13 @@ public def isFallingEdge(signal) {
  * @return        bool, true if the event occurred before timeout, false otherwise
  */
 public def isRecentEvent(event, timeout) {
-    if (event) {
-        true
-    } else {
-        countDown(timeout) > 0
-    }
+    if (rep(hasHappenedBefore <- false) { hasHappenedBefore || event } ) {
+        if (event) {
+            true
+        } else {
+            countDown(timeout) > 0
+        }
+    } else { false }
 }
 
 /**
