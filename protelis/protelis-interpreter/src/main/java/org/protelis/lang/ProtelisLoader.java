@@ -469,7 +469,7 @@ public final class ProtelisLoader {
                 final AnnotatedTree<?> nullResult = translate(hood.getDefault(), m);
                 final AnnotatedTree<Field> field = translate(hood.getArg(), m);
                 final EObject ref = hood.getReference();
-                if (hood.getReference() == null) {
+                if (ref == null) {
                     return new GenericHoodCall(inclusive, translate(hood.getOp(), m), nullResult, field);
                 }
                 if (ref instanceof VarUse) {
