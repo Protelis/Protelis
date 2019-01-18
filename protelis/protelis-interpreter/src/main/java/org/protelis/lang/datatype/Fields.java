@@ -138,7 +138,7 @@ public final class Fields {
                 }
                 actualArgs[i] = arg;
             }
-            final Object actualTarget = fieldTarget ? (((Field) target).getSample(node)) : target;
+            final Object actualTarget = fieldTarget ? ((Field) target).getSample(node) : target;
             result.addSample(node, fun.apply(actualTarget, actualArgs));
         }
         return result;
