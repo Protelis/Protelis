@@ -232,7 +232,7 @@ public final class ReflectionUtils {
                         + " with arguments " + Arrays.toString(useArgs)
                         + " on " + target;
                 L.error(errorMessage, e);
-                throw new IllegalStateException(errorMessage, e);
+                throw new UnsupportedOperationException(errorMessage, e);
             }
         }
     }
@@ -376,13 +376,13 @@ public final class ReflectionUtils {
                 try {
                     return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, fieldedClasses));
                 } catch (ExecutionException e) {
-                    throw new NoSuchMethodError("No" + methodName + originalClasses
+                    throw new UnsupportedOperationException("No" + methodName + originalClasses
                             + " nor " + methodName + fieldedClasses + " exist in " + clazz
-                            + ".\nYou tried to invoke it with arguments " + args);
+                            + ".\nYou tried to invoke it with arguments " + args, e);
                 }
             }
-            throw new NoSuchMethodError(methodName + originalClasses + " does not exist in " + clazz
-                    + ".\nYou tried to invoke it with arguments " + args);
+            throw new UnsupportedOperationException(methodName + originalClasses + " does not exist in " + clazz
+                    + ".\nYou tried to invoke it with arguments " + args, outerException);
         }
     }
 
