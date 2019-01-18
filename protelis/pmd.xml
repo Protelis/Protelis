@@ -85,6 +85,7 @@
         <exclude name="AvoidFileStream" />
         <exclude name="AvoidInstantiatingObjectsInLoops" />
         <exclude name="AvoidUsingShortType" />
+        <exclude name="SimplifyStartsWith" />
         <exclude name="TooFewBranchesForASwitchStatement" />
     </rule>
     <rule ref="category/java/security.xml">
