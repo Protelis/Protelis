@@ -40,9 +40,9 @@ public enum Op2 {
     /** Arithmetic division operation. */
     DIVIDE("/", Op2::divide),
     /** Equality comparison operation. */
-    EQUALS("==", Op2::equals),
+    EQUALS("==", Op2::areEquals),
     /** Inequality comparison operation. */
-    NOT_EQUALS("!=", (a, b) -> !Op2.equals(a, b)),
+    NOT_EQUALS("!=", (a, b) -> !Op2.areEquals(a, b)),
     /** Greater-than comparison operation. */
     GREATER(">", Op2::greater),
     /** Greater-than-or-equal comparison operation. */
@@ -140,7 +140,7 @@ public enum Op2 {
     }
 
     @SuppressFBWarnings("FE_FLOATING_POINT_EQUALITY")
-    private static boolean equals(final Object a, final Object b) {
+    private static boolean areEquals(final Object a, final Object b) {
         if (a == null && b == null) {
             return true;
         }
