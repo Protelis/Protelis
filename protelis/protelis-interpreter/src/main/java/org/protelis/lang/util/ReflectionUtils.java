@@ -213,7 +213,7 @@ public final class ReflectionUtils {
         Object[] useArgs = repackageIfVarArgs(method, args);
         try {
             return method.invoke(target, useArgs);
-        } catch (Exception exc) {
+        } catch (Exception exc) { // NOPMD: Generic exception caught by purpose
             /*
              * Failure: maybe some cast was required?
              */
