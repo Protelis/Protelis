@@ -55,8 +55,8 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     protected void asString(final StringBuilder sb, final int i) {
-        sb.append(function.toString().toLowerCase(Locale.US));
-        sb.append("Hood (");
+        sb.append(function.toString().toLowerCase(Locale.US))
+            .append("Hood (");
         fillBranches(sb, i, ',');
         sb.append(')');
     }
