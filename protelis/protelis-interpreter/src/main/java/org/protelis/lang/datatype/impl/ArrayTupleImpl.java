@@ -46,7 +46,7 @@ public final class ArrayTupleImpl implements Tuple {
         if (a instanceof Comparable && b instanceof Comparable) {
             try {
                 return ((Comparable<Object>) a).compareTo((Comparable<?>) b);
-            } catch (RuntimeException e) {
+            } catch (RuntimeException e) { // NOPMD: this is done by purpose
                 return compareLexicographically(a, b);
             }
         }
