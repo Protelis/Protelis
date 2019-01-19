@@ -55,6 +55,8 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
+      jdk: openjdk8
+
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
