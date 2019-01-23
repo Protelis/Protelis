@@ -62,7 +62,7 @@ public final class RepCall<T> extends AbstractSATree<T, T> {
             w.evalInNewStackFrame(context, W_BRANCH);
             @SuppressWarnings("unchecked")
             final T init = (T) w.getAnnotation();
-            checkForFields(init);
+            ensureNotAField(init);
             context.putVariable(xName, w.getAnnotation(), true);
         } else {
             context.putVariable(xName, getSuperscript(), true);
@@ -71,13 +71,12 @@ public final class RepCall<T> extends AbstractSATree<T, T> {
         body.evalInNewStackFrame(context, A_BRANCH);
         @SuppressWarnings("unchecked")
         final T result = (T) body.getAnnotation();
-        checkForFields(result);
+        ensureNotAField(result);
         setAnnotation(result);
         setSuperscript(result);
     }
 
-    private static void checkForFields(final Object o) {
-        assert o != null;
+    private static void ensureNotAField(final Object o) {
         if (o instanceof Field) {
             throw new IllegalStateException("Rep can not get annotated with fields.");
         }
