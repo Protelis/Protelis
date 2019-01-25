@@ -4,5 +4,4 @@
 public def f(v) {
 	() -> { v }
 }
-
 f(1).apply()
