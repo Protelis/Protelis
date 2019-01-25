@@ -46,13 +46,13 @@ public class TestLanguage {
      * TODO: this test has to be introduced as soon as a complete support to
      * closures is provided
      */
-    // /**
-    // * Test closures.
-    // */
-    // @Test
-    // public void testClosure02() {
-    // ProgramTester.testFile("/closure02.pt");
-    // }
+     /**
+     * Test closures.
+     */
+//     @Test
+//     public void testClosure02() {
+//         ProgramTester.runFile("/closure02.pt");
+//     }
 
     /**
      * Test the cyclic timer.
@@ -199,14 +199,6 @@ public class TestLanguage {
     public void testGenericHood06() {
         ProgramTester.runFile("/genericHood06.pt");
     }
-
-    /**
-     * Test hood with a generated field.
-     */
-    // @Test
-    // public void testGenericHood07() {
-    // ProgramTester.testFile("/genericHood07.pt");
-    // }
 
     /**
      * Test simple use of apply.
@@ -587,6 +579,46 @@ public class TestLanguage {
     @Test
     public void testRep03() {
         ProgramTester.runFileWithMultipleRuns("/rep03.pt");
+    }
+
+    /**
+     * Test rep / yield.
+     */
+    @Test
+    public void testRep04() {
+        ProgramTester.runFileWithMultipleRuns("/rep04.pt");
+    }
+
+    /**
+     * Basic test for share.
+     */
+    @Test
+    public void testShare01() {
+        ProgramTester.runFileWithMultipleRuns("/share01.pt");
+    }
+
+    /**
+     * Basic test for share.
+     */
+    @Test
+    public void testShare02() {
+        ProgramTester.runFileWithMultipleRuns("/share02.pt");
+    }
+
+    /**
+     * Test yield.
+     */
+    @Test
+    public void testShare03() {
+        ProgramTester.runFileWithMultipleRuns("/share03.pt");
+    }
+
+    /**
+     * Test previous scope access in share/yield.
+     */
+    @Test
+    public void testShare04() {
+        ProgramTester.runFileWithMultipleRuns("/share04.pt");
     }
 
     /**
