@@ -1,0 +1,8 @@
+// EXPECTED_RESULT: ($CYCLE - 1) * ($CYCLE) - ($CYCLE - 1) * 2
+rep(val <- 0) {
+    let toStore = val + 1;
+    let anotherVariable = val * 2;
+	toStore
+} yield {
+    val * toStore - anotherVariable
+}
