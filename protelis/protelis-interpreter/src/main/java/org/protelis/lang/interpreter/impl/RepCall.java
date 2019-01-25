@@ -19,7 +19,9 @@ import org.protelis.vm.ExecutionContext;
  * "Repeat" state variable.
  * 
  * @param <T>
+ * @deprecated {@link ShareCall} should cover the rep functionality with similar efficiency and higher correctness
  */
+@Deprecated
 public final class RepCall<T> extends AbstractSATree<T, T> {
 
     private static final long serialVersionUID = 8643287734245198408L;
