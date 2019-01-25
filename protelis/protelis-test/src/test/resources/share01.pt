@@ -1,0 +1,7 @@
+// EXPECTED_RESULT: $CYCLE
+def counter(start){
+	share(val, field <- start) {
+		val + 1
+	}
+}
+counter(0)

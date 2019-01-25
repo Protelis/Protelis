@@ -1,0 +1,13 @@
+// EXPECTED_RESULT: ($CYCLE - 1) * ($CYCLE - 1) - 31
+def counter(start){
+	share(val, field <- start) {
+		let x = val;
+		x = x * x;
+		let num = 31;
+		minHood(field);
+		val + 1;
+	} yield {
+	    x - num
+	}
+}
+counter(0)
