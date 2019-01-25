@@ -9,6 +9,7 @@
 package org.protelis.lang;
 
 import static java8.util.stream.StreamSupport.stream;
+import static java8.util.Optional.empty;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,8 +57,8 @@ import org.protelis.lang.interpreter.impl.HoodCall;
 import org.protelis.lang.interpreter.impl.If;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.interpreter.impl.NBRCall;
-import org.protelis.lang.interpreter.impl.RepCall;
 import org.protelis.lang.interpreter.impl.Self;
+import org.protelis.lang.interpreter.impl.ShareCall;
 import org.protelis.lang.interpreter.impl.TernaryOp;
 import org.protelis.lang.interpreter.impl.UnaryOp;
 import org.protelis.lang.interpreter.impl.Variable;
@@ -81,11 +82,15 @@ import org.protelis.parser.protelis.Mux;
 import org.protelis.parser.protelis.NBR;
 import org.protelis.parser.protelis.Pi;
 import org.protelis.parser.protelis.Rep;
+import org.protelis.parser.protelis.RepInitialize;
+import org.protelis.parser.protelis.Share;
+import org.protelis.parser.protelis.ShareInitialize;
 import org.protelis.parser.protelis.StringVal;
 import org.protelis.parser.protelis.TupleVal;
 import org.protelis.parser.protelis.VarDef;
 import org.protelis.parser.protelis.VarDefList;
 import org.protelis.parser.protelis.VarUse;
+import org.protelis.parser.protelis.Yield;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
@@ -516,11 +521,30 @@ public final class ProtelisLoader {
         PI(Pi.class,
             (e, m) -> new Constant<>(Math.PI)),
         REP(Rep.class,
-            (e, m) -> new RepCall<>(toR(((Rep) e).getInit().getX()),
-                translate(((Rep) e).getInit().getW(), m),
-                translate(((Rep) e).getBody(), m))),
+//            (e, m) -> new RepCall<>(toR(((Rep) e).getInit().getX()),
+//                translate(((Rep) e).getInit().getW(), m),
+//                translate(((Rep) e).getBody(), m))),
+            (e, m) -> {
+                final Rep rep = (Rep) e;
+                final RepInitialize init = rep.getInit();
+                final Optional<Reference> local = Optional.of(toR(init.getX()));
+                final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(rep.getYields())
+                        .map(Yield::getBody)
+                        .map(it -> translate(it, m));
+                return new ShareCall<>(local, empty(), translate(init.getW(), m), translate(rep.getBody(), m), yield);
+            }),
         SELF(org.protelis.parser.protelis.Self.class,
             (e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self() : null),
+        SHARE(Share.class, (e, m) -> {
+            final Share s = (Share) e;
+            final ShareInitialize init = s.getInit();
+            final Optional<Reference> local = Optional.ofNullable(init.getLocal()).map(ProtelisLoader::toR);
+            final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoader::toR);
+            final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(s.getYields())
+                    .map(Yield::getBody)
+                    .map(it -> translate(it, m));
+            return new ShareCall<>(local, field, translate(init.getW(), m), translate(s.getBody(), m), yield);
+        }),
         STRING(StringVal.class,
             (e, m) -> new Constant<>(((StringVal) e).getVal())),
         TUPLE(TupleVal.class,
