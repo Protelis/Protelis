@@ -134,10 +134,10 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     @Override
     protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append("share (")
-            .append(localName)
-            .append(", ")
-            .append(fieldName)
+        sb.append(fieldName.isPresent() ? "share" : "rep")
+            .append(" (")
+            .append(localName.transform(Reference::toString).transform(it -> it + ", ").or(""))
+            .append(fieldName.transform(Reference::toString).or(""))
             .append(" <- \n");
         getBranch(INIT).toString(sb, indent + 1);
         sb.append(") {\n");
@@ -145,6 +145,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         sb.append('\n');
         indent(sb, indent);
         sb.append('}');
+        if (yield.isPresent()) {
+            sb.append(" yield {\n");
+            getBranch(YIELD).toString(sb, indent + 1);
+            indent(sb, indent);
+            sb.append('}');
+        }
     }
 
     private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {
