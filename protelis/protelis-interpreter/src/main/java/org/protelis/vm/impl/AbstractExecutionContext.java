@@ -201,7 +201,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
             L.error("The codePath you are trying to insert is {}", codePath);
             L.error("The value you are trying to insert is {}, while the current one is {}", localValue, toSend.get(codePath)); 
             throw new IllegalStateException(
-                    "This program has attempted to build a field twice with the same code path."
+                    "This program has attempted to build a field twice with the same code path. "
                     + "This is probably a bug in Protelis");
         }
         return res;
