@@ -178,8 +178,8 @@ public def sequence(f, condition, g) {
  */
 public def sequenceIfAny(f, condition, g) {
     sequence(f, (v) -> {
-        rep (ev <- condition) {
-            anyHood(nbr(ev)) || condition
+        share (_,ev <- condition) {
+            anyHood(ev) || condition
         }
     }, g)
 }
