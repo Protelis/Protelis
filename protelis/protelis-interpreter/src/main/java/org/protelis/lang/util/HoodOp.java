@@ -73,7 +73,7 @@ public enum HoodOp {
     /**
      * Mean of values.
      */
-    LOCAL(HoodOp::mean,
+    LOCAL((field, id) -> field.getSample(id),
         () -> {
             throw new IllegalStateException("Local field pick operation must always work");
         },
@@ -82,7 +82,7 @@ public enum HoodOp {
     /**
      * Sum of values.
      */
-    SUM((field, id) -> field.getSample(id),
+    SUM(HoodOp::sum,
         () -> 0d,
         of(create(Number.class, () -> 0d)),
         of(create(Tuple.class, t -> fTup(0d, (Tuple) t)))),
