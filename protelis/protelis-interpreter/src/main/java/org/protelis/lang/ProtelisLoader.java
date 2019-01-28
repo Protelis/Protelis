@@ -606,7 +606,7 @@ public final class ProtelisLoader {
                 .collect(Collectors.toMap(
                     Functions.identity(),
                     fd -> new FunctionDefinition(
-                            new FasterString(Optional.ofNullable(module.getName()).orElse("") + fd.getName()),
+                            new FasterString(Optional.ofNullable(module.getName()).map(it -> it + ':').orElse("") + fd.getName()),
                             toR(extractArgs(fd))
                     )
                 ))
