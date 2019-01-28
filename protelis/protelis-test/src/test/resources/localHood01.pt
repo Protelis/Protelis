@@ -1,0 +1,2 @@
+// EXPECTED_RESULT: 1
+localHood(nbr(1))
