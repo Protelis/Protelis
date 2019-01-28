@@ -39,10 +39,10 @@ public def hasSelfDependency(myId, inbound) {
  */
 public def hasTransitiveDependency(myId, inbound) {
     isNotEmpty(mux (inbound != []) {
-        rep (v <- inbound) {
+        share (v,nbr_v <- inbound) {
             v.union(
                 hood(
-                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, v, inbound, [])
+                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, nbr_v, inbound, [])
                 )
             )
         }
@@ -79,8 +79,8 @@ public def greatestLowerBound(myId, inbound, nodes) {
  * @return        bool, true if the device is a leaf, false otherwise
  */
 public def isLeaf(myId, inbound) {
-    !rep (v <- inbound) {
-        unionHood(nbr(v))
+    !share (_,v <- inbound) {
+        unionHood(v)
     }.contains(myId)
 }
 
@@ -135,13 +135,13 @@ public def leastUpperBound(myId, outbound, nodes) {
  *                    filtering criteria
  * @return            T', filtered set of messages
  */
-public def nbrWrapper(myId, connections, message, null) {
-    let res = mux (isParent(myId, connections)) { nbr(message) } else { null };
+public def nbrWrapper(myId, connections, nbr_message, null) {
+    let res = mux (isParent(myId, connections)) { nbr_message } else { null };
     mux (res == []) { null } else { res }
 }
 
 def spreadBoundValue(myId, connections, nodes) {
-    rep (v <- [[-Infinity], -Infinity]) {
+    share (_,v <- [[-Infinity], -Infinity]) {
         mux (nodes.contains(myId)) {
             [intersection(nodes, connections).union([myId]), 0]
         } else {
