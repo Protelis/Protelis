@@ -59,7 +59,7 @@ public def boundAverage(sink, local, range, null) {
  * @return          T, aggregated value
  */
 public def C(potential, reduce, local, null) {
-    share (v,nbr_v <- local) {
+    share (_,v <- local) {
         reduce.apply(local,
             /*
              * TODO: switch to accumulateHood
@@ -69,7 +69,7 @@ public def C(potential, reduce, local, null) {
                 // expression that will be evaluated if the field is empty
                 null,
                 mux (nbr(getParent(potential, x -> { x.getDeviceUID() })) == self.getDeviceUID()) { 
-                    nbr_v
+                    v
                 } else { null }
             )
         )
