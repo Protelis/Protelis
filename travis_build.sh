@@ -6,7 +6,7 @@ cd protelis
 JAVA_VERSION=$(java -version 2>&1)
 if [[ $JAVA_VERSION == 'openjdk version "1.8.0'* ]]
 then
-  ./gradlew clean check fatJar projectReport bitrayUpload publish --scan
+  ./gradlew clean check fatJar projectReport bintrayUpload publish --scan
 else
   ./gradlew clean check install fatJar --scan
 fi
