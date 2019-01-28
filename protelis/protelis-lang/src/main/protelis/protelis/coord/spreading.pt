@@ -209,11 +209,11 @@ public def crfGradient(source, maxHop) {
  * @return       num, minimum distance from the source
  */
 public def crfGradientWithMetric(source, metric, maxHop) {
-    rep (potential <- [Infinity, 0]) {
+    share (potential,nbr_potential <- [Infinity, 0]) {
         mux (source) {
             [0, 0]
         } else {
-            let d = nbr(potential).get(0);
+            let d = nbr_potential.get(0);
             let dt = self.getDeltaTime();
             mux (anyHood(addRangeWithLag(d, metric, potential.get(1)) <= potential.get(0))) {
                 minHood([d + metric.apply(), 0])
@@ -249,9 +249,9 @@ public def bisGradient(source, radius, speed) {
 public def bisGradientWithMetric(source, metric, radius, speed) {
     let val = if (source) {0} else {Infinity};
     let loc = [val, val];
-    rep (old <- loc) {
-        let nx = nbr(old.get(0)) + metric.apply();
-        let nt = nbr(old.get(1)) + self.nbrLag() + nbr(self.getDeltaTime());
+    share (_,nbr_old <- loc) {
+        let nx = nbr_old.get(0) + metric.apply();
+        let nt = nbr_old.get(1) + self.nbrLag() + nbr(self.getDeltaTime());
         min(minHood([max(nx, nt*speed-radius), nt]), loc)
     }.get(0)
 }
@@ -363,8 +363,8 @@ public def roundTripTime(d) {
 def flex_distorce(minD, metric) { 
     max(metric.apply(), minD)
 }
-def flex_slope(d, minD, metric) {
-   let slope = maxHood([(d - nbr(d)) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)]);
+def flex_slope(d, nbr_d, minD, metric) {
+   let slope = maxHood([(d - nbr_d) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)]);
    max(slope, [-Infinity, Infinity, 0])
 }
 
@@ -392,12 +392,12 @@ public def flexGradient(source, epsilon, rate, range, distortion) {
  * @param metric     () -> num, estimate distance from other devices
  */
 public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metric) {
-    rep (d <- Infinity) {
+    share (d,nbr_d <- Infinity) {
         mux (source) { 0 } 
         else {
             let dist = range * distortion;
-            let slope = flex_slope(d, dist, metric);
-            let ct = minHood(nbr(d) + flex_distorce(dist, metric));
+            let slope = flex_slope(d, nbr_d, dist, metric);
+            let ct = minHood(nbr_d + flex_distorce(dist, metric));
             if (d == ct || (d > range && d > ct * 2) || cyclicTimer(rate)) {
                 ct
             } else {
@@ -424,14 +424,14 @@ public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metr
  * @return           T, accumulated value
  */
 public def G(source, initial, metric, accumulate) {
-    rep (distanceValue <- [Infinity, initial]) {
+    share (_,nbr_distanceValue <- [Infinity, initial]) {
         mux (source) {
             // If the device is a source then G return a 0 potential
             // and the initial value
             [0, initial]
         } else {
             // The other device potentials are requested
-            let ndv = nbr(distanceValue);
+            let ndv = nbr_distanceValue;
             // G returns the value related to the minimum potential
             let minTuple = 
  	           minHood([
@@ -476,11 +476,11 @@ public def Gnull(v, default) {
  * @return           T, accumulated value
  */
 public def gradcast(source, local, gradient, accumulate) {
-    rep (value <- local) {
+    share (_,nbr_value <- local) {
         mux (source) {
             local
         } else {
-            minHood([nbr(gradient), accumulate.apply(nbr(value))]).get(1)
+            minHood([nbr(gradient), accumulate.apply(nbr_value)]).get(1)
         }
     }
 }
@@ -627,10 +627,10 @@ public def nbrRangeLag(metric, lagMetric, speed) {
  * @see rendezvous
  */
 public def descend(source, potential) {
-    rep (path <- source) {
+    share (_,nbr_path <- source) {
         let nextStep = minHood(nbr([potential, self.getDeviceUID()]));
         if (nextStep.size() > 1) {
-            let candidates = nbr([nextStep.get(1), path]);
+            let candidates = [nbr(nextStep.get(1)), nbr_path];
             source || anyHood([self.getDeviceUID(), true] == candidates)
         } else { source }
     }
@@ -660,14 +660,14 @@ public def rendezvous(source, dest) {
  * @see rendezvous
  */
 public def shortestPath(source, destination) {
-    rep (path <- false) {
+    share (_,nbr_path <- false) {
         mux (source) {
             true
         } else {
             // any device on the shortest path
             anyHood(
                 // check whether a neigh is on the shortest path AND the current device is in the shortest path
-                nbr (path) &&
+                nbr_path &&
                     (distanceTo(destination) == nbr( // if my distance is the same as the collected one
                         minHood( // get the closest distance
                             nbr(distanceTo(destination)) // get the neighbors distances from the destination
