@@ -155,7 +155,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         }
     }
 
-    private static <T> Optional<T> toGuava(java8.util.Optional<T> origin) {
+    private static <T> Optional<T> toGuava(final java8.util.Optional<T> origin) {
         return Optional.fromNullable(origin.orElse(null));
     }
 
