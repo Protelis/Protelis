@@ -42,7 +42,7 @@ public def hasTransitiveDependency(myId, inbound) {
         share (v,nbr_v <- inbound) {
             v.union(
                 hood(
-                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, nbr_v, inbound, [])
+                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, inbound, nbr_v, [])
                 )
             )
         }
@@ -120,7 +120,7 @@ public def leastUpperBound(myId, outbound, nodes) {
 
 /**
  * This nbrWrapper get the messages coming only from a subset of neighbors.
- * When working with graph, nbrWrabber must be use instead of nbr. Otherwise the
+ * When working with graph, nbrWrabber must be used instead of nbr. Otherwise the
  * graph logical structure is broken.
  *
  * If connections is the set of inbound connections, then nbrWrapper returns
@@ -141,7 +141,7 @@ public def nbrWrapper(myId, connections, nbr_message, null) {
 }
 
 def spreadBoundValue(myId, connections, nodes) {
-    share (_,v <- [[-Infinity], -Infinity]) {
+    share (_,nbr_v <- [[-Infinity], -Infinity]) {
         mux (nodes.contains(myId)) {
             [intersection(nodes, connections).union([myId]), 0]
         } else {
@@ -158,7 +158,7 @@ def spreadBoundValue(myId, connections, nodes) {
                             } else { [c, a.get(1)] }
                         }
                     }
-                }, [], nbrWrapper(myId, connections, v, [[-Infinity], -Infinity])
+                }, [], nbrWrapper(myId, connections, nbr_v, [[-Infinity], -Infinity])
             );
             if (isEmpty(aggr)) { [[-Infinity], -Infinity] }
             else { [aggr.get(0), aggr.get(1) + 1] }
