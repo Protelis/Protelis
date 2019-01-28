@@ -99,9 +99,9 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         final AnnotatedTree<?> initBranch = getBranch(INIT);
         initBranch.evalInNewStackFrame(context, INIT);
         final S localValue = ensureType(isErased() ? initBranch.getAnnotation() : getSuperscript());
-        ifPresent(localName, it -> context.putVariable(it, localValue, true));
-        ifPresent(fieldName, it -> context.putVariable(it, context.buildField(i -> i, localValue), true));
         final AnnotatedTree<?> body = getBranch(BODY);
+        ifPresent(localName, it -> context.putVariable(it, localValue, true));
+        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation), true));
         context.newCallStackFrame(BODY);
         final Runnable yieldEvaluation = () -> ifPresent(yield, it -> it.evalInNewStackFrame(context, YIELD));
         if (body instanceof All) {

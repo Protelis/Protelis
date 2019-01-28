@@ -13,6 +13,7 @@ package org.protelis.vm;
 
 import java.util.Map;
 import java8.util.function.Function;
+import java8.util.function.Supplier;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -100,14 +101,40 @@ public interface ExecutionContext {
      *            constructing this field: the field consists of the values
      *            returned from applying computeValue to each of device's value
      * @param localValue
-     *            a {@link java8.util.function.Supplier} which will be used to compute the local
-     *            value for this field
+     *            the local value for this field
      * @param <T>
      *            the type of the input
      * @return a new {@link Field} containing the local device value and the
      *         values for any of the aligned neighbors
      */
     <T> Field buildField(Function<T, ?> computeValue, T localValue);
+
+    /**
+     * Builds a new {@link Field}, fetching data from all the aligned neighbors.
+     * A neighbor is considered to be aligned it it has reached the exact same
+     * {@link org.protelis.vm.util.CodePath}. The field will always contain at least one value,
+     * namely the value of the local device. The deferred version does not immediately schedule
+     * the local value for being sent away. Rather, it schedules the provided {@link Supplier}
+     * to be executed at the end of the round for obtaining the value to be shared. This
+     * function is the base upon which the {@link org.protelis.lang.interpreter.impl.ShareCall}
+     * is built.
+     * 
+     * @param computeValue
+     *            a function that will be applied to localValue and the
+     *            equivalents shared from neighbors in the process of
+     *            constructing this field: the field consists of the values
+     *            returned from applying computeValue to each of device's value
+     * @param currentLocal
+     *            the value to be used as local for this field
+     * @param toBeSent
+     *            a {@link java8.util.function.Supplier} which will be used to compute the local
+     *            value for this field that will get exported at the end of the round
+     * @param <T>
+     *            the type of the input
+     * @return a new {@link Field} containing the local device value and the
+     *         values for any of the aligned neighbors
+     */
+    <T> Field buildFieldDeferred(Function<T, ?> computeValue, T currentLocal, Supplier<T> toBeSent);
 
     /**
      * Obtain a system-independent (pseudo)random number.
