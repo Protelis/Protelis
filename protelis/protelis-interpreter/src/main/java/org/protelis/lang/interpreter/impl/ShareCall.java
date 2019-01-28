@@ -9,6 +9,7 @@ import org.protelis.vm.ExecutionContext;
 
 import com.google.common.base.Optional;
 
+import java8.util.Objects;
 import java8.util.function.Consumer;
 
 /**
@@ -128,10 +129,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         if (o instanceof Field) {
             throw new IllegalStateException("Share is not allowed to return, store, or get initialized to Field values: " + o);
         }
-        if (o == null) {
-            throw new NullPointerException("Share is not allowed to return, store, or get initialized to null values.");
-        }
-        return (S) o;
+        return (S) Objects.requireNonNull(o, "Share is not allowed to return, store, or get initialized to null values.");
     }
 
     @Override
