@@ -79,9 +79,7 @@ public def greatestLowerBound(myId, inbound, nodes) {
  * @return        bool, true if the device is a leaf, false otherwise
  */
 public def isLeaf(myId, inbound) {
-    !share (_,v <- inbound) {
-        unionHood(v)
-    }.contains(myId)
+    !unionHood(nbr(inbound)).contains(myId)
 }
 
 /**
