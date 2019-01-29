@@ -13,6 +13,7 @@ import static java.lang.Double.NEGATIVE_INFINITY;
 import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
 import static org.apache.commons.math3.util.Pair.create;
+import static java.util.Collections.emptyList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,6 +70,15 @@ public enum HoodOp {
          () -> NaN,
          of(create(Number.class, () -> NaN)),
          of(create(Tuple.class, t -> fTup(NaN, (Tuple) t)))),
+    /**
+     * Mean of values.
+     */
+    LOCAL((field, id) -> field.getSample(id),
+        () -> {
+            throw new IllegalStateException("Local field pick operation must always work");
+        },
+         emptyList(),
+         emptyList()),
     /**
      * Sum of values.
      */
@@ -154,7 +164,9 @@ public enum HoodOp {
      * @return the corresponding {@link HoodOp}
      */
     public static HoodOp get(final String reducer) {
-        return J8Arrays.stream(values()).filter(ho -> ho.name().equalsIgnoreCase(reducer)).findFirst().orElse(null);
+        return J8Arrays.stream(values()).filter(ho -> ho.name().equalsIgnoreCase(reducer))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No built-in hood operation matches " + reducer));
     }
 
     /**

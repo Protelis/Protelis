@@ -29,7 +29,6 @@ import org.protelis.vm.NetworkManager;
 import org.protelis.vm.util.CodePath;
 import org.protelis.vm.util.Stack;
 import org.protelis.vm.util.StackImpl;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +40,7 @@ import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import java8.util.Maps;
 import java8.util.function.Function;
+import java8.util.function.Supplier;
 
 /**
  * Partial implementation of ExecutionContext, containing functionality expected
@@ -56,11 +56,13 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private Map<Reference, ?> functions = Collections.emptyMap();
     private Stack gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
+    private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
     private Map<CodePath, Object> toSend;
     private final List<AbstractExecutionContext> restrictedContexts = Lists.newArrayList(); 
     private Number previousRoundTime;
     private final ExecutionEnvironment env;
     private int exportsSize;
+    private int deferredExportSize;
 
     /**
      * Create a new AbstractExecutionContext.
@@ -84,8 +86,23 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     @Override
     public final void commit() {
         // send precisely once
+        tobeComputedBeforeSending.forEach((codepath, supplier) -> {
+            final Object computed = supplier.get();
+            final Object previous = Maps.putIfAbsent(toSend, codepath, computed);
+            if (previous != null) {
+                throw new IllegalStateException("Duplicated field entry with the same codepath "
+                    + "caused by the computation of a deferred build field: this is likely a bug in Protelis.\n"
+                    + "codepath: " + codepath + '\n'
+                    + "previously: " + previous + '\n'
+                    + "computed: " + computed + '\n'
+                    + "overall exports: " + toSend + '\n'
+                    + "overall deferred exports: " + tobeComputedBeforeSending
+                );
+            }
+        });
         nm.shareState(toSend);
         exportsSize = toSend.size();
+        deferredExportSize = tobeComputedBeforeSending.size();
         // commit and clear including recursion into restricted contexts
         commitRecursively();
     }
@@ -98,12 +115,14 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         Objects.requireNonNull(gamma);
         Objects.requireNonNull(theta);
         Objects.requireNonNull(toSend);
+        Objects.requireNonNull(tobeComputedBeforeSending);
         Objects.requireNonNull(functions);
         previousRoundTime = getCurrentTime();
         env.commit();
         gamma = null;
         theta = null;
         toSend = null;
+        tobeComputedBeforeSending = null;
         for (final AbstractExecutionContext rctx: restrictedContexts) {
             rctx.commitRecursively();
         }
@@ -119,6 +138,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         callStack.clear();
         env.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
+        tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
         gamma = new StackImpl(functions);
         theta = Collections.unmodifiableMap(nm.getNeighborState());
         newCallStackFrame((byte) 1);
@@ -169,6 +189,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.theta = restricted;
         restrictedInstance.gamma = gamma;
         restrictedInstance.toSend = toSend;
+        restrictedInstance.tobeComputedBeforeSending = tobeComputedBeforeSending;
         restrictedInstance.callStack.addAll(callStack);
         restrictedInstance.functions = functions;
         restrictedInstance.exportsSize = exportsSize;
@@ -177,9 +198,25 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         return restrictedInstance;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public final <T> Field buildField(final Function<T, ?> computeValue, final T localValue) {
+        return buildField(computeValue, localValue, toSend, localValue);
+    }
+
+    @Override
+    public final <T> Field buildFieldDeferred(
+            final Function<T, ?> computeValue,
+            final T currentLocal,
+            final Supplier<T> toBeSent) {
+        return buildField(computeValue, currentLocal, tobeComputedBeforeSending, toBeSent);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T, D> Field buildField(
+            final Function<T, ?> computeValue,
+            final T localValue,
+            final Map<CodePath, D> destination,
+            final D toBeSent) {
         /*
          * Compute where we stand
          */
@@ -196,12 +233,12 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
          * If there is a request to build a field, then it means this is a
          * nbr-like operation
          */
-        if (Maps.putIfAbsent(toSend, codePath, localValue) != null) {
+        if (Maps.putIfAbsent(destination, codePath, toBeSent) != null) {
             L.error("The map is {}", toSend);
             L.error("The codePath you are trying to insert is {}", codePath);
             L.error("The value you are trying to insert is {}, while the current one is {}", localValue, toSend.get(codePath)); 
             throw new IllegalStateException(
-                    "This program has attempted to build a field twice with the same code path."
+                    "This program has attempted to build a field twice with the same code path. "
                     + "This is probably a bug in Protelis");
         }
         return res;

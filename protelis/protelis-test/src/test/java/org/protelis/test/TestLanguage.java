@@ -319,6 +319,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test localHood without self (which should be the same of localHoodPlusSelf).
+     */
+    @Test
+    public void testLocalHood01() {
+        ProgramTester.runFile("/localHood01.pt", 2);
+    }
+
+    /**
      * Test constants: -Infinity.
      */
     @Test

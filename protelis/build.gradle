@@ -12,6 +12,7 @@ buildscript {
         classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
         classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
         classpath "com.gradle:build-scan-plugin:${buildScanPluginVersion}"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
     }
 }
 
@@ -80,6 +81,38 @@ allprojects {
                 }
             }
         }
+    }
+    /*
+     * Use Bintray for beta releases
+     */
+    apply plugin: 'com.jfrog.bintray'
+    def apiKeyName = 'BINTRAY_API_KEY'
+    def userKeyName = 'BINTRAY_USER'
+    bintray {
+        user = System.env[userKeyName]
+        key = System.env[apiKeyName]
+        publications = ['main']
+        pkg {
+            repo = 'Protelis'
+            name = project.name
+            userOrg = 'protelis'
+            vcsUrl = "$scmRootUrl/$scmRepoName"
+            licenses = ['GPL-3.0-or-later']
+            version {
+                name = project.version
+            }
+        }
+    }
+    bintrayUpload.onlyIf {
+        def hasKey = System.env[apiKeyName] != null;
+        def hasUser = System.env[userKeyName] != null
+        if (!hasKey) {
+            println("The $apiKeyName environment variable must be set in order for the bintray deployment to work")
+        }
+        if (!hasUser) {
+            println("The $userKeyName environment variable must be set in order for the bintray deployment to work")
+        }
+        return hasKey && hasUser
     }
 }
 

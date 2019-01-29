@@ -13,6 +13,7 @@ import java.util.Random;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
+import org.protelis.vm.NetworkManager;
 import org.protelis.vm.impl.AbstractExecutionContext;
 import org.protelis.vm.impl.SimpleExecutionEnvironment;
 import org.protelis.vm.impl.SimpleNetworkManager;
@@ -39,7 +40,14 @@ public final class DummyContext extends AbstractExecutionContext {
      *
      */
     public DummyContext() {
-        super(new SimpleExecutionEnvironment(), new SimpleNetworkManager());
+        this(new SimpleNetworkManager());
+    }
+
+    /**
+     * @param networkManager the network manager to be used
+     */
+    public DummyContext(final NetworkManager networkManager) {
+        super(new SimpleExecutionEnvironment(), networkManager);
     }
 
     @Override

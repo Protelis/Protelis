@@ -9,6 +9,7 @@ import org.protelis.vm.ExecutionContext;
 
 import com.google.common.base.Optional;
 
+import java8.util.Objects;
 import java8.util.function.Consumer;
 
 /**
@@ -99,9 +100,9 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         final AnnotatedTree<?> initBranch = getBranch(INIT);
         initBranch.evalInNewStackFrame(context, INIT);
         final S localValue = ensureType(isErased() ? initBranch.getAnnotation() : getSuperscript());
-        ifPresent(localName, it -> context.putVariable(it, localValue, true));
-        ifPresent(fieldName, it -> context.putVariable(it, context.buildField(i -> i, localValue), true));
         final AnnotatedTree<?> body = getBranch(BODY);
+        ifPresent(localName, it -> context.putVariable(it, localValue, true));
+        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation), true));
         context.newCallStackFrame(BODY);
         final Runnable yieldEvaluation = () -> ifPresent(yield, it -> it.evalInNewStackFrame(context, YIELD));
         if (body instanceof All) {
@@ -128,18 +129,15 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         if (o instanceof Field) {
             throw new IllegalStateException("Share is not allowed to return, store, or get initialized to Field values: " + o);
         }
-        if (o == null) {
-            throw new NullPointerException("Share is not allowed to return, store, or get initialized to null values.");
-        }
-        return (S) o;
+        return (S) Objects.requireNonNull(o, "Share is not allowed to return, store, or get initialized to null values.");
     }
 
     @Override
     protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append("share (")
-            .append(localName)
-            .append(", ")
-            .append(fieldName)
+        sb.append(fieldName.isPresent() ? "share" : "rep")
+            .append(" (")
+            .append(localName.transform(Reference::toString).transform(it -> it + ", ").or(""))
+            .append(fieldName.transform(Reference::toString).or(""))
             .append(" <- \n");
         getBranch(INIT).toString(sb, indent + 1);
         sb.append(") {\n");
@@ -147,6 +145,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         sb.append('\n');
         indent(sb, indent);
         sb.append('}');
+        if (yield.isPresent()) {
+            sb.append(" yield {\n");
+            getBranch(YIELD).toString(sb, indent + 1);
+            indent(sb, indent);
+            sb.append('}');
+        }
     }
 
     private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {
@@ -155,7 +159,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         }
     }
 
-    private static <T> Optional<T> toGuava(java8.util.Optional<T> origin) {
+    private static <T> Optional<T> toGuava(final java8.util.Optional<T> origin) {
         return Optional.fromNullable(origin.orElse(null));
     }
 
