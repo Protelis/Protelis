@@ -10,7 +10,7 @@ import protelis:coord:accumulation
  * @return      T the value resulting from gossip
  */
 public def gossip(value, f) {
-    share (_,v <- value) {
+    share (v <- value) {
         f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, v))
     }
 }
@@ -22,7 +22,7 @@ public def gossip(value, f) {
  * @return  bool, true if the device has experienced the condition, false otherwise
  */
 public def gossipEver(a) {
-    share (_,ever <- false) {
+    share (ever <- false) {
         a || anyHood(ever)
     }
 }
