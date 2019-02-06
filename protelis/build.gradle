@@ -91,6 +91,7 @@ allprojects {
     bintray {
         user = System.env[userKeyName]
         key = System.env[apiKeyName]
+        override = true
         publications = ['main']
         pkg {
             repo = 'Protelis'
