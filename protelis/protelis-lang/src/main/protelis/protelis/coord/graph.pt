@@ -39,10 +39,10 @@ public def hasSelfDependency(myId, inbound) {
  */
 public def hasTransitiveDependency(myId, inbound) {
     isNotEmpty(mux (inbound != []) {
-        share (v,nbr_v <- inbound) {
+        share (v, nbrV <- inbound) {
             v.union(
                 hood(
-                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, inbound, nbr_v, [])
+                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, inbound, nbrV, [])
                 )
             )
         }
