@@ -133,8 +133,8 @@ public def leastUpperBound(myId, outbound, nodes) {
  *                    filtering criteria
  * @return            T', filtered set of messages
  */
-public def nbrWrapper(myId, connections, nbr_message, null) {
-    let res = mux (isParent(myId, connections)) { nbr_message } else { null };
+public def nbrWrapper(myId, connections, nbrMessage, null) {
+    let res = mux (isParent(myId, connections)) { nbrMessage } else { null };
     mux (res == []) { null } else { res }
 }
 
