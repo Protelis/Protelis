@@ -59,7 +59,7 @@ public def boundAverage(sink, local, range, null) {
  * @return          T, aggregated value
  */
 public def C(potential, reduce, local, null) {
-    rep (v <- local) {
+    share (v <- local) {
         reduce.apply(local,
             /*
              * TODO: switch to accumulateHood
@@ -68,8 +68,8 @@ public def C(potential, reduce, local, null) {
                 (a, b) -> { reduce.apply(a, b) },
                 // expression that will be evaluated if the field is empty
                 null,
-                mux (nbr(getParent(potential, v -> { v.getDeviceUID() })) == self.getDeviceUID()) { 
-                    nbr(v)
+                mux (nbr(getParent(potential, x -> { x.getDeviceUID() })) == self.getDeviceUID()) { 
+                    v
                 } else { null }
             )
         )
@@ -167,9 +167,9 @@ public def cMultiSum(potential, local) {
  * @return      num, shared value
  */
 public def consensus(init, f) {
-     rep (val <- init) {
-         // val + f.apply(sumHood PlusSelf(nbr(val) - val))
-         val + f.apply(sumHood(nbr(val) - val))
+     share (val, nbrVal <- init) {
+         // val + f.apply(sumHood PlusSelf(nbrVal - val))
+         val + f.apply(sumHood(nbrVal - val))
      }
 }
 
@@ -239,8 +239,8 @@ public def diameter(source) {
  */
 public def diameterWithMetric(source, metric) {
     let d = distanceToWithMetric(source, metric);
-    2 * rep (maxd <- 0) {
-        max(if (d < Infinity) { d } else { 0 }, maxHood(nbr(maxd)))
+    2 * share (maxd <- 0) {
+        max(if (d < Infinity) { d } else { 0 }, maxHood(maxd))
     }
 }
 

@@ -5,8 +5,8 @@ import protelis:state:time
  * Returns an int, representing the current clock
  */
 public def sharedTimer(period, dt) {
-    rep (clock <- 0) {
-        let clockPerceived = maxHood(nbr(clock));
+    share (clock, nbrClock <- 0) {
+        let clockPerceived = maxHood(nbrClock);
         if (clockPerceived <= clock) {
             /*
              * I'm currently as fast as the fastest device in the neighborhood,

@@ -6,12 +6,12 @@ def default() {
 }
 
 def breakUsingUids(uid, grain, metric) {
-    rep (lead <- uid) {
-        distanceCompetition(distanceToWithMetric(uid == lead, metric), lead, uid, grain, metric)
+    share (lead, nbrLead <- uid) {
+        distanceCompetition(distanceToWithMetric(uid == lead, metric), nbrLead, uid, grain, metric)
     } == uid
 }
 
-def distanceCompetition(d, lead, uid, grain, metric) {
+def distanceCompetition(d, nbrLead, uid, grain, metric) {
     mux (d > grain) {
         uid
     } else {
@@ -22,7 +22,7 @@ def distanceCompetition(d, lead, uid, grain, metric) {
             mux (d >= thr) {
                 default()
             } else {
-                minHood PlusSelf(nbr(lead))
+                minHood PlusSelf(nbrLead)
             }
         }
     }
