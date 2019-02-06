@@ -139,7 +139,7 @@ public def nbrWrapper(myId, connections, nbr_message, null) {
 }
 
 def spreadBoundValue(myId, connections, nodes) {
-    share (_,nbr_v <- [[-Infinity], -Infinity]) {
+    share (nbrV <- [[-Infinity], -Infinity]) {
         mux (nodes.contains(myId)) {
             [intersection(nodes, connections).union([myId]), 0]
         } else {
@@ -156,7 +156,7 @@ def spreadBoundValue(myId, connections, nodes) {
                             } else { [c, a.get(1)] }
                         }
                     }
-                }, [], nbrWrapper(myId, connections, nbr_v, [[-Infinity], -Infinity])
+                }, [], nbrWrapper(myId, connections, nbrV, [[-Infinity], -Infinity])
             );
             if (isEmpty(aggr)) { [[-Infinity], -Infinity] }
             else { [aggr.get(0), aggr.get(1) + 1] }
