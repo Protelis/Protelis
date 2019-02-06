@@ -59,7 +59,7 @@ public def boundAverage(sink, local, range, null) {
  * @return          T, aggregated value
  */
 public def C(potential, reduce, local, null) {
-    share (_,v <- local) {
+    share (v <- local) {
         reduce.apply(local,
             /*
              * TODO: switch to accumulateHood
