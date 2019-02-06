@@ -44,8 +44,8 @@ public def findSources(source) {
 public def findSourcesWithId(source, id, d, k) {
     timeReplicatedWithK(
         () -> {
-            share(v,nbr_v <- []) {
-                v.union(unionHood(nbr_v))
+            share(v, nbrV <- []) {
+                v.union(unionHood(nbrV))
                     .union(if (source) { [id] } else { [] })
             }
         }, [id], d, k)
