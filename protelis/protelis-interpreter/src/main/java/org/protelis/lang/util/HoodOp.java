@@ -71,7 +71,7 @@ public enum HoodOp {
          of(create(Number.class, () -> NaN)),
          of(create(Tuple.class, t -> fTup(NaN, (Tuple) t)))),
     /**
-     * Mean of values.
+     * Pick local value
      */
     LOCAL((field, id) -> field.getSample(id),
         () -> {

@@ -39,10 +39,10 @@ public def hasSelfDependency(myId, inbound) {
  */
 public def hasTransitiveDependency(myId, inbound) {
     isNotEmpty(mux (inbound != []) {
-        rep (v <- inbound) {
+        share (v, nbrV <- inbound) {
             v.union(
                 hood(
-                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, v, inbound, [])
+                    (a, b) -> { a.union(b) }, [], nbrWrapper(myId, inbound, nbrV, [])
                 )
             )
         }
@@ -79,9 +79,7 @@ public def greatestLowerBound(myId, inbound, nodes) {
  * @return        bool, true if the device is a leaf, false otherwise
  */
 public def isLeaf(myId, inbound) {
-    !rep (v <- inbound) {
-        unionHood(nbr(v))
-    }.contains(myId)
+    !unionHood(nbr(inbound)).contains(myId)
 }
 
 /**
@@ -120,7 +118,7 @@ public def leastUpperBound(myId, outbound, nodes) {
 
 /**
  * This nbrWrapper get the messages coming only from a subset of neighbors.
- * When working with graph, nbrWrabber must be use instead of nbr. Otherwise the
+ * When working with graph, nbrWrabber must be used instead of nbr. Otherwise the
  * graph logical structure is broken.
  *
  * If connections is the set of inbound connections, then nbrWrapper returns
@@ -135,13 +133,13 @@ public def leastUpperBound(myId, outbound, nodes) {
  *                    filtering criteria
  * @return            T', filtered set of messages
  */
-public def nbrWrapper(myId, connections, message, null) {
-    let res = mux (isParent(myId, connections)) { nbr(message) } else { null };
+public def nbrWrapper(myId, connections, nbrMessage, null) {
+    let res = mux (isParent(myId, connections)) { nbrMessage } else { null };
     mux (res == []) { null } else { res }
 }
 
 def spreadBoundValue(myId, connections, nodes) {
-    rep (v <- [[-Infinity], -Infinity]) {
+    share (nbrV <- [[-Infinity], -Infinity]) {
         mux (nodes.contains(myId)) {
             [intersection(nodes, connections).union([myId]), 0]
         } else {
@@ -158,7 +156,7 @@ def spreadBoundValue(myId, connections, nodes) {
                             } else { [c, a.get(1)] }
                         }
                     }
-                }, [], nbrWrapper(myId, connections, v, [[-Infinity], -Infinity])
+                }, [], nbrWrapper(myId, connections, nbrV, [[-Infinity], -Infinity])
             );
             if (isEmpty(aggr)) { [[-Infinity], -Infinity] }
             else { [aggr.get(0), aggr.get(1) + 1] }
