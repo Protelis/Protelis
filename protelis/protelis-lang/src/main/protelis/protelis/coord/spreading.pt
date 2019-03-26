@@ -251,7 +251,7 @@ public def bisGradientWithMetric(source, metric, radius, speed) {
     let loc = [val, val];
     share (nbrOld <- loc) {
         let nx = nbrOld.get(0) + metric.apply();
-        let nt = nbrOld.get(1) + self.nbrLag() + nbr(self.getDeltaTime());
+        let nt = nbrOld.get(1) + self.nbrLag();
         min(minHood([max(nx, nt*speed-radius), nt]), loc)
     }.get(0)
 }
