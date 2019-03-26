@@ -6,7 +6,7 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE in the Alchemist distribution's top directory.
  */
-package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
+package org.protelis.test;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,6 +26,8 @@ import org.protelis.vm.util.CodePath;
  */
 public class TestShareSharedValues {
 
+    private static final String PROGRAM = "share (x, nx <- 0) { x + 1 }";
+
     /**
      * This test verifies that the values shared by a share call are those produced
      * by the evaluation of the body (in contrast to a classic rep + nbr cycle,
@@ -33,9 +35,8 @@ public class TestShareSharedValues {
      */
     @Test
     public void testLatestHasBeenShared() {
-        final String program = "share (x, nx <- 0) { x + 1 }";
         final MutableInt cycle = new MutableInt(0);
-        final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(program), new DummyContext(new NetworkManager() {
+        final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(PROGRAM), new DummyContext(new NetworkManager() {
             @Override
             public void shareState(final Map<CodePath, Object> toSend) {
                 Assert.assertEquals(1, toSend.size());
