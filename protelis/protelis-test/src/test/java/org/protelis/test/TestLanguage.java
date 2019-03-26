@@ -98,7 +98,8 @@ public class TestLanguage {
     }
 
     /**
-     * Tests that failures in invoking static methods are reported clearly.
+     * Tests that failures in invoking static methods because of parameter type are
+     * reported clearly.
      */
     @Test
     public void testErrorMessage01() {
@@ -112,7 +113,8 @@ public class TestLanguage {
     }
 
     /**
-     * Tests that failures in invoking static methods are reported clearly.
+     * Tests that failures in invoking static methods because of parameter count are
+     * reported clearly.
      */
     @Test
     public void testErrorMessage02() {
