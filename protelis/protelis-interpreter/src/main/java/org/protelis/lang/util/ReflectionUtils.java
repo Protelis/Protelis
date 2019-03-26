@@ -40,6 +40,8 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import java8.util.J8Arrays;
 import java8.util.Optional;
+import java8.util.stream.Collectors;
+import java8.util.stream.RefStreams;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
@@ -221,16 +223,22 @@ public final class ReflectionUtils {
             for (int i = 0; i < params.length; i++) {
                 final Class<?> expected = params[i];
                 final Object actual = useArgs[i];
-                if (!expected.isAssignableFrom(actual.getClass()) && PrimitiveUtils.classIsNumber(expected)) {
+                if (!expected.isAssignableFrom(actual.getClass())
+                        && PrimitiveUtils.classIsNumber(expected)
+                        && actual instanceof Number) {
                     useArgs[i] = PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
                 }
             }
             try {
                 return method.invoke(target, useArgs);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                final String errorMessage = "Cannot invoke " + method
-                        + " with arguments " + Arrays.toString(useArgs)
-                        + " on " + target;
+                final boolean isStatic = target == null;
+                final String errorMessage = "Cannot invoke "
+                        + method
+                        + " with arguments " + RefStreams.of(useArgs)
+                            .map(it -> it + ": " + it.getClass().getSimpleName())
+                            .collect(Collectors.joining(",", "(", ")"))
+                        + (isStatic ? "" : " on " + target);
                 L.error(errorMessage, e);
                 throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
             }

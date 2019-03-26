@@ -9,10 +9,12 @@
 package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Assert;
 
 import java.util.Collections;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
@@ -93,6 +95,34 @@ public class TestLanguage {
     @Test
     public void testEval02() {
         ProgramTester.runFile("/eval02.pt");
+    }
+
+    /**
+     * Tests that failures in invoking static methods are reported clearly.
+     */
+    @Test
+    public void testErrorMessage01() {
+        try {
+            ProgramTester.runFile("/errorMessage01.pt");
+        } catch (RuntimeException e) {
+            final String message = (e.getMessage() + e.getCause().getMessage()).toLowerCase(Locale.ENGLISH);
+            assertTrue(message.contains("static"));
+            assertTrue(message.contains("type"));
+        }
+    }
+
+    /**
+     * Tests that failures in invoking static methods are reported clearly.
+     */
+    @Test
+    public void testErrorMessage02() {
+        try {
+            ProgramTester.runFile("/errorMessage02.pt");
+        } catch (RuntimeException e) {
+            final String message = e.getMessage().toLowerCase(Locale.ENGLISH);
+            assertTrue(message.contains("static"));
+            assertTrue(message.contains("parameters"));
+        }
     }
 
     /**
