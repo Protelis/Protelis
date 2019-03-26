@@ -128,6 +128,24 @@ public class TestLanguage {
     }
 
     /**
+     * Tests that failures in linking non existing modules (#156) complain about
+     * the missing module.
+     */
+    @Test
+    public void testErrorMessage03() {
+        try {
+            ProgramTester.runProgram("import non:existent:protelismodule\n1\n", 1);
+        } catch (RuntimeException e) {
+            final String message = e.getMessage().toLowerCase(Locale.ENGLISH);
+            assertTrue(message.contains("resource"));
+            assertTrue(message.contains("non"));
+            assertTrue(message.contains("existent"));
+            assertTrue(message.contains("protelismodule"));
+            assertTrue(message.contains("does not exist"));
+        }
+    }
+
+    /**
      * Exercise method calls on fields.
      */
     @Test

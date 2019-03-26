@@ -296,7 +296,8 @@ public final class ProtelisLoader {
                 try (InputStream in = new StringInputStream(program)) {
                     loadStringResources(XTEXT.get(), in);
                 } catch (IOException e) {
-                    throw new IllegalStateException("Couldn't get resources associated with anonymous program", e);
+                    throw new IllegalStateException("Couldn't get resource associated with anonymous program: "
+                            + e.getMessage(), e);
                 }
                 r = XTEXT.get().createResource(uri);
                 try (InputStream in = new StringInputStream(program)) {
