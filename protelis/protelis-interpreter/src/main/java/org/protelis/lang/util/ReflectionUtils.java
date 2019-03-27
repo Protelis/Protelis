@@ -28,8 +28,6 @@ import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -49,7 +47,6 @@ import java8.util.stream.RefStreams;
 public final class ReflectionUtils {
 
     private static final int CACHE_MAX_SIZE = 1000;
-    private static final Logger L = LoggerFactory.getLogger(ReflectionUtils.class);
     private static final LoadingCache<Triple<Class<?>, String, List<Class<?>>>, Method> METHOD_CACHE = CacheBuilder
             .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(1, TimeUnit.HOURS)
             .build(new CacheLoader<Triple<Class<?>, String, List<Class<?>>>, Method>() {
@@ -231,18 +228,34 @@ public final class ReflectionUtils {
             }
             try {
                 return method.invoke(target, useArgs);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            } catch (IllegalAccessException e) {
+                throw new UnsupportedOperationException("Method " + method // NOPMD: false positive
+                        + " cannot get invoked because it is not accessible.", e); 
+            } catch (IllegalArgumentException e) {
                 final boolean isStatic = target == null;
                 final String errorMessage = "Cannot invoke "
-                        + method
-                        + " with arguments " + RefStreams.of(useArgs)
-                            .map(it -> it + ": " + it.getClass().getSimpleName())
-                            .collect(Collectors.joining(",", "(", ")"))
-                        + (isStatic ? "" : " on " + target);
-                L.error(errorMessage, e);
+                    + method
+                    + " with arguments " + formatArguments(useArgs)
+                    + (isStatic ? "" : " on " + target);
+                throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
+            } catch (InvocationTargetException e) {
+                final Throwable rootCause = e.getCause();
+                final String errorMessage = "Invocation of "
+                    + method
+                    + (target == null ? "" : " on " + target)
+                    + " with arguments " + formatArguments(useArgs)
+                    + " failed because of an internal "
+                    + (rootCause == null ? "unidentified error" : rootCause.getClass().getSimpleName())
+                    + "; please look at the stacktrace for further information";
                 throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
             }
         }
+    }
+
+    private static String formatArguments(final Object[] args) {
+        return RefStreams.of(args)
+            .map(it -> it + ": " + it.getClass().getSimpleName())
+            .collect(Collectors.joining(",", "(", ")"));
     }
 
     private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
