@@ -522,9 +522,6 @@ public final class ProtelisLoader {
         PI(Pi.class,
             (e, m) -> new Constant<>(Math.PI)),
         REP(Rep.class,
-//            (e, m) -> new RepCall<>(toR(((Rep) e).getInit().getX()),
-//                translate(((Rep) e).getInit().getW(), m),
-//                translate(((Rep) e).getBody(), m))),
             (e, m) -> {
                 final Rep rep = (Rep) e;
                 final RepInitialize init = rep.getInit();
