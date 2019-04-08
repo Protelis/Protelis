@@ -29,6 +29,8 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
     private final Optional<Reference> fieldName;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param localName
      *            variable name
      * @param fieldName
@@ -64,6 +66,8 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
     /**
      * Convenience constructor with {@link java8.util.Optional}.
      * 
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param localName
      *            variable name
      * @param fieldName
@@ -108,7 +112,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         ifPresent(localName, it -> context.putVariable(it, localValue, true));
         ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation), true));
         context.newCallStackFrame(BODY);
-        final Runnable yieldEvaluation = () -> ifPresent(yield, it -> it.evalInNewStackFrame(context, YIELD));
+        final Runnable yieldEvaluation = () -> ifPresent(yield, it -> it.evalInNewStackFrame(context, YIELD)); // NOPMD: this is not a thread.
         if (body instanceof All) {
             final All multilineBody = (All) body;
             multilineBody.forEachWithIndex((i, b) -> {

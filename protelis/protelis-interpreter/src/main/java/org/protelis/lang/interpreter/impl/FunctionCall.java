@@ -26,6 +26,8 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     private final byte[] stackCode;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param functionDefinition
      *            the definition of the function
      * @param args

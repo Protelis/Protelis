@@ -27,6 +27,8 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
     private final AnnotatedTree<T> thenExpression, elseExpression;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param cond
      *            condition
      * @param then

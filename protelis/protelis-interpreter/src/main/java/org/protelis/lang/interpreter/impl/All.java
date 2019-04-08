@@ -25,6 +25,8 @@ public final class All extends AbstractAnnotatedTree<Object> {
     /**
      * Block of statements.
      * 
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param statements
      *            the statements
      */

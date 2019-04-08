@@ -26,6 +26,8 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
     private static final byte DYN_CODE_INDEX = -1;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
      *            argument whose annotation will be used as a string
      *            representing a program

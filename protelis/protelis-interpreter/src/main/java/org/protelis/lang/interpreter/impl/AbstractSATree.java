@@ -29,6 +29,8 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
     private S superscript;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
      *            branches of this {@link AbstractSATree}
      */
@@ -37,6 +39,8 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
      *            branches of this {@link AbstractSATree}
      */

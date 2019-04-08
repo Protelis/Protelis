@@ -21,6 +21,8 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
     private final Reference name;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param ref
      *            variable name
      */

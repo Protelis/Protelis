@@ -18,6 +18,8 @@ public final class NumericConstant extends Constant<Double> {
     private static final long serialVersionUID = 7005881609489257450L;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param number
      *            the number
      */
@@ -26,6 +28,8 @@ public final class NumericConstant extends Constant<Double> {
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param number
      *            the number
      */

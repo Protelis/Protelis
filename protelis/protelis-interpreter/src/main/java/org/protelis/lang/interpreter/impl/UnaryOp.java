@@ -25,6 +25,8 @@ public final class UnaryOp extends AbstractAnnotatedTree<Object> {
     private final Op1 op;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name
      *            operator name
      * @param branch

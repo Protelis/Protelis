@@ -25,6 +25,8 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
     private final Op3 op;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name
      *            Operator name
      * @param branch1

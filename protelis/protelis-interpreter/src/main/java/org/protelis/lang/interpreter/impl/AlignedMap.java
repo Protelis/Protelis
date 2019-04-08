@@ -46,6 +46,8 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     private final AnnotatedTree<?> defVal;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
      *            the field on which {@link AlignedMap} should be applied
      * @param filter

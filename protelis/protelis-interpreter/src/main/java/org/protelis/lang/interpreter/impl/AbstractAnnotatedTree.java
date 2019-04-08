@@ -43,6 +43,8 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     private boolean erased = true;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branch
      *            the branches for this tree
      */
@@ -51,6 +53,8 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branch
      *            the branches for this tree
      */

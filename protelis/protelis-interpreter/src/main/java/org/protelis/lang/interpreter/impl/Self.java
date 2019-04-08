@@ -8,7 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -19,11 +18,15 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
 
-    public Self(Metadata metadata) {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
+     */
+    public Self(final Metadata metadata) {
         super(metadata);
     }
-
-    private static final long serialVersionUID = -5050040892058340950L;
 
     @Override
     public Self copy() {

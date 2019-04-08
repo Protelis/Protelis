@@ -24,6 +24,8 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
     private final T constantValue;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param obj
      *            the constant to be associated
      */

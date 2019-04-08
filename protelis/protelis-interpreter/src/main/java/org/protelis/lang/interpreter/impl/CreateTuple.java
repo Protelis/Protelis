@@ -28,6 +28,8 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
     private static final long serialVersionUID = -5018807023306859866L;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param args
      *            tuple arguments
      */
@@ -36,6 +38,8 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param args
      *            tuple arguments
      */

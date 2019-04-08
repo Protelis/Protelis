@@ -29,6 +29,8 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     private transient Method method;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param jvmOp
      *            the method to call
      * @param branch
@@ -51,6 +53,8 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param clazz
      *            the class where to search for the method
      * @param methodName

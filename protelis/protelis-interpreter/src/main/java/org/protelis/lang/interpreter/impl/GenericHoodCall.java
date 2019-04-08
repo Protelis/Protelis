@@ -31,6 +31,8 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     private final boolean inclusive;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param includeSelf
      *            if true, sigma won't be excluded
      * @param fun
@@ -56,6 +58,8 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param includeSelf
      *            if true, sigma won't be excluded
      * @param fun

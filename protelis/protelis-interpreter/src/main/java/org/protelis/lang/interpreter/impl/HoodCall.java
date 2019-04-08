@@ -28,6 +28,8 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
     private final boolean inclusive;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
      *            the argument to evaluate (must return a {@link Field}).
      * @param func

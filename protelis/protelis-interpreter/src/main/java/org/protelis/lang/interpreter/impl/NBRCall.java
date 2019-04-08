@@ -24,6 +24,8 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     private static final byte BRANCH = 1;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param body
      *            body of nbr
      */

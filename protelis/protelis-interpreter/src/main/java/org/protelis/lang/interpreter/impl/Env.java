@@ -13,11 +13,15 @@ import org.protelis.vm.ExecutionEnvironment;
  */
 public final class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
 
-    public Env(Metadata metadata) {
+    private static final long serialVersionUID = 636239540800669478L;
+
+    /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
+     */
+    public Env(final Metadata metadata) {
         super(metadata);
     }
-
-    private static final long serialVersionUID = 636239540800669478L;
 
     @Override
     public AnnotatedTree<ExecutionEnvironment> copy() {

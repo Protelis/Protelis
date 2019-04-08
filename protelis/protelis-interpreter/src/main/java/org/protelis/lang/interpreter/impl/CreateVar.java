@@ -23,6 +23,8 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
     private final boolean definition;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name
      *            variable name
      * @param value

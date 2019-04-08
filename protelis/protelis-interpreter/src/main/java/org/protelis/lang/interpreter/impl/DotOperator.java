@@ -46,6 +46,8 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name
      *            function (or method) name
      * @param target
