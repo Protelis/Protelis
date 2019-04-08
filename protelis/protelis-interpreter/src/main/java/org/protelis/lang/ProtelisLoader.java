@@ -596,7 +596,7 @@ public final class ProtelisLoader {
 
     private static final class ProgramState {
         private final Map<Reference, FunctionDefinition> functions;
-        ProgramState(final Map<Reference, FunctionDefinition> functions) {
+        private ProgramState(final Map<Reference, FunctionDefinition> functions) {
             this.functions = functions;
         }
         public FunctionDefinition resolveFunction(final Reference r) {
@@ -647,7 +647,7 @@ public final class ProtelisLoader {
         return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
     }
 
-    public static Reference toR(final Object o) {
+    private static Reference toR(final Object o) {
         try {
             return REFERENCES.get(o);
         } catch (ExecutionException e) {
@@ -655,7 +655,7 @@ public final class ProtelisLoader {
         }
     }
 
-    public static List<Reference> toR(final List<?> l) {
+    private static List<Reference> toR(final List<?> l) {
         return stream(l).map(ProtelisLoader::toR).collect(Collectors.toList());
     }
 
