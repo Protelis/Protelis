@@ -46,8 +46,7 @@ before_install:
 install: true
     
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash travis_build.sh; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash travis_build_pull_request.sh; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_REPO_SLUG" = "Protelis/Protelis" ]; then bash travis_build.sh; else bash travis_build_pull_request.sh; fi'
 
 deploy:
   - provider: releases
