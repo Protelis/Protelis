@@ -567,7 +567,6 @@ public final class ProtelisLoader {
 
         @SuppressWarnings("unchecked")
         public static <T> AnnotatedTree<T> translate(final EObject o, final ProgramState functions) {
-            final INode node = NodeModelUtils.getNode(o);
             for (final Dispatch d: values()) {
                 if (d.type.isAssignableFrom(o.getClass())) {
                     return (AnnotatedTree<T>) d.translator.apply(o, functions);
