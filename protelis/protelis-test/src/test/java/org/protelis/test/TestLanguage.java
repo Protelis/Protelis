@@ -11,6 +11,7 @@ package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.protelis.test.ProgramTester.runExpectingErrors;
 import org.junit.Assert;
 
 import java.util.Collections;
@@ -103,13 +104,8 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage01() {
-        try {
-            ProgramTester.runFile("/errorMessage01.pt");
-        } catch (RuntimeException e) { // NOPMD: This is done by purpose
-            final String message = (e.getMessage() + e.getCause().getMessage()).toLowerCase(Locale.ENGLISH);
-            assertTrue(message.contains("static"));
-            assertTrue(message.contains("type"));
-        }
+        runExpectingErrors("/errorMessage01.pt", UnsupportedOperationException.class, "static");
+        runExpectingErrors("/errorMessage01.pt", UnsupportedOperationException.class, true, "type");
     }
 
     /**
@@ -118,13 +114,7 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage02() {
-        try {
-            ProgramTester.runFile("/errorMessage02.pt");
-        } catch (RuntimeException e) {
-            final String message = e.getMessage().toLowerCase(Locale.ENGLISH);
-            assertTrue(message.contains("static"));
-            assertTrue(message.contains("parameters"));
-        }
+        runExpectingErrors("/errorMessage02.pt", IllegalArgumentException.class, "static", "parameters");
     }
 
     /**
@@ -133,16 +123,7 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage03() {
-        try {
-            ProgramTester.runProgram("import non:existent:protelismodule\n1\n", 1);
-        } catch (RuntimeException e) {
-            final String message = e.getMessage().toLowerCase(Locale.ENGLISH);
-            assertTrue(message.contains("resource"));
-            assertTrue(message.contains("non"));
-            assertTrue(message.contains("existent"));
-            assertTrue(message.contains("protelismodule"));
-            assertTrue(message.contains("does not exist"));
-        }
+        runExpectingErrors("import non:existent:protelismodule\n1\n", IllegalStateException.class, "resource", "protelismodule", "does not exist");
     }
 
     /**
