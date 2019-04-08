@@ -35,12 +35,12 @@ import java8.util.stream.IntStreams;
  */
 public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 
-    private static final long serialVersionUID = -8156985119843359212L;
     private static final Logger L = LoggerFactory.getLogger(AbstractAnnotatedTree.class);
-    private final List<AnnotatedTree<?>> branches;
-    private final Metadata metadata;
+    private static final long serialVersionUID = -8156985119843359212L;
     private T annotation;
+    private final List<AnnotatedTree<?>> branches;
     private boolean erased = true;
+    private final Metadata metadata;
 
     /**
      * @param metadata
@@ -62,6 +62,175 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         this.metadata = Objects.requireNonNull(metadata);
         Objects.requireNonNull(branch);
         branches = branch;
+    }
+
+    /**
+     * @param sb
+     *            {@link StringBuilder} to fill
+     * @param indent
+     *            level of indentation
+     */
+    protected abstract void asString(StringBuilder sb, int indent);
+
+    /**
+     * Subclasses must use this method.
+     * 
+     * @return a deep copy of the branches
+     */
+    protected final List<AnnotatedTree<?>> deepCopyBranches() {
+        final List<AnnotatedTree<?>> res = new ArrayList<>(branches.size());
+        for (final AnnotatedTree<?> br : branches) {
+            res.add(br.copy());
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void erase() {
+        for (final AnnotatedTree<?> b : branches) {
+            b.erase();
+        }
+        annotation = null;
+        erased = true;
+    }
+
+    @Override
+    public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
+        context.newCallStackFrame(frameId);
+        eval(context);
+        context.returnFromCallFrame();
+    }
+
+    /**
+     * Print utility to be used by subclasses. Prints all branches with the
+     * desired separator.
+     * 
+     * @param sb
+     *            the {@link StringBuilder} to use
+     * @param i
+     *            indentation
+     * @param separator
+     *            separator
+     */
+    protected void fillBranches(final StringBuilder sb, final int i, final char separator) {
+        forEach(b -> {
+            sb.append('\n');
+            b.toString(sb, i + 1);
+            sb.append(separator);
+        });
+        if (getBranchesNumber() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+
+    /**
+     * Facility to run lambdas across all the branches.
+     * 
+     * @param action
+     *            the Consumer to execute
+     */
+    protected final void forEach(final Consumer<? super AnnotatedTree<?>> action) {
+        for (final AnnotatedTree<?> subProgram: branches) {
+            action.accept(subProgram);
+        }
+    }
+
+    /**
+     * Facility to run lambdas across all the branches.
+     * 
+     * @param action
+     *            the Consumer to execute
+     */
+    protected final void forEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
+        for (int i = 0; i < getBranchesNumber(); i++) {
+            action.accept(i, getBranch(i));
+        }
+    }
+
+    @Override
+    public final T getAnnotation() {
+        return annotation;
+    }
+
+    @Override
+    public final AnnotatedTree<?> getBranch(final int i) {
+        return branches.get(i);
+    }
+
+    /**
+     * @return Directly accesses the {@link List} where branches are stored:
+     *         modifications on branches will reflect in the internal branch
+     *         representation. Be careful.
+     */
+    protected List<AnnotatedTree<?>> getBranches() {
+        return branches;
+    }
+
+    /**
+     * @return the current branches annotations
+     */
+    protected final Object[] getBranchesAnnotations() {
+        final Object[] annotations = branches.toArray();
+        for (int i = 0; i < annotations.length; i++) {
+            annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
+        }
+        return annotations;
+    }
+
+    /**
+     * @return the number of branches
+     */
+    protected final int getBranchesNumber() {
+        return branches.size();
+    }
+
+    @Override
+    public final Metadata getMetadata() {
+        return metadata;
+    }
+
+    private IntStream indexStream() {
+        return IntStreams.range(0, getBranchesNumber());
+    }
+
+    @Override
+    public final boolean isErased() {
+        return erased;
+    }
+
+    /**
+     * Runs eval() sequentially on every branch, creating a new stack frame for
+     * each one.
+     * 
+     * @param context
+     *            the execution context
+     */
+    protected final void projectAndEval(final ExecutionContext context) {
+        forEachWithIndex((i, branch) -> {
+            context.newCallStackFrame(i.byteValue());
+            branch.eval(context);
+            context.returnFromCallFrame();
+        });
+    }
+
+    @Override
+    public final void reset() {
+        for (final AnnotatedTree<?> b : branches) {
+            b.reset();
+        }
+        annotation = null;
+    }
+
+    /**
+     * @param obj
+     *            the annotation to set
+     */
+    protected final void setAnnotation(final T obj) {
+        annotation = obj;
+        erased = false;
     }
 
     @Override
@@ -99,170 +268,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param indent
-     *            level of indentation
-     */
-    protected abstract void asString(StringBuilder sb, int indent);
-
-    @Override
-    public final T getAnnotation() {
-        return annotation;
-    }
-
-    @Override
-    public final void reset() {
-        for (final AnnotatedTree<?> b : branches) {
-            b.reset();
-        }
-        annotation = null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void erase() {
-        for (final AnnotatedTree<?> b : branches) {
-            b.erase();
-        }
-        annotation = null;
-        erased = true;
-    }
-
-    /**
-     * @param obj
-     *            the annotation to set
-     */
-    protected final void setAnnotation(final T obj) {
-        annotation = obj;
-        erased = false;
-    }
-
-    @Override
-    public final boolean isErased() {
-        return erased;
-    }
-
-    /**
-     * @return Directly accesses the {@link List} where branches are stored:
-     *         modifications on branches will reflect in the internal branch
-     *         representation. Be careful.
-     */
-    protected List<AnnotatedTree<?>> getBranches() {
-        return branches;
-    }
-
-    /**
-     * @return the current branches annotations
-     */
-    protected final Object[] getBranchesAnnotations() {
-        final Object[] annotations = branches.toArray();
-        for (int i = 0; i < annotations.length; i++) {
-            annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
-        }
-        return annotations;
-    }
-
-    /**
-     * @return the number of branches
-     */
-    protected final int getBranchesNumber() {
-        return branches.size();
-    }
-
-    @Override
-    public final Metadata getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * Facility to run lambdas across all the branches.
-     * 
-     * @param action
-     *            the Consumer to execute
-     */
-    protected final void forEach(final Consumer<? super AnnotatedTree<?>> action) {
-        for (final AnnotatedTree<?> subProgram: branches) {
-            action.accept(subProgram);
-        }
-    }
-
-    /**
-     * Facility to run lambdas across all the branches.
-     * 
-     * @param action
-     *            the Consumer to execute
-     */
-    protected final void forEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
-        for (int i = 0; i < getBranchesNumber(); i++) {
-            action.accept(i, getBranch(i));
-        }
-    }
-
-    /**
-     * Facility to run lambdas across all the branches in a PARALELL fashion. Be
-     * EXTREMELY careful with this. If you are not sure whether or not you
-     * should use this, you should not.
-     * 
-     * @param action
-     *            the Consumer to execute
-     */
-    protected final void parallelForEach(final Consumer<? super AnnotatedTree<?>> action) {
-        parallelStream(branches).forEach(action);
-    }
-
-    /**
-     * Facility to run lambdas across all the branches in a PARALELL fashion. Be
-     * EXTREMELY careful with this. If you are not sure whether or not you
-     * should use this, you should not.
-     * 
-     * @param action
-     *            the Consumer to execute
-     */
-    protected final void parallelForEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
-        indexStream().parallel().forEach(i -> action.accept(i, getBranch(i)));
-    }
-
-    private IntStream indexStream() {
-        return IntStreams.range(0, getBranchesNumber());
-    }
-
-    /**
-     * Runs eval() sequentially on every branch, creating a new stack frame for
-     * each one.
-     * 
-     * @param context
-     *            the execution context
-     */
-    protected final void projectAndEval(final ExecutionContext context) {
-        forEachWithIndex((i, branch) -> {
-            context.newCallStackFrame(i.byteValue());
-            branch.eval(context);
-            context.returnFromCallFrame();
-        });
-    }
-
-    /**
-     * Subclasses must use this method.
-     * 
-     * @return a deep copy of the branches
-     */
-    protected final List<AnnotatedTree<?>> deepCopyBranches() {
-        final List<AnnotatedTree<?>> res = new ArrayList<>(branches.size());
-        for (final AnnotatedTree<?> br : branches) {
-            res.add(br.copy());
-        }
-        return res;
-    }
-
-    @Override
-    public final AnnotatedTree<?> getBranch(final int i) {
-        return branches.get(i);
-    }
-
-    /**
      * Utility for indenting lines.
      * 
      * @param target
@@ -278,34 +283,5 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
                 L.error("There is a bug.", e);
             }
         }
-    }
-
-    /**
-     * Print utility to be used by subclasses. Prints all branches with the
-     * desired separator.
-     * 
-     * @param sb
-     *            the {@link StringBuilder} to use
-     * @param i
-     *            indentation
-     * @param separator
-     *            separator
-     */
-    protected void fillBranches(final StringBuilder sb, final int i, final char separator) {
-        forEach(b -> {
-            sb.append('\n');
-            b.toString(sb, i + 1);
-            sb.append(separator);
-        });
-        if (getBranchesNumber() > 0) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-    }
-
-    @Override
-    public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
-        context.newCallStackFrame(frameId);
-        eval(context);
-        context.returnFromCallFrame();
     }
 }
