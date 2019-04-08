@@ -59,12 +59,12 @@ deploy:
       repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
-
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
     domain: protelis-unstable-doc.surge.sh
     on:
+      repo: Protelis/Protelis
       branch: develop
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
@@ -73,6 +73,7 @@ deploy:
     project: "./protelis/report"
     domain: protelis-unstable-reports.surge.sh
     on:
+      repo: Protelis/Protelis
       branch: develop
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
@@ -81,6 +82,7 @@ deploy:
     project: "./protelis/build/docs/javadoc/"
     domain: protelis-doc.surge.sh
     on:
+      repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
@@ -89,6 +91,7 @@ deploy:
     project: "./protelis/report"
     domain: protelis-reports.surge.sh
     on:
+      repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
