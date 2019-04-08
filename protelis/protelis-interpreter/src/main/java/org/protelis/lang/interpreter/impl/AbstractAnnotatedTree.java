@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import static java8.util.stream.StreamSupport.parallelStream;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import java8.util.function.BiConsumer;
 import java8.util.function.Consumer;
-import java8.util.stream.IntStream;
-import java8.util.stream.IntStreams;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -190,10 +186,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     @Override
     public final Metadata getMetadata() {
         return metadata;
-    }
-
-    private IntStream indexStream() {
-        return IntStreams.range(0, getBranchesNumber());
     }
 
     @Override
