@@ -23,7 +23,11 @@ import static java8.util.stream.StreamSupport.stream;
  */
 public final class JavaInteroperabilityUtils {
 
+    /**
+     * A fake Metadata object to be used when no data or original source code is available.
+     */
     public static final Metadata METADATA = new Metadata() {
+        private static final long serialVersionUID = 1L;
         @Override
         public int getStartLine() {
             return -1;
