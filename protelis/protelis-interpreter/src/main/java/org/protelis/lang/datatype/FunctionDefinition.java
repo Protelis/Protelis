@@ -35,15 +35,14 @@ public final class FunctionDefinition implements Serializable {
     private AnnotatedTree<?> functionBody;
 
     /**
-     * @param name
-     *            function name
-     * @param args
-     *            arguments
+     * @param module the Protelis module of this function, if any
+     * @param name   function name
+     * @param args   arguments
      */
     public FunctionDefinition(final Optional<ProtelisModule> module, final String name, final List<Reference> args) {
         LangUtils.requireNonNull(module, name, args);
         argNumber = args.size();
-        String moduleName = module.map(ProtelisModule::getName).orElse("$anonymous-module$");
+        final String moduleName = module.map(ProtelisModule::getName).orElse("$anonymous-module$");
         functionName = new FasterString(moduleName + ':' + name);
         this.args = args;
         //final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES + Long.BYTES + 1);
