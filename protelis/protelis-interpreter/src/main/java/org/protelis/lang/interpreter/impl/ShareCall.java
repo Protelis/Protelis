@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
@@ -40,12 +41,13 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
      *            body
      */
     public ShareCall(
+            final Metadata metadata,
             final Optional<Reference> localName,
             final Optional<Reference> fieldName,
             final AnnotatedTree<?> init,
             final AnnotatedTree<?> body,
             final Optional<AnnotatedTree<T>> yield) {
-        super(init, body);
+        super(metadata, init, body);
         if (!(localName.isPresent() || fieldName.isPresent())) {
             throw new IllegalArgumentException("Share cannot get initialized without at least a variable bind.");
         }
@@ -74,18 +76,20 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
      *            body
      */
     public ShareCall(
+            final Metadata metadata,
             final java8.util.Optional<Reference> localName,
             final java8.util.Optional<Reference> fieldName,
             final AnnotatedTree<?> init,
             final AnnotatedTree<?> body,
             final java8.util.Optional<AnnotatedTree<T>> yield) {
-        this(toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
+        this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
     }
 
     @Override
     public ShareCall<S, T> copy() {
         final List<AnnotatedTree<?>> branches = deepCopyBranches();
         final ShareCall<S, T> res = new ShareCall<>(
+                getMetadata(),
                 localName,
                 fieldName,
                 branches.get(INIT),

@@ -14,6 +14,7 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import gnu.trove.list.TIntList;
@@ -30,21 +31,21 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
      * @param args
      *            tuple arguments
      */
-    public CreateTuple(final AnnotatedTree<?>... args) {
-        super(args);
+    public CreateTuple(final Metadata metadata, final AnnotatedTree<?>... args) {
+        super(metadata, args);
     }
 
     /**
      * @param args
      *            tuple arguments
      */
-    public CreateTuple(final List<AnnotatedTree<?>> args) {
-        super(args);
+    public CreateTuple(final Metadata metadata, final List<AnnotatedTree<?>> args) {
+        super(metadata, args);
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new CreateTuple(deepCopyBranches());
+        return new CreateTuple(getMetadata(), deepCopyBranches());
     }
 
     @Override

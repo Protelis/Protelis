@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -33,8 +34,8 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
      * @param otherwise
      *            branch to execute if condition is false (erase otherwise)
      */
-    public If(final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
-        super(cond, then, otherwise);
+    public If(final Metadata metadata, final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
+        super(metadata, cond, then, otherwise);
         conditionExpression = cond;
         thenExpression = then;
         elseExpression = otherwise;
@@ -42,7 +43,7 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
 
     @Override
     public AnnotatedTree<T> copy() {
-        return new If<>(conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
+        return new If<>(getMetadata(), conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
     }
 
     @Override

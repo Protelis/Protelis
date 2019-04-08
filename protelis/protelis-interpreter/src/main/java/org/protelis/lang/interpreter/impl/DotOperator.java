@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
@@ -41,7 +42,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
      * @return a new {@link #APPLY} {@link DotOperator}.
      */
     public static DotOperator makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
-        return new DotOperator(true, null, target, args);
+        return new DotOperator(target.getMetadata(), true, null, target, args);
     }
 
     /**
@@ -53,12 +54,12 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
      * @param args
      *            arguments of the function
      */
-    public DotOperator(final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
-        this(name.equals(APPLY), name, target, args);
+    public DotOperator(final Metadata metadata, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+        this(metadata, name.equals(APPLY), name, target, args);
     }
 
-    private DotOperator(final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
-        super(args);
+    private DotOperator(final Metadata metadata, final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+        super(metadata, args);
         Objects.requireNonNull(target);
         isApply = apply;
         assert isApply || name != null;
@@ -68,7 +69,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
 
     @Override
     public AnnotatedTree<Object> copy() {
-        final DotOperator res = new DotOperator(methodName, left.copy(), deepCopyBranches());
+        final DotOperator res = new DotOperator(getMetadata(), methodName, left.copy(), deepCopyBranches());
         res.setSuperscript(getSuperscript());
         return res;
     }
@@ -94,7 +95,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
             final FunctionCall prevFC = hasCall ? (FunctionCall) getSuperscript() : null;
             final FunctionCall fc = hasCall && fd.equals(prevFC.getFunctionDefinition())
                 ? prevFC
-                : new FunctionCall(fd, deepCopyBranches());
+                : new FunctionCall(getMetadata(), fd, deepCopyBranches());
             setSuperscript(fc);
             fc.eval(context);
             setAnnotation(fc.getAnnotation());

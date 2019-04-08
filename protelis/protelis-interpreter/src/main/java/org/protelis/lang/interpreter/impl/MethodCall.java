@@ -13,6 +13,7 @@ import java8.util.stream.Stream;
 
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
@@ -36,8 +37,8 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
      *             in case the {@link JvmOperation} reference class couldn't be
      *             found in the classpath
      */
-    public MethodCall(final JvmOperation jvmOp, final List<AnnotatedTree<?>> branch) {
-        super(branch);
+    public MethodCall(final Metadata metadata, final JvmOperation jvmOp, final List<AnnotatedTree<?>> branch) {
+        super(metadata, branch);
         final String classname = jvmOp.getDeclaringType().getQualifiedName();
         try {
             clazz = Class.forName(classname);
@@ -59,11 +60,13 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
      * @param branch
      *            method arguments
      */
-    public MethodCall(final Class<?> clazz,
+    public MethodCall(
+            final Metadata metadata,
+            final Class<?> clazz,
             final String methodName,
             final boolean ztatic,
             final List<AnnotatedTree<?>> branch) {
-        super(branch);
+        super(metadata, branch);
         this.clazz = clazz;
         this.methodName = methodName;
         this.ztatic = ztatic;
@@ -110,7 +113,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     public MethodCall copy() {
-        return new MethodCall(clazz, methodName, ztatic, deepCopyBranches());
+        return new MethodCall(getMetadata(), clazz, methodName, ztatic, deepCopyBranches());
     }
 
     @Override

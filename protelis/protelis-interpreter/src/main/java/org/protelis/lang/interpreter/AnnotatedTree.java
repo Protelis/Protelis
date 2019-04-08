@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter;
 
 import java.io.Serializable;
 
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -82,5 +83,7 @@ public interface AnnotatedTree<T> extends Serializable {
      *            the number of indentations for the current level
      */
     void toString(StringBuilder sb, int i);
+
+    Metadata getMetadata();
 
 }

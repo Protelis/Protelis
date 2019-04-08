@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Op3;
 import org.protelis.vm.ExecutionContext;
 
@@ -34,19 +35,21 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
      *            third argument
      */
     public TernaryOp(
+            final Metadata metadata,
             final String name,
             final AnnotatedTree<?> branch1,
             final AnnotatedTree<?> branch2,
             final AnnotatedTree<?> branch3) {
-        this(Op3.getOp(name), branch1, branch2, branch3);
+        this(metadata, Op3.getOp(name), branch1, branch2, branch3);
     }
 
     private TernaryOp(
+            final Metadata metadata, 
             final Op3 operator,
             final AnnotatedTree<?> branch1,
             final AnnotatedTree<?> branch2,
             final AnnotatedTree<?> branch3) {
-        super(branch1, branch2, branch3);
+        super(metadata, branch1, branch2, branch3);
         Objects.requireNonNull(branch1);
         Objects.requireNonNull(branch2);
         Objects.requireNonNull(branch3);
@@ -56,7 +59,7 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
     @Override
     public AnnotatedTree<Object> copy() {
         final List<AnnotatedTree<?>> branches = deepCopyBranches();
-        return new TernaryOp(op, branches.get(0), branches.get(1), branches.get(2));
+        return new TernaryOp(getMetadata(), op, branches.get(0), branches.get(1), branches.get(2));
     }
 
     @Override

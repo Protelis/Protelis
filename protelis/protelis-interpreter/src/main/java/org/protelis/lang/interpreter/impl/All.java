@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -27,14 +28,14 @@ public final class All extends AbstractAnnotatedTree<Object> {
      * @param statements
      *            the statements
      */
-    public All(final List<AnnotatedTree<?>> statements) {
-        super(statements);
+    public All(final Metadata metadata, final List<AnnotatedTree<?>> statements) {
+        super(metadata, statements);
         last = statements.size() - 1;
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new All(deepCopyBranches());
+        return new All(getMetadata(), deepCopyBranches());
     }
 
     @Override

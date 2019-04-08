@@ -8,8 +8,8 @@
  *******************************************************************************/
 package org.protelis.lang;
 
-import static java8.util.stream.StreamSupport.stream;
 import static java8.util.Optional.empty;
+import static java8.util.stream.StreamSupport.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +29,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.danilopianini.lang.util.FasterString;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.common.types.JvmOperation;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
@@ -62,6 +63,7 @@ import org.protelis.lang.interpreter.impl.ShareCall;
 import org.protelis.lang.interpreter.impl.TernaryOp;
 import org.protelis.lang.interpreter.impl.UnaryOp;
 import org.protelis.lang.interpreter.impl.Variable;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.HoodOp;
 import org.protelis.lang.util.Reference;
 import org.protelis.parser.ProtelisStandaloneSetup;
@@ -77,10 +79,10 @@ import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.GenericHood;
 import org.protelis.parser.protelis.Import;
 import org.protelis.parser.protelis.Lambda;
-import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.Mux;
 import org.protelis.parser.protelis.NBR;
 import org.protelis.parser.protelis.Pi;
+import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.Rep;
 import org.protelis.parser.protelis.RepInitialize;
 import org.protelis.parser.protelis.Share;
@@ -382,23 +384,24 @@ public final class ProtelisLoader {
         final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
                 .collect(Collectors
                     .toMap(ProtelisLoader::toR, nameToFun::get, throwException(), LinkedHashMap::new));
-        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), refToFun)));
+        final ProgramState programState = new ProgramState(refToFun);
+        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), programState)));
         /*
          * Create the main program
          */
-        return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), refToFun), refToFun);
+        return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), programState), refToFun);
     }
 
-    private static List<AnnotatedTree<?>> callArgs(final Call call, final Map<Reference, FunctionDefinition> env) {
+    private static List<AnnotatedTree<?>> callArgs(final Call call, final ProgramState env) {
         return exprListArgs(call.getArgs(), env);
     }
 
-    private static List<AnnotatedTree<?>> exprListArgs(final ExprList l, final Map<Reference, FunctionDefinition> env) {
+    private static List<AnnotatedTree<?>> exprListArgs(final ExprList l, final ProgramState env) {
         return Optional.ofNullable(l)
                 .map(ExprList::getArgs)
                 .map(StreamSupport::stream)
-                .map(s -> s.map(e -> Dispatch.translate(e, env)))
-                .map(s -> s.collect(Collectors.<AnnotatedTree<?>>toList()))
+                .map(s -> s.map(e -> Dispatch.translate(e, env))
+                        .collect(Collectors.<AnnotatedTree<?>>toList()))
                 .orElse(Collections.emptyList());
     }
 
@@ -408,27 +411,29 @@ public final class ProtelisLoader {
             (e, m) -> {
                 final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
                 return new AlignedMap(
+                    metadataFor(e),
                     translate(alMap.getArg(), m),
                     translate(alMap.getCond(), m),
                     translate(alMap.getOp(), m),
                     translate(alMap.getDefault(), m));
             }),
         ASSIGNMENT(Assignment.class,
-            (e, m) -> new CreateVar(toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
+            (e, m) -> new CreateVar(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
         BLOCK(Block.class,
             (e, m) -> {
                 final List<AnnotatedTree<?>> statements = new LinkedList<>();
                 for (Block b = (Block) e; b != null; b = b.getOthers()) {
                     statements.add(translate(b.getFirst(), m));
                 }
-                return new All(statements);
+                return new All(metadataFor(e), statements);
             }),
         BOOLEAN(BooleanVal.class,
-                (e, m) -> new Constant<>(((BooleanVal) e).isVal())),
+                (e, m) -> new Constant<>(metadataFor(e), ((BooleanVal) e).isVal())),
         BUILTIN_HOOD(BuiltinHoodOp.class,
             (e, m) -> {
                 final BuiltinHoodOp hood = (BuiltinHoodOp) e;
                 return new HoodCall(
+                        metadataFor(e),
                         translate(hood.getArg(), m),
                         HoodOp.get(hood.getName().replace(HOOD_END, "")),
                         hood.isInclusive());
@@ -437,36 +442,36 @@ public final class ProtelisLoader {
             final Call call = (Call) e;
             final EObject ref = call.getReference();
             if (ref instanceof JvmOperation) {
-                return new MethodCall((JvmOperation) ref, callArgs(call, m));
+                return new MethodCall(metadataFor(e), (JvmOperation) ref, callArgs(call, m));
             }
-            return new FunctionCall(m.get(toR(ref)), callArgs(call, m));
+            return new FunctionCall(metadataFor(e), m.resolveFunction(toR(ref)), callArgs(call, m));
         }),
         DECLARATION(VarDef.class,
-            (e, m) -> new CreateVar(toR(e), translate(((VarDef) e).getRight(), m), true)),
+            (e, m) -> new CreateVar(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m), true)),
         DOUBLE(DoubleVal.class,
-            (e, m) -> new Constant<>(((DoubleVal) e).getVal())),
+            (e, m) -> new Constant<>(metadataFor(e), ((DoubleVal) e).getVal())),
         E(org.protelis.parser.protelis.E.class,
-            (e, m) -> new Constant<>(Math.E)),
+            (e, m) -> new Constant<>(metadataFor(e), Math.E)),
         ENV(org.protelis.parser.protelis.Env.class,
-            (e, m) -> new Env()),
+            (e, m) -> new Env(metadataFor(e))),
         EVAL(org.protelis.parser.protelis.Eval.class,
-            (e, m) -> new Eval(translate(((org.protelis.parser.protelis.Eval) e).getArg(), m))),
+            (e, m) -> new Eval(metadataFor(e), translate(((org.protelis.parser.protelis.Eval) e).getArg(), m))),
         EXPRESSION(Expression.class,
             (e, m) -> {
                 final Expression exp = (Expression) e;
                 if (exp.getMethodName() != null) {
-                    return new DotOperator(exp.getMethodName(), translate(exp.getLeft(), m), exprListArgs(exp.getArgs(), m));
+                    return new DotOperator(metadataFor(e), exp.getMethodName(), translate(exp.getLeft(), m), exprListArgs(exp.getArgs(), m));
                 }
                 if (exp.getV() != null) {
                     return translate(exp.getV(), m);
                 }
                 if (exp.getLeft() == null) {
-                    return new UnaryOp(exp.getName(), translate(exp.getRight(), m));
+                    return new UnaryOp(metadataFor(e), exp.getName(), translate(exp.getRight(), m));
                 }
                 if (exp.getRight() == null) {
-                    return new UnaryOp(exp.getName(), translate(exp.getLeft(), m));
+                    return new UnaryOp(metadataFor(e), exp.getName(), translate(exp.getLeft(), m));
                 }
-                return new BinaryOp(exp.getName(), translate(exp.getLeft(), m), translate(exp.getRight(), m));
+                return new BinaryOp(metadataFor(e), exp.getName(), translate(exp.getLeft(), m), translate(exp.getRight(), m));
             }),
         GENERIC_HOOD(GenericHood.class,
             (e, m) -> {
@@ -476,14 +481,14 @@ public final class ProtelisLoader {
                 final AnnotatedTree<Field> field = translate(hood.getArg(), m);
                 final EObject ref = hood.getReference();
                 if (ref == null) {
-                    return new GenericHoodCall(inclusive, translate(hood.getOp(), m), nullResult, field);
+                    return new GenericHoodCall(metadataFor(e), inclusive, translate(hood.getOp(), m), nullResult, field);
                 }
                 if (ref instanceof VarUse) {
                     final VarUse refVar = (VarUse) ref;
                     if (refVar.getReference() instanceof JvmOperation) {
-                        return new GenericHoodCall(inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
+                        return new GenericHoodCall(metadataFor(e), inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
                     }
-                    return new GenericHoodCall(inclusive, translate(ref, m), nullResult, field);
+                    return new GenericHoodCall(metadataFor(e), inclusive, translate(ref, m), nullResult, field);
                 } else {
                     throw new IllegalStateException("Unexpected type of function in hood call: " + ref.getClass());
                 }
@@ -491,7 +496,8 @@ public final class ProtelisLoader {
         IF(org.protelis.parser.protelis.If.class,
             (e, m) -> {
                 final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
-                return new If<>(translate(ifop.getCond(), m),
+                return new If<>(metadataFor(e), 
+                        translate(ifop.getCond(), m),
                         translate(ifop.getThen(), m),
                         translate(ifop.getElse(), m));
             }),
@@ -505,22 +511,23 @@ public final class ProtelisLoader {
                 final AnnotatedTree<?> body = translate(l.getBody(), m);
                 final String base = Base64.encodeBase64String(
                         Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
-                final FunctionDefinition lambda = new FunctionDefinition("$anon$" + base, toR(args));
+                final FunctionDefinition lambda = new FunctionDefinition(empty(), "$anon$" + base, toR(args));
                 lambda.setBody(body);
-                return new Constant<>(lambda);
+                return new Constant<>(metadataFor(e), lambda);
             }),
         MUX(Mux.class,
             (e, m) -> {
                 final Mux mux = (Mux) e;
-                return new TernaryOp(mux.getName(),
+                return new TernaryOp(metadataFor(e),
+                        mux.getName(),
                         translate(mux.getCond(), m),
                         translate(mux.getThen(), m),
                         translate(mux.getElse(), m));
             }),
         NBR(NBR.class,
-            (e, m) -> new NBRCall(translate(((NBR) e).getArg(), m))),
+            (e, m) -> new NBRCall(metadataFor(e), translate(((NBR) e).getArg(), m))),
         PI(Pi.class,
-            (e, m) -> new Constant<>(Math.PI)),
+            (e, m) -> new Constant<>(metadataFor(e), Math.PI)),
         REP(Rep.class,
             (e, m) -> {
                 final Rep rep = (Rep) e;
@@ -529,10 +536,10 @@ public final class ProtelisLoader {
                 final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(rep.getYields())
                         .map(Yield::getBody)
                         .map(it -> translate(it, m));
-                return new ShareCall<>(local, empty(), translate(init.getW(), m), translate(rep.getBody(), m), yield);
+                return new ShareCall<>(metadataFor(e), local, empty(), translate(init.getW(), m), translate(rep.getBody(), m), yield);
             }),
         SELF(org.protelis.parser.protelis.Self.class,
-            (e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self() : null),
+            (e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self(metadataFor(e)) : null),
         SHARE(Share.class, (e, m) -> {
             final Share s = (Share) e;
             final ShareInitialize init = s.getInit();
@@ -541,25 +548,26 @@ public final class ProtelisLoader {
             final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(s.getYields())
                     .map(Yield::getBody)
                     .map(it -> translate(it, m));
-            return new ShareCall<>(local, field, translate(init.getW(), m), translate(s.getBody(), m), yield);
+            return new ShareCall<>(metadataFor(e), local, field, translate(init.getW(), m), translate(s.getBody(), m), yield);
         }),
         STRING(StringVal.class,
-            (e, m) -> new Constant<>(((StringVal) e).getVal())),
+            (e, m) -> new Constant<>(metadataFor(e), ((StringVal) e).getVal())),
         TUPLE(TupleVal.class,
-            (e, m) -> new CreateTuple(exprListArgs(((TupleVal) e).getArgs(), m))),
+            (e, m) -> new CreateTuple(metadataFor(e), exprListArgs(((TupleVal) e).getArgs(), m))),
         VARIABLE(VarUse.class,
-            (e, m) -> new Variable(toR(((VarUse) e).getReference())));
+            (e, m) -> new Variable(metadataFor(e), toR(((VarUse) e).getReference())));
 
-        private BiFunction<EObject, Map<Reference, FunctionDefinition>, AnnotatedTree<?>> translator;
+        private BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator;
         private Class<? extends EObject> type;
 
-        Dispatch(final Class<? extends EObject> type, final BiFunction<EObject, Map<Reference, FunctionDefinition>, AnnotatedTree<?>> translator) {
+        Dispatch(final Class<? extends EObject> type, final BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator) {
             this.translator = translator;
             this.type = type;
         }
 
         @SuppressWarnings("unchecked")
-        public static <T> AnnotatedTree<T> translate(final EObject o, final Map<Reference, FunctionDefinition> functions) {
+        public static <T> AnnotatedTree<T> translate(final EObject o, final ProgramState functions) {
+            final INode node = NodeModelUtils.getNode(o);
             for (final Dispatch d: values()) {
                 if (d.type.isAssignableFrom(o.getClass())) {
                     return (AnnotatedTree<T>) d.translator.apply(o, functions);
@@ -568,6 +576,33 @@ public final class ProtelisLoader {
             throw new IllegalStateException(o + " could not be mapped to a Protelis interpreter entity.");
         }
 
+    }
+
+    private static Metadata metadataFor(final EObject origin) {
+        final INode grammarElement = NodeModelUtils.getNode(origin);
+        final int startLine = grammarElement.getStartLine();
+        final int endLine = grammarElement.getEndLine();
+        return new Metadata() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public int getStartLine() {
+                return startLine;
+            }
+            @Override
+            public int getEndLine() {
+                return endLine;
+            }
+        };
+    }
+
+    private static final class ProgramState {
+        private final Map<Reference, FunctionDefinition> functions;
+        ProgramState(final Map<Reference, FunctionDefinition> functions) {
+            this.functions = functions;
+        }
+        public FunctionDefinition resolveFunction(final Reference r) {
+            return functions.get(r);
+        }
     }
 
     private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {
@@ -603,10 +638,7 @@ public final class ProtelisLoader {
             nameToFun.putAll(stream(module.getDefinitions())
                 .collect(Collectors.toMap(
                     Functions.identity(),
-                    fd -> new FunctionDefinition(
-                            new FasterString(Optional.ofNullable(module.getName()).map(it -> it + ':').orElse("") + fd.getName()),
-                            toR(extractArgs(fd))
-                    )
+                    fd -> new FunctionDefinition(Optional.of(module), fd.getName(), toR(extractArgs(fd)))
                 ))
             );
         }
@@ -616,7 +648,7 @@ public final class ProtelisLoader {
         return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
     }
 
-    private static Reference toR(final Object o) {
+    public static Reference toR(final Object o) {
         try {
             return REFERENCES.get(o);
         } catch (ExecutionException e) {
@@ -624,7 +656,7 @@ public final class ProtelisLoader {
         }
     }
 
-    private static List<Reference> toR(final List<?> l) {
+    public static List<Reference> toR(final List<?> l) {
         return stream(l).map(ProtelisLoader::toR).collect(Collectors.toList());
     }
 

@@ -12,6 +12,7 @@ import java8.util.function.Functions;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -26,13 +27,13 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
      * @param body
      *            body of nbr
      */
-    public NBRCall(final AnnotatedTree<?> body) {
-        super(body);
+    public NBRCall(final Metadata metadata, final AnnotatedTree<?> body) {
+        super(metadata, body);
     }
 
     @Override
     public NBRCall copy() {
-        return new NBRCall(deepCopyBranches().get(0));
+        return new NBRCall(getMetadata(), deepCopyBranches().get(0));
     }
 
     @Override

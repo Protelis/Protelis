@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
@@ -23,14 +24,14 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
      * @param ref
      *            variable name
      */
-    public Variable(final Reference ref) {
-        super();
+    public Variable(final Metadata metadata, final Reference ref) {
+        super(metadata);
         name = ref;
     }
 
     @Override
     public Variable copy() {
-        return new Variable(name);
+        return new Variable(getMetadata(), name);
     }
 
     @Override

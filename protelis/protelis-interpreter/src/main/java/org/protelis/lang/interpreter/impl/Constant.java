@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Objects;
 
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -26,8 +27,8 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
      * @param obj
      *            the constant to be associated
      */
-    public Constant(final T obj) {
-        super();
+    public Constant(final Metadata metadata, final T obj) {
+        super(metadata);
         Objects.requireNonNull(obj);
         constantValue = obj;
     }
@@ -37,7 +38,7 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
      */
     @Override
     public Constant<T> copy() {
-        return new Constant<>(constantValue);
+        return new Constant<>(getMetadata(), constantValue);
     }
 
     @Override

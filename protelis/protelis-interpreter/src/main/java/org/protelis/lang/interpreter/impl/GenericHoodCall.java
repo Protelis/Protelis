@@ -12,6 +12,7 @@ import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.JavaInteroperabilityUtils;
 import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
@@ -40,11 +41,12 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
      *            the argument to evaluate (must return a {@link Field}).
      */
     public GenericHoodCall(
+            final Metadata metadata,
             final boolean includeSelf,
             final AnnotatedTree<FunctionDefinition> fun,
             final AnnotatedTree<?> nullResult,
             final AnnotatedTree<Field> arg) {
-        super(fun, nullResult, arg);
+        super(metadata, fun, nullResult, arg);
         body = arg;
         function = fun;
         empty = nullResult;
@@ -65,11 +67,12 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
      * @throws ClassNotFoundException 
      */
     public GenericHoodCall(
+            final Metadata metadata, 
             final boolean includeSelf,
             final JvmOperation fun,
             final AnnotatedTree<?> nullResult,
             final AnnotatedTree<Field> arg) {
-        super(nullResult, arg);
+        super(metadata, nullResult, arg);
         body = arg;
         empty = nullResult;
         inclusive = includeSelf;
@@ -84,7 +87,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new GenericHoodCall(inclusive, function.copy(), empty.copy(), body.copy());
+        return new GenericHoodCall(getMetadata(), inclusive, function.copy(), empty.copy(), body.copy());
     }
 
     @Override

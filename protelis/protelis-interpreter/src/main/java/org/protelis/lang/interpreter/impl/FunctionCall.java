@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -31,8 +32,8 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
      *            the arguments. Must be in the same number of the
      *            {@link FunctionDefinition}'s expected arguments
      */
-    public FunctionCall(final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
-        super(args);
+    public FunctionCall(final Metadata metadata, final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
+        super(metadata, args);
         Objects.requireNonNull(functionDefinition);
         fd = functionDefinition;
         if (fd.getArgNumber() != args.size()) {
@@ -47,7 +48,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
         /*
          * Deep copy the arguments
          */
-        final FunctionCall res = new FunctionCall(fd, deepCopyBranches());
+        final FunctionCall res = new FunctionCall(getMetadata(), fd, deepCopyBranches());
         if (!isErased()) {
             res.setAnnotation(null);
             res.setSuperscript(getSuperscript().copy());

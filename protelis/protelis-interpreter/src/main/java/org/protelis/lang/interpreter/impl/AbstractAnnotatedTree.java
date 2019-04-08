@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     private static final long serialVersionUID = -8156985119843359212L;
     private static final Logger L = LoggerFactory.getLogger(AbstractAnnotatedTree.class);
     private final List<AnnotatedTree<?>> branches;
+    private final Metadata metadata;
     private T annotation;
     private boolean erased = true;
 
@@ -44,15 +46,16 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      * @param branch
      *            the branches for this tree
      */
-    protected AbstractAnnotatedTree(final AnnotatedTree<?>... branch) {
-        this(Arrays.asList(branch));
+    protected AbstractAnnotatedTree(final Metadata metadata, final AnnotatedTree<?>... branch) {
+        this(metadata, Arrays.asList(branch));
     }
 
     /**
      * @param branch
      *            the branches for this tree
      */
-    protected AbstractAnnotatedTree(final List<AnnotatedTree<?>> branch) {
+    protected AbstractAnnotatedTree(final Metadata metadata, final List<AnnotatedTree<?>> branch) {
+        this.metadata = Objects.requireNonNull(metadata);
         Objects.requireNonNull(branch);
         branches = branch;
     }
@@ -163,6 +166,11 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      */
     protected final int getBranchesNumber() {
         return branches.size();
+    }
+
+    @Override
+    public final Metadata getMetadata() {
+        return metadata;
     }
 
     /**

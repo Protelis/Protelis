@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.SuperscriptedAnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 
 /**
  * Basic implementation of a {@link SuperscriptedAnnotatedTree}.
@@ -31,16 +32,16 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
      * @param branches
      *            branches of this {@link AbstractSATree}
      */
-    protected AbstractSATree(final AnnotatedTree<?>... branches) {
-        super(branches);
+    protected AbstractSATree(final Metadata metadata, final AnnotatedTree<?>... branches) {
+        super(metadata, branches);
     }
 
     /**
      * @param branches
      *            branches of this {@link AbstractSATree}
      */
-    protected AbstractSATree(final List<AnnotatedTree<?>> branches) {
-        super(branches);
+    protected AbstractSATree(final Metadata metadata, final List<AnnotatedTree<?>> branches) {
+        super(metadata, branches);
     }
 
     @Override

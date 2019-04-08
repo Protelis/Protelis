@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Op1;
 import org.protelis.vm.ExecutionContext;
 
@@ -29,19 +30,19 @@ public final class UnaryOp extends AbstractAnnotatedTree<Object> {
      * @param branch
      *            the operand
      */
-    public UnaryOp(final String name, final AnnotatedTree<?> branch) {
-        this(Op1.getOp(name), branch);
+    public UnaryOp(final Metadata metadata, final String name, final AnnotatedTree<?> branch) {
+        this(metadata, Op1.getOp(name), branch);
     }
 
-    private UnaryOp(final Op1 operator, final AnnotatedTree<?> branch) {
-        super(branch);
+    private UnaryOp(final Metadata metadata, final Op1 operator, final AnnotatedTree<?> branch) {
+        super(metadata, branch);
         Objects.requireNonNull(branch);
         op = operator;
     }
 
     @Override
     public UnaryOp copy() {
-        return new UnaryOp(op, getBranch(0).copy());
+        return new UnaryOp(getMetadata(), op, getBranch(0).copy());
     }
 
     @Override

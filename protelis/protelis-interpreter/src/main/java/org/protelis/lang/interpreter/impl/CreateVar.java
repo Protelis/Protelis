@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
@@ -29,15 +30,15 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
      * @param isDefinition
      *            true if it is a let
      */
-    public CreateVar(final Reference name, final AnnotatedTree<?> value, final boolean isDefinition) {
-        super(value);
+    public CreateVar(final Metadata metadata, final Reference name, final AnnotatedTree<?> value, final boolean isDefinition) {
+        super(metadata, value);
         var = name;
         definition = isDefinition;
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new CreateVar(var, deepCopyBranches().get(0), definition);
+        return new CreateVar(getMetadata(), var, deepCopyBranches().get(0), definition);
     }
 
     @Override

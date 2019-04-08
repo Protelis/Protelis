@@ -29,6 +29,8 @@ import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.FunctionCall;
+import org.protelis.lang.loading.Metadata;
+import org.protelis.lang.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.collect.Iterables;
@@ -167,9 +169,9 @@ public final class ArrayTupleImpl implements Tuple {
         if (fun.getArgNumber() == 1) {
             return DatatypeFactory
                     .createTuple(J8Arrays.stream(arrayContents)
-                        .map(Constant<Object>::new)
+                        .map(it -> new Constant(JavaInteroperabilityUtils.METADATA, it))
                         .filter(elem -> {
-                            final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
+                            final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, Lists.newArrayList(elem));
                             fc.eval(ctx);
                             final Object outcome = fc.getAnnotation();
                             if (outcome instanceof Boolean) {
@@ -265,9 +267,9 @@ public final class ArrayTupleImpl implements Tuple {
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getArgNumber() == 1) {
             return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents)
-                .map(Constant<Object>::new)
+                .map(it -> new Constant(JavaInteroperabilityUtils.METADATA, it))
                 .map(elem -> {
-                    final FunctionCall fc = new FunctionCall(fun, Lists.newArrayList(elem));
+                    final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, Lists.newArrayList(elem));
                     fc.eval(ctx);
                     return fc.getAnnotation();
                 })
@@ -315,8 +317,8 @@ public final class ArrayTupleImpl implements Tuple {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 2) {
             return J8Arrays.stream(arrayContents).reduce((first, second) -> {
-                final FunctionCall fc = new FunctionCall(fun,
-                        Lists.newArrayList(new Constant<>(first), new Constant<>(second)));
+                final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun,
+                        Lists.newArrayList(new Constant<>(JavaInteroperabilityUtils.METADATA, first), new Constant<>(JavaInteroperabilityUtils.METADATA, second)));
                 fc.eval(ctx);
                 return fc.getAnnotation();
             }).orElse(defVal);
@@ -431,4 +433,5 @@ public final class ArrayTupleImpl implements Tuple {
     private static int compareLexicographically(final Object a, final Object b) {
         return a.toString().compareTo(b.toString());
     }
+    
 }
