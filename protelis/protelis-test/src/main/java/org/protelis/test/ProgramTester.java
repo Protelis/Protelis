@@ -71,11 +71,13 @@ public final class ProgramTester {
      * 
      * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
      * @param expectedExceptionType the type of exception to be thrown
+     * @param searchCause if true, the message contents are searched for in the cause exception message
      * @param messageContents the strings that the exception message must include
      */
     public static void runExpectingErrors(
             final String program,
             final Class<? extends Throwable> expectedExceptionType,
+            final boolean searchCause,
             final String... messageContents) {
         final Throwable result = assertThrows("The test does not fail as expected.", expectedExceptionType, () -> {
             if (program.endsWith("pt")) {
@@ -84,11 +86,30 @@ public final class ProgramTester {
                 runProgram(program, 1);
             }
         });
-        final String message = result.getMessage().toLowerCase(Locale.ENGLISH);
+        if (searchCause) {
+            assertNotNull(result.getCause());
+        }
+        final String message = (searchCause ? result.getCause() : result)
+                .getMessage().toLowerCase(Locale.ENGLISH);
         assertNotNull(message);
         for (String messagePart : messageContents) {
-            assertTrue(message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
+            assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
+                    message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
         }
+    }
+
+    /**
+     * Tests a program expecting an error, and checks its message contents.
+     * 
+     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * @param expectedExceptionType the type of exception to be thrown
+     * @param messageContents the strings that the exception message must include
+     */
+    public static void runExpectingErrors(
+            final String program,
+            final Class<? extends Throwable> expectedExceptionType,
+            final String... messageContents) {
+        runExpectingErrors(program, expectedExceptionType, false, messageContents);
     }
 
     /**
