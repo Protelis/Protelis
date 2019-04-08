@@ -84,6 +84,9 @@ public interface AnnotatedTree<T> extends Serializable {
      */
     void toString(StringBuilder sb, int i);
 
+    /**
+     * @return A {@link Metadata} object containing information about the code that generated this AST node.
+     */
     Metadata getMetadata();
 
 }
