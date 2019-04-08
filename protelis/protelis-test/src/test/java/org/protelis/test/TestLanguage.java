@@ -105,7 +105,7 @@ public class TestLanguage {
     public void testErrorMessage01() {
         try {
             ProgramTester.runFile("/errorMessage01.pt");
-        } catch (RuntimeException e) {
+        } catch (RuntimeException e) { // NOPMD: This is done by purpose
             final String message = (e.getMessage() + e.getCause().getMessage()).toLowerCase(Locale.ENGLISH);
             assertTrue(message.contains("static"));
             assertTrue(message.contains("type"));
