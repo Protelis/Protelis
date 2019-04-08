@@ -9,14 +9,12 @@
 package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.protelis.test.ProgramTester.runExpectingErrors;
-import org.junit.Assert;
 
 import java.util.Collections;
-import java.util.Locale;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.DatatypeFactory;
