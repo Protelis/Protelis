@@ -28,7 +28,7 @@ public final class TestStacktrace {
         ProgramTester.runExpectingErrors("/errorTrace02.pt", ProtelisRuntimeException.class, e -> {
             final String fullTrace = e.toString();
             assertTrue("Exception does not include argument type mismatch identification\n" + fullTrace,
-                    fullTrace.contains("argument type mismatch"));
+                    e.getMessage().contains("argument type mismatch"));
             assertTrue("Exception does not identify line numbers\n" + fullTrace, fullTrace.contains("line"));
             for (String function : ImmutableList.of("errorTrace02:rootError", "errorTrace02:aCall", "errorTrace02:anotherCall")) {
                 assertTrue("Exception does not identify function name " + function + '\n' + fullTrace,
