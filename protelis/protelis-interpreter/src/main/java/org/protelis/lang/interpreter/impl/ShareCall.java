@@ -20,13 +20,39 @@ import java8.util.function.Consumer;
  * @param <T> returned type
  */
 public final class ShareCall<S, T> extends AbstractSATree<S, T> {
-    private static final long serialVersionUID = 8643287734245198408L;
-    private static final byte INIT = 0;
     private static final byte BODY = 1;
+    private static final byte INIT = 0;
+    private static final long serialVersionUID = 8643287734245198408L;
     private static final byte YIELD = 2;
-    private final Optional<AbstractAnnotatedTree<T>> yield;
-    private final Optional<Reference> localName;
     private final Optional<Reference> fieldName;
+    private final Optional<Reference> localName;
+    private final Optional<AbstractAnnotatedTree<T>> yield;
+
+    /**
+     * Convenience constructor with {@link java8.util.Optional}.
+     * 
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
+     * @param localName
+     *            variable name
+     * @param fieldName
+     *            name of the field version
+     * @param init
+     *            initial value
+     * @param body
+     *            body
+     * @param yield
+     *            body
+     */
+    public ShareCall(
+            final Metadata metadata,
+            final java8.util.Optional<Reference> localName,
+            final java8.util.Optional<Reference> fieldName,
+            final AnnotatedTree<?> init,
+            final AnnotatedTree<?> body,
+            final java8.util.Optional<AnnotatedTree<T>> yield) {
+        this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
+    }
 
     /**
      * @param metadata
@@ -63,32 +89,6 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         });
     }
 
-    /**
-     * Convenience constructor with {@link java8.util.Optional}.
-     * 
-     * @param metadata
-     *            A {@link Metadata} object containing information about the code that generated this AST node.
-     * @param localName
-     *            variable name
-     * @param fieldName
-     *            name of the field version
-     * @param init
-     *            initial value
-     * @param body
-     *            body
-     * @param yield
-     *            body
-     */
-    public ShareCall(
-            final Metadata metadata,
-            final java8.util.Optional<Reference> localName,
-            final java8.util.Optional<Reference> fieldName,
-            final AnnotatedTree<?> init,
-            final AnnotatedTree<?> body,
-            final java8.util.Optional<AnnotatedTree<T>> yield) {
-        this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
-    }
-
     @Override
     public ShareCall<S, T> copy() {
         final List<AnnotatedTree<?>> branches = deepCopyBranches();
@@ -100,6 +100,14 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
                 branches.get(BODY),
                 yield.transform(AbstractAnnotatedTree::copy));
         return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    private S ensureType(final Object o) {
+        if (o instanceof Field) {
+            throw new IllegalStateException("Share is not allowed to return, store, or get initialized to Field values: " + o);
+        }
+        return (S) Objects.requireNonNull(o, "Share is not allowed to return, store, or get initialized to null values.");
     }
 
     @SuppressWarnings("unchecked")
@@ -132,33 +140,24 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         setAnnotation(yield.isPresent() ? yield.get().getAnnotation() : (T) result);
     }
 
-    @SuppressWarnings("unchecked")
-    private S ensureType(final Object o) {
-        if (o instanceof Field) {
-            throw new IllegalStateException("Share is not allowed to return, store, or get initialized to Field values: " + o);
-        }
-        return (S) Objects.requireNonNull(o, "Share is not allowed to return, store, or get initialized to null values.");
+    @Override
+    public String getName() {
+        return fieldName.isPresent() ? "share" : "rep";
     }
 
     @Override
-    protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append(fieldName.isPresent() ? "share" : "rep")
-            .append(" (")
-            .append(localName.transform(Reference::toString).transform(it -> it + ", ").or(""))
-            .append(fieldName.transform(Reference::toString).or(""))
-            .append(" <- \n");
-        getBranch(INIT).toString(sb, indent + 1);
-        sb.append(") {\n");
-        getBranch(BODY).toString(sb, indent + 1);
-        sb.append('\n');
-        indent(sb, indent);
-        sb.append('}');
-        if (yield.isPresent()) {
-            sb.append(" yield {\n");
-            getBranch(YIELD).toString(sb, indent + 1);
-            indent(sb, indent);
-            sb.append('}');
-        }
+    public String toString() {
+        final Optional<String> field = fieldName.transform(Reference::toString);
+        return getName() + " ("
+            + localName.transform(Reference::toString)
+                .transform(it -> it + field.transform(f -> ", ").or("")).or("")
+            + field.or("")
+            + " <- "
+            + stringFor(getBranch(INIT))
+            + ") { "
+            + stringFor(getBranch(BODY))
+            + " }"
+            + yield.transform(it -> " yield { " + stringFor(getBranch(YIELD)) + '}').or("");
     }
 
     private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {

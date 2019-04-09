@@ -17,9 +17,9 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
+import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
-import org.protelis.lang.util.ProtelisRuntimeException;
 
 import java8.util.stream.IntStreams;
 

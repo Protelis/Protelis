@@ -71,10 +71,8 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(op.toString()).append('(');
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return op.toString();
     }
 
 }

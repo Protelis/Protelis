@@ -61,8 +61,16 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
      * {@inheritDoc}
      */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(constantValue);
+    public String getName() {
+        return constantValue.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

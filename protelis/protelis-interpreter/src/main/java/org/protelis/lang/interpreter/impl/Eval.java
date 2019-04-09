@@ -58,11 +58,4 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
         }
     }
 
-    @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("eval(\n");
-        getBranch(0).toString(sb, i + 1);
-        sb.append(')');
-    }
-
 }

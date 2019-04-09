@@ -34,9 +34,13 @@ public final class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
         setAnnotation(context.getExecutionEnvironment());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int indent) {
-        sb.append("env");
+    public String toString() {
+        return getName();
     }
+
 
 }

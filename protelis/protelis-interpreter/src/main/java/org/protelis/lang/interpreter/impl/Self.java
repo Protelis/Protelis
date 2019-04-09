@@ -39,8 +39,7 @@ public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("self");
+    public String toString() {
+        return getName();
     }
-
 }

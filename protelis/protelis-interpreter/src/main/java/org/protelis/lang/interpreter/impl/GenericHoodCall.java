@@ -110,15 +110,12 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
         setAnnotation(result);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("hood");
-        if (inclusive) {
-            sb.append("PlusSelf");
-        }
-        sb.append('(');
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return "hood" + (inclusive ? "PlusSelf" : "");
     }
 
 }

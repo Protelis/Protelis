@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java.util.Locale;
-
 import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -23,8 +21,8 @@ import org.protelis.vm.ExecutionContext;
 public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
-    private final HoodOp function;
     private final AnnotatedTree<Field> body;
+    private final HoodOp function;
     private final boolean inclusive;
 
     /**
@@ -57,11 +55,8 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(function.toString().toLowerCase(Locale.US))
-            .append("Hood (");
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return "hood" + (inclusive ? "PlusSelf" : "");
     }
 
 }

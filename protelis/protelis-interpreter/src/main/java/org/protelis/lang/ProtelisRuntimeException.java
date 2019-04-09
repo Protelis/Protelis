@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.protelis.lang.util;
+package org.protelis.lang;
 
 import java.io.PrintStream;
 import java.util.Deque;
@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.impl.All;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.loading.Metadata;
 
@@ -46,31 +47,41 @@ public final class ProtelisRuntimeException extends RuntimeException {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(1000)
-            .append(getClass().getSimpleName())
-            .append(": ")
-            .append(getCause().getMessage());
-        if (stream().anyMatch(it -> it instanceof FunctionCall)) {
-            AnnotatedTree<?> origin = protelisStackTrace.getFirst();
-            boolean wasFunction = true;
-            for (final AnnotatedTree<?> current: protelisStackTrace) {
-                if (wasFunction) {
-                    origin = current;
-                    wasFunction = false;
-                }
-                if (current instanceof FunctionCall) {
-                    wasFunction = true;
-                    final FunctionDefinition fun = ((FunctionCall) current).getFunctionDefinition();
-                    sb.append("\n\tat ")
-                        .append(fun.getName())
-                        .append(extractLines(origin));
-                }
-            }
-        } else {
-            sb.append("\n\tin main script ")
+        StringBuilder trace = header();
+        if (stream().noneMatch(it -> it instanceof FunctionCall)) {
+            trace.append("\n\tin main script ")
                 .append(extractLines(protelisStackTrace.getFirst()));
         }
-        return sb.toString();
+        StringBuilder longTrace = header();
+        AnnotatedTree<?> origin = protelisStackTrace.getFirst();
+        boolean wasFunction = true;
+        for (final AnnotatedTree<?> current: protelisStackTrace) {
+            if (!(current instanceof All)) {
+                longTrace.append("\n\tat: ")
+                    .append(current + extractLines(origin));
+            }
+            if (wasFunction) {
+                origin = current;
+                wasFunction = false;
+            }
+            if (current instanceof FunctionCall) {
+                wasFunction = true;
+                final FunctionDefinition fun = ((FunctionCall) current).getFunctionDefinition();
+                trace.append("\n\tat ")
+                    .append(fun.getName())
+                    .append(extractLines(origin));
+            }
+        }
+        trace.append("\nFully detailed interpreter trace:\n")
+            .append(longTrace);
+        return trace.toString();
+    }
+
+    private StringBuilder header() {
+        return new StringBuilder(1000)
+            .append(getClass().getName())
+            .append(": ")
+            .append(getCause().getMessage());
     }
 
     private static String extractLines(@Nonnull final AnnotatedTree<?> origin) {

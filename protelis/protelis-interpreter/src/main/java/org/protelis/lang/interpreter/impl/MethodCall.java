@@ -10,6 +10,7 @@ import java8.util.stream.Collectors;
 
 import java8.util.J8Arrays;
 import java8.util.stream.Stream;
+import java8.util.stream.StreamSupport;
 
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -123,15 +124,24 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
         return new MethodCall(getMetadata(), clazz, methodName, ztatic, deepCopyBranches());
     }
 
-    @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(methodName).append('(');
-        fillBranches(sb, i, ',');
-        sb.append(')');
-    }
-
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         extractMethod();
     }
+
+    @Override
+    public String getName() {
+        return methodName;
+    }
+
+    @Override
+    public String toString() {
+        return (ztatic ? "" : stringFor(getBranch(0)) + '.')
+            + getName()
+            + StreamSupport.stream(getBranches())
+                .skip(ztatic ? 0 : 1)
+                .map(MethodCall::stringFor)
+                .collect(Collectors.joining(", ", "(", ")"));
+    }
+
 }

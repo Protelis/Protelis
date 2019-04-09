@@ -48,9 +48,8 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("nbr (");
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return "nbr";
     }
+
 }

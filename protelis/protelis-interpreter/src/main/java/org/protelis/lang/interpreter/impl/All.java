@@ -65,12 +65,22 @@ public final class All extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        if (getBranchesNumber() == 1) {
-            getBranch(0).toString(sb, i);
-        } else if (getBranchesNumber() > 1) {
-            fillBranches(sb, i, ';');
+    public String getName() {
+        switch (getBranchesNumber()) {
+        case 1:
+            return getBranch(last).getName();
+        case 2:
+            return getBranch(0).getName() + "; " + getBranch(last).getName();
+        case 3:
+            return getBranch(0).getName() + "; ...; " + getBranch(last).getName();
+        default:
+            return super.getName();
         }
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

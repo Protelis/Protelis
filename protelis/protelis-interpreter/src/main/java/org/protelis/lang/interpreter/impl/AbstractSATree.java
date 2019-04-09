@@ -67,37 +67,12 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
         superscript = obj;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected final void asString(final StringBuilder sb, final int indent) {
-        if (sb.length() > indent) {
-            sb.delete(sb.length() - indent - 1, sb.length() - 1);
-        }
-        innerAsString(sb, indent);
-        sb.append('\n');
-        indent(sb, indent + 1);
-        sb.append("^^^^^^^^^");
-        if (isErased()) {
-            sb.append('\n');
-            indent(sb, indent + 1);
-            sb.append('~');
-        } else {
-            if (superscript instanceof AbstractAnnotatedTree<?>) {
-                sb.append('\n');
-                ((AnnotatedTree<?>) superscript).toString(sb, indent + 1);
-                sb.append('\n');
-                indent(sb, indent + 1);
-                sb.append("^^^^^^^^^");
-            } else {
-                sb.append(superscript);
-            }
-        }
+    public String toString() {
+        return super.toString() + "{ " + superscript + " }";
     }
 
-    /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param indent
-     *            level of indentation
-     */
-    protected abstract void innerAsString(StringBuilder sb, int indent);
 }
