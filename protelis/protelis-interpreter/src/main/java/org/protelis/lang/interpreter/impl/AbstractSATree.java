@@ -72,7 +72,9 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
      */
     @Override
     public String toString() {
-        return super.toString() + "{ " + superscript + " }";
+        return super.toString() + "{ "
+            + (superscript instanceof AnnotatedTree ? stringFor((AnnotatedTree<?>) superscript) : superscript)
+            + " }";
     }
 
 }
