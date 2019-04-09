@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.util.ProtelisRuntimeException;
 
 import java8.util.stream.IntStreams;
 
@@ -102,8 +103,8 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage01() {
-        runExpectingErrors("/errorMessage01.pt", UnsupportedOperationException.class, "static");
-        runExpectingErrors("/errorMessage01.pt", UnsupportedOperationException.class, true, "type");
+        runExpectingErrors("/errorMessage01.pt", ProtelisRuntimeException.class, "static");
+        runExpectingErrors("/errorMessage01.pt", ProtelisRuntimeException.class, true, "type");
     }
 
     /**
@@ -307,12 +308,7 @@ public class TestLanguage {
      */
     @Test
     public void testIf02() {
-        try {
-            ProgramTester.runFile("/if02.pt", 1, null);
-            fail("If should never return fields");
-        } catch (IllegalStateException e) {
-            assertNotNull(e);
-        }
+        ProgramTester.runExpectingErrors("/if02.pt", ProtelisRuntimeException.class, "if", "cannot", "return", "field");
     }
 
     /**
