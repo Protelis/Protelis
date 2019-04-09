@@ -233,7 +233,8 @@ public final class ReflectionUtils {
                         + " cannot get invoked because it is not accessible.", e); 
             } catch (IllegalArgumentException e) {
                 final boolean isStatic = target == null;
-                final String errorMessage = "Cannot invoke "
+                final String errorMessage = e.getMessage()
+                    + ": cannot invoke "
                     + method
                     + " with arguments " + formatArguments(useArgs)
                     + (isStatic ? "" : " on " + target);
