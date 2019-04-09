@@ -49,7 +49,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
         }
         ztatic = jvmOp.isStatic();
         methodName = jvmOp.getSimpleName();
-        extractMethod(jvmOp.getParameters().size());
+        extractMethod();
     }
 
     /**
@@ -96,7 +96,9 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
                       || m.isVarArgs() && m.getParameterTypes().length >= parameterCount - 1)
                 .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
         if (matches.isEmpty()) {
-            throw new IllegalStateException("No method named " + methodName + " with " + parameterCount
+            throw new IllegalArgumentException("No "
+                    + (ztatic ? "static " : "")
+                    + "method named " + methodName + " with " + parameterCount
                     + " parameters is available in " + clazz);
         }
         if (matches.size() == 1) {
