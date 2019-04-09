@@ -9,7 +9,6 @@
 package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.protelis.test.ProgramTester.runExpectingErrors;
 
 import java.util.Collections;
@@ -469,14 +468,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod09() {
-        try {
-            ProgramTester.runFile("/method09.pt");
-        } catch (Exception e) { // NOPMD: here we want to catch the exception and analyze it
-            // Should be an illegal state, caused by an invocation target, caused by a bad index
-            if (!(e.getCause().getCause() instanceof ArrayIndexOutOfBoundsException)) {
-                fail("Didn't find an OutOfBounds exception");
-            }
-        }
+        ProgramTester.runExpectingErrors("/method09.pt", ProtelisRuntimeException.class, "out", "of", "bounds");
     }
 
     /**
