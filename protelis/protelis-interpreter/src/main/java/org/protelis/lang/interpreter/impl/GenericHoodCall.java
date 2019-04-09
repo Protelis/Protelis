@@ -95,7 +95,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         /*
          * Evaluate the function, the nullResult, and the argument
          */

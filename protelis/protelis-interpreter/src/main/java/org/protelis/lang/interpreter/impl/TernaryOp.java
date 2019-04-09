@@ -65,7 +65,7 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(op.run(getBranch(0).getAnnotation(), getBranch(1).getAnnotation(), getBranch(2).getAnnotation()));
     }

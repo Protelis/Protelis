@@ -34,7 +34,7 @@ public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         setAnnotation(context);
     }
 

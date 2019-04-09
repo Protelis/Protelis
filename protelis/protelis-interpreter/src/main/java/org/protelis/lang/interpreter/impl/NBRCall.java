@@ -39,7 +39,7 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         final AnnotatedTree<?> branch = getBranch(0);
         branch.evalInNewStackFrame(context, BRANCH);
         final Object childVal = branch.getAnnotation();

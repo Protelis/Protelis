@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.loading.Metadata;
+import org.protelis.lang.util.ProtelisRuntimeException;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +146,26 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         return erased;
     }
 
+    @Override
+    public final void eval(final ExecutionContext context) {
+        try {
+            evaluate(context);
+        } catch (ProtelisRuntimeException e) {
+            e.calledBy(this);
+            throw e;
+        } catch (Exception e) {
+            throw new ProtelisRuntimeException(e, this);
+        }
+    }
+
+    /**
+     * Evaluates this AST node. This method can throw any exception,
+     * {@link AbstractAnnotatedTree} takes care of storing the necessary metadata.
+     * 
+     * @param context the execution context
+     */
+    protected abstract void evaluate(ExecutionContext context);
+
     /**
      * @return Directly accesses the {@link List} where branches are stored:
      *         modifications on branches will reflect in the internal branch
@@ -238,9 +259,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      */
     protected final void projectAndEval(final ExecutionContext context) {
         forEachWithIndex((i, branch) -> {
-            context.newCallStackFrame(i.byteValue());
-            branch.eval(context);
-            context.returnFromCallFrame();
+            branch.evalInNewStackFrame(context, i.byteValue());
         });
     }
 

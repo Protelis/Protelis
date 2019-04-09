@@ -72,7 +72,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object originObj = fgen.getAnnotation();
         if (!(originObj instanceof Field)) {

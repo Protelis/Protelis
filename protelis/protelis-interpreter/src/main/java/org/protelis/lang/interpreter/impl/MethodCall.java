@@ -96,7 +96,8 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
                       || m.isVarArgs() && m.getParameterTypes().length >= parameterCount - 1)
                 .filter(m -> m.getName().equals(methodName)).collect(Collectors.toList());
         if (matches.isEmpty()) {
-            throw new IllegalStateException("No method matches " + clazz + "." + methodName);
+            throw new IllegalStateException("No method named " + methodName + " with " + parameterCount
+                    + " parameters is available in " + clazz);
         }
         if (matches.size() == 1) {
             method = matches.get(0);
@@ -104,7 +105,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         // Obtain target and arguments
         final Object target = ztatic ? null : getBranch(0).getAnnotation();

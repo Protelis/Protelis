@@ -49,7 +49,7 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         conditionExpression.evalInNewStackFrame(context, COND);
         final Object actualResult = conditionExpression.getAnnotation();
         final boolean bool = actualResult instanceof Boolean

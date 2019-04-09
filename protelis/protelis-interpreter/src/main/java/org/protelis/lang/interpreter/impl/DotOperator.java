@@ -77,7 +77,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         /*
          * Eval left
          */

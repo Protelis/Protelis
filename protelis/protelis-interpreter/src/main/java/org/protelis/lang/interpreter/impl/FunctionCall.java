@@ -66,7 +66,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         /*
          * 1. Evaluate all the arguments
          */

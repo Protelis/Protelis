@@ -104,7 +104,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         final AnnotatedTree<?> initBranch = getBranch(INIT);
         initBranch.evalInNewStackFrame(context, INIT);
         final S localValue = ensureType(isErased() ? initBranch.getAnnotation() : getSuperscript());

@@ -44,7 +44,7 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
     }
 
     @Override
-    public final void eval(final ExecutionContext context) {
+    public final void evaluate(final ExecutionContext context) {
         if (isErased()) {
             setAnnotation(constantValue);
         }

@@ -42,7 +42,7 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final String program = getBranch(0).getAnnotation().toString();
         try {

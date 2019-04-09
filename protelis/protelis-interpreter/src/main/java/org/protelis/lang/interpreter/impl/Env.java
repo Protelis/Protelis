@@ -29,7 +29,7 @@ public final class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         assert context != null;
         setAnnotation(context.getExecutionEnvironment());
     }

@@ -51,7 +51,7 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
     }

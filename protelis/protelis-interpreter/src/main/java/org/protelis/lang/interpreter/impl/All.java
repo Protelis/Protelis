@@ -41,7 +41,7 @@ public final class All extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         if (getBranchesNumber() > 1) {
             /*
              * Prevents the same nbr operation on multiple lines to conflict
