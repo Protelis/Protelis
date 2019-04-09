@@ -13,6 +13,7 @@ import static java8.util.stream.StreamSupport.parallelStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -168,13 +169,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         return branches.get(i);
     }
 
-    /**
-     * @return Directly accesses the {@link List} where branches are stored:
-     *         modifications on branches will reflect in the internal branch
-     *         representation. Be careful.
-     */
-    protected List<AnnotatedTree<?>> getBranches() {
-        return branches;
+    @Override
+    public final List<AnnotatedTree<?>> getBranches() {
+        return Collections.unmodifiableList(branches);
     }
 
     /**

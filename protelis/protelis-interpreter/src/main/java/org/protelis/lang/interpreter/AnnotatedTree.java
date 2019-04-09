@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
@@ -62,6 +63,13 @@ public interface AnnotatedTree<T> extends Serializable {
      * @return the i-th branch of the evaluation tree
      */
     AnnotatedTree<?> getBranch(int i);
+
+    /**
+     * @param i
+     *            the index
+     * @return the i-th branch of the evaluation tree
+     */
+    List<AnnotatedTree<?>> getBranches();
 
     /**
      * @return A {@link Metadata} object containing information about the code that generated this AST node.
