@@ -16,16 +16,18 @@ import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.Reference;
+import org.protelis.parser.protelis.ProtelisModule;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
+import java8.util.Optional;
 
 /**
  * First-class Protelis function.
  */
 public final class FunctionDefinition implements Serializable {
 
-    private static final long serialVersionUID = -4996419276551742628L;
+    private static final long serialVersionUID = 1;
     private final FasterString functionName;
     private final int argNumber;
     private final List<Reference> args;
@@ -33,15 +35,15 @@ public final class FunctionDefinition implements Serializable {
     private AnnotatedTree<?> functionBody;
 
     /**
-     * @param name
-     *            function name
-     * @param args
-     *            arguments
+     * @param module the Protelis module of this function, if any
+     * @param name   function name
+     * @param args   arguments
      */
-    public FunctionDefinition(final FasterString name, final List<Reference> args) {
-        LangUtils.requireNonNull(name, args);
+    public FunctionDefinition(final Optional<ProtelisModule> module, final String name, final List<Reference> args) {
+        LangUtils.requireNonNull(module, name, args);
         argNumber = args.size();
-        functionName = name;
+        final String moduleName = module.map(ProtelisModule::getName).orElse("$anonymous-module$");
+        functionName = new FasterString(moduleName + ':' + name);
         this.args = args;
         //final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES + Long.BYTES + 1);
         final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE + Long.SIZE / Byte.SIZE + 1);
@@ -49,16 +51,6 @@ public final class FunctionDefinition implements Serializable {
         bb.putLong(functionName.hash64());
         bb.put((byte) argNumber);
         stackCode = new TByteArrayList(bb.array());
-    }
-
-    /**
-     * @param name
-     *            function name
-     * @param args
-     *            arguments
-     */
-    public FunctionDefinition(final String name, final List<Reference> args) {
-        this(new FasterString(name), args);
     }
 
     /**

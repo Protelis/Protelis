@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -24,21 +25,23 @@ public final class All extends AbstractAnnotatedTree<Object> {
     /**
      * Block of statements.
      * 
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param statements
      *            the statements
      */
-    public All(final List<AnnotatedTree<?>> statements) {
-        super(statements);
+    public All(final Metadata metadata, final List<AnnotatedTree<?>> statements) {
+        super(metadata, statements);
         last = statements.size() - 1;
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new All(deepCopyBranches());
+        return new All(getMetadata(), deepCopyBranches());
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         if (getBranchesNumber() > 1) {
             /*
              * Prevents the same nbr operation on multiple lines to conflict
@@ -62,12 +65,22 @@ public final class All extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        if (getBranchesNumber() == 1) {
-            getBranch(0).toString(sb, i);
-        } else if (getBranchesNumber() > 1) {
-            fillBranches(sb, i, ';');
+    public String getName() {
+        switch (getBranchesNumber()) {
+        case 1:
+            return getBranch(last).getName();
+        case 2:
+            return getBranch(0).getName() + "; " + getBranch(last).getName();
+        case 3:
+            return getBranch(0).getName() + "; ...; " + getBranch(last).getName();
+        default:
+            return super.getName();
         }
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

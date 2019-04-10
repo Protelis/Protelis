@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.SuperscriptedAnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 
 /**
  * Basic implementation of a {@link SuperscriptedAnnotatedTree}.
@@ -28,19 +29,23 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
     private S superscript;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
      *            branches of this {@link AbstractSATree}
      */
-    protected AbstractSATree(final AnnotatedTree<?>... branches) {
-        super(branches);
+    protected AbstractSATree(final Metadata metadata, final AnnotatedTree<?>... branches) {
+        super(metadata, branches);
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
      *            branches of this {@link AbstractSATree}
      */
-    protected AbstractSATree(final List<AnnotatedTree<?>> branches) {
-        super(branches);
+    protected AbstractSATree(final Metadata metadata, final List<AnnotatedTree<?>> branches) {
+        super(metadata, branches);
     }
 
     @Override
@@ -62,37 +67,14 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
         superscript = obj;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected final void asString(final StringBuilder sb, final int indent) {
-        if (sb.length() > indent) {
-            sb.delete(sb.length() - indent - 1, sb.length() - 1);
-        }
-        innerAsString(sb, indent);
-        sb.append('\n');
-        indent(sb, indent + 1);
-        sb.append("^^^^^^^^^");
-        if (isErased()) {
-            sb.append('\n');
-            indent(sb, indent + 1);
-            sb.append('~');
-        } else {
-            if (superscript instanceof AbstractAnnotatedTree<?>) {
-                sb.append('\n');
-                ((AnnotatedTree<?>) superscript).toString(sb, indent + 1);
-                sb.append('\n');
-                indent(sb, indent + 1);
-                sb.append("^^^^^^^^^");
-            } else {
-                sb.append(superscript);
-            }
-        }
+    public String toString() {
+        return super.toString() + "{ "
+            + (superscript instanceof AnnotatedTree ? stringFor((AnnotatedTree<?>) superscript) : superscript)
+            + " }";
     }
 
-    /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param indent
-     *            level of indentation
-     */
-    protected abstract void innerAsString(StringBuilder sb, int indent);
 }

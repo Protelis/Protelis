@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Objects;
 
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -23,11 +24,13 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
     private final T constantValue;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param obj
      *            the constant to be associated
      */
-    public Constant(final T obj) {
-        super();
+    public Constant(final Metadata metadata, final T obj) {
+        super(metadata);
         Objects.requireNonNull(obj);
         constantValue = obj;
     }
@@ -37,11 +40,11 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
      */
     @Override
     public Constant<T> copy() {
-        return new Constant<>(constantValue);
+        return new Constant<>(getMetadata(), constantValue);
     }
 
     @Override
-    public final void eval(final ExecutionContext context) {
+    public final void evaluate(final ExecutionContext context) {
         if (isErased()) {
             setAnnotation(constantValue);
         }
@@ -58,8 +61,16 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
      * {@inheritDoc}
      */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(constantValue);
+    public String getName() {
+        return constantValue.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

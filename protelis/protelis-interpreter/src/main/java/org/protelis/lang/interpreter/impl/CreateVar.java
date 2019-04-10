@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
@@ -22,6 +23,8 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
     private final boolean definition;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name
      *            variable name
      * @param value
@@ -29,29 +32,39 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
      * @param isDefinition
      *            true if it is a let
      */
-    public CreateVar(final Reference name, final AnnotatedTree<?> value, final boolean isDefinition) {
-        super(value);
+    public CreateVar(final Metadata metadata, final Reference name, final AnnotatedTree<?> value, final boolean isDefinition) {
+        super(metadata, value);
         var = name;
         definition = isDefinition;
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new CreateVar(var, deepCopyBranches().get(0), definition);
+        return new CreateVar(getMetadata(), var, deepCopyBranches().get(0), definition);
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object res = getBranch(0).getAnnotation();
         context.putVariable(var, res, isDefinition());
         setAnnotation(res);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(var).append(" = \n");
-        getBranch(0).toString(sb, i + 1);
+    public String getName() {
+        return "let";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return getName() + ' ' + var + " = " + stringFor(getBranch(0));
     }
 
     /**

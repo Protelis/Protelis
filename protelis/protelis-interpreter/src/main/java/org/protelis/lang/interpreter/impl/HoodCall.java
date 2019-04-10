@@ -13,6 +13,7 @@ import java.util.Locale;
 import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.HoodOp;
 import org.protelis.vm.ExecutionContext;
 
@@ -22,11 +23,13 @@ import org.protelis.vm.ExecutionContext;
 public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
-    private final HoodOp function;
     private final AnnotatedTree<Field> body;
+    private final HoodOp function;
     private final boolean inclusive;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
      *            the argument to evaluate (must return a {@link Field}).
      * @param func
@@ -34,8 +37,8 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
      * @param includeSelf
      *            if true, sigma won't be excluded
      */
-    public HoodCall(final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
-        super(arg);
+    public HoodCall(final Metadata metadata, final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
+        super(metadata, arg);
         LangUtils.requireNonNull(func);
         body = arg;
         function = func;
@@ -44,21 +47,18 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new HoodCall(body.copy(), function, inclusive);
+        return new HoodCall(getMetadata(), body.copy(), function, inclusive);
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(function.toString().toLowerCase(Locale.US))
-            .append("Hood (");
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return function.name().toLowerCase(Locale.ENGLISH) + "Hood" + (inclusive ? "PlusSelf" : "");
     }
 
 }

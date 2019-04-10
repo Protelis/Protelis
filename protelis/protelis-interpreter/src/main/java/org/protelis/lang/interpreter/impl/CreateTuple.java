@@ -14,6 +14,7 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import gnu.trove.list.TIntList;
@@ -27,28 +28,32 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
     private static final long serialVersionUID = -5018807023306859866L;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param args
      *            tuple arguments
      */
-    public CreateTuple(final AnnotatedTree<?>... args) {
-        super(args);
+    public CreateTuple(final Metadata metadata, final AnnotatedTree<?>... args) {
+        super(metadata, args);
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param args
      *            tuple arguments
      */
-    public CreateTuple(final List<AnnotatedTree<?>> args) {
-        super(args);
+    public CreateTuple(final Metadata metadata, final List<AnnotatedTree<?>> args) {
+        super(metadata, args);
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new CreateTuple(deepCopyBranches());
+        return new CreateTuple(getMetadata(), deepCopyBranches());
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         final Object[] a = new Object[getBranchesNumber()];
         final TIntList fieldIndexes = new TIntArrayList();
         forEachWithIndex((i, branch) -> {
@@ -67,11 +72,12 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append('[');
-        fillBranches(sb, i, ',');
-        sb.append(']');
+    public String toString() {
+        return branchesToString(", ", "[", "]");
     }
 
 }

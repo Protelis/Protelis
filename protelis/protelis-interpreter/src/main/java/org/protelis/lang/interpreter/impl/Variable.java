@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
@@ -20,21 +21,23 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
     private final Reference name;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param ref
      *            variable name
      */
-    public Variable(final Reference ref) {
-        super();
+    public Variable(final Metadata metadata, final Reference ref) {
+        super(metadata);
         name = ref;
     }
 
     @Override
     public Variable copy() {
-        return new Variable(name);
+        return new Variable(getMetadata(), name);
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         Object val = context.getVariable(name);
         if (val == null) {
             /*
@@ -50,8 +53,13 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(name);
+    public String getName() {
+        return name.toString();
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

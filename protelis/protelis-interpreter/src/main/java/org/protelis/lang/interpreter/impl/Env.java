@@ -4,6 +4,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 
@@ -14,20 +15,32 @@ public final class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
 
     private static final long serialVersionUID = 636239540800669478L;
 
-    @Override
-    public AnnotatedTree<ExecutionEnvironment> copy() {
-        return new Env();
+    /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
+     */
+    public Env(final Metadata metadata) {
+        super(metadata);
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public AnnotatedTree<ExecutionEnvironment> copy() {
+        return new Env(getMetadata());
+    }
+
+    @Override
+    public void evaluate(final ExecutionContext context) {
         assert context != null;
         setAnnotation(context.getExecutionEnvironment());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int indent) {
-        sb.append("env");
+    public String toString() {
+        return getName();
     }
+
 
 }

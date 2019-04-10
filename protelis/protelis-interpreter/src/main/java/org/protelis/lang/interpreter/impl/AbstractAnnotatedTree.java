@@ -13,10 +13,13 @@ import static java8.util.stream.StreamSupport.parallelStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,82 +37,77 @@ import java8.util.stream.IntStreams;
  */
 public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
 
-    private static final long serialVersionUID = -8156985119843359212L;
     private static final Logger L = LoggerFactory.getLogger(AbstractAnnotatedTree.class);
-    private final List<AnnotatedTree<?>> branches;
+    private static final long serialVersionUID = -8156985119843359212L;
     private T annotation;
+    private final List<AnnotatedTree<?>> branches;
     private boolean erased = true;
+    private final Metadata metadata;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branch
      *            the branches for this tree
      */
-    protected AbstractAnnotatedTree(final AnnotatedTree<?>... branch) {
-        this(Arrays.asList(branch));
+    protected AbstractAnnotatedTree(final Metadata metadata, final AnnotatedTree<?>... branch) {
+        this(metadata, Arrays.asList(branch));
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branch
      *            the branches for this tree
      */
-    protected AbstractAnnotatedTree(final List<AnnotatedTree<?>> branch) {
+    protected AbstractAnnotatedTree(final Metadata metadata, final List<AnnotatedTree<?>> branch) {
+        this.metadata = Objects.requireNonNull(metadata);
         Objects.requireNonNull(branch);
         branches = branch;
     }
 
-    @Override
-    public final String toString() {
-        final StringBuilder sb = new StringBuilder();
-        toString(sb, 0);
-        return sb.toString();
+    /**
+     * @return a {@link String} representing the branches of this tree, in the
+     *         format (b1, b2, ..., bn).
+     */
+    protected final String branchesToString() {
+        return branchesToString(", ", "(", ")");
     }
 
     /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param i
-     *            level of indentation
+     * Returns a {@link String} representing the branches of this tree with the
+     * specified format.
+     * 
+     * @param separator the separator {@link CharSequence}
+     * @param prefix    the prefix
+     * @param postfix   the postfix
+     * @return a {@link String} representing the branches of this tree with the
+     *         specified format.
      */
-    @Override
-    public final void toString(final StringBuilder sb, final int i) {
-        indent(sb, i);
-        if (erased) {
-            sb.append('|');
-            asString(sb, i);
-            sb.append('|');
-        } else {
-            asString(sb, i);
-            sb.append('\n');
-            indent(sb, i);
-            sb.append(':');
-            if (annotation instanceof AnnotatedTree<?>) {
-                sb.append('\n');
-                ((AnnotatedTree<?>) annotation).toString(sb, i + 1);
-            } else {
-                sb.append(annotation);
-            }
+    protected final String branchesToString(final CharSequence separator, final CharSequence prefix, final CharSequence postfix) {
+        final StringBuilder sb = new StringBuilder(prefix);
+        if (branches.size() > 0) {
+            forEachWithIndex((i, branch) -> {
+                sb.append(stringFor(branch));
+                if (i < branches.size() - 1) {
+                    sb.append(separator);
+                }
+            });
         }
+        return sb.append(postfix).toString();
     }
 
     /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param indent
-     *            level of indentation
+     * Subclasses must use this method.
+     * 
+     * @return a deep copy of the branches
      */
-    protected abstract void asString(StringBuilder sb, int indent);
-
-    @Override
-    public final T getAnnotation() {
-        return annotation;
-    }
-
-    @Override
-    public final void reset() {
-        for (final AnnotatedTree<?> b : branches) {
-            b.reset();
+    protected final List<AnnotatedTree<?>> deepCopyBranches() {
+        final List<AnnotatedTree<?>> res = new ArrayList<>(branches.size());
+        for (final AnnotatedTree<?> br : branches) {
+            res.add(br.copy());
         }
-        annotation = null;
+        return res;
     }
 
     /**
@@ -124,46 +122,32 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         erased = true;
     }
 
-    /**
-     * @param obj
-     *            the annotation to set
-     */
-    protected final void setAnnotation(final T obj) {
-        annotation = obj;
-        erased = false;
+    @Override
+    public final void eval(final ExecutionContext context) {
+        try {
+            evaluate(context);
+        } catch (ProtelisRuntimeException e) {
+            e.fillInStackFrame(this);
+            throw e;
+        } catch (Exception e) {
+            throw new ProtelisRuntimeException(e, this);
+        }
     }
 
     @Override
-    public final boolean isErased() {
-        return erased;
+    public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
+        context.newCallStackFrame(frameId);
+        eval(context);
+        context.returnFromCallFrame();
     }
 
     /**
-     * @return Directly accesses the {@link List} where branches are stored:
-     *         modifications on branches will reflect in the internal branch
-     *         representation. Be careful.
+     * Evaluates this AST node. This method can throw any exception,
+     * {@link AbstractAnnotatedTree} takes care of storing the necessary metadata.
+     * 
+     * @param context the execution context
      */
-    protected List<AnnotatedTree<?>> getBranches() {
-        return branches;
-    }
-
-    /**
-     * @return the current branches annotations
-     */
-    protected final Object[] getBranchesAnnotations() {
-        final Object[] annotations = branches.toArray();
-        for (int i = 0; i < annotations.length; i++) {
-            annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
-        }
-        return annotations;
-    }
-
-    /**
-     * @return the number of branches
-     */
-    protected final int getBranchesNumber() {
-        return branches.size();
-    }
+    protected abstract void evaluate(ExecutionContext context);
 
     /**
      * Facility to run lambdas across all the branches.
@@ -187,6 +171,61 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         for (int i = 0; i < getBranchesNumber(); i++) {
             action.accept(i, getBranch(i));
         }
+    }
+
+    @Override
+    public final T getAnnotation() {
+        return annotation;
+    }
+
+    @Override
+    public final AnnotatedTree<?> getBranch(final int i) {
+        return branches.get(i);
+    }
+
+    @Override
+    public final List<AnnotatedTree<?>> getBranches() {
+        return Collections.unmodifiableList(branches);
+    }
+
+    /**
+     * @return the current branches annotations
+     */
+    protected final Object[] getBranchesAnnotations() {
+        final Object[] annotations = branches.toArray();
+        for (int i = 0; i < annotations.length; i++) {
+            annotations[i] = ((AnnotatedTree<?>) annotations[i]).getAnnotation();
+        }
+        return annotations;
+    }
+
+    /**
+     * @return the number of branches
+     */
+    protected final int getBranchesNumber() {
+        return branches.size();
+    }
+
+    @Override
+    public final Metadata getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName().toLowerCase();
+    }
+
+    private IntStream indexStream() {
+        return IntStreams.range(0, getBranchesNumber());
+    }
+
+    @Override
+    public final boolean isErased() {
+        return erased;
     }
 
     /**
@@ -213,10 +252,6 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         indexStream().parallel().forEach(i -> action.accept(i, getBranch(i)));
     }
 
-    private IntStream indexStream() {
-        return IntStreams.range(0, getBranchesNumber());
-    }
-
     /**
      * Runs eval() sequentially on every branch, creating a new stack frame for
      * each one.
@@ -226,28 +261,33 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      */
     protected final void projectAndEval(final ExecutionContext context) {
         forEachWithIndex((i, branch) -> {
-            context.newCallStackFrame(i.byteValue());
-            branch.eval(context);
-            context.returnFromCallFrame();
+            branch.evalInNewStackFrame(context, i.byteValue());
         });
     }
 
-    /**
-     * Subclasses must use this method.
-     * 
-     * @return a deep copy of the branches
-     */
-    protected final List<AnnotatedTree<?>> deepCopyBranches() {
-        final List<AnnotatedTree<?>> res = new ArrayList<>(branches.size());
-        for (final AnnotatedTree<?> br : branches) {
-            res.add(br.copy());
+    @Override
+    public final void reset() {
+        for (final AnnotatedTree<?> b : branches) {
+            b.reset();
         }
-        return res;
+        annotation = null;
     }
 
+    /**
+     * @param obj
+     *            the annotation to set
+     */
+    protected final void setAnnotation(final T obj) {
+        annotation = obj;
+        erased = false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final AnnotatedTree<?> getBranch(final int i) {
-        return branches.get(i);
+    public String toString() {
+        return getName() + branchesToString();
     }
 
     /**
@@ -269,31 +309,14 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * Print utility to be used by subclasses. Prints all branches with the
-     * desired separator.
+     * A String representation of an {@link AnnotatedTree}. I
      * 
-     * @param sb
-     *            the {@link StringBuilder} to use
-     * @param i
-     *            indentation
-     * @param separator
-     *            separator
+     * @param tree the tree to stringify
+     * @return if the tree it is not erased (i.e., contains a value), returns a
+     *         stringified version of such value. Otherwise, returns the branch name
+     *         via {@link #getName()}
      */
-    protected void fillBranches(final StringBuilder sb, final int i, final char separator) {
-        forEach(b -> {
-            sb.append('\n');
-            b.toString(sb, i + 1);
-            sb.append(separator);
-        });
-        if (getBranchesNumber() > 0) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-    }
-
-    @Override
-    public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
-        context.newCallStackFrame(frameId);
-        eval(context);
-        context.returnFromCallFrame();
+    protected static final String stringFor(final AnnotatedTree<?> tree) {
+        return tree.isErased() ? tree.getName() : tree.getAnnotation().toString();
     }
 }

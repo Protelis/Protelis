@@ -12,6 +12,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.DotOperator;
 import org.protelis.lang.interpreter.impl.MethodCall;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import static java8.util.stream.StreamSupport.stream;
@@ -21,6 +22,21 @@ import static java8.util.stream.StreamSupport.stream;
  *
  */
 public final class JavaInteroperabilityUtils {
+
+    /**
+     * A fake Metadata object to be used when no data or original source code is available.
+     */
+    public static final Metadata METADATA = new Metadata() {
+        private static final long serialVersionUID = 1L;
+        @Override
+        public int getStartLine() {
+            return -1;
+        }
+        @Override
+        public int getEndLine() {
+            return -1;
+        }
+    };
 
     private JavaInteroperabilityUtils() {
     }
@@ -49,7 +65,7 @@ public final class JavaInteroperabilityUtils {
             throw new IllegalArgumentException(
                     "The target object class(" + target.getClass() + ") is not compatible with " + clazz);
         }
-        final MethodCall dot = new MethodCall(clazz, method, target == null, args);
+        final MethodCall dot = new MethodCall(METADATA, clazz, method, target == null, args);
         dot.eval(ctx);
         return dot.getAnnotation();
     }
@@ -96,7 +112,7 @@ public final class JavaInteroperabilityUtils {
     }
 
     private static List<AnnotatedTree<?>> toAnnotatedTree(final Object[] a) {
-        return J8Arrays.stream(a).map(Constant<Object>::new).collect(Collectors.toList());
+        return J8Arrays.stream(a).map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
     }
 
     /**
@@ -148,8 +164,8 @@ public final class JavaInteroperabilityUtils {
             final ExecutionContext ctx,
             final FunctionDefinition fd,
             final List<?> args) {
-        final List<AnnotatedTree<?>> arguments = stream(args).map(Constant<Object>::new).collect(Collectors.toList());
-        return runProtelisFunction(ctx, new Constant<>(fd), arguments);
+        final List<AnnotatedTree<?>> arguments = stream(args).map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
+        return runProtelisFunction(ctx, new Constant<>(METADATA, fd), arguments);
     }
 
 }

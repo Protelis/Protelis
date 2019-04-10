@@ -8,6 +8,8 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.loading.Metadata;
+
 /**
  * A numerical constant.
  */
@@ -16,24 +18,28 @@ public final class NumericConstant extends Constant<Double> {
     private static final long serialVersionUID = 7005881609489257450L;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param number
      *            the number
      */
-    public NumericConstant(final String number) {
-        this(Double.parseDouble(number));
+    public NumericConstant(final Metadata metadata, final String number) {
+        this(metadata, Double.parseDouble(number));
     }
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param number
      *            the number
      */
-    public NumericConstant(final double number) {
-        super(number);
+    public NumericConstant(final Metadata metadata, final double number) {
+        super(metadata, number);
     }
 
     @Override
     public NumericConstant copy() {
-        return new NumericConstant(getInternalObject());
+        return new NumericConstant(getMetadata(), getInternalObject());
     }
 
 }

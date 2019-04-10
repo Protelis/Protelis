@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
 import org.slf4j.Logger;
@@ -25,21 +26,23 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
     private static final byte DYN_CODE_INDEX = -1;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
      *            argument whose annotation will be used as a string
      *            representing a program
      */
-    public Eval(final AnnotatedTree<?> arg) {
-        super(arg);
+    public Eval(final Metadata metadata, final AnnotatedTree<?> arg) {
+        super(metadata, arg);
     }
 
     @Override
     public Eval copy() {
-        return new Eval(deepCopyBranches().get(0));
+        return new Eval(getMetadata(), deepCopyBranches().get(0));
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final String program = getBranch(0).getAnnotation().toString();
         try {
@@ -53,13 +56,6 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
             L.error("Non parse-able program", e);
             throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
         }
-    }
-
-    @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("eval(\n");
-        getBranch(0).toString(sb, i + 1);
-        sb.append(')');
     }
 
 }

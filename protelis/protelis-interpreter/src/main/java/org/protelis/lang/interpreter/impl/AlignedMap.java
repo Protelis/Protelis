@@ -24,6 +24,7 @@ import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
@@ -45,6 +46,8 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     private final AnnotatedTree<?> defVal;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
      *            the field on which {@link AlignedMap} should be applied
      * @param filter
@@ -54,9 +57,9 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
      * @param def
      *            default value
      */
-    public AlignedMap(final AnnotatedTree<Field> arg, final AnnotatedTree<FunctionDefinition> filter,
+    public AlignedMap(final Metadata metadata, final AnnotatedTree<Field> arg, final AnnotatedTree<FunctionDefinition> filter,
             final AnnotatedTree<FunctionDefinition> op, final AnnotatedTree<?> def) {
-        super(arg, filter, op, def);
+        super(metadata, arg, filter, op, def);
         fgen = arg;
         filterOp = filter;
         runOp = op;
@@ -65,11 +68,11 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
 
     @Override
     public AnnotatedTree<Tuple> copy() {
-        return new AlignedMap(fgen.copy(), filterOp.copy(), runOp.copy(), defVal.copy());
+        return new AlignedMap(getMetadata(), fgen.copy(), filterOp.copy(), runOp.copy(), defVal.copy());
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object originObj = fgen.getAnnotation();
         if (!(originObj instanceof Field)) {
@@ -105,7 +108,6 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                         if (mapping.size() == 2) {
                             final Object key = mapping.get(0);
                             final Object value = mapping.get(1);
-                            // TODO: use getOrDefault
                             Field ref = fieldKeys.get(key);
                             if (ref == null) {
                                 ref = DatatypeFactory.createField(map.size());
@@ -149,8 +151,8 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
              * Compute arguments
              */
             final List<AnnotatedTree<?>> args = new ArrayList<>(2);
-            args.add(new Constant<>(key));
-            args.add(new Variable(CURFIELD));
+            args.add(new Constant<>(getMetadata(), key));
+            args.add(new Variable(getMetadata(), CURFIELD));
             restricted.putVariable(CURFIELD, value, true);
             /*
              * Compute the code path: align on keys
@@ -162,7 +164,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
              */
             Pair<DotOperator, DotOperator> funs = funmap.get(key);
             if (funs == null) {
-                funs = new Pair<>(new DotOperator(APPLY, filterOp, args), new DotOperator(APPLY, runOp, args));
+                funs = new Pair<>(new DotOperator(getMetadata(), APPLY, filterOp, args), new DotOperator(getMetadata(), APPLY, runOp, args));
             }
             /*
              * Run the actual filtering and operation
@@ -198,16 +200,13 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     }
 
     @Override
-    protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append("alignedMap(\n");
-        fgen.toString(sb, indent + 1);
-        sb.append(",\n");
-        filterOp.toString(sb, indent + 1);
-        sb.append(",\n");
-        runOp.toString(sb, indent + 1);
-        sb.append(",\n");
-        defVal.toString(sb, indent + 1);
-        sb.append(')');
+    public String getName() {
+        return "alignedMap";
+    }
+
+    @Override
+    public String toString() {
+        return getName() + branchesToString();
     }
 
 }

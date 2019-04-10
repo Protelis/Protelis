@@ -12,6 +12,7 @@ import java8.util.function.Functions;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -23,20 +24,22 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     private static final byte BRANCH = 1;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param body
      *            body of nbr
      */
-    public NBRCall(final AnnotatedTree<?> body) {
-        super(body);
+    public NBRCall(final Metadata metadata, final AnnotatedTree<?> body) {
+        super(metadata, body);
     }
 
     @Override
     public NBRCall copy() {
-        return new NBRCall(deepCopyBranches().get(0));
+        return new NBRCall(getMetadata(), deepCopyBranches().get(0));
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         final AnnotatedTree<?> branch = getBranch(0);
         branch.evalInNewStackFrame(context, BRANCH);
         final Object childVal = branch.getAnnotation();
@@ -45,9 +48,8 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("nbr (");
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return "nbr";
     }
+
 }

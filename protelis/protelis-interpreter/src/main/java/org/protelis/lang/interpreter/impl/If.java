@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -26,6 +27,8 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
     private final AnnotatedTree<T> thenExpression, elseExpression;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param cond
      *            condition
      * @param then
@@ -33,8 +36,8 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
      * @param otherwise
      *            branch to execute if condition is false (erase otherwise)
      */
-    public If(final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
-        super(cond, then, otherwise);
+    public If(final Metadata metadata, final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
+        super(metadata, cond, then, otherwise);
         conditionExpression = cond;
         thenExpression = then;
         elseExpression = otherwise;
@@ -42,11 +45,11 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
 
     @Override
     public AnnotatedTree<T> copy() {
-        return new If<>(conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
+        return new If<>(getMetadata(), conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         conditionExpression.evalInNewStackFrame(context, COND);
         final Object actualResult = conditionExpression.getAnnotation();
         final boolean bool = actualResult instanceof Boolean
@@ -72,19 +75,13 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("if (\n");
-        conditionExpression.toString(sb, i + 1);
-        sb.append(") {\n");
-        thenExpression.toString(sb, i + 1);
-        sb.append('\n');
-        indent(sb, i);
-        sb.append("} else {\n");
-        elseExpression.toString(sb, i + 1);
-        sb.append('\n');
-        indent(sb, i);
-        sb.append('}');
+    public String toString() {
+        return getName() + " (" + stringFor(conditionExpression) + ") { "
+                + stringFor(thenExpression) + " } else { " + stringFor(thenExpression) + '}';
     }
 
 }

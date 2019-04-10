@@ -1,11 +1,15 @@
 package org.protelis.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +23,7 @@ import org.protelis.vm.ProtelisVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java8.util.function.Consumer;
 import java8.util.stream.IntStream;
 import java8.util.stream.IntStreams;
 
@@ -60,6 +65,69 @@ public final class ProgramTester {
      */
     public static void runFile(final String file) {
         runFile(file, MAX_CYCLE_NUM);
+    }
+
+    /**
+     * Tests a program expecting an error, and checks its message contents.
+     * 
+     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * @param expectedExceptionType the type of exception to be thrown
+     * @param searchCause if true, the message contents are searched for in the cause exception message
+     * @param messageContents the strings that the exception message must include
+     */
+    public static void runExpectingErrors(
+            final String program,
+            final Class<? extends Throwable> expectedExceptionType,
+            final boolean searchCause,
+            final String... messageContents) {
+        runExpectingErrors(program, expectedExceptionType, result -> {
+            if (searchCause) {
+                assertNotNull(result.getCause());
+            }
+            final String message = (searchCause ? result.getCause() : result)
+                    .getMessage().toLowerCase(Locale.ENGLISH);
+            assertNotNull(message);
+            for (String messagePart : messageContents) {
+                assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
+                        message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
+            }
+        });
+    }
+
+    /**
+     * Tests a program expecting an error, and checks its message contents.
+     * 
+     * @param <E> exception type (static)
+     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * @param expectedExceptionType the type of exception to be thrown
+     * @param analyzer the actions to perform on the exception
+     */
+    public static <E extends Throwable> void runExpectingErrors(
+            final String program,
+            final Class<E> expectedExceptionType,
+            final Consumer<E> analyzer) {
+        final E result = assertThrows("The test does not fail as expected.", expectedExceptionType, () -> {
+            if (program.endsWith("pt")) {
+                runFile(program);
+            } else {
+                runProgram(program, 1);
+            }
+        });
+        analyzer.accept(result);
+    }
+
+    /**
+     * Tests a program expecting an error, and checks its message contents.
+     * 
+     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * @param expectedExceptionType the type of exception to be thrown
+     * @param messageContents the strings that the exception message must include
+     */
+    public static void runExpectingErrors(
+            final String program,
+            final Class<? extends Throwable> expectedExceptionType,
+            final String... messageContents) {
+        runExpectingErrors(program, expectedExceptionType, false, messageContents);
     }
 
     /**

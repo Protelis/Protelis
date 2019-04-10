@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -25,14 +26,16 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     private final byte[] stackCode;
 
     /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param functionDefinition
      *            the definition of the function
      * @param args
      *            the arguments. Must be in the same number of the
      *            {@link FunctionDefinition}'s expected arguments
      */
-    public FunctionCall(final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
-        super(args);
+    public FunctionCall(final Metadata metadata, final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
+        super(metadata, args);
         Objects.requireNonNull(functionDefinition);
         fd = functionDefinition;
         if (fd.getArgNumber() != args.size()) {
@@ -47,7 +50,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
         /*
          * Deep copy the arguments
          */
-        final FunctionCall res = new FunctionCall(fd, deepCopyBranches());
+        final FunctionCall res = new FunctionCall(getMetadata(), fd, deepCopyBranches());
         if (!isErased()) {
             res.setAnnotation(null);
             res.setSuperscript(getSuperscript().copy());
@@ -63,7 +66,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         /*
          * 1. Evaluate all the arguments
          */
@@ -90,13 +93,8 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     }
 
     @Override
-    protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append(fd.getName())
-            .append('/')
-            .append(fd.getArgNumber())
-            .append('(');
-        fillBranches(sb, indent, ',');
-        sb.append(')');
+    public String getName() {
+        return fd.getName().toString();
     }
 
     /**

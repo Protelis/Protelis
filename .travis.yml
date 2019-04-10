@@ -46,8 +46,7 @@ before_install:
 install: true
     
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash travis_build.sh; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash travis_build_pull_request.sh; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_REPO_SLUG" = "Protelis/Protelis" ]; then bash travis_build.sh; else bash travis_build_pull_request.sh; fi'
 
 deploy:
   - provider: releases
@@ -60,12 +59,12 @@ deploy:
       repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
-
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
     domain: protelis-unstable-doc.surge.sh
     on:
+      repo: Protelis/Protelis
       branch: develop
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
@@ -74,6 +73,7 @@ deploy:
     project: "./protelis/report"
     domain: protelis-unstable-reports.surge.sh
     on:
+      repo: Protelis/Protelis
       branch: develop
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
@@ -82,6 +82,7 @@ deploy:
     project: "./protelis/build/docs/javadoc/"
     domain: protelis-doc.surge.sh
     on:
+      repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
@@ -90,6 +91,7 @@ deploy:
     project: "./protelis/report"
     domain: protelis-reports.surge.sh
     on:
+      repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
       condition: $JAVA7LEGACY = false
