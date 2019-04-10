@@ -8,6 +8,8 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import java.util.Locale;
+
 import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -56,7 +58,7 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     public String getName() {
-        return "hood" + (inclusive ? "PlusSelf" : "");
+        return function.name().toLowerCase(Locale.ENGLISH) + "Hood" + (inclusive ? "PlusSelf" : "");
     }
 
 }
