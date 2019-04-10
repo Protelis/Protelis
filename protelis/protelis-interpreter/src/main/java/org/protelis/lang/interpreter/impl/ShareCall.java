@@ -14,7 +14,8 @@ import java8.util.Objects;
 import java8.util.function.Consumer;
 
 /**
- * Share construct. Paper to be published. TODO: update the documentation as soon as it gets published.
+ * Share construct. Supersedes the previous rep implementation. Paper to be
+ * published. TODO: update the documentation as soon as it gets published.
  *
  * @param <S> superscript / export type
  * @param <T> returned type
