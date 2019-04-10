@@ -108,7 +108,6 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                         if (mapping.size() == 2) {
                             final Object key = mapping.get(0);
                             final Object value = mapping.get(1);
-                            // TODO: use getOrDefault
                             Field ref = fieldKeys.get(key);
                             if (ref == null) {
                                 ref = DatatypeFactory.createField(map.size());
