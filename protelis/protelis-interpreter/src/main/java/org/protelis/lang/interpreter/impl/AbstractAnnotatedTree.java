@@ -113,7 +113,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         try {
             evaluate(context);
         } catch (ProtelisRuntimeException e) {
-            e.calledBy(this);
+            e.fillInStackFrame(this);
             throw e;
         } catch (Exception e) {
             throw new ProtelisRuntimeException(e, this);

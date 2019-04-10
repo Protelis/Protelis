@@ -26,12 +26,25 @@ public final class ProtelisRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private final Deque<AnnotatedTree<?>> protelisStackTrace = new LinkedList<>();
 
+    /**
+     * Builds a new {@link ProtelisRuntimeException}, happening due to the specified
+     * Java exception, into the origin node of the Protelis AST.
+     * 
+     * @param javaCause the java {@link Throwable} generating the exception
+     * @param origin    the point in the Protelis program in which the Java
+     *                  exception was thrown
+     */
     public ProtelisRuntimeException(final Throwable javaCause, final AnnotatedTree<?> origin) {
         super(javaCause);
         protelisStackTrace.add(origin);
     }
 
-    public void calledBy(final AnnotatedTree<?> element) {
+    /**
+     * Populates the exception stack with a new caller.
+     * 
+     * @param element the Protelis node which called the failing one
+     */
+    public void fillInStackFrame(final AnnotatedTree<?> element) {
         protelisStackTrace.add(element);
     }
 
