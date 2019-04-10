@@ -95,7 +95,7 @@ public enum HoodOp {
           of(create(Object.class, DatatypeFactory::createTuple)),
           of(create(Object.class, DatatypeFactory::createTuple)));
 
-    private final BiFunction<Field, DeviceUID, Object> function;
+    private final SerializableBifunction function;
     private final Function<Field, Object> defs; // NOPMD
 
     /**
@@ -111,11 +111,11 @@ public enum HoodOp {
      *            functions are used in case there is no supplier that can
      *            provide a specific value-agnostic default
      */
-    HoodOp(final BiFunction<Field, DeviceUID, Object> fun,
+    HoodOp(final SerializableBifunction fun,
             final Supplier<Object> empty,
             final List<Pair<Class<?>, Supplier<Object>>> suppliers,
             final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
-        function = (Serializable & BiFunction<Field, DeviceUID, Object>) fun;
+        function = fun;
         defs = (field) -> {
             /*
              * Field empty: generate a default.
@@ -216,5 +216,8 @@ public enum HoodOp {
             }, n, UNION.defs.apply(f));
         return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
+
+    @FunctionalInterface
+    private interface SerializableBifunction extends BiFunction<Field, DeviceUID, Object>, Serializable { }
 
 }
