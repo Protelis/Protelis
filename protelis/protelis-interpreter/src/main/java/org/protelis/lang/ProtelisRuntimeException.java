@@ -71,7 +71,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
         for (final AnnotatedTree<?> current: protelisStackTrace) {
             if (!(current instanceof All)) {
                 longTrace.append("\n\tat: ")
-                    .append(current + extractLines(origin));
+                    .append(current + extractLines(current));
             }
             if (wasFunction) {
                 origin = current;
