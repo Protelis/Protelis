@@ -116,8 +116,6 @@ import java8.util.function.BiFunction;
 import java8.util.function.BinaryOperator;
 import java8.util.function.Functions;
 import java8.util.stream.Collectors;
-import java8.util.stream.RefStreams;
-import java8.util.stream.Stream;
 import java8.util.stream.StreamSupport;
 
 /**
