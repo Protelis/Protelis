@@ -15,6 +15,7 @@ import static java.lang.Double.POSITIVE_INFINITY;
 import static org.apache.commons.math3.util.Pair.create;
 import static java.util.Collections.emptyList;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.math3.util.Pair;
@@ -114,7 +115,7 @@ public enum HoodOp {
             final Supplier<Object> empty,
             final List<Pair<Class<?>, Supplier<Object>>> suppliers,
             final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
-        function = fun;
+        function = (Serializable & BiFunction<Field, DeviceUID, Object>) fun;
         defs = (field) -> {
             /*
              * Field empty: generate a default.
