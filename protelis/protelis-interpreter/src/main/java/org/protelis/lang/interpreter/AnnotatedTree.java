@@ -65,9 +65,7 @@ public interface AnnotatedTree<T> extends Serializable {
     AnnotatedTree<?> getBranch(int i);
 
     /**
-     * @param i
-     *            the index
-     * @return the i-th branch of the evaluation tree
+     * @return a view of the branches of the tree
      */
     List<AnnotatedTree<?>> getBranches();
 
