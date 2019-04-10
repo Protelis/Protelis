@@ -66,11 +66,25 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         branches = branch;
     }
 
-    protected String branchesToString() {
+    /**
+     * @return a {@link String} representing the branches of this tree, in the
+     *         format (b1, b2, ..., bn).
+     */
+    protected final String branchesToString() {
         return branchesToString(", ", "(", ")");
     }
 
-    protected final String branchesToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
+    /**
+     * Returns a {@link String} representing the branches of this tree with the
+     * specified format.
+     * 
+     * @param separator the separator {@link CharSequence}
+     * @param prefix    the prefix
+     * @param postfix   the postfix
+     * @return a {@link String} representing the branches of this tree with the
+     *         specified format.
+     */
+    protected final String branchesToString(final CharSequence separator, final CharSequence prefix, final CharSequence postfix) {
         final StringBuilder sb = new StringBuilder(prefix);
         if (branches.size() > 0) {
             forEachWithIndex((i, branch) -> {
@@ -197,6 +211,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         return metadata;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return getClass().getSimpleName().toLowerCase();
@@ -265,6 +282,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         erased = false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return getName() + branchesToString();
@@ -288,7 +308,15 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         }
     }
 
-    protected static final String stringFor(AnnotatedTree<?> branch) {
-        return branch.isErased() ? branch.getName() : branch.getAnnotation().toString();
+    /**
+     * A String representation of an {@link AnnotatedTree}. I
+     * 
+     * @param tree the tree to stringify
+     * @return if the tree it is not erased (i.e., contains a value), returns a
+     *         stringified version of such value. Otherwise, returns the branch name
+     *         via {@link #getName()}
+     */
+    protected static final String stringFor(final AnnotatedTree<?> tree) {
+        return tree.isErased() ? tree.getName() : tree.getAnnotation().toString();
     }
 }
