@@ -17,12 +17,20 @@ public class TestParseError {
         "/*\n", "*/\n"
     );
 
-    private static void test(final String file) {
-        test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
+    /**
+     * Test that commented out java imports are not considered.
+     */
+    @Test
+    public void testCommentedJavaImports() {
+        testCommentedImportLine("import java.lang.Math.sin", "sin(0)", "sin");
     }
 
-    private static void test(final String file, final int simulationSteps, final int stabilitySteps) {
-        InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
+    /**
+     * Test that commented out Protelis imports are not considered.
+     */
+    @Test
+    public void testCommentedProtelisImports() {
+        testCommentedImportLine("import protelis:lang:time", "cyclicTimer(10,1)", "cyclicTimer");
     }
 
     /**
@@ -102,20 +110,12 @@ public class TestParseError {
         test("parseError7");
     }
 
-    /**
-     * Test that commented out java imports are not considered.
-     */
-    @Test
-    public void testCommentedJavaImports() {
-        testCommentedImportLine("import java.lang.Math.sin", "sin(0)", "sin");
+    private static void test(final String file) {
+        test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
     }
 
-    /**
-     * Test that commented out Protelis imports are not considered.
-     */
-    @Test
-    public void testCommentedProtelisImports() {
-        testCommentedImportLine("import protelis:lang:time", "cyclicTimer(10,1)", "cyclicTimer");
+    private static void test(final String file, final int simulationSteps, final int stabilitySteps) {
+        InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
     }
 
     private static void testCommentedImportLine(final String importLine, final String programLine, final String... errorMessages) {
