@@ -90,4 +90,22 @@ public class TestParseError {
     public void testParseError7() {
         test("parseError7");
     }
+
+    /**
+     * Test that commented out java imports are not considered.
+     */
+    @Test
+    public void testCommentedJavaImports() {
+        ProgramTester.runProgram("import java.lang.Math.sin\nsin(0)", 1);
+        ProgramTester.runExpectingErrors("//import java.lang.Math.sin\nsin(0)", Exception.class, "sin");
+    }
+
+    /**
+     * Test that commented out Protelis imports are not considered.
+     */
+    @Test
+    public void testCommentedProtelisImports() {
+        ProgramTester.runProgram("import protelis:lang:time\ncyclicTimer(10,1)", 1);
+        ProgramTester.runExpectingErrors("//import protelis:lang:time\ncyclicTimer(10,1)", Exception.class, "cyclicTimer");
+    }
 }
