@@ -2,16 +2,35 @@ package org.protelis.test;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
 /**
  * Testing Protelis core libraries.
  */
 public class TestParseError {
-    private static void test(final String file) {
-        test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
+
+    private static final Multimap<String, String> COMMENT_STYLES = ImmutableMultimap.of(
+        "//", "\n",
+        "/*", "*/\n",
+        "/*\n", "*/",
+        "/*\n", "*/\n"
+    );
+
+    /**
+     * Test that commented out java imports are not considered.
+     */
+    @Test
+    public void testCommentedJavaImports() {
+        testCommentedImportLine("import java.lang.Math.sin", "sin(0)", "sin");
     }
 
-    private static void test(final String file, final int simulationSteps, final int stabilitySteps) {
-        InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
+    /**
+     * Test that commented out Protelis imports are not considered.
+     */
+    @Test
+    public void testCommentedProtelisImports() {
+        testCommentedImportLine("import protelis:lang:time", "cyclicTimer(10,1)", "cyclicTimer");
     }
 
     /**
@@ -89,5 +108,20 @@ public class TestParseError {
     @Test
     public void testParseError7() {
         test("parseError7");
+    }
+
+    private static void test(final String file) {
+        test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
+    }
+
+    private static void test(final String file, final int simulationSteps, final int stabilitySteps) {
+        InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
+    }
+
+    private static void testCommentedImportLine(final String importLine, final String programLine, final String... errorMessages) {
+        ProgramTester.runProgram(importLine + "\n" + programLine, 1);
+        COMMENT_STYLES.entries().forEach(entry -> ProgramTester.runExpectingErrors(
+                entry.getKey() + importLine + entry.getValue() + programLine,
+                Exception.class, errorMessages));
     }
 }
