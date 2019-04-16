@@ -49,7 +49,7 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         conditionExpression.evalInNewStackFrame(context, COND);
         final Object actualResult = conditionExpression.getAnnotation();
         final boolean bool = actualResult instanceof Boolean
@@ -75,19 +75,13 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("if (\n");
-        conditionExpression.toString(sb, i + 1);
-        sb.append(") {\n");
-        thenExpression.toString(sb, i + 1);
-        sb.append('\n');
-        indent(sb, i);
-        sb.append("} else {\n");
-        elseExpression.toString(sb, i + 1);
-        sb.append('\n');
-        indent(sb, i);
-        sb.append('}');
+    public String toString() {
+        return getName() + " (" + stringFor(conditionExpression) + ") { "
+                + stringFor(thenExpression) + " } else { " + stringFor(thenExpression) + '}';
     }
 
 }

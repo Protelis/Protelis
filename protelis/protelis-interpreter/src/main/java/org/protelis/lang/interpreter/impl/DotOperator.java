@@ -64,7 +64,6 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         super(metadata, args);
         Objects.requireNonNull(target);
         isApply = apply;
-        assert isApply || name != null;
         methodName = apply ? APPLY : name;
         left = target;
     }
@@ -77,7 +76,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         /*
          * Eval left
          */
@@ -115,15 +114,20 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         context.returnFromCallFrame();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append('\n');
-        left.toString(sb, indent);
-        sb.append('\n');
-        indent(sb, indent);
-        sb.append('.').append(methodName).append(" (");
-        fillBranches(sb, indent, ',');
-        sb.append(')');
+    public String getName() {
+        return methodName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return stringFor(left) + '.' + methodName + branchesToString();
     }
 
 }

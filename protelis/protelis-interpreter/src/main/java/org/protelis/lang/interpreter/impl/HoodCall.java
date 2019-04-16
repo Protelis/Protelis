@@ -23,8 +23,8 @@ import org.protelis.vm.ExecutionContext;
 public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
-    private final HoodOp function;
     private final AnnotatedTree<Field> body;
+    private final HoodOp function;
     private final boolean inclusive;
 
     /**
@@ -51,17 +51,14 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(function.toString().toLowerCase(Locale.US))
-            .append("Hood (");
-        fillBranches(sb, i, ',');
-        sb.append(')');
+    public String getName() {
+        return function.name().toLowerCase(Locale.ENGLISH) + "Hood" + (inclusive ? "PlusSelf" : "");
     }
 
 }

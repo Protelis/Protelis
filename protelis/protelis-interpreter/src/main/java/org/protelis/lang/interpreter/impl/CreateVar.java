@@ -44,17 +44,27 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object res = getBranch(0).getAnnotation();
         context.putVariable(var, res, isDefinition());
         setAnnotation(res);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(var).append(" = \n");
-        getBranch(0).toString(sb, i + 1);
+    public String getName() {
+        return "let";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return getName() + ' ' + var + " = " + stringFor(getBranch(0));
     }
 
     /**

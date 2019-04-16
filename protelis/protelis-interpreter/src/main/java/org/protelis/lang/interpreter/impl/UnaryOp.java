@@ -48,15 +48,14 @@ public final class UnaryOp extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(op.run(getBranch(0).getAnnotation()));
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(op);
-        getBranch(0).toString(sb, i);
+    public String getName() {
+        return op.name();
     }
 
 }

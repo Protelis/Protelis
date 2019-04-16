@@ -72,7 +72,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object originObj = fgen.getAnnotation();
         if (!(originObj instanceof Field)) {
@@ -108,7 +108,6 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                         if (mapping.size() == 2) {
                             final Object key = mapping.get(0);
                             final Object value = mapping.get(1);
-                            // TODO: use getOrDefault
                             Field ref = fieldKeys.get(key);
                             if (ref == null) {
                                 ref = DatatypeFactory.createField(map.size());
@@ -201,16 +200,13 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     }
 
     @Override
-    protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append("alignedMap(\n");
-        fgen.toString(sb, indent + 1);
-        sb.append(",\n");
-        filterOp.toString(sb, indent + 1);
-        sb.append(",\n");
-        runOp.toString(sb, indent + 1);
-        sb.append(",\n");
-        defVal.toString(sb, indent + 1);
-        sb.append(')');
+    public String getName() {
+        return "alignedMap";
+    }
+
+    @Override
+    public String toString() {
+        return getName() + branchesToString();
     }
 
 }

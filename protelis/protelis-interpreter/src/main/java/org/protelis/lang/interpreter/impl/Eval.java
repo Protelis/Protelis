@@ -42,7 +42,7 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final String program = getBranch(0).getAnnotation().toString();
         try {
@@ -56,13 +56,6 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
             L.error("Non parse-able program", e);
             throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
         }
-    }
-
-    @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("eval(\n");
-        getBranch(0).toString(sb, i + 1);
-        sb.append(')');
     }
 
 }

@@ -1,0 +1,29 @@
+// Expected: runtime error
+module errorTrace02
+import java.lang.Math.sin
+def rootError() {
+    rep(x <- 1) {
+        minHood(
+            nbr(
+                sin("I'm definitely not a number.")
+            )
+        )
+    }
+}
+def aCall() {
+    nbr(rootError())
+}
+def anotherCall() {
+    /*
+     * Some comment to make a space
+     */
+     1 + 1;
+     // And after a working instruction, wreck havoc
+     aCall()
+}
+
+/*
+ * Main Script
+ */
+ anotherCall()
+ 

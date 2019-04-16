@@ -14,6 +14,7 @@ import static java8.util.stream.StreamSupport.stream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -509,8 +510,14 @@ public final class ProtelisLoader {
                         : argobj instanceof VarDef ? Lists.newArrayList((VarDef) l.getArgs())
                         : ((VarDefList) argobj).getArgs();
                 final AnnotatedTree<?> body = translate(l.getBody(), m);
+                final List<AnnotatedTree<?>> bodyEntities = new ArrayList<>();
+                bodyEntities.add(body);
+                for (int i = 0; i < bodyEntities.size(); i++) {
+                    bodyEntities.addAll(bodyEntities.get(i).getBranches());
+                }
                 final String base = Base64.encodeBase64String(
-                        Hashing.sha512().hashString(body.toString(), Charsets.UTF_8).asBytes());
+                        Hashing.sha256().hashString(bodyEntities.toString(), Charsets.UTF_8).asBytes());
+                System.out.println(l);
                 final FunctionDefinition lambda = new FunctionDefinition(empty(), "$anon$" + base, toR(args));
                 lambda.setBody(body);
                 return new Constant<>(metadataFor(e), lambda);

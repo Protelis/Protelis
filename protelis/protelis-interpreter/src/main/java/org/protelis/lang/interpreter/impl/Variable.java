@@ -37,7 +37,7 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         Object val = context.getVariable(name);
         if (val == null) {
             /*
@@ -53,8 +53,13 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append(name);
+    public String getName() {
+        return name.toString();
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

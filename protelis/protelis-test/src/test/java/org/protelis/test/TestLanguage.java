@@ -9,7 +9,6 @@
 package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.protelis.test.ProgramTester.runExpectingErrors;
 
 import java.util.Collections;
@@ -17,6 +16,7 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
+import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
 
@@ -102,8 +102,8 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage01() {
-        runExpectingErrors("/errorMessage01.pt", UnsupportedOperationException.class, "static");
-        runExpectingErrors("/errorMessage01.pt", UnsupportedOperationException.class, true, "type");
+        runExpectingErrors("/errorMessage01.pt", ProtelisRuntimeException.class, "static");
+        runExpectingErrors("/errorMessage01.pt", ProtelisRuntimeException.class, true, "type");
     }
 
     /**
@@ -307,12 +307,7 @@ public class TestLanguage {
      */
     @Test
     public void testIf02() {
-        try {
-            ProgramTester.runFile("/if02.pt", 1, null);
-            fail("If should never return fields");
-        } catch (IllegalStateException e) {
-            assertNotNull(e);
-        }
+        ProgramTester.runExpectingErrors("/if02.pt", ProtelisRuntimeException.class, "if", "cannot", "return", "field");
     }
 
     /**
@@ -473,14 +468,7 @@ public class TestLanguage {
      */
     @Test
     public void testMethod09() {
-        try {
-            ProgramTester.runFile("/method09.pt");
-        } catch (Exception e) { // NOPMD: here we want to catch the exception and analyze it
-            // Should be an illegal state, caused by an invocation target, caused by a bad index
-            if (!(e.getCause().getCause() instanceof ArrayIndexOutOfBoundsException)) {
-                fail("Didn't find an OutOfBounds exception");
-            }
-        }
+        ProgramTester.runExpectingErrors("/method09.pt", ProtelisRuntimeException.class, "out", "of", "bounds");
     }
 
     /**

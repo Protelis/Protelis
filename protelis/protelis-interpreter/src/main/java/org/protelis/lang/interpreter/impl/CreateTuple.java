@@ -53,7 +53,7 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         final Object[] a = new Object[getBranchesNumber()];
         final TIntList fieldIndexes = new TIntArrayList();
         forEachWithIndex((i, branch) -> {
@@ -72,11 +72,12 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append('[');
-        fillBranches(sb, i, ',');
-        sb.append(']');
+    public String toString() {
+        return branchesToString(", ", "[", "]");
     }
 
 }

@@ -15,6 +15,7 @@ import static java.lang.Double.POSITIVE_INFINITY;
 import static org.apache.commons.math3.util.Pair.create;
 import static java.util.Collections.emptyList;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.math3.util.Pair;
@@ -94,7 +95,7 @@ public enum HoodOp {
           of(create(Object.class, DatatypeFactory::createTuple)),
           of(create(Object.class, DatatypeFactory::createTuple)));
 
-    private final BiFunction<Field, DeviceUID, Object> function;
+    private final SerializableBifunction function;
     private final Function<Field, Object> defs; // NOPMD
 
     /**
@@ -110,7 +111,7 @@ public enum HoodOp {
      *            functions are used in case there is no supplier that can
      *            provide a specific value-agnostic default
      */
-    HoodOp(final BiFunction<Field, DeviceUID, Object> fun,
+    HoodOp(final SerializableBifunction fun,
             final Supplier<Object> empty,
             final List<Pair<Class<?>, Supplier<Object>>> suppliers,
             final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
@@ -215,5 +216,8 @@ public enum HoodOp {
             }, n, UNION.defs.apply(f));
         return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
+
+    @FunctionalInterface
+    private interface SerializableBifunction extends BiFunction<Field, DeviceUID, Object>, Serializable { }
 
 }

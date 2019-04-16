@@ -34,13 +34,12 @@ public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         setAnnotation(context);
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        sb.append("self");
+    public String toString() {
+        return getName();
     }
-
 }

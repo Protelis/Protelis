@@ -8,12 +8,16 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import static java8.util.stream.StreamSupport.parallelStream;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
@@ -22,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import java8.util.function.BiConsumer;
 import java8.util.function.Consumer;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -61,12 +67,35 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param indent
-     *            level of indentation
+     * @return a {@link String} representing the branches of this tree, in the
+     *         format (b1, b2, ..., bn).
      */
-    protected abstract void asString(StringBuilder sb, int indent);
+    protected final String branchesToString() {
+        return branchesToString(", ", "(", ")");
+    }
+
+    /**
+     * Returns a {@link String} representing the branches of this tree with the
+     * specified format.
+     * 
+     * @param separator the separator {@link CharSequence}
+     * @param prefix    the prefix
+     * @param postfix   the postfix
+     * @return a {@link String} representing the branches of this tree with the
+     *         specified format.
+     */
+    protected final String branchesToString(final CharSequence separator, final CharSequence prefix, final CharSequence postfix) {
+        final StringBuilder sb = new StringBuilder(prefix);
+        if (branches.size() > 0) {
+            forEachWithIndex((i, branch) -> {
+                sb.append(stringFor(branch));
+                if (i < branches.size() - 1) {
+                    sb.append(separator);
+                }
+            });
+        }
+        return sb.append(postfix).toString();
+    }
 
     /**
      * Subclasses must use this method.
@@ -94,6 +123,18 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     @Override
+    public final void eval(final ExecutionContext context) {
+        try {
+            evaluate(context);
+        } catch (ProtelisRuntimeException e) {
+            e.fillInStackFrame(this);
+            throw e;
+        } catch (Exception e) {
+            throw new ProtelisRuntimeException(e, this);
+        }
+    }
+
+    @Override
     public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
         context.newCallStackFrame(frameId);
         eval(context);
@@ -101,26 +142,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * Print utility to be used by subclasses. Prints all branches with the
-     * desired separator.
+     * Evaluates this AST node. This method can throw any exception,
+     * {@link AbstractAnnotatedTree} takes care of storing the necessary metadata.
      * 
-     * @param sb
-     *            the {@link StringBuilder} to use
-     * @param i
-     *            indentation
-     * @param separator
-     *            separator
+     * @param context the execution context
      */
-    protected void fillBranches(final StringBuilder sb, final int i, final char separator) {
-        forEach(b -> {
-            sb.append('\n');
-            b.toString(sb, i + 1);
-            sb.append(separator);
-        });
-        if (getBranchesNumber() > 0) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-    }
+    protected abstract void evaluate(ExecutionContext context);
 
     /**
      * Facility to run lambdas across all the branches.
@@ -156,13 +183,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         return branches.get(i);
     }
 
-    /**
-     * @return Directly accesses the {@link List} where branches are stored:
-     *         modifications on branches will reflect in the internal branch
-     *         representation. Be careful.
-     */
-    protected List<AnnotatedTree<?>> getBranches() {
-        return branches;
+    @Override
+    public final List<AnnotatedTree<?>> getBranches() {
+        return Collections.unmodifiableList(branches);
     }
 
     /**
@@ -188,9 +211,45 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         return metadata;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName().toLowerCase();
+    }
+
+    private IntStream indexStream() {
+        return IntStreams.range(0, getBranchesNumber());
+    }
+
     @Override
     public final boolean isErased() {
         return erased;
+    }
+
+    /**
+     * Facility to run lambdas across all the branches in a PARALELL fashion. Be
+     * EXTREMELY careful with this. If you are not sure whether or not you
+     * should use this, you should not.
+     * 
+     * @param action
+     *            the Consumer to execute
+     */
+    protected final void parallelForEach(final Consumer<? super AnnotatedTree<?>> action) {
+        parallelStream(branches).forEach(action);
+    }
+
+    /**
+     * Facility to run lambdas across all the branches in a PARALELL fashion. Be
+     * EXTREMELY careful with this. If you are not sure whether or not you
+     * should use this, you should not.
+     * 
+     * @param action
+     *            the Consumer to execute
+     */
+    protected final void parallelForEachWithIndex(final BiConsumer<Integer, ? super AnnotatedTree<?>> action) {
+        indexStream().parallel().forEach(i -> action.accept(i, getBranch(i)));
     }
 
     /**
@@ -202,9 +261,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      */
     protected final void projectAndEval(final ExecutionContext context) {
         forEachWithIndex((i, branch) -> {
-            context.newCallStackFrame(i.byteValue());
-            branch.eval(context);
-            context.returnFromCallFrame();
+            branch.evalInNewStackFrame(context, i.byteValue());
         });
     }
 
@@ -225,38 +282,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
         erased = false;
     }
 
-    @Override
-    public final String toString() {
-        final StringBuilder sb = new StringBuilder();
-        toString(sb, 0);
-        return sb.toString();
-    }
-
     /**
-     * @param sb
-     *            {@link StringBuilder} to fill
-     * @param i
-     *            level of indentation
+     * {@inheritDoc}
      */
     @Override
-    public final void toString(final StringBuilder sb, final int i) {
-        indent(sb, i);
-        if (erased) {
-            sb.append('|');
-            asString(sb, i);
-            sb.append('|');
-        } else {
-            asString(sb, i);
-            sb.append('\n');
-            indent(sb, i);
-            sb.append(':');
-            if (annotation instanceof AnnotatedTree<?>) {
-                sb.append('\n');
-                ((AnnotatedTree<?>) annotation).toString(sb, i + 1);
-            } else {
-                sb.append(annotation);
-            }
-        }
+    public String toString() {
+        return getName() + branchesToString();
     }
 
     /**
@@ -275,5 +306,17 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
                 L.error("There is a bug.", e);
             }
         }
+    }
+
+    /**
+     * A String representation of an {@link AnnotatedTree}. I
+     * 
+     * @param tree the tree to stringify
+     * @return if the tree it is not erased (i.e., contains a value), returns a
+     *         stringified version of such value. Otherwise, returns the branch name
+     *         via {@link #getName()}
+     */
+    protected static final String stringFor(final AnnotatedTree<?> tree) {
+        return tree.isErased() ? tree.getName() : tree.getAnnotation().toString();
     }
 }

@@ -52,18 +52,19 @@ public final class BinaryOp extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(op.run(getBranch(0).getAnnotation(), getBranch(1).getAnnotation()));
     }
 
     @Override
-    protected void asString(final StringBuilder sb, final int i) {
-        getBranch(0).toString(sb, i);
-        sb.append('\n');
-        indent(sb, i);
-        sb.append(op.toString()).append('\n');
-        getBranch(1).toString(sb, i);
+    public String getName() {
+        return op.toString();
+    }
+
+    @Override
+    public String toString() {
+        return stringFor(getBranch(0)) + ' ' + getName() + ' ' + stringFor(getBranch(1));
     }
 
 }

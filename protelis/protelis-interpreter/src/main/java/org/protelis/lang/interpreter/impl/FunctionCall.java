@@ -66,7 +66,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     }
 
     @Override
-    public void eval(final ExecutionContext context) {
+    public void evaluate(final ExecutionContext context) {
         /*
          * 1. Evaluate all the arguments
          */
@@ -93,13 +93,8 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     }
 
     @Override
-    protected void innerAsString(final StringBuilder sb, final int indent) {
-        sb.append(fd.getName())
-            .append('/')
-            .append(fd.getArgNumber())
-            .append('(');
-        fillBranches(sb, indent, ',');
-        sb.append(')');
+    public String getName() {
+        return fd.getName().toString();
     }
 
     /**

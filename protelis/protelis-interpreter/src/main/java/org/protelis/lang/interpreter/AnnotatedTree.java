@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
@@ -22,29 +23,14 @@ import org.protelis.vm.ExecutionContext;
 public interface AnnotatedTree<T> extends Serializable {
 
     /**
-     * @return the current value of this program
+     * @return a copy of this program.
      */
-    T getAnnotation();
-
-    /**
-     * Recursively deletes any existing annotation.
-     */
-    void reset();
+    AnnotatedTree<T> copy();
 
     /**
      * |e| operation.
      */
     void erase();
-
-    /**
-     * @return true if this program has been erased
-     */
-    boolean isErased();
-
-    /**
-     * @return a copy of this program.
-     */
-    AnnotatedTree<T> copy();
 
     /**
      * Evaluates the program using the passed {@link ExecutionContext}.
@@ -67,6 +53,11 @@ public interface AnnotatedTree<T> extends Serializable {
     void evalInNewStackFrame(ExecutionContext context, byte frameId);
 
     /**
+     * @return the current value of this program
+     */
+    T getAnnotation();
+
+    /**
      * @param i
      *            the index
      * @return the i-th branch of the evaluation tree
@@ -74,19 +65,28 @@ public interface AnnotatedTree<T> extends Serializable {
     AnnotatedTree<?> getBranch(int i);
 
     /**
-     * A faster toString, that only uses a single instance of
-     * {@link StringBuilder}.
-     * 
-     * @param sb
-     *            the {@link StringBuilder} where to load the {@link String}
-     * @param i
-     *            the number of indentations for the current level
+     * @return a view of the branches of the tree
      */
-    void toString(StringBuilder sb, int i);
+    List<AnnotatedTree<?>> getBranches();
 
     /**
      * @return A {@link Metadata} object containing information about the code that generated this AST node.
      */
     Metadata getMetadata();
+
+    /**
+     * @return The name of the operation
+     */
+    String getName();
+
+    /**
+     * @return true if this program has been erased
+     */
+    boolean isErased();
+
+    /**
+     * Recursively deletes any existing annotation.
+     */
+    void reset();
 
 }
