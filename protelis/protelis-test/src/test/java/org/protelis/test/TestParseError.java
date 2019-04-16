@@ -2,10 +2,21 @@ package org.protelis.test;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
 /**
  * Testing Protelis core libraries.
  */
 public class TestParseError {
+
+    private static final Multimap<String, String> COMMENT_STYLES = ImmutableMultimap.of(
+        "//", "\n",
+        "/*", "*/\n",
+        "/*\n", "*/",
+        "/*\n", "*/\n"
+    );
+
     private static void test(final String file) {
         test(file, InfrastructureTester.SIMULATION_STEPS, InfrastructureTester.STABILITY_STEPS);
     }
@@ -96,8 +107,7 @@ public class TestParseError {
      */
     @Test
     public void testCommentedJavaImports() {
-        ProgramTester.runProgram("import java.lang.Math.sin\nsin(0)", 1);
-        ProgramTester.runExpectingErrors("//import java.lang.Math.sin\nsin(0)", Exception.class, "sin");
+        testCommentedImportLine("import java.lang.Math.sin", "sin(0)", "sin");
     }
 
     /**
@@ -105,7 +115,13 @@ public class TestParseError {
      */
     @Test
     public void testCommentedProtelisImports() {
-        ProgramTester.runProgram("import protelis:lang:time\ncyclicTimer(10,1)", 1);
-        ProgramTester.runExpectingErrors("//import protelis:lang:time\ncyclicTimer(10,1)", Exception.class, "cyclicTimer");
+        testCommentedImportLine("import protelis:lang:time", "cyclicTimer(10,1)", "cyclicTimer");
+    }
+
+    private static void testCommentedImportLine(final String importLine, final String programLine, final String... errorMessages) {
+        ProgramTester.runProgram(importLine + "\n" + programLine, 1);
+        COMMENT_STYLES.entries().forEach(entry -> ProgramTester.runExpectingErrors(
+                entry.getKey() + importLine + entry.getValue() + programLine,
+                Exception.class, errorMessages));
     }
 }
