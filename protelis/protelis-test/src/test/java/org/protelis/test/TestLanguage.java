@@ -311,6 +311,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test that the issue described at https://github.com/Protelis/Protelis/issues/127 is solved.
+     */
+    @Test
+    public void testIssue127() {
+        ProgramTester.runFile("/issue127.pt");
+    }
+
+    /**
      * Test a simple anonymous function inline definition and application.
      */
     @Test

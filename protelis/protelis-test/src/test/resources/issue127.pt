@@ -1,0 +1,2 @@
+// EXPECTED_RESULT: [Infinity, [Infinity, Infinity]]
+minHood(nbr([Infinity, [0, 0]]))
