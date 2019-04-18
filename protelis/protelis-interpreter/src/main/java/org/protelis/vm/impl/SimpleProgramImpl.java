@@ -14,15 +14,15 @@ package org.protelis.vm.impl;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java8.util.Optional;
 
 import org.danilopianini.lang.util.FasterString;
-import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
+
+import java8.util.Optional;
 
 /**
  * Base implementation of {@link ProtelisProgram}.
@@ -32,7 +32,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     private static final long serialVersionUID = -986976491484860840L;
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
     private final AnnotatedTree<?> prog;
-    private final Map<Reference, FunctionDefinition> funs;
+    private final Map<Reference, ?> funs;
     private final FasterString name;
 
     /**
@@ -47,7 +47,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     public SimpleProgramImpl(
             final ProtelisModule source,
             final AnnotatedTree<?> program,
-            final Map<Reference, FunctionDefinition> functions) {
+            final Map<Reference, ?> functions) {
         this(Optional.of(source).map(ProtelisModule::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
     }
 
@@ -62,7 +62,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     public SimpleProgramImpl(
             final String pName,
             final AnnotatedTree<?> program,
-            final Map<Reference, FunctionDefinition> functions) {
+            final Map<Reference, ?> functions) {
         Objects.requireNonNull(pName);
         Objects.requireNonNull(program);
         Objects.requireNonNull(functions);
@@ -82,7 +82,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     }
 
     @Override
-    public Map<Reference, FunctionDefinition> getNamedFunctions() {
+    public Map<Reference, ?> getGloballyAvailableReferences() {
         return funs;
     }
 

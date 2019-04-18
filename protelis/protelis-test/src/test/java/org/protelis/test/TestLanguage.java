@@ -271,6 +271,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test direct usage of a Java method as higher order function.
+     */
+    @Test
+    public void testHof06() {
+        ProgramTester.runFile("/hof06.pt");
+    }
+
+    /**
      * Test that plain hood functions don't include local value.
      */
     @Test

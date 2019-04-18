@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.ReflectionUtils;
@@ -109,7 +110,12 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
              * Check everything for fields
              */
             final Object[] args = getBranchesAnnotations();
-            setAnnotation(ReflectionUtils.invokeFieldable(target.getClass(), methodName, target, args));
+            if (isApply && target instanceof JVMEntity) {
+                final JVMEntity jvmEntity = (JVMEntity) target;
+                setAnnotation(ReflectionUtils.invokeFieldable(jvmEntity.getType(), jvmEntity.getMemberName(), null, args));
+            } else {
+                setAnnotation(ReflectionUtils.invokeFieldable(target.getClass(), methodName, target, args));
+            }
         }
         context.returnFromCallFrame();
     }
