@@ -1,5 +1,6 @@
 package org.protelis.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -346,7 +347,9 @@ public final class InfrastructureTester {
         sim.addOutputMonitor(new OutputMonitor<Object>() {
             private static final long serialVersionUID = 1L;
             @Override
-            public void finished(final Environment<Object> env, final Time time, final long step) { }
+            public void finished(final Environment<Object> env, final Time time, final long step) {
+                assertEquals(totalSimulationSteps + stabilitySteps, step);
+            }
             @Override
             public void initialized(final Environment<Object> env) { }
             @Override
