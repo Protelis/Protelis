@@ -3,7 +3,7 @@ import protelis:lang:utils
 import protelis:coord:nonselfstabilizing:accumulation
 
 multiRegion(
-    env.get("rootPartition"), 
+    if (env.has("rootPartition")) { env.get("rootPartition") } else { false }, 
     (key) -> { key == env.get("rootPartition") },
     () -> { 
         gossip(multiRegion(
