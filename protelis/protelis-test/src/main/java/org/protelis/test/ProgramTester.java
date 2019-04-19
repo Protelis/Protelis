@@ -87,7 +87,7 @@ public final class ProgramTester {
             final String message = (searchCause ? result.getCause() : result)
                     .getMessage().toLowerCase(Locale.ENGLISH);
             assertNotNull(message);
-            for (String messagePart : messageContents) {
+            for (final String messagePart : messageContents) {
                 assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
                         message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
             }
