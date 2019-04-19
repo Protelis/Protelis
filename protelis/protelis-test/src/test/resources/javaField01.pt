@@ -1,0 +1,5 @@
+// EXPECTED_RESULT: 1
+module javaField01
+import java.lang.Math.*
+
+cos(2 * PI)

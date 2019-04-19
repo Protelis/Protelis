@@ -330,6 +330,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test java static field access.
+     */
+    @Test
+    public void testJavaField01() {
+        runFile("/javaField01.pt");
+    }
+
+    /**
      * Test a simple anonymous function inline definition and application.
      */
     @Test
