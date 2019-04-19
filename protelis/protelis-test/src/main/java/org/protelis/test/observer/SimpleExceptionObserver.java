@@ -9,7 +9,7 @@ import java.util.Optional;
  * Simple exception observer.
  */
 public final class SimpleExceptionObserver implements ExceptionObserver {
-    private final List<Exception> exceptions = new LinkedList<Exception>();
+    private final List<Exception> exceptions = new LinkedList<>();
 
     @Override
     public Exception exceptionThrown(final Exception ex) {
