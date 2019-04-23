@@ -1,0 +1,6 @@
+// EXPECTED_RESULT: 2
+import java.lang.Math.sqrt
+def applier(fun){
+	fun.apply(4)
+}
+applier(sqrt)

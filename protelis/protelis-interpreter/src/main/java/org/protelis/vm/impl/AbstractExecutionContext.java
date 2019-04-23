@@ -21,7 +21,6 @@ import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
@@ -79,7 +78,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final void setAvailableFunctions(final Map<Reference, FunctionDefinition> knownFunctions) {
+    public final void setGloballyAvailableReferences(final Map<Reference, ?> knownFunctions) {
         functions = Collections.unmodifiableMap(knownFunctions);
     }
 

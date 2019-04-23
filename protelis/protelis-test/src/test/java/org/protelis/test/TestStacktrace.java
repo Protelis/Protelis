@@ -30,7 +30,7 @@ public final class TestStacktrace {
             assertTrue("Exception does not include argument type mismatch identification\n" + fullTrace,
                     e.getMessage().contains("argument type mismatch"));
             assertTrue("Exception does not identify line numbers\n" + fullTrace, fullTrace.contains("line"));
-            for (String function : ImmutableList.of("errorTrace02:rootError", "errorTrace02:aCall", "errorTrace02:anotherCall")) {
+            for (final String function : ImmutableList.of("errorTrace02:rootError", "errorTrace02:aCall", "errorTrace02:anotherCall")) {
                 assertTrue("Exception does not identify function name " + function + '\n' + fullTrace,
                         fullTrace.contains(function));
             }

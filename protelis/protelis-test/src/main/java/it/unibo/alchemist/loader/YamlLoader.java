@@ -170,7 +170,7 @@ public class YamlLoader implements Loader, Serializable {
     private class PlaceHolder {
         private final String str;
 
-        PlaceHolder(final String str) {
+        private PlaceHolder(final String str) {
             this.str = str;
         }
 
@@ -963,7 +963,7 @@ public class YamlLoader implements Loader, Serializable {
                     return incarnation.createMolecule(param.toString());
                 }
                 if (Position.class.isAssignableFrom(expectedClass) && param instanceof List) {
-                    final List<?> coordList = ((List<?>) param);
+                    final List<?> coordList = (List<?>) param;
                     if (coordList.stream().allMatch(n -> n instanceof Number)) {
                         return posMaker.makePosition(coordList.stream().map(v -> (Number) v).toArray(i -> new Number[i]));
                     }
@@ -1066,7 +1066,7 @@ public class YamlLoader implements Loader, Serializable {
         return extractors;
     }
 
-    private static <T> Optional<T> optional2Optional(final java8.util.Optional<T> in) {
+    private static <T> Optional<T> optional2Optional(final java8.util.Optional<T> in) { // NOPMD false positive
         if (in.isPresent()) {
             return Optional.of(in.get());
         }

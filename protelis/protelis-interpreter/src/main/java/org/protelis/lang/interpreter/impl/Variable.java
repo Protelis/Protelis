@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
@@ -44,7 +45,10 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
              * The variable cannot be read. Most probably, it is some node
              * variable that is not set here. Defaults to false.
              */
-            val = false;
+            throw new IllegalStateException("Variable " + name + " cannot be resolved");
+        }
+        if (val instanceof JVMEntity) {
+            val = ((JVMEntity) val).getValue();
         }
         /*
          * TODO: Restrict variable to aligned fields
