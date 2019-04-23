@@ -12,12 +12,12 @@ import static com.google.common.collect.ImmutableList.of;
 import static java.lang.Double.NEGATIVE_INFINITY;
 import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
-import static org.apache.commons.math3.util.Pair.create;
 import static java.util.Collections.emptyList;
+import static org.apache.commons.math3.util.Pair.create;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
@@ -42,14 +42,14 @@ public enum HoodOp {
     MIN(HoodOp::min,
         () -> POSITIVE_INFINITY,
         of(create(Number.class, () -> POSITIVE_INFINITY)),
-        of(create(Tuple.class, t -> fTup(POSITIVE_INFINITY, (Tuple) t)))),
+        of(create(Tuple.class, t -> fillTuple(POSITIVE_INFINITY, (Tuple) t)))),
     /**
      * Maximum.
      */
     MAX(HoodOp::max,
         () -> NEGATIVE_INFINITY,
         of(create(Number.class, () -> NEGATIVE_INFINITY)),
-        of(create(Tuple.class, t -> fTup(NEGATIVE_INFINITY, (Tuple) t)))),
+        of(create(Tuple.class, t -> fillTuple(NEGATIVE_INFINITY, (Tuple) t)))),
     /**
      * Any value.
      */
@@ -70,7 +70,7 @@ public enum HoodOp {
     MEAN(HoodOp::mean,
          () -> NaN,
          of(create(Number.class, () -> NaN)),
-         of(create(Tuple.class, t -> fTup(NaN, (Tuple) t)))),
+         of(create(Tuple.class, t -> fillTuple(NaN, (Tuple) t)))),
     /**
      * Pick local value.
      */
@@ -86,7 +86,7 @@ public enum HoodOp {
     SUM(HoodOp::sum,
         () -> 0d,
         of(create(Number.class, () -> 0d)),
-        of(create(Tuple.class, t -> fTup(0d, (Tuple) t)))),
+        of(create(Tuple.class, t -> fillTuple(0d, (Tuple) t)))),
     /**
      * Union of values.
      */
@@ -149,13 +149,12 @@ public enum HoodOp {
         throw new UnsupportedOperationException("Unsupported operation on empty fields.");
     }
 
-    private static Tuple fTup(final Object defVal, final Tuple in) {
-        return cTup(defVal, in.size());
-    }
-
-    private static Tuple cTup(final Object v, final int size) {
-        final Object[] r = new Object[size];
-        Arrays.fill(r, v);
+    private static Tuple fillTuple(final Object defVal, final Tuple in) {
+        final Object[] r = new Object[in.size()];
+        for (int i = 0; i < r.length; i++) {
+            final Object value = in.get(i);
+            r[i] = value instanceof Tuple ? fillTuple(defVal, (Tuple) value) : defVal;
+        }
         return DatatypeFactory.createTuple(r);
     }
 

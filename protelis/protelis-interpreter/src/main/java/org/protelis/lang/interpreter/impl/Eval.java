@@ -48,7 +48,7 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
         try {
             final ProtelisProgram result = ProtelisLoader.parseAnonymousModule(program);
             context.newCallStackFrame(DYN_CODE_INDEX);
-            context.putMultipleVariables(result.getNamedFunctions());
+            context.putMultipleVariables(result.getGloballyAvailableReferences());
             result.compute(context);
             setAnnotation(result.getCurrentValue());
             context.returnFromCallFrame();

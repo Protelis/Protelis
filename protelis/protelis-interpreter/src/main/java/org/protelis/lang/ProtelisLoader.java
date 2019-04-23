@@ -30,11 +30,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
+import org.eclipse.xtext.common.types.JvmDeclaredType;
+import org.eclipse.xtext.common.types.JvmFeature;
+import org.eclipse.xtext.common.types.JvmField;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
@@ -43,6 +45,7 @@ import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.AlignedMap;
 import org.protelis.lang.interpreter.impl.All;
@@ -78,11 +81,14 @@ import org.protelis.parser.protelis.ExprList;
 import org.protelis.parser.protelis.Expression;
 import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.GenericHood;
-import org.protelis.parser.protelis.Import;
+import org.protelis.parser.protelis.ImportDeclaration;
+import org.protelis.parser.protelis.ImportSection;
+import org.protelis.parser.protelis.JavaImport;
 import org.protelis.parser.protelis.Lambda;
 import org.protelis.parser.protelis.Mux;
 import org.protelis.parser.protelis.NBR;
 import org.protelis.parser.protelis.Pi;
+import org.protelis.parser.protelis.ProtelisImport;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.Rep;
 import org.protelis.parser.protelis.RepInitialize;
@@ -105,6 +111,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
@@ -363,8 +370,8 @@ public final class ProtelisLoader {
             throw new IllegalArgumentException(sb.toString());
         }
         final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
-        assert root != null;
-        Objects.requireNonNull(root.getProgram(), "The provided resource does not contain any main program, and can not be executed.");
+        Objects.requireNonNull(Objects.requireNonNull(root).getProgram(),
+                "The provided resource does not contain any main program, and can not be executed.");
         /*
          * Create the function headers.
          * 
@@ -378,18 +385,35 @@ public final class ProtelisLoader {
         final Map<FunctionDef, FunctionDefinition> nameToFun = new LinkedHashMap<>();
         recursivelyInitFunctions(root, nameToFun);
         /*
-         * Function definitions are in place, now create function bodies. Bodies
-         * may contain lambdas, lambdas are named using processing order, as a
-         * consequence function bodies must be evaluated sequentially.
+         * Function definitions are in place, now create function bodies.
          */
         final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
-                .collect(Collectors
-                    .toMap(ProtelisLoader::toR, nameToFun::get, throwException(), LinkedHashMap::new));
+                .collect(Collectors.toMap(ProtelisLoader::toR, nameToFun::get, throwException(), LinkedHashMap::new));
         final ProgramState programState = new ProgramState(refToFun);
         Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), programState)));
         /*
          * Create the main program
          */
+        if (root.getImports() != null) {
+            final List<ImportDeclaration> allImports = root.getImports().getImportDeclarations();
+            final Map<Reference, Object> globalReferences = new LinkedHashMap<>(refToFun.size() + allImports.size());
+            for (ImportDeclaration imp : allImports) {
+                if (imp instanceof JavaImport) {
+                    JavaImport javaImport = (JavaImport) imp;
+                    JvmDeclaredType type = javaImport.getImportedType();
+                    Iterable<JvmField> fields = type.getDeclaredFields();
+                    Iterable<JvmOperation> methods = type.getDeclaredOperations();
+                    for (JvmFeature feature: Iterables.concat(fields, methods)) {
+                        if (feature.isStatic()
+                            && (javaImport.isWildcard() || feature.getSimpleName().equals(javaImport.getImportedMemberName()))) {
+                            globalReferences.put(toR(feature), new JVMEntity(feature));
+                        }
+                    }
+                }
+            }
+            globalReferences.putAll(refToFun);
+            return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), programState), globalReferences);
+        }
         return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), programState), refToFun);
     }
 
@@ -517,7 +541,6 @@ public final class ProtelisLoader {
                 }
                 final String base = Base64.encodeBase64String(
                         Hashing.sha256().hashString(bodyEntities.toString(), Charsets.UTF_8).asBytes());
-                System.out.println(l);
                 final FunctionDefinition lambda = new FunctionDefinition(empty(), "$anon$" + base, toR(args));
                 lambda.setBody(body);
                 return new Constant<>(metadataFor(e), lambda);
@@ -603,12 +626,23 @@ public final class ProtelisLoader {
 
     private static final class ProgramState {
         private final Map<Reference, FunctionDefinition> functions;
-        private ProgramState(final Map<Reference, FunctionDefinition> functions) {
+//        private final Map<Reference, JvmOperation> methods;
+//        private final Map<Reference, JvmField> fields;
+        private ProgramState(final Map<Reference, FunctionDefinition> functions
+//                ,
+//                final Map<Reference, JvmOperation> methods,
+//                final Map<Reference, JvmField> fields
+                ) {
             this.functions = functions;
+//            this.methods = methods;
+//            this.fields = fields;
         }
         public FunctionDefinition resolveFunction(final Reference r) {
             return functions.get(r);
         }
+//        public JvmOperation resolveMethod(final Reference r) {
+//            return functions.get(r);
+//        }
     }
 
     private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {
@@ -620,23 +654,25 @@ public final class ProtelisLoader {
     }
 
     private static void recursivelyInitFunctions(final ProtelisModule module,
-            final Map<FunctionDef, FunctionDefinition> nameToFun) {
+            final Map<FunctionDef, ? super FunctionDefinition> nameToFun) {
         recursivelyInitFunctions(module, nameToFun, new LinkedHashSet<>());
     }
 
     private static void recursivelyInitFunctions(
             final ProtelisModule module,
-            final Map<FunctionDef, FunctionDefinition> nameToFun,
+            final Map<FunctionDef, ? super FunctionDefinition> nameToFun,
             final Set<ProtelisModule> completed) {
         if (!completed.contains(module)) {
             completed.add(module);
             /*
              * Init imports functions, in reverse order
              */
-            final EList<Import> imports = module.getProtelisImport();
-            for (int i = imports.size() - 1; i >= 0; i--) {
-                final Import protelisImport = imports.get(i);
-                recursivelyInitFunctions(protelisImport.getModule(), nameToFun, completed);
+            final ImportSection imports = module.getImports();
+            if (imports != null) {
+                StreamSupport.stream(imports.getImportDeclarations())
+                .filter(it -> it instanceof ProtelisImport)
+                .map(it -> (ProtelisImport) it)
+                .forEach(it -> recursivelyInitFunctions(it.getModule(), nameToFun, completed));
             }
             /*
              * Init local functions

@@ -12,13 +12,13 @@
 package org.protelis.vm;
 
 import java.util.Map;
-import java8.util.function.Function;
-import java8.util.function.Supplier;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.util.Reference;
+
+import java8.util.function.Function;
+import java8.util.function.Supplier;
 
 /**
  * Interface between a ProtelisVM and environment in which it is executing. The
@@ -177,6 +177,6 @@ public interface ExecutionContext {
      *            Collection of accessible functions, associating function name
      *            and value.
      */
-    void setAvailableFunctions(Map<Reference, FunctionDefinition> knownFunctions);
+    void setGloballyAvailableReferences(Map<Reference, ?> knownFunctions);
 
 }

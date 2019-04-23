@@ -1,7 +1,6 @@
 package org.protelis.test.infrastructure;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,6 +12,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.alchemist.model.implementations.nodes.GenericNode;
 import it.unibo.alchemist.model.interfaces.Environment;
 import it.unibo.alchemist.model.interfaces.Molecule;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 /**
  */
@@ -103,12 +104,9 @@ public final class ProtelisNode extends GenericNode<Object> implements DeviceUID
 
     @Override
     public Set<String> keySet() {
-        final Set<String> sSet = new HashSet<String>();
-        // Note: this is highly inefficient
-        for (final Molecule key : getContents().keySet()) {
-            sSet.add(key.getName());
-        }
-        return Collections.unmodifiableSet(sSet);
+        return Collections.unmodifiableSet(StreamSupport.stream(getContents().keySet())
+            .map(Molecule::getName)
+            .collect(Collectors.toSet()));
     }
 
 }
