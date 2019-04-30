@@ -4,7 +4,7 @@ buildscript {
   }
   dependencies {
       if (isJava7Legacy) {
-          classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+          classpath 'me.tatarka:gradle-retrolambda:3.7.1'
       }
   }
 }
