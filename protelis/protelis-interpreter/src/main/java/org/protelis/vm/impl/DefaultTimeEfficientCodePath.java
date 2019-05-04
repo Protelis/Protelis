@@ -27,6 +27,9 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     private final int[] repr;
     private int lazyHash = 0;
 
+    /**
+     * @param source the current stack frames identifiers
+     */
     public DefaultTimeEfficientCodePath(final TIntList source) {
         repr = source.toArray();
     }
