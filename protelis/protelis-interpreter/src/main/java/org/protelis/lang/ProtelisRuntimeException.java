@@ -60,12 +60,12 @@ public final class ProtelisRuntimeException extends RuntimeException {
 
     @Override
     public String toString() {
-        StringBuilder trace = header();
+        final StringBuilder trace = header();
         if (stream().noneMatch(it -> it instanceof FunctionCall)) {
             trace.append("\n\tin main script ")
                 .append(extractLines(protelisStackTrace.getFirst()));
         }
-        StringBuilder longTrace = header();
+        final StringBuilder longTrace = header();
         AnnotatedTree<?> origin = protelisStackTrace.getFirst();
         boolean wasFunction = true;
         for (final AnnotatedTree<?> current: protelisStackTrace) {
@@ -99,8 +99,8 @@ public final class ProtelisRuntimeException extends RuntimeException {
 
     private static String extractLines(@Nonnull final AnnotatedTree<?> origin) {
         final Metadata meta = origin.getMetadata();
-        int start = meta.getStartLine();
-        int end = meta.getEndLine();
+        final int start = meta.getStartLine();
+        final int end = meta.getEndLine();
         return start == end ? " at line number " + start : " between lines " + start + " and " + end;
     }
 
