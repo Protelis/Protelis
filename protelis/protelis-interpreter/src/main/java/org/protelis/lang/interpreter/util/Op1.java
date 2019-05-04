@@ -48,6 +48,7 @@ public enum Op1 implements WithBytecode {
         this.bytecode = bytecode;
     }
 
+    @Override
     public Bytecode getBytecode() {
         return bytecode;
     }
