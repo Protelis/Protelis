@@ -8,6 +8,10 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +28,10 @@ import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Reference;
-import org.protelis.vm.ExecutionContext;
+import org.protelis.vm.ExecutionContext;;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
@@ -35,15 +40,13 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
 
-    private static final long serialVersionUID = -7655993075803732148L;
     private static final String APPLY = "apply";
-    private static final byte FILTER_POS = -1;
-    private static final byte RUN_POS = -2;
     private static final Reference CURFIELD = new Reference(new Object());
+    private static final long serialVersionUID = -7655993075803732148L;
+    private final AnnotatedTree<?> defVal;
     private final AnnotatedTree<Field> fgen;
     private final AnnotatedTree<FunctionDefinition> filterOp;
     private final AnnotatedTree<FunctionDefinition> runOp;
-    private final AnnotatedTree<?> defVal;
 
     /**
      * @param metadata
@@ -157,6 +160,9 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             /*
              * Compute the code path: align on keys
              */
+            // TODO: Provide fast paths for primitives and Numbers
+            // TODO: Switch to FST https://github.com/RuedigerMoeller/fast-serialization
+            // TODO: Fail clearly in case of non-serializable key
             final byte[] hash = FileUtilities.serializeObject((Serializable) key);
             restricted.newCallStackFrame(hash);
             /*
@@ -170,7 +176,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
              * Run the actual filtering and operation
              */
             final DotOperator fop = funs.getFirst();
-            restricted.newCallStackFrame(FILTER_POS);
+            restricted.newCallStackFrame(ALIGNED_MAP_FILTER.getCode());
             fop.eval(restricted);
             restricted.returnFromCallFrame();
             final Object cond = fop.getAnnotation();
@@ -179,7 +185,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                     /*
                      * Filter passed, run operation.
                      */
-                    restricted.newCallStackFrame(RUN_POS);
+                    restricted.newCallStackFrame(ALIGNED_MAP_EXECUTE.getCode());
                     final DotOperator rop = funs.getSecond();
                     rop.eval(restricted);
                     restricted.returnFromCallFrame();
@@ -197,6 +203,11 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
         setAnnotation(DatatypeFactory.createTuple(resl));
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return ALIGNED_MAP;
     }
 
     @Override

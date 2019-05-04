@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
@@ -21,9 +22,9 @@ import org.slf4j.LoggerFactory;
  */
 public final class Eval extends AbstractAnnotatedTree<Object> {
 
-    private static final long serialVersionUID = 8811510896686579514L;
-    private static final Logger L = LoggerFactory.getLogger(Eval.class);
     private static final byte DYN_CODE_INDEX = -1;
+    private static final Logger L = LoggerFactory.getLogger(Eval.class);
+    private static final long serialVersionUID = 8811510896686579514L;
 
     /**
      * @param metadata
@@ -56,6 +57,11 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
             L.error("Non parse-able program", e);
             throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
         }
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.ENV;
     }
 
 }

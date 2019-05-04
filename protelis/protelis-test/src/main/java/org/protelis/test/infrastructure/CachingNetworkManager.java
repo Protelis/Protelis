@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.vm.CodePath;
 import org.protelis.vm.NetworkManager;
-import org.protelis.vm.util.CodePath;
 
 /**
  * Abstraction of networking used by the virtual machine: at each execution

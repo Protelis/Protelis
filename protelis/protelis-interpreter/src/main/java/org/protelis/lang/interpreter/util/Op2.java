@@ -6,18 +6,29 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
-import static org.protelis.lang.util.OpUtils.unsupported;
-
-import java8.util.J8Arrays;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_AND;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_DIFFERS;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_DIVIDE;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_EQUALS;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_GREATER;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_GREATER_EQUAL;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_MAX;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_MIN;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_MINUS;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_MODULUS;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_OR;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_PLUS;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_POWER;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_SMALLER;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_SMALLER_EQUAL;
+import static org.protelis.lang.interpreter.util.Bytecode.BINARY_TIMES;
+import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java8.util.function.BiFunction;
-import java8.util.function.BinaryOperator;
-import java8.util.stream.IntStreams;
 
 import org.apache.commons.math3.util.FastMath;
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -28,45 +39,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java8.util.J8Arrays;
+import java8.util.function.BiFunction;
+import java8.util.function.BinaryOperator;
+import java8.util.stream.IntStreams;
 
 /**
  * Infix operator that takes two inputs, such as addition, division, or
  * "greater than" comparison.
  */
-public enum Op2 {
+public enum Op2 implements WithBytecode {
 
     /** Logical AND operation. */
-    AND("&&", Op2::and),
-    /** Arithmetic division operation. */
-    DIVIDE("/", Op2::divide),
-    /** Equality comparison operation. */
-    EQUALS("==", Op2::areEquals),
+    AND(BINARY_AND, "&&", Op2::and),
     /** Inequality comparison operation. */
-    NOT_EQUALS("!=", (a, b) -> !Op2.areEquals(a, b)),
+    DIFFERS(BINARY_DIFFERS, "!=", (a, b) -> !Op2.areEquals(a, b)),
+    /** Arithmetic division operation. */
+    DIVIDE(BINARY_DIVIDE, "/", Op2::divide),
+    /** Equality comparison operation. */
+    EQUALS(BINARY_EQUALS, "==", Op2::areEquals),
     /** Greater-than comparison operation. */
-    GREATER(">", Op2::greater),
+    GREATER(BINARY_GREATER, ">", Op2::greater),
     /** Greater-than-or-equal comparison operation. */
-    GREATER_EQUALS(">=", Op2::greaterEquals),
+    GREATER_EQUAL(BINARY_GREATER_EQUAL, ">=", Op2::greaterEquals),
     /** Maximum of two numbers or other Comparable objects. */
-    MAX("min", Op2::max),
+    MAX(BINARY_MAX, "max", Op2::max),
     /** Minimum of two numbers or other Comparable objects. */
-    MIN("min", Op2::min),
+    MIN(BINARY_MIN, "min", Op2::min),
     /** Arithmetic subtraction operation. */
-    MINUS("-", Op2::minus),
+    MINUS(BINARY_MINUS, "-", Op2::minus),
     /** Modulus operation. */
-    MODULUS("%", Op2::modulus),
+    MODULUS(BINARY_MODULUS, "%", Op2::modulus),
     /** Logical OR operation. */
-    OR("||", Op2::or),
+    OR(BINARY_OR, "||", Op2::or),
     /** Arithmetic addition operation. */
-    PLUS("+", Op2::plus),
+    PLUS(BINARY_PLUS, "+", Op2::plus),
     /** Exponent operation. */
-    POWER("^", Op2::pow),
+    POWER(BINARY_POWER, "^", Op2::pow),
     /** Less-than comparison operation. */
-    SMALLER("<", Op2::smaller),
+    SMALLER(BINARY_SMALLER, "<", Op2::smaller),
     /** Less-than-or-equal comparison operation. */
-    SMALLER_EQUALS("<=", Op2::smallerEquals),
+    SMALLER_EQUAL(BINARY_SMALLER_EQUAL, "<=", Op2::smallerEquals),
     /** Arithmetic multiplication operation. */
-    TIMES("*", Op2::times);
+    TIMES(BINARY_TIMES, "*", Op2::times);
 
     private static final Logger L = LoggerFactory.getLogger(Op2.class);
     private static final String UNCHECKED = "unchecked";
@@ -77,8 +92,10 @@ public enum Op2 {
     private static final Map<String, Op2> MAP = new ConcurrentHashMap<>();
     private final BinaryOperation fun;
     private final String opName;
+    private final Bytecode bytecode;
 
-    Op2(final String name, final BinaryOperation function) {
+    Op2(final Bytecode bytecode, final String name, final BinaryOperation function) {
+        this.bytecode = bytecode;
         fun = function;
         opName = name;
     }
@@ -308,6 +325,11 @@ public enum Op2 {
 
     private static Object times(final Object a, final Object b) {
         return arithmetic("*", a, b, (v1, v2) -> v1 * v2);
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return bytecode;
     }
 
     private interface BinaryOperation extends BinaryOperator<Object>, Serializable { }

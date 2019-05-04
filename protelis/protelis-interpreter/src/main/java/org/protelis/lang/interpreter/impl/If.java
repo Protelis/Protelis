@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -21,8 +22,8 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class If<T> extends AbstractAnnotatedTree<T> {
 
-    private static final long serialVersionUID = -4830593657731078743L;
     private static final byte COND = 0, THEN = 1, ELSE = 2;
+    private static final long serialVersionUID = -4830593657731078743L;
     private final AnnotatedTree<Boolean> conditionExpression;
     private final AnnotatedTree<T> thenExpression, elseExpression;
 
@@ -37,7 +38,7 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
      *            branch to execute if condition is false (erase otherwise)
      */
     public If(final Metadata metadata, final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
-        super(metadata, cond, then, otherwise);
+        super(metadata, cond);
         conditionExpression = cond;
         thenExpression = then;
         elseExpression = otherwise;
@@ -50,29 +51,25 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
 
     @Override
     public void evaluate(final ExecutionContext context) {
-        conditionExpression.evalInNewStackFrame(context, COND);
-        final Object actualResult = conditionExpression.getAnnotation();
-        final boolean bool = actualResult instanceof Boolean
-                ? conditionExpression.getAnnotation()
-                : actualResult != null;
-        setAnnotation(bool
-                ? choice(THEN, thenExpression, elseExpression, context)
-                : choice(ELSE, elseExpression, thenExpression, context));
-    }
-
-    private static <T> T choice(
-            final byte branch,
-            final AnnotatedTree<T> selected,
-            final AnnotatedTree<T> erased,
-            final ExecutionContext context) {
-        selected.evalInNewStackFrame(context, branch);
-        erased.erase();
+        projectAndEval(context);
+        final boolean isTrue = conditionExpression.getAnnotation();
+        final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
+        final AnnotatedTree<T> erased = isTrue ? elseExpression : thenExpression;
+        final Bytecode opCode = isTrue ? Bytecode.IF_THEN : Bytecode.IF_ELSE;
+        if (!erased.isErased()) {
+            erased.erase();
+        }
+        evalInNewStackFrame(selected, context, opCode);
         final T result = selected.getAnnotation();
         if (result instanceof Field) {
-            throw new IllegalStateException(
-                    "if statements cannot return a Field. This could break alignment apart. Consider using mux.");
+            throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + result);
         }
-        return result;
+        setAnnotation(result);
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.IF;
     }
 
     /**

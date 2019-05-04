@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -36,6 +37,11 @@ public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
     @Override
     public void evaluate(final ExecutionContext context) {
         setAnnotation(context);
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.SELF;
     }
 
     @Override

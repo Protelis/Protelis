@@ -6,7 +6,7 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
@@ -26,20 +26,26 @@ import org.protelis.lang.datatype.Fields;
 /**
  * Collection of functions and helper methods for ternary syntactic operators.
  */
-public enum Op3 {
+public enum Op3 implements WithBytecode {
 
     /**
      * Functional mux.
      */
-    MUX("mux", Op3::mux);
+    MUX(Bytecode.TERNARY_MUX, "mux", Op3::mux);
 
     private static final Map<String, Op3> MAP = new ConcurrentHashMap<>();
+    private final Bytecode bytecode;
     private final TernaryOperation fun;
     private final String opName;
 
-    Op3(final String name, final TernaryOperation function) {
+    Op3(final Bytecode bytecode, final String name, final TernaryOperation function) {
         fun = function;
         opName = name;
+        this.bytecode = bytecode;
+    }
+
+    public Bytecode getBytecode() {
+        return bytecode;
     }
 
     /**

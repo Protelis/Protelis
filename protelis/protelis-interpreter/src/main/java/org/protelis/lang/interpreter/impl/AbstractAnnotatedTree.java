@@ -19,6 +19,8 @@ import java.util.Objects;
 
 import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.WithBytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.slf4j.Logger;
@@ -35,7 +37,7 @@ import java8.util.stream.IntStreams;
  * @param <T>
  *            annotation type
  */
-public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
+public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, WithBytecode {
 
     private static final Logger L = LoggerFactory.getLogger(AbstractAnnotatedTree.class);
     private static final long serialVersionUID = -8156985119843359212L;
@@ -86,14 +88,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      */
     protected final String branchesToString(final CharSequence separator, final CharSequence prefix, final CharSequence postfix) {
         final StringBuilder sb = new StringBuilder(prefix);
-        if (branches.size() > 0) {
-            forEachWithIndex((i, branch) -> {
-                sb.append(stringFor(branch));
-                if (i < branches.size() - 1) {
-                    sb.append(separator);
-                }
-            });
-        }
+        forEachWithIndex((i, branch) -> {
+            sb.append(stringFor(branch));
+            if (i < branches.size() - 1) {
+                sb.append(separator);
+            }
+        });
         return sb.append(postfix).toString();
     }
 
@@ -125,20 +125,15 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     @Override
     public final void eval(final ExecutionContext context) {
         try {
+            context.newCallStackFrame(getBytecode().getCode());
             evaluate(context);
+            context.returnFromCallFrame();
         } catch (ProtelisRuntimeException e) {
             e.fillInStackFrame(this);
             throw e;
         } catch (Exception e) {
             throw new ProtelisRuntimeException(e, this);
         }
-    }
-
-    @Override
-    public final void evalInNewStackFrame(final ExecutionContext context, final byte frameId) {
-        context.newCallStackFrame(frameId);
-        eval(context);
-        context.returnFromCallFrame();
     }
 
     /**
@@ -261,7 +256,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
      */
     protected final void projectAndEval(final ExecutionContext context) {
         forEachWithIndex((i, branch) -> {
-            branch.evalInNewStackFrame(context, i.byteValue());
+            evalInNewStackFrame(branch, context, i);
         });
     }
 
@@ -291,21 +286,22 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T> {
     }
 
     /**
-     * Utility for indenting lines.
+     * Evaluates the program using the passed {@link ExecutionContext}, but within a
+     * new scope pushed onto the stack. Returns to the current scope after
+     * evaluation.
      * 
-     * @param target
-     *            the {@link StringBuilder} containing
-     * @param i
-     *            the level of indentation
+     * @param target  the sub-program to evaluate
+     * @param context the execution context
+     * @param frameId id marker for new frame
      */
-    protected static void indent(final Appendable target, final int i) {
-        for (int j = 0; j < i; j++) {
-            try {
-                target.append('\t');
-            } catch (IOException e) {
-                L.error("There is a bug.", e);
-            }
-        }
+    protected static final void evalInNewStackFrame(final AnnotatedTree<?> target, final ExecutionContext context, final Bytecode frameId) {
+        evalInNewStackFrame(target, context, frameId.getCode());
+    }
+
+    private static void evalInNewStackFrame(final AnnotatedTree<?> target, final ExecutionContext context, final int frameId) {
+        context.newCallStackFrame(frameId);
+        target.eval(context);
+        context.returnFromCallFrame();
     }
 
     /**

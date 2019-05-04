@@ -1,4 +1,4 @@
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

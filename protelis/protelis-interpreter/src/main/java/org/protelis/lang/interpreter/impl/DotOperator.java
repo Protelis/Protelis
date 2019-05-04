@@ -8,14 +8,20 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR;
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_ARGUMENTS;
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_TARGET;
+
 import java.util.List;
 import java.util.Objects;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -29,21 +35,16 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
      */
     public static final String APPLY = "apply";
     private static final long serialVersionUID = -9128116355271771986L;
-    private static final byte LEFT_POS = -1;
-    private static final byte ARGS_POS = -2;
     private final boolean isApply;
-    private final String methodName;
     private final AnnotatedTree<?> left;
+    private final String methodName;
 
-    /**
-     * Builds a new {@link #APPLY}.
-     * 
-     * @param target the target of the invocation
-     * @param args the arguments
-     * @return a new {@link #APPLY} {@link DotOperator}.
-     */
-    public static DotOperator makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
-        return new DotOperator(target.getMetadata(), true, null, target, args);
+    private DotOperator(final Metadata metadata, final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+        super(metadata, args);
+        Objects.requireNonNull(target);
+        isApply = apply;
+        methodName = apply ? APPLY : name;
+        left = target;
     }
 
     /**
@@ -61,14 +62,6 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         this(metadata, name.equals(APPLY), name, target, args);
     }
 
-    private DotOperator(final Metadata metadata, final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
-        super(metadata, args);
-        Objects.requireNonNull(target);
-        isApply = apply;
-        methodName = apply ? APPLY : name;
-        left = target;
-    }
-
     @Override
     public AnnotatedTree<Object> copy() {
         final DotOperator res = new DotOperator(getMetadata(), methodName, left.copy(), deepCopyBranches());
@@ -81,12 +74,12 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         /*
          * Eval left
          */
-        left.evalInNewStackFrame(context, LEFT_POS);
+        evalInNewStackFrame(left, context, DOT_OPERATOR_TARGET);
         /*
          * If it is a function pointer, then create a new function call
          */
         final Object target = left.getAnnotation();
-        context.newCallStackFrame(ARGS_POS);
+        context.newCallStackFrame(DOT_OPERATOR_ARGUMENTS.getCode());
         if (isApply && target instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) target;
             /*
@@ -120,6 +113,11 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         context.returnFromCallFrame();
     }
 
+    @Override
+    public Bytecode getBytecode() {
+        return DOT_OPERATOR;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -134,6 +132,17 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
     @Override
     public String toString() {
         return stringFor(left) + '.' + methodName + branchesToString();
+    }
+
+    /**
+     * Builds a new {@link #APPLY}.
+     * 
+     * @param target the target of the invocation
+     * @param args the arguments
+     * @return a new {@link #APPLY} {@link DotOperator}.
+     */
+    public static DotOperator makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
+        return new DotOperator(target.getMetadata(), true, null, target, args);
     }
 
 }

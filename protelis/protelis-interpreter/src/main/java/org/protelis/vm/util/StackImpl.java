@@ -13,10 +13,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import org.protelis.lang.interpreter.util.Reference;
+
 import java8.util.Maps;
 import java8.util.function.Function;
-
-import org.protelis.lang.util.Reference;
 
 /**
  * Basic implementation of a {@link Stack}.

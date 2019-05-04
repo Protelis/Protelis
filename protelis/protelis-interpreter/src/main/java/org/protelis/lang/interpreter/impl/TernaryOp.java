@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Op3;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Op3;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -75,4 +76,8 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
         return op.toString();
     }
 
+    @Override
+    public Bytecode getBytecode() {
+        return op.getBytecode();
+    }
 }

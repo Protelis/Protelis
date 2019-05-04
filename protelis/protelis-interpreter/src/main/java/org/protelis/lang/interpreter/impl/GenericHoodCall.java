@@ -12,23 +12,24 @@ import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
+import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.JavaInteroperabilityUtils;
-import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * Reduce a field into a local value by reduction using a {@link org.protelis.lang.util.HoodOp}.
+ * Reduce a field into a local value by reduction using a {@link org.protelis.lang.interpreter.util.HoodOp}.
  */
 public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
-    private final AnnotatedTree<FunctionDefinition> function;
     private final AnnotatedTree<Field> body;
-    private final AnnotatedTree<?> empty;
-    private final String methodName;
     private final Class<?> clazz;
+    private final AnnotatedTree<?> empty;
+    private final AnnotatedTree<FunctionDefinition> function;
     private final boolean inclusive;
+    private final String methodName;
 
     /**
      * @param metadata
@@ -108,6 +109,11 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
                 inclusive ? null : context.getDeviceUID(),
                 empty.getAnnotation());
         setAnnotation(result);
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.GENERIC_HOOD_CALL;
     }
 
     /**

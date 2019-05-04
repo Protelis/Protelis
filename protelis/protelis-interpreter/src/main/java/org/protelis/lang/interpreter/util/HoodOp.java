@@ -6,7 +6,7 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
 import static com.google.common.collect.ImmutableList.of;
 import static java.lang.Double.NEGATIVE_INFINITY;
@@ -14,6 +14,14 @@ import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.math3.util.Pair.create;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_ALL;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_ANY;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_LOCAL;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_MAX;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_MEAN;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_MIN;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_SUM;
+import static org.protelis.lang.interpreter.util.Bytecode.HOOD_UNION;
 
 import java.io.Serializable;
 import java.util.List;
@@ -37,66 +45,68 @@ import java8.util.function.Supplier;
 public enum HoodOp {
 
     /**
-     * Minimum.
+     * Logical product.
      */
-    MIN(HoodOp::min,
-        () -> POSITIVE_INFINITY,
-        of(create(Number.class, () -> POSITIVE_INFINITY)),
-        of(create(Tuple.class, t -> fillTuple(POSITIVE_INFINITY, (Tuple) t)))),
-    /**
-     * Maximum.
-     */
-    MAX(HoodOp::max,
-        () -> NEGATIVE_INFINITY,
-        of(create(Number.class, () -> NEGATIVE_INFINITY)),
-        of(create(Tuple.class, t -> fillTuple(NEGATIVE_INFINITY, (Tuple) t)))),
-    /**
-     * Any value.
-     */
-    ANY(HoodOp::any,
-        HoodOp::no,
-        of(create(Boolean.class,
-        () -> false)), of()),
-    /**
-     * All values.
-     */
-    ALL(HoodOp::all,
+    ALL(HOOD_ALL, HoodOp::all,
         HoodOp::no,
         of(create(Boolean.class,
         () -> true)), of()),
     /**
-     * Mean of values.
+     * Logical sum.
      */
-    MEAN(HoodOp::mean,
-         () -> NaN,
-         of(create(Number.class, () -> NaN)),
-         of(create(Tuple.class, t -> fillTuple(NaN, (Tuple) t)))),
+    ANY(HOOD_ANY, HoodOp::any,
+        HoodOp::no,
+        of(create(Boolean.class,
+        () -> false)), of()),
     /**
      * Pick local value.
      */
-    LOCAL((field, id) -> field.getSample(id),
+    LOCAL(HOOD_LOCAL,
+        (field, id) -> field.getSample(id),
         () -> {
             throw new IllegalStateException("Local field pick operation must always work");
         },
          emptyList(),
          emptyList()),
     /**
+     * Maximum.
+     */
+    MAX(HOOD_MAX, HoodOp::max,
+        () -> NEGATIVE_INFINITY,
+        of(create(Number.class, () -> NEGATIVE_INFINITY)),
+        of(create(Tuple.class, t -> fillTuple(NEGATIVE_INFINITY, (Tuple) t)))),
+    /**
+     * Mean of values.
+     */
+    MEAN(HOOD_MEAN, HoodOp::mean,
+         () -> NaN,
+         of(create(Number.class, () -> NaN)),
+         of(create(Tuple.class, t -> fillTuple(NaN, (Tuple) t)))),
+    /**
+     * Minimum.
+     */
+    MIN(HOOD_MIN, HoodOp::min,
+        () -> POSITIVE_INFINITY,
+        of(create(Number.class, () -> POSITIVE_INFINITY)),
+        of(create(Tuple.class, t -> fillTuple(POSITIVE_INFINITY, (Tuple) t)))),
+    /**
      * Sum of values.
      */
-    SUM(HoodOp::sum,
+    SUM(HOOD_SUM, HoodOp::sum,
         () -> 0d,
         of(create(Number.class, () -> 0d)),
         of(create(Tuple.class, t -> fillTuple(0d, (Tuple) t)))),
     /**
      * Union of values.
      */
-    UNION(HoodOp::union,
+    UNION(HOOD_UNION, HoodOp::union,
           DatatypeFactory::createTuple,
           of(create(Object.class, DatatypeFactory::createTuple)),
           of(create(Object.class, DatatypeFactory::createTuple)));
 
-    private final SerializableBifunction function;
+    private final Bytecode bytecode;
     private final Function<Field, Object> defs; // NOPMD
+    private final SerializableBifunction function;
 
     /**
      * @param fun
@@ -111,7 +121,8 @@ public enum HoodOp {
      *            functions are used in case there is no supplier that can
      *            provide a specific value-agnostic default
      */
-    HoodOp(final SerializableBifunction fun,
+    HoodOp(final Bytecode bytecode,
+            final SerializableBifunction fun,
             final Supplier<Object> empty,
             final List<Pair<Class<?>, Supplier<Object>>> suppliers,
             final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
@@ -139,14 +150,34 @@ public enum HoodOp {
             }
             return no(type);
         };
+        this.bytecode = bytecode;
+    }
+
+    public Bytecode getBytecode() {
+        return bytecode;
     }
 
     private <T> T no(final Class<?> c) {
         throw new UnsupportedOperationException(this + " cannot compute on " + c);
     }
 
-    private static Object no() {
-        throw new UnsupportedOperationException("Unsupported operation on empty fields.");
+    /**
+     * @param o
+     *            the field
+     * @param n
+     *            the node on which the field is sampled
+     * @return the Object resulting in the hood application
+     */
+    public Object run(final Field o, final DeviceUID n) {
+        return function.apply(o, n);
+    }
+
+    private static Object all(final Field f, final DeviceUID n) {
+        return f.reduceVals(Op2.AND.getFunction(), n, ALL.defs.apply(f));
+    }
+
+    private static Object any(final Field f, final DeviceUID n) {
+        return f.reduceVals(Op2.OR.getFunction(), n, ANY.defs.apply(f));
     }
 
     private static Tuple fillTuple(final Object defVal, final Tuple in) {
@@ -169,35 +200,8 @@ public enum HoodOp {
                 .orElseThrow(() -> new IllegalArgumentException("No built-in hood operation matches " + reducer));
     }
 
-    /**
-     * @param o
-     *            the field
-     * @param n
-     *            the node on which the field is sampled
-     * @return the Object resulting in the hood application
-     */
-    public Object run(final Field o, final DeviceUID n) {
-        return function.apply(o, n);
-    }
-
-    private static Object min(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.MIN.getFunction(), n, MIN.defs.apply(f));
-    }
-
     private static Object max(final Field f, final DeviceUID n) {
         return f.reduceVals(Op2.MAX.getFunction(), n, MAX.defs.apply(f));
-    }
-
-    private static Object any(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.OR.getFunction(), n, ANY.defs.apply(f));
-    }
-
-    private static Object all(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.AND.getFunction(), n, ALL.defs.apply(f));
-    }
-
-    private static Object sum(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.PLUS.getFunction(), n, SUM.defs.apply(f));
     }
 
     private static Object mean(final Field f, final DeviceUID n) {
@@ -205,6 +209,18 @@ public enum HoodOp {
             return NaN;
         }
         return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size());
+    }
+
+    private static Object min(final Field f, final DeviceUID n) {
+        return f.reduceVals(Op2.MIN.getFunction(), n, MIN.defs.apply(f));
+    }
+
+    private static Object no() {
+        throw new UnsupportedOperationException("Unsupported operation on empty fields.");
+    }
+
+    private static Object sum(final Field f, final DeviceUID n) {
+        return f.reduceVals(Op2.PLUS.getFunction(), n, SUM.defs.apply(f));
     }
 
     private static Tuple union(final Field f, final DeviceUID n) {
@@ -215,7 +231,7 @@ public enum HoodOp {
             }, n, UNION.defs.apply(f));
         return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
-
+    
     @FunctionalInterface
     private interface SerializableBifunction extends BiFunction<Field, DeviceUID, Object>, Serializable { }
 

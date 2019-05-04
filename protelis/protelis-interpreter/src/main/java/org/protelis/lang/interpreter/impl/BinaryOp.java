@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Op2;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Op2;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -23,6 +24,13 @@ public final class BinaryOp extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op2 op;
+
+    private BinaryOp(final Metadata metadata, final Op2 operator, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
+        super(metadata, branch1, branch2);
+        Objects.requireNonNull(branch1);
+        Objects.requireNonNull(branch2);
+        op = operator;
+    }
 
     /**
      * @param metadata
@@ -38,13 +46,6 @@ public final class BinaryOp extends AbstractAnnotatedTree<Object> {
         this(metadata, Op2.getOp(name), branch1, branch2);
     }
 
-    private BinaryOp(final Metadata metadata, final Op2 operator, final AnnotatedTree<?> branch1, final AnnotatedTree<?> branch2) {
-        super(metadata, branch1, branch2);
-        Objects.requireNonNull(branch1);
-        Objects.requireNonNull(branch2);
-        op = operator;
-    }
-
     @Override
     public AnnotatedTree<Object> copy() {
         final List<AnnotatedTree<?>> branches = deepCopyBranches();
@@ -55,6 +56,11 @@ public final class BinaryOp extends AbstractAnnotatedTree<Object> {
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         setAnnotation(op.run(getBranch(0).getAnnotation(), getBranch(1).getAnnotation()));
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return op.getBytecode();
     }
 
     @Override

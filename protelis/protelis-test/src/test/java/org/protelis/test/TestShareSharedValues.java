@@ -17,9 +17,9 @@ import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.test.infrastructure.DummyContext;
+import org.protelis.vm.CodePath;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.ProtelisVM;
-import org.protelis.vm.util.CodePath;
 
 /**
  * Main collection of tests for the Protelis language and VM.
