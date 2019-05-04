@@ -744,10 +744,10 @@ public final class YamlLoader implements Loader, Serializable {
     private static Optional<Map<?, Double>> aVariable(final Object o) {
         if (o instanceof Map<?, ?>) {
             final Map<?, ?> var = (Map<?, ?>) o;
-            final Object isVar = var.get(VARIABLE);
-            if (isVar instanceof Boolean) {
-                final boolean isAVar = (boolean) isVar;
-                if (isAVar) {
+            final Object maybeVar = var.get(VARIABLE);
+            if (maybeVar instanceof Boolean) {
+                final boolean isVar = (boolean) maybeVar;
+                if (isVar) {
                     return Optional.of((Map<?, Double>) var);
                 }
             }
