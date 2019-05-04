@@ -154,18 +154,18 @@ public final class ProtelisLoader {
         @Override
         protected Cache<String, Resource> initialValue() {
             return CacheBuilder.newBuilder()
-                    .expireAfterAccess(1, TimeUnit.SECONDS)
+                    .expireAfterAccess(1, TimeUnit.MINUTES)
                     .build();
         }
     };
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.SECONDS)
-            .build(new CacheLoader<Object, Reference>() {
-                @Override
-                public Reference load(final Object key) {
-                    return new Reference(key);
-                }
-            });
+        .expireAfterAccess(1, TimeUnit.MINUTES)
+        .build(new CacheLoader<Object, Reference>() {
+            @Override
+            public Reference load(final Object key) {
+                return new Reference(key);
+            }
+        });
 
     private ProtelisLoader() {
     }
