@@ -24,6 +24,7 @@ import gnu.trove.stack.TIntStack;
  */
 public class HashingCodePathFactory implements CodePathFactory {
 
+    private static final long serialVersionUID = 1L;
     private final HashFunction algorithm;
 
     public HashingCodePathFactory(final HashFunction hashAlgorithm) {
