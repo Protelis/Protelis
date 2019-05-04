@@ -48,6 +48,7 @@ public class HashingCodePathFactory implements CodePathFactory {
      * Hash-based {@link CodePath}.
      */
     public static final class HashingCodePath implements CodePath {
+        private static final long serialVersionUID = 1L;
         private final byte[] hash;
 
         /**
