@@ -44,10 +44,12 @@ public class HashingCodePathFactory implements CodePathFactory {
         }
         @Override
         public int hashCode() {
+            // CHECKSTYLE: MagicNumber OFF
             return (hash[0] & 0xFF)
                 | ((hash[1] & 0xFF) << 8)
                 | ((hash[2] & 0xFF) << 16)
                 | ((hash[3] & 0xFF) << 24);
+            // CHECKSTYLE: MagicNumber ON
         }
     }
 
