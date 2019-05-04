@@ -23,8 +23,6 @@ import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.WithBytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java8.util.function.BiConsumer;
 import java8.util.function.Consumer;
@@ -39,7 +37,6 @@ import java8.util.stream.IntStreams;
  */
 public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, WithBytecode {
 
-    private static final Logger L = LoggerFactory.getLogger(AbstractAnnotatedTree.class);
     private static final long serialVersionUID = -8156985119843359212L;
     private T annotation;
     private final List<AnnotatedTree<?>> branches;
