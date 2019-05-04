@@ -11,10 +11,21 @@ import com.google.common.hash.Hasher;
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
 
+/**
+ * An hash-based {@link CodePath} factory. It allows for predictable packet
+ * sizes, as codepath length is no affected by the evaluation tree depth at
+ * which the field was built. It is arguably more secure than the default option
+ * (if a cryptographic hashing function is used) as receivers cannot deduce the
+ * code that generated some values. The provided factory is configurable by
+ * using an {@link HashFunction} from Guava. Being hash based, it has a non-zero
+ * probability of collision. Using decent hash functions (e.g. SHA) should
+ * however make the event very unlikely. In any case, there is a trade-off
+ * between collision probability and packet size.
+ */
 public class HashingCodePathFactory implements CodePathFactory {
 
     private final HashFunction algorithm;
-    
+
     public HashingCodePathFactory(final HashFunction hashAlgorithm) {
         algorithm = hashAlgorithm;
     }
