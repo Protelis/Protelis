@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.protelis.lang.ProtelisRuntimeException;
@@ -210,7 +211,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
      */
     @Override
     public String getName() {
-        return getClass().getSimpleName().toLowerCase();
+        return getClass().getSimpleName().toLowerCase(Locale.ENGLISH);
     }
 
     private IntStream indexStream() {
