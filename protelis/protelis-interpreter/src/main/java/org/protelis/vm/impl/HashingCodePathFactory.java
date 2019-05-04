@@ -36,7 +36,7 @@ public class HashingCodePathFactory implements CodePathFactory {
 
     @Override
     public final CodePath createCodePath(final TIntList callStackIdentifiers, final TIntStack callStackSizes) {
-        Hasher hasher = algorithm.newHasher(callStackIdentifiers.size() * 4);
+        final Hasher hasher = algorithm.newHasher(callStackIdentifiers.size() * 4);
         callStackIdentifiers.forEach(it -> {
             hasher.putInt(it);
             return true;
