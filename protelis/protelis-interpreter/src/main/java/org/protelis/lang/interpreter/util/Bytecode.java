@@ -62,19 +62,6 @@ public enum Bytecode {
     VARIABLE_ACCESS;
     //CHECKSTYLE: JavadocVariable ON
 
-//    private final byte code;
-
-//    private Bytecode(byte code) {
-//        this.code = code;
-//    }
-//
-//    private Bytecode(int code) {
-//        if (code < Byte.MIN_VALUE || code > Byte.MAX_VALUE) {
-//            throw new IllegalStateException("Byte code " + code + " is out of range");
-//        }
-//        this.code = (byte) code;
-//    }
-
     public int getCode() {
         return Integer.MIN_VALUE + ordinal();
     }
