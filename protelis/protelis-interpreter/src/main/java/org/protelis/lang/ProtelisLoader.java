@@ -626,23 +626,12 @@ public final class ProtelisLoader {
 
     private static final class ProgramState {
         private final Map<Reference, FunctionDefinition> functions;
-//        private final Map<Reference, JvmOperation> methods;
-//        private final Map<Reference, JvmField> fields;
-        private ProgramState(final Map<Reference, FunctionDefinition> functions
-//                ,
-//                final Map<Reference, JvmOperation> methods,
-//                final Map<Reference, JvmField> fields
-                ) {
+        private ProgramState(final Map<Reference, FunctionDefinition> functions) {
             this.functions = functions;
-//            this.methods = methods;
-//            this.fields = fields;
         }
         public FunctionDefinition resolveFunction(final Reference r) {
             return functions.get(r);
         }
-//        public JvmOperation resolveMethod(final Reference r) {
-//            return functions.get(r);
-//        }
     }
 
     private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {
