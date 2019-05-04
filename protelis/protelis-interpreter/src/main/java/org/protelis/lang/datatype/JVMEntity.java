@@ -54,7 +54,7 @@ public final class JVMEntity implements Serializable {
             try {
                 type = Class.forName(typeName);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return type;
