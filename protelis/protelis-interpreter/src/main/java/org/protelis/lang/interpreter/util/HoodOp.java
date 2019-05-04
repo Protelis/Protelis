@@ -42,7 +42,7 @@ import java8.util.function.Supplier;
  * Collection of functions and helper methods for reducing fields into local
  * values.
  */
-public enum HoodOp {
+public enum HoodOp implements WithBytecode {
 
     /**
      * Logical product.
@@ -153,6 +153,7 @@ public enum HoodOp {
         this.bytecode = bytecode;
     }
 
+    @Override
     public Bytecode getBytecode() {
         return bytecode;
     }
