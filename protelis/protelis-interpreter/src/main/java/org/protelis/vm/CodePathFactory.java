@@ -1,7 +1,6 @@
 package org.protelis.vm;
 
 import java.io.Serializable;
-import java.util.function.BiFunction;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
@@ -12,7 +11,7 @@ import java8.lang.FunctionalInterface;
  * Protelis stack status.
  */
 @FunctionalInterface
-public interface CodePathFactory extends BiFunction<TIntList, TIntStack, CodePath>, Serializable {
+public interface CodePathFactory extends Serializable {
 
     /**
      * Creates a {@link CodePath} for the current stack status.
