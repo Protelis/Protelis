@@ -48,6 +48,5 @@
 		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
 		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 		<nature>net.sourceforge.pmd.eclipse.plugin.pmdNature</nature>
-		<nature>ch.acanda.eclipse.pmd.builder.PMDNature</nature>
 	</natures>
 </projectDescription>
