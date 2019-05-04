@@ -131,7 +131,7 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
         } catch (ProtelisRuntimeException e) {
             e.fillInStackFrame(this);
             throw e;
-        } catch (Exception e) {
+        } catch (Exception e) { // NOPMD: this is wanted.
             throw new ProtelisRuntimeException(e, this);
         }
     }
