@@ -69,7 +69,7 @@ public final class JVMEntity implements Serializable {
             try {
                 switch (memberType) {
                     case FIELD:
-                        java.lang.reflect.Field field = getType().getField(memberName);
+                        final java.lang.reflect.Field field = getType().getField(memberName);
                         if (Modifier.isStatic(field.getModifiers())) {
                             value = field.get(null);
                         } else {
