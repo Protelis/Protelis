@@ -27,6 +27,9 @@ public class HashingCodePathFactory implements CodePathFactory {
     private static final long serialVersionUID = 1L;
     private final HashFunction algorithm;
 
+    /**
+     * @param hashAlgorithm the hashing algorithm to use
+     */
     public HashingCodePathFactory(final HashFunction hashAlgorithm) {
         algorithm = hashAlgorithm;
     }
@@ -41,8 +44,18 @@ public class HashingCodePathFactory implements CodePathFactory {
         return new HashingCodePath(hasher.hash().asBytes());
     }
 
+    /**
+     * Hash-based {@link CodePath}.
+     */
     public static final class HashingCodePath implements CodePath {
         private final byte[] hash;
+
+        /**
+         * Builds a new {@link HashingCodePath} based on the provided hash.
+         * 
+         * @param hash a byte array representing the hash it must be at least four bytes
+         *             (though longer hashes are warmly recommended to avoid collisions)
+         */
         public HashingCodePath(final byte[] hash) {
             if (hash.length < 4) {
                 throw new IllegalArgumentException("Hashes shorter than four bytes are unacceptable: " + Arrays.toString(hash));
