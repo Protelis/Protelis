@@ -46,17 +46,13 @@ public class TestLanguage {
         runFile("/closure01.pt");
     }
 
-    /*
-     * TODO: this test has to be introduced as soon as a complete support to
-     * closures is provided
-     */
      /**
      * Test closures.
      */
-//     @Test
-//     public void testClosure02() {
-//         runFile("/closure02.pt");
-//     }
+     @Test
+     public void testClosure02() {
+         runFile("/closure02.pt");
+     }
 
     /**
      * Test the cyclic timer.
