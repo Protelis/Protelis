@@ -167,7 +167,7 @@ public final class YamlLoader implements Loader, Serializable {
 
     private transient Incarnation<?> incarnation;
 
-    private class PlaceHolder {
+    private final class PlaceHolder {
         private final String str;
 
         private PlaceHolder(final String str) {
