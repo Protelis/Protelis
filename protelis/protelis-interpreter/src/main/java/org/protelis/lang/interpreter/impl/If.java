@@ -22,7 +22,6 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class If<T> extends AbstractAnnotatedTree<T> {
 
-    private static final byte COND = 0, THEN = 1, ELSE = 2;
     private static final long serialVersionUID = -4830593657731078743L;
     private final AnnotatedTree<Boolean> conditionExpression;
     private final AnnotatedTree<T> thenExpression, elseExpression;
