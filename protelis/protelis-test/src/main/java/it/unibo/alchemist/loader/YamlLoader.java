@@ -79,7 +79,7 @@ import it.unibo.alchemist.model.interfaces.TimeDistribution;
 /**
  * Loads a properly formatted YAML file and provides method for instancing a batch of scenarios.
  */
-public class YamlLoader implements Loader, Serializable {
+public final class YamlLoader implements Loader, Serializable {
 
     /**
      * 
