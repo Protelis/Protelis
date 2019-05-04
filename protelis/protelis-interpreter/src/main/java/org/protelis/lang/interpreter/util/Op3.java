@@ -44,6 +44,7 @@ public enum Op3 implements WithBytecode {
         this.bytecode = bytecode;
     }
 
+    @Override
     public Bytecode getBytecode() {
         return bytecode;
     }
