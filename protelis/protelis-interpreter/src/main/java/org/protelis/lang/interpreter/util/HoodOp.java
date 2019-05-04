@@ -232,7 +232,7 @@ public enum HoodOp implements WithBytecode {
             }, n, UNION.defs.apply(f));
         return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
-    
+
     @FunctionalInterface
     private interface SerializableBifunction extends BiFunction<Field, DeviceUID, Object>, Serializable { }
 
