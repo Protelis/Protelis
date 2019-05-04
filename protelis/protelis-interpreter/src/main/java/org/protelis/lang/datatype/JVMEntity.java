@@ -82,7 +82,7 @@ public final class JVMEntity implements Serializable {
                     default: throw new  IllegalStateException("Fix Protelis code, it's bugged.");
                 }
             } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return value;
