@@ -1,15 +1,16 @@
 package org.protelis.vm.impl;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.protelis.vm.CodePath;
 import org.protelis.vm.CodePathFactory;
 
-import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
+import java8.util.function.Supplier;
 
 /**
  * An hash-based {@link CodePath} factory. It allows for predictable packet
@@ -25,24 +26,30 @@ import gnu.trove.stack.TIntStack;
 public class HashingCodePathFactory implements CodePathFactory {
 
     private static final long serialVersionUID = 1L;
-    private final HashFunction algorithm;
+    private final HasherSupplier algorithm;
 
     /**
-     * @param hashAlgorithm the hashing algorithm to use
+     * @param hashFunction the hashing algorithm to use
      */
-    public HashingCodePathFactory(final HashFunction hashAlgorithm) {
-        algorithm = hashAlgorithm;
+    public HashingCodePathFactory(final HasherSupplier hashFunction) {
+        algorithm = hashFunction;
     }
 
     @Override
     public final CodePath createCodePath(final TIntList callStackIdentifiers, final TIntStack callStackSizes) {
-        final Hasher hasher = algorithm.newHasher(callStackIdentifiers.size() * 4);
+        final Hasher hasher = algorithm.get();
         callStackIdentifiers.forEach(it -> {
             hasher.putInt(it);
             return true;
         });
         return new HashingCodePath(hasher.hash().asBytes());
     }
+
+    /**
+     * Serializable supplier, because Java 8 lambdas are not.
+     */
+    @FunctionalInterface
+    public interface HasherSupplier extends Supplier<Hasher>, Serializable { }
 
     /**
      * Hash-based {@link CodePath}.
