@@ -10,7 +10,6 @@ package org.protelis.lang.interpreter.impl;
 
 import static java8.util.stream.StreamSupport.parallelStream;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
