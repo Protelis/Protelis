@@ -1,12 +1,25 @@
 package org.protelis.vm;
 
 import java.io.Serializable;
+import java.util.function.BiFunction;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
 import java8.lang.FunctionalInterface;
 
+/**
+ * A function which is able to build a {@link CodePath} given the current
+ * Protelis stack status.
+ */
 @FunctionalInterface
-public interface CodePathFactory extends Serializable {
+public interface CodePathFactory extends BiFunction<TIntList, TIntStack, CodePath>, Serializable {
+
+    /**
+     * Creates a {@link CodePath} for the current stack status.
+     * 
+     * @param callStackIdentifiers the stack frames identifiers
+     * @param callStackSizes       the stack frame sizes, by frame
+     * @return a new {@link CodePath}
+     */
     CodePath createCodePath(TIntList callStackIdentifiers, TIntStack callStackSizes);
 }
