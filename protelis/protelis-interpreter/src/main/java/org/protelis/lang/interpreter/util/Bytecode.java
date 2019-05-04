@@ -62,6 +62,9 @@ public enum Bytecode {
     VARIABLE_ACCESS;
     //CHECKSTYLE: JavadocVariable ON
 
+    /**
+     * @return a unique code
+     */
     public int getCode() {
         return Integer.MIN_VALUE + ordinal();
     }
