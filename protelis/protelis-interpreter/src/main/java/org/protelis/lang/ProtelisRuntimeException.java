@@ -35,7 +35,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      *                  exception was thrown
      */
     public ProtelisRuntimeException(final Throwable javaCause, final AnnotatedTree<?> origin) {
-        super(javaCause);
+        super(javaCause.getLocalizedMessage(), javaCause);
         protelisStackTrace.add(origin);
     }
 
