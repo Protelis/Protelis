@@ -1,16 +1,11 @@
 package org.protelis.lang.interpreter.util;
 
-import static com.google.common.collect.ImmutableList.of;
-import static java.lang.Double.NEGATIVE_INFINITY;
-import static java.lang.Double.NaN;
-import static java.lang.Double.POSITIVE_INFINITY;
-import static java.util.Collections.emptyList;
-import static org.apache.commons.math3.util.Pair.create;
-
-import org.protelis.lang.datatype.Tuple;
-
+/**
+ * Associates a unique identifier to each Protelis interpreter entity.
+ */
 public enum Bytecode {
 
+    // CHECKSTYLE: JavadocVariable OFF
     ALIGNED_MAP,
     ALIGNED_MAP_FILTER,
     ALIGNED_MAP_EXECUTE,
@@ -65,6 +60,7 @@ public enum Bytecode {
     UNARY_MINUS,
     UNARY_NOT,
     VARIABLE_ACCESS;
+    //CHECKSTYLE: JavadocVariable ON
 
 //    private final byte code;
 
