@@ -70,7 +70,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
          */
         context.newCallStackFrame(stackCode);
         forEachWithIndex((i, b) -> {
-            context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation(), true);
+            context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation());
         });
         /*
          * 2. Load a fresh body as superscript

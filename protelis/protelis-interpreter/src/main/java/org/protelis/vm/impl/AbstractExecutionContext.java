@@ -29,8 +29,6 @@ import org.protelis.vm.CodePathFactory;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
-import org.protelis.vm.util.Stack;
-import org.protelis.vm.util.StackImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +56,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final NetworkManager nm;
     private final CodePathFactory codePathFactory;
     private Map<Reference, ?> functions = Collections.emptyMap();
-    private Stack gamma;
+//    private Stack gamma;
+    private Map<Reference, Object> gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
     private Map<CodePath, Object> toSend;
@@ -67,6 +66,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final ExecutionEnvironment env;
     private int exportsSize;
     private int deferredExportSize;
+    private int variablesSize;
 
     /**
      * Create a new AbstractExecutionContext with a default, time-efficient code path factory.
@@ -120,6 +120,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         });
         nm.shareState(toSend);
         exportsSize = toSend.size();
+        variablesSize = gamma.size();
         deferredExportSize = tobeComputedBeforeSending.size();
         // commit and clear including recursion into restricted contexts
         commitRecursively();
@@ -157,7 +158,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         env.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
-        gamma = new StackImpl(functions);
+        gamma = newLinkedHashMapWithExpectedSize(variablesSize);
+        gamma.putAll(functions);
         theta = Collections.unmodifiableMap(nm.getNeighborState());
         newCallStackFrame(-1);
     }
@@ -169,7 +171,6 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         }
         callFrameSizes.push(id.length);
         callStack.add(id);
-        gamma.push();
     }
 
     @Override
@@ -191,12 +192,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     public final void returnFromCallFrame() {
         final int size = callFrameSizes.pop();
         callStack.remove(callStack.size() - size, size);
-        gamma.pop();
     }
 
     @Override
-    public final void putVariable(final Reference name, final Object value, final boolean canShadow) {
-        gamma.put(name, value, canShadow);
+    public final void putVariable(final Reference name, final Object value) {
+        gamma.put(name, value);
     }
 
     @Override
@@ -229,6 +229,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.callStack.addAll(callStack);
         restrictedInstance.functions = functions;
         restrictedInstance.exportsSize = exportsSize;
+        restrictedInstance.variablesSize = variablesSize;
         restrictedInstance.previousRoundTime = previousRoundTime;
         restrictedContexts.add(restrictedInstance);
         return restrictedInstance;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.protelis.lang;
+package org.protelis.lang.interpreter.util;
 
 import java.io.PrintStream;
 import java.util.Deque;

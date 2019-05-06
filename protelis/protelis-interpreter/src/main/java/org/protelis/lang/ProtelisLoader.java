@@ -52,7 +52,7 @@ import org.protelis.lang.interpreter.impl.All;
 import org.protelis.lang.interpreter.impl.BinaryOp;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
-import org.protelis.lang.interpreter.impl.CreateVar;
+import org.protelis.lang.interpreter.impl.AssignmentOp;
 import org.protelis.lang.interpreter.impl.DotOperator;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
@@ -154,18 +154,18 @@ public final class ProtelisLoader {
         @Override
         protected Cache<String, Resource> initialValue() {
             return CacheBuilder.newBuilder()
-                    .expireAfterAccess(1, TimeUnit.SECONDS)
+                    .expireAfterAccess(1, TimeUnit.MINUTES)
                     .build();
         }
     };
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.SECONDS)
-            .build(new CacheLoader<Object, Reference>() {
-                @Override
-                public Reference load(final Object key) {
-                    return new Reference(key);
-                }
-            });
+        .expireAfterAccess(1, TimeUnit.MINUTES)
+        .build(new CacheLoader<Object, Reference>() {
+            @Override
+            public Reference load(final Object key) {
+                return new Reference(key);
+            }
+        });
 
     private ProtelisLoader() {
     }
@@ -228,7 +228,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
+    public static ProtelisProgram parseAnonymousModule(final String program) {
         return parse(resourceFromString(program));
     }
 
@@ -251,7 +251,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parseURI(final String programURI) throws IOException, IllegalArgumentException {
+    public static ProtelisProgram parseURI(final String programURI) throws IOException {
         return parse(resourceFromURIString(programURI));
     }
 
@@ -443,7 +443,7 @@ public final class ProtelisLoader {
                     translate(alMap.getDefault(), m));
             }),
         ASSIGNMENT(Assignment.class,
-            (e, m) -> new CreateVar(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
+            (e, m) -> new AssignmentOp(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m))),
         BLOCK(Block.class,
             (e, m) -> {
                 final List<AnnotatedTree<?>> statements = new LinkedList<>();
@@ -472,7 +472,7 @@ public final class ProtelisLoader {
             return new FunctionCall(metadataFor(e), m.resolveFunction(toR(ref)), callArgs(call, m));
         }),
         DECLARATION(VarDef.class,
-            (e, m) -> new CreateVar(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m), true)),
+            (e, m) -> new AssignmentOp(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m))),
         DOUBLE(DoubleVal.class,
             (e, m) -> new Constant<>(metadataFor(e), ((DoubleVal) e).getVal())),
         E(org.protelis.parser.protelis.E.class,
@@ -626,23 +626,12 @@ public final class ProtelisLoader {
 
     private static final class ProgramState {
         private final Map<Reference, FunctionDefinition> functions;
-//        private final Map<Reference, JvmOperation> methods;
-//        private final Map<Reference, JvmField> fields;
-        private ProgramState(final Map<Reference, FunctionDefinition> functions
-//                ,
-//                final Map<Reference, JvmOperation> methods,
-//                final Map<Reference, JvmField> fields
-                ) {
+        private ProgramState(final Map<Reference, FunctionDefinition> functions) {
             this.functions = functions;
-//            this.methods = methods;
-//            this.fields = fields;
         }
         public FunctionDefinition resolveFunction(final Reference r) {
             return functions.get(r);
         }
-//        public JvmOperation resolveMethod(final Reference r) {
-//            return functions.get(r);
-//        }
     }
 
     private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {

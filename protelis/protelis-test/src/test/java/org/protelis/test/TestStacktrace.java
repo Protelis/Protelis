@@ -3,7 +3,7 @@ package org.protelis.test;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.protelis.lang.ProtelisRuntimeException;
+import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 
 import com.google.common.collect.ImmutableList;
 

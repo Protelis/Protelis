@@ -41,7 +41,9 @@ import org.protelis.vm.ExecutionContext;
 public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
 
     private static final String APPLY = "apply";
-    private static final Reference CURFIELD = new Reference(new Object());
+    private static final Reference CURFIELD = new Reference(new Serializable() {
+        private static final long serialVersionUID = 1L;
+    });
     private static final long serialVersionUID = -7655993075803732148L;
     private final AnnotatedTree<?> defVal;
     private final AnnotatedTree<Field> fgen;
@@ -156,7 +158,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             final List<AnnotatedTree<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(getMetadata(), key));
             args.add(new Variable(getMetadata(), CURFIELD));
-            restricted.putVariable(CURFIELD, value, true);
+            restricted.putVariable(CURFIELD, value);
             /*
              * Compute the code path: align on keys
              */

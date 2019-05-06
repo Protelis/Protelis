@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 import org.protelis.lang.interpreter.util.WithBytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
