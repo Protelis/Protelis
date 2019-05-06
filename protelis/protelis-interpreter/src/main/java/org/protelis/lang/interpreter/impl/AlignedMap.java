@@ -158,7 +158,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             final List<AnnotatedTree<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(getMetadata(), key));
             args.add(new Variable(getMetadata(), CURFIELD));
-            restricted.putVariable(CURFIELD, value, true);
+            restricted.putVariable(CURFIELD, value);
             /*
              * Compute the code path: align on keys
              */

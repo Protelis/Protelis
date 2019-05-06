@@ -21,7 +21,6 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
     private final Reference var;
-    private final boolean definition;
 
     /**
      * @param metadata
@@ -30,18 +29,15 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
      *            variable name
      * @param value
      *            program to evaluate to compute the value
-     * @param isDefinition
-     *            true if it is a let
      */
-    public CreateVar(final Metadata metadata, final Reference name, final AnnotatedTree<?> value, final boolean isDefinition) {
+    public CreateVar(final Metadata metadata, final Reference name, final AnnotatedTree<?> value) {
         super(metadata, value);
         var = name;
-        definition = isDefinition;
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new CreateVar(getMetadata(), var, deepCopyBranches().get(0), definition);
+        return new CreateVar(getMetadata(), var, deepCopyBranches().get(0));
     }
 
     @Override
@@ -49,7 +45,7 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
         projectAndEval(context);
         final Object res = getBranch(0).getAnnotation();
         context.returnFromCallFrame();
-        context.putVariable(var, res, isDefinition());
+        context.putVariable(var, res);
         context.newCallStackFrame(getBytecode().getCode());
         setAnnotation(res);
     }
@@ -68,13 +64,6 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
     @Override
     public String toString() {
         return getName() + ' ' + var + " = " + stringFor(getBranch(0));
-    }
-
-    /**
-     * @return true if it is a let
-     */
-    public boolean isDefinition() {
-        return definition;
     }
 
     @Override

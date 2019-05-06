@@ -59,17 +59,14 @@ public interface ExecutionContext {
     void putMultipleVariables(Map<Reference, ?> map);
 
     /**
+     * Puts a variable value, overwriting the previous one, if any.
+     * 
      * @param name
      *            variable reference
      * @param value
      *            variable value
-     * @param canShadow
-     *            if no other variable with the same name exists, this parameter
-     *            is irrelevant. Otherwise, if true, the previous variable will
-     *            be shadowed. If false, the variable will be overridden (with
-     *            possible side effects upon return) instead.
      */
-    void putVariable(Reference name, Object value, boolean canShadow);
+    void putVariable(Reference name, Object value);
 
     /**
      * Give a field, returns a new {@link ExecutionContext} whose domain is the same of the field one.

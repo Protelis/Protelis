@@ -443,7 +443,7 @@ public final class ProtelisLoader {
                     translate(alMap.getDefault(), m));
             }),
         ASSIGNMENT(Assignment.class,
-            (e, m) -> new CreateVar(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m), false)),
+            (e, m) -> new CreateVar(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m))),
         BLOCK(Block.class,
             (e, m) -> {
                 final List<AnnotatedTree<?>> statements = new LinkedList<>();
@@ -472,7 +472,7 @@ public final class ProtelisLoader {
             return new FunctionCall(metadataFor(e), m.resolveFunction(toR(ref)), callArgs(call, m));
         }),
         DECLARATION(VarDef.class,
-            (e, m) -> new CreateVar(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m), true)),
+            (e, m) -> new CreateVar(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m))),
         DOUBLE(DoubleVal.class,
             (e, m) -> new Constant<>(metadataFor(e), ((DoubleVal) e).getVal())),
         E(org.protelis.parser.protelis.E.class,

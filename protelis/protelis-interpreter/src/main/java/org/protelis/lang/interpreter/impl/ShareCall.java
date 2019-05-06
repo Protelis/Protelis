@@ -121,8 +121,8 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
     public void evaluate(final ExecutionContext context) {
         evalInNewStackFrame(init, context, SHARE_INIT);
         final S localValue = ensureType(isErased() ? init.getAnnotation() : getSuperscript());
-        ifPresent(localName, it -> context.putVariable(it, localValue, true));
-        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation), true));
+        ifPresent(localName, it -> context.putVariable(it, localValue));
+        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation)));
         context.newCallStackFrame(SHARE_BODY.getCode());
         final Runnable yieldEvaluation = () -> ifPresent(yield, it -> evalInNewStackFrame(it, context, SHARE_YIELD)); // NOPMD: this is not a thread.
         if (body instanceof All) {

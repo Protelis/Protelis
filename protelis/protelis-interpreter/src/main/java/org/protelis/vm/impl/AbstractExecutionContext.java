@@ -195,7 +195,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     @Override
-    public final void putVariable(final Reference name, final Object value, final boolean canShadow) {
+    public final void putVariable(final Reference name, final Object value) {
         gamma.put(name, value);
     }
 
