@@ -10,7 +10,7 @@ package org.protelis.vm.util;
 
 import java.util.Map;
 
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 
 /**
  * Stack implementation used by the Protelis VM for tracking local variable

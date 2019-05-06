@@ -4,6 +4,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
@@ -32,6 +33,11 @@ public final class Env extends AbstractAnnotatedTree<ExecutionEnvironment> {
     public void evaluate(final ExecutionContext context) {
         assert context != null;
         setAnnotation(context.getExecutionEnvironment());
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.ENV;
     }
 
     /**

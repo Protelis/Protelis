@@ -67,9 +67,9 @@ import org.protelis.lang.interpreter.impl.ShareCall;
 import org.protelis.lang.interpreter.impl.TernaryOp;
 import org.protelis.lang.interpreter.impl.UnaryOp;
 import org.protelis.lang.interpreter.impl.Variable;
+import org.protelis.lang.interpreter.util.HoodOp;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.HoodOp;
-import org.protelis.lang.util.Reference;
 import org.protelis.parser.ProtelisStandaloneSetup;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
@@ -397,13 +397,13 @@ public final class ProtelisLoader {
         if (root.getImports() != null) {
             final List<ImportDeclaration> allImports = root.getImports().getImportDeclarations();
             final Map<Reference, Object> globalReferences = new LinkedHashMap<>(refToFun.size() + allImports.size());
-            for (ImportDeclaration imp : allImports) {
+            for (final ImportDeclaration imp : allImports) {
                 if (imp instanceof JavaImport) {
-                    JavaImport javaImport = (JavaImport) imp;
-                    JvmDeclaredType type = javaImport.getImportedType();
-                    Iterable<JvmField> fields = type.getDeclaredFields();
-                    Iterable<JvmOperation> methods = type.getDeclaredOperations();
-                    for (JvmFeature feature: Iterables.concat(fields, methods)) {
+                    final JavaImport javaImport = (JavaImport) imp;
+                    final JvmDeclaredType type = javaImport.getImportedType();
+                    final Iterable<JvmField> fields = type.getDeclaredFields();
+                    final Iterable<JvmOperation> methods = type.getDeclaredOperations();
+                    for (final JvmFeature feature: Iterables.concat(fields, methods)) {
                         if (feature.isStatic()
                             && (javaImport.isWildcard() || feature.getSimpleName().equals(javaImport.getImportedMemberName()))) {
                             globalReferences.put(toR(feature), new JVMEntity(feature));
@@ -536,7 +536,7 @@ public final class ProtelisLoader {
                 final AnnotatedTree<?> body = translate(l.getBody(), m);
                 final List<AnnotatedTree<?>> bodyEntities = new ArrayList<>();
                 bodyEntities.add(body);
-                for (int i = 0; i < bodyEntities.size(); i++) {
+                for (int i = 0; i < bodyEntities.size(); i++) { //NOPMD: it can't be a foreach, it changes the collection while iterating.
                     bodyEntities.addAll(bodyEntities.get(i).getBranches());
                 }
                 final String base = Base64.encodeBase64String(
@@ -669,10 +669,10 @@ public final class ProtelisLoader {
              */
             final ImportSection imports = module.getImports();
             if (imports != null) {
-                StreamSupport.stream(imports.getImportDeclarations())
-                .filter(it -> it instanceof ProtelisImport)
-                .map(it -> (ProtelisImport) it)
-                .forEach(it -> recursivelyInitFunctions(it.getModule(), nameToFun, completed));
+                stream(imports.getImportDeclarations())
+                    .filter(it -> it instanceof ProtelisImport)
+                    .map(it -> (ProtelisImport) it)
+                    .forEach(it -> recursivelyInitFunctions(it.getModule(), nameToFun, completed));
             }
             /*
              * Init local functions

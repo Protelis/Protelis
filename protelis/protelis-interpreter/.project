@@ -42,14 +42,12 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sourceforge.pmd.eclipse.plugin.pmdNature</nature>
 		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
 		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
-		<nature>ch.acanda.eclipse.pmd.builder.PMDNature</nature>
 	</natures>
 	<filteredResources>
 		<filter>

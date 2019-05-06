@@ -46,7 +46,6 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>ch.acanda.eclipse.pmd.builder.PMDNature</nature>
 		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
 		<nature>net.sourceforge.pmd.eclipse.plugin.pmdNature</nature>
 	</natures>

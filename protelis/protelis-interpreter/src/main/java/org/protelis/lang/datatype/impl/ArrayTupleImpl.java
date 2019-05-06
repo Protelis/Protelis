@@ -23,7 +23,7 @@ import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.FunctionCall;
-import org.protelis.lang.util.JavaInteroperabilityUtils;
+import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.collect.Iterables;

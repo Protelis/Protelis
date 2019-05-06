@@ -15,7 +15,7 @@ import java.util.List;
 import org.danilopianini.lang.LangUtils;
 import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
 
 import gnu.trove.list.TByteList;

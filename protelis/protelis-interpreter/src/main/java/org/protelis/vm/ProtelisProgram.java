@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.danilopianini.lang.util.FasterString;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 
 /**
  * Executable representation of a Protelis program.

@@ -9,8 +9,9 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -47,7 +48,9 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object res = getBranch(0).getAnnotation();
+        context.returnFromCallFrame();
         context.putVariable(var, res, isDefinition());
+        context.newCallStackFrame(getBytecode().getCode());
         setAnnotation(res);
     }
 
@@ -72,6 +75,11 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
      */
     public boolean isDefinition() {
         return definition;
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.CREATE_VARIABLE;
     }
 
 }

@@ -1,4 +1,4 @@
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
 import java.util.Arrays;
 import java.util.List;

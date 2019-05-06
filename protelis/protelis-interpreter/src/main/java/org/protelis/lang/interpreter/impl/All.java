@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -47,7 +48,7 @@ public final class All extends AbstractAnnotatedTree<Object> {
              * Prevents the same nbr operation on multiple lines to conflict
              */
             forEachWithIndex((i, b) -> {
-                context.newCallStackFrame(i.byteValue());
+                context.newCallStackFrame(i);
                 b.eval(context);
                 /*
                  * Do not return immediately, or the lets won't be available to
@@ -71,16 +72,19 @@ public final class All extends AbstractAnnotatedTree<Object> {
             return getBranch(last).getName();
         case 2:
             return getBranch(0).getName() + "; " + getBranch(last).getName();
-        case 3:
-            return getBranch(0).getName() + "; ...; " + getBranch(last).getName();
         default:
-            return super.getName();
+            return getBranch(0).getName() + "; ...; " + getBranch(last).getName();
         }
     }
 
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.ALL;
     }
 
 }

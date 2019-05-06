@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.vm.CodePath;
 import org.protelis.vm.NetworkManager;
-import org.protelis.vm.util.CodePath;
 
 /**
  * Stub network manager for testing, in which there are no neighbors and no

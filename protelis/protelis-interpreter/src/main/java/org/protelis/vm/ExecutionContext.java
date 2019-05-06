@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 
 import java8.util.function.Function;
 import java8.util.function.Supplier;
@@ -32,6 +32,12 @@ import java8.util.function.Supplier;
  * etc.)
  */
 public interface ExecutionContext {
+
+    /**
+     * @param id
+     *            stack frame type
+     */
+    void newCallStackFrame(int... id);
 
     /**
      * @param id
@@ -92,7 +98,7 @@ public interface ExecutionContext {
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
      * A neighbor is considered to be aligned it it has reached the exact same
-     * {@link org.protelis.vm.util.CodePath}. The field will always contain at least one value,
+     * {@link org.protelis.vm.impl.DefaultTimeEfficientCodePath}. The field will always contain at least one value,
      * namely the value of the local device.
      * 
      * @param computeValue
@@ -112,7 +118,7 @@ public interface ExecutionContext {
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
      * A neighbor is considered to be aligned it it has reached the exact same
-     * {@link org.protelis.vm.util.CodePath}. The field will always contain at least one value,
+     * {@link org.protelis.vm.impl.DefaultTimeEfficientCodePath}. The field will always contain at least one value,
      * namely the value of the local device. The deferred version does not immediately schedule
      * the local value for being sent away. Rather, it schedules the provided {@link Supplier}
      * to be executed at the end of the round for obtaining the value to be shared. This
