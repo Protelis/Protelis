@@ -25,7 +25,7 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
 
     private static final long serialVersionUID = 1L;
     private final int[] repr;
-    private int lazyHash = 0;
+    private int lazyHash;
 
     /**
      * @param source the current stack frames identifiers
