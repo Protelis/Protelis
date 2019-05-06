@@ -42,7 +42,7 @@ public class HashingCodePathFactory implements CodePathFactory {
             hasher.putInt(it);
             return true;
         });
-        return new HashingCodePath(hasher.hash().asBytes());
+        return new HashingCodePath(hasher.hash().asBytes(), false);
     }
 
     /**
@@ -65,10 +65,20 @@ public class HashingCodePathFactory implements CodePathFactory {
          *             (though longer hashes are warmly recommended to avoid collisions)
          */
         public HashingCodePath(final byte[] hash) {
+            this(hash, true);
+        }
+
+        /**
+         * Builds a new {@link HashingCodePath} based on the provided hash.
+         * 
+         * @param hash a byte array representing the hash it must be at least four bytes
+         *             (though longer hashes are warmly recommended to avoid collisions)
+         */
+        private HashingCodePath(final byte[] hash, final boolean copy) {
             if (hash.length < 4) {
                 throw new IllegalArgumentException("Hashes shorter than four bytes are unacceptable: " + Arrays.toString(hash));
             }
-            this.hash = hash;
+            this.hash = copy ? Arrays.copyOf(hash, hash.length) : hash;
         }
         @Override
         public boolean equals(final Object obj) {

@@ -31,7 +31,7 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.vm.ExecutionContext;;
+import org.protelis.vm.ExecutionContext;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such

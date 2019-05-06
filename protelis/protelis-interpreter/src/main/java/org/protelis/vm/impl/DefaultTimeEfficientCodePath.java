@@ -25,7 +25,7 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
 
     private static final long serialVersionUID = 1L;
     private final int[] repr;
-    private int lazyHash = 0;
+    private int lazyHash;
 
     /**
      * @param source the current stack frames identifiers
@@ -44,7 +44,7 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     public int hashCode() {
         if (lazyHash == 0) {
             final Hasher murmur = Hashing.murmur3_32().newHasher();
-            for (int x: repr) {
+            for (final int x: repr) {
                 murmur.putInt(x);
             }
             lazyHash = murmur.hash().asInt();
