@@ -30,7 +30,7 @@ public final class Reference implements Serializable {
     public Reference(final Object obj) {
         if (obj instanceof VarDef) {
             final VarDef var = (VarDef) obj;
-            ITextRegionWithLineInformation node = NodeModelUtils.getNode(var).getTextRegionWithLineInformation();
+            final ITextRegionWithLineInformation node = NodeModelUtils.getNode(var).getTextRegionWithLineInformation();
             EObject container = var.eContainer();
             while (!(container.eContainer() == null || container instanceof ProtelisModule)) {
                 container = container.eContainer();
@@ -79,11 +79,11 @@ public final class Reference implements Serializable {
         return strRep;
     }
 
-    private static class Handler<T, S extends Serializable> implements Serializable {
+    private static final class Handler<T, S extends Serializable> implements Serializable {
         private static final long serialVersionUID = 1L;
         private final S serializableState;
         private final Class<?> targetClass;
-        Handler(final T target, final S state) {
+        private Handler(final T target, final S state) {
             targetClass = Objects.requireNonNull(target).getClass();
             serializableState = Objects.requireNonNull(state);
         }
