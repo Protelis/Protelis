@@ -44,7 +44,7 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     public int hashCode() {
         if (lazyHash == 0) {
             final Hasher murmur = Hashing.murmur3_32().newHasher();
-            for (int x: repr) {
+            for (final int x: repr) {
                 murmur.putInt(x);
             }
             lazyHash = murmur.hash().asInt();
