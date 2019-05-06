@@ -228,7 +228,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parseAnonymousModule(final String program) throws IllegalArgumentException {
+    public static ProtelisProgram parseAnonymousModule(final String program) {
         return parse(resourceFromString(program));
     }
 
@@ -251,7 +251,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
-    public static ProtelisProgram parseURI(final String programURI) throws IOException, IllegalArgumentException {
+    public static ProtelisProgram parseURI(final String programURI) throws IOException {
         return parse(resourceFromURIString(programURI));
     }
 
