@@ -17,7 +17,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Declare a variable from a "let" expression.
  */
-public final class CreateVar extends AbstractAnnotatedTree<Object> {
+public final class AssignmentOp extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
     private final Reference var;
@@ -30,14 +30,14 @@ public final class CreateVar extends AbstractAnnotatedTree<Object> {
      * @param value
      *            program to evaluate to compute the value
      */
-    public CreateVar(final Metadata metadata, final Reference name, final AnnotatedTree<?> value) {
+    public AssignmentOp(final Metadata metadata, final Reference name, final AnnotatedTree<?> value) {
         super(metadata, value);
         var = name;
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new CreateVar(getMetadata(), var, deepCopyBranches().get(0));
+        return new AssignmentOp(getMetadata(), var, deepCopyBranches().get(0));
     }
 
     @Override

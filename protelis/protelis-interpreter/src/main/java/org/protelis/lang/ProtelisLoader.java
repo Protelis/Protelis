@@ -52,7 +52,7 @@ import org.protelis.lang.interpreter.impl.All;
 import org.protelis.lang.interpreter.impl.BinaryOp;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
-import org.protelis.lang.interpreter.impl.CreateVar;
+import org.protelis.lang.interpreter.impl.AssignmentOp;
 import org.protelis.lang.interpreter.impl.DotOperator;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
@@ -443,7 +443,7 @@ public final class ProtelisLoader {
                     translate(alMap.getDefault(), m));
             }),
         ASSIGNMENT(Assignment.class,
-            (e, m) -> new CreateVar(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m))),
+            (e, m) -> new AssignmentOp(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m))),
         BLOCK(Block.class,
             (e, m) -> {
                 final List<AnnotatedTree<?>> statements = new LinkedList<>();
@@ -472,7 +472,7 @@ public final class ProtelisLoader {
             return new FunctionCall(metadataFor(e), m.resolveFunction(toR(ref)), callArgs(call, m));
         }),
         DECLARATION(VarDef.class,
-            (e, m) -> new CreateVar(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m))),
+            (e, m) -> new AssignmentOp(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m))),
         DOUBLE(DoubleVal.class,
             (e, m) -> new Constant<>(metadataFor(e), ((DoubleVal) e).getVal())),
         E(org.protelis.parser.protelis.E.class,
