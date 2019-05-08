@@ -58,7 +58,7 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
              * rule [E-FLD]
              */
             final Field unrestricted = (Field) val;
-            val = context.buildField(ignored -> unrestricted.getSample(context.getDeviceUID()), (byte) 0);
+            val = context.buildField(it -> it, unrestricted.getSample(context.getDeviceUID()));
         }
         setAnnotation(val);
     }
