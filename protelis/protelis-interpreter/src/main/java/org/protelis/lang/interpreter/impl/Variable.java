@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Reference;
@@ -50,6 +51,14 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
         }
         if (val instanceof JVMEntity) {
             val = ((JVMEntity) val).getValue();
+        } else if (val instanceof Field) {
+            /*
+             * Variable restriction. See:
+             * https://doi.org/10.1145/3285956
+             * rule [E-FLD]
+             */
+            final Field unrestricted = (Field) val;
+            val = context.buildField(ignored -> unrestricted.getSample(context.getDeviceUID()), (byte) 0);
         }
         setAnnotation(val);
     }
