@@ -44,7 +44,7 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
         if (val == null) {
             /*
              * The variable cannot be read. Most probably, it is some node
-             * variable that is not set here. Defaults to false.
+             * variable that is not set here. Fail fast!
              */
             throw new IllegalStateException("Variable " + name + " cannot be resolved");
         }
