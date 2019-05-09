@@ -1084,6 +1084,14 @@ public class TestApis {
     }
 
     /**
+     * Test for bug #104.
+     */
+    @Test
+    public void testVariableRestriction104() {
+        test("variableRestriction104");
+    }
+
+    /**
      * Test vm.pt.
      */
     @Test
