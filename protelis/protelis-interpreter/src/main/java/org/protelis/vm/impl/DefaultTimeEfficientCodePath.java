@@ -52,4 +52,9 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
         return lazyHash;
     }
 
+    @Override
+    public String toString() {
+        return "CodePath" + Arrays.toString(repr);
+    }
+
 }
