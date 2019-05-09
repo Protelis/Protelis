@@ -56,7 +56,6 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final NetworkManager nm;
     private final CodePathFactory codePathFactory;
     private Map<Reference, ?> functions = Collections.emptyMap();
-//    private Stack gamma;
     private Map<Reference, Object> gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
