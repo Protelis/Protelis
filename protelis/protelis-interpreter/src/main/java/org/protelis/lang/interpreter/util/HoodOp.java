@@ -209,7 +209,7 @@ public enum HoodOp implements WithBytecode {
         if (f.isEmpty()) {
             return NaN;
         }
-        return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size());
+        return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size() - (n == null ? 0 : 1));
     }
 
     private static Object min(final Field f, final DeviceUID n) {
