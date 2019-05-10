@@ -13,6 +13,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
 import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +40,7 @@ import org.protelis.vm.ExecutionContext;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.primitives.Longs;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
@@ -185,10 +187,15 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             /*
              * Compute the code path: align on keys
              */
-            // TODO: Provide fast paths for primitives and Numbers
             // TODO: Fail clearly in case of non-serializable key
-            final byte[] hash = FileUtilities.serializeObject(STACK_IDENTIFIERS.getUnchecked(key));
-            restricted.newCallStackFrame(hash);
+            if (key instanceof Integer || key instanceof Short || key instanceof Byte) {
+                restricted.newCallStackFrame(((Number) key).intValue());
+            } else if (key instanceof Double) {
+                restricted.newCallStackFrame(Longs.toByteArray(Double.doubleToRawLongBits((double) key)));
+            } else {
+                final byte[] hash = FileUtilities.serializeObject(STACK_IDENTIFIERS.getUnchecked(key));
+                restricted.newCallStackFrame(hash);
+            }
             /*
              * Compute functions if needed
              */
