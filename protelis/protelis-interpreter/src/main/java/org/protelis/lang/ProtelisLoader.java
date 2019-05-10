@@ -541,7 +541,7 @@ public final class ProtelisLoader {
                 }
                 final String base = Base64.encodeBase64String(
                         Hashing.sha256().hashString(bodyEntities.toString(), Charsets.UTF_8).asBytes());
-                final FunctionDefinition lambda = new FunctionDefinition(empty(), "$anon$" + base, toR(args));
+                final FunctionDefinition lambda = new FunctionDefinition(empty(), "$" + base, toR(args));
                 lambda.setBody(body);
                 return new Constant<>(metadataFor(e), lambda);
             }),
