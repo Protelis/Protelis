@@ -11,11 +11,9 @@
  */
 package org.protelis.vm.impl;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
@@ -33,7 +31,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
     private final AnnotatedTree<?> prog;
     private final Map<Reference, ?> funs;
-    private final FasterString name;
+    private final String name;
 
     /**
      * @param source
@@ -63,12 +61,9 @@ public final class SimpleProgramImpl implements ProtelisProgram {
             final String pName,
             final AnnotatedTree<?> program,
             final Map<Reference, ?> functions) {
-        Objects.requireNonNull(pName);
-        Objects.requireNonNull(program);
-        Objects.requireNonNull(functions);
-        prog = program;
-        funs = Collections.unmodifiableMap(functions);
-        name = new FasterString(pName);
+        name = Objects.requireNonNull(pName);
+        prog = Objects.requireNonNull(program);
+        funs = Objects.requireNonNull(functions);
     }
 
     @Override
