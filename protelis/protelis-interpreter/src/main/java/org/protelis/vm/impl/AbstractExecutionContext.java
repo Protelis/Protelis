@@ -89,9 +89,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * @param codePathFactory The code path factory to use
      */
     protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr, final CodePathFactory codePathFactory) {
-        LangUtils.requireNonNull(execenv, netmgr);
-        nm = netmgr;
-        env = execenv;
+        nm = Objects.requireNonNull(netmgr);
+        env = Objects.requireNonNull(execenv);
         this.codePathFactory = codePathFactory;
     }
 
