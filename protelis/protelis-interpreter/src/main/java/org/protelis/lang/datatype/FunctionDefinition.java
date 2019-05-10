@@ -90,6 +90,9 @@ public final class FunctionDefinition implements Serializable {
 
     @Override
     public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) o;
             return functionName.equals(fd.functionName) && argNumber == fd.argNumber;
