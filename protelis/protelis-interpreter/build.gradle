@@ -27,11 +27,11 @@ dependencies {
     api("org.apache.commons:commons-math3:$math3Version")
     api("org.eclipse.emf:org.eclipse.emf.ecore:$emfVersion")
     api("com.google.guava:guava:$guavaVersion")
-    implementation "commons-codec:commons-codec:$commonsCodecVersion"
-    implementation "commons-io:commons-io:$commonsIOVersion"
-    implementation "org.apache.commons:commons-lang3:$lang3Version"
-    implementation "org.danilopianini:javalib:$javalibVersion"
-    implementation "org.springframework:spring-core:$springVersion"
+    implementation("commons-codec:commons-codec:$commonsCodecVersion")
+    implementation("commons-io:commons-io:$commonsIOVersion")
+    implementation("org.apache.commons:commons-lang3:$lang3Version")
+    implementation("org.danilopianini:javalib:$javalibVersion")
+    implementation("org.springframework:spring-core:$springVersion")
     /*
      * Legacy dependencies picking
      */
