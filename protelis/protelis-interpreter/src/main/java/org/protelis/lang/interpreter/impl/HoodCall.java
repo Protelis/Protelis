@@ -10,13 +10,14 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Locale;
 
-import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.HoodOp;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
+
+import java8.util.Objects;
 
 /**
  * Reduce a field into a local value by reduction using a {@link HoodOp}.
@@ -40,9 +41,8 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
      */
     public HoodCall(final Metadata metadata, final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
         super(metadata, arg);
-        LangUtils.requireNonNull(func);
         body = arg;
-        function = func;
+        function = Objects.requireNonNull(func);
         inclusive = includeSelf;
     }
 
