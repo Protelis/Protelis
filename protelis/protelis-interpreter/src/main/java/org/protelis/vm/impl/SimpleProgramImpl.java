@@ -87,8 +87,8 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     }
 
     @Override
-    public FasterString getName() {
-        return name;
+    public String getName() {
+        return name.toString();
     }
 
     @Override
