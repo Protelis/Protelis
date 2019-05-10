@@ -39,7 +39,7 @@ allprojects {
     }
 
     dependencies {
-        implementation "org.apache.commons:commons-math3:$math3Version"
+        api("org.apache.commons:commons-math3:$math3Version")
         implementation "org.slf4j:slf4j-api:$slf4jVersion"
         testImplementation "junit:junit:$junitVersion"
         testRuntimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
