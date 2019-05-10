@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.danilopianini.lang.LangUtils;
-import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -39,6 +37,7 @@ import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import java8.util.Maps;
+import java8.util.Optional;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
 
@@ -311,11 +310,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         /*
          * try not to lose precision:
          */
-        final Class<? extends Number> tClass = PrimitiveUtils.toPrimitiveWrapper(previousRoundTime);
-        if (Double.class.equals(tClass) || Float.class.equals(tClass)) {
-            return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
+        final Class<? extends Number> tClass = Optional.of(previousRoundTime).orElse(0.0d).getClass();
+        if (tClass == Integer.class || tClass == Long.class || tClass == Short.class || tClass == Byte.class) {
+            return getCurrentTime().longValue() - previousRoundTime.longValue();
         }
-        return getCurrentTime().longValue() - previousRoundTime.longValue();
+        return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
     }
 
     @Override
