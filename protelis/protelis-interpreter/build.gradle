@@ -29,6 +29,7 @@ dependencies {
     api("com.google.guava:guava:$guavaVersion")
     implementation("commons-codec:commons-codec:$commonsCodecVersion")
     implementation("commons-io:commons-io:$commonsIOVersion")
+    implementation("de.ruedigermoeller:fst:$fstVersion")
     implementation("org.apache.commons:commons-lang3:$lang3Version")
     implementation("org.danilopianini:javalib:$javalibVersion")
     implementation("org.springframework:spring-core:$springVersion")
