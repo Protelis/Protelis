@@ -13,7 +13,6 @@ import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
 import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -187,14 +186,15 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             /*
              * Compute the code path: align on keys
              */
-            // TODO: Fail clearly in case of non-serializable key
             if (key instanceof Integer || key instanceof Short || key instanceof Byte) {
                 restricted.newCallStackFrame(((Number) key).intValue());
             } else if (key instanceof Double) {
                 restricted.newCallStackFrame(Longs.toByteArray(Double.doubleToRawLongBits((double) key)));
-            } else {
+            } else if (key instanceof Serializable) {
                 final byte[] hash = FileUtilities.serializeObject(STACK_IDENTIFIERS.getUnchecked(key));
                 restricted.newCallStackFrame(hash);
+            } else {
+                throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());
             }
             /*
              * Compute functions if needed
