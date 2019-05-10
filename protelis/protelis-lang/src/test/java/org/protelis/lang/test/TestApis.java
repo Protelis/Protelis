@@ -719,6 +719,14 @@ public class TestApis {
      * Test multiC.pt.
      */
     @Test
+    public void testMeanHood104() {
+        test("meanHood");
+    }
+
+    /**
+     * Test multiC.pt.
+     */
+    @Test
     public void testMultiC() {
         test("multiC");
     }
