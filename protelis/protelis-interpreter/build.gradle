@@ -36,10 +36,12 @@ dependencies {
      */
     if (isJava7Legacy) {
         println("Configuring legacy dependencies")
+        api("org.eclipse.xtext:org.eclipse.xtext.common.types:2.10.0")
         api("org.protelis:protelis.parser:${parserVersion}.java7legacy")
         implementation "com.google.code.findbugs:findbugs:$spotBugsLegacy"
     } else {
         api("org.protelis:protelis.parser:$parserVersion")
+        api("org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}")
         implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
     }
 }
