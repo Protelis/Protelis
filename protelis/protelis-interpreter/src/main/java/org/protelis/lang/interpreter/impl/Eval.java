@@ -17,10 +17,12 @@ import org.protelis.vm.ProtelisProgram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java8.util.Optional;
+
 /**
  * Evaluate a Protelis sub-program.
  */
-public final class Eval extends AbstractAnnotatedTree<Object> {
+public final class Eval extends AbstractSATree<ProtelisProgram, Object> {
 
     private static final byte DYN_CODE_INDEX = -1;
     private static final Logger L = LoggerFactory.getLogger(Eval.class);
@@ -44,19 +46,26 @@ public final class Eval extends AbstractAnnotatedTree<Object> {
 
     @Override
     public void evaluate(final ExecutionContext context) {
+        final Object previous = Optional.ofNullable(getBranch(0).getAnnotation())
+            .map(Object::toString)
+            .orElse(null);
         projectAndEval(context);
         final String program = getBranch(0).getAnnotation().toString();
-        try {
-            final ProtelisProgram result = ProtelisLoader.parseAnonymousModule(program);
-            context.newCallStackFrame(DYN_CODE_INDEX);
-            context.putMultipleVariables(result.getGloballyAvailableReferences());
-            result.compute(context);
-            setAnnotation(result.getCurrentValue());
-            context.returnFromCallFrame();
-        } catch (IllegalArgumentException e) {
-            L.error("Non parse-able program", e);
-            throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
+        if (isErased() || !program.equals(previous)) {
+            try {
+                final ProtelisProgram result = ProtelisLoader.parseAnonymousModule(program);
+                setSuperscript(result);
+            } catch (IllegalArgumentException e) {
+                L.error("Non parse-able program", e);
+                throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
+            }
         }
+        final ProtelisProgram result = getSuperscript();
+        context.newCallStackFrame(DYN_CODE_INDEX);
+        context.putMultipleVariables(result.getGloballyAvailableReferences());
+        result.compute(context);
+        setAnnotation(result.getCurrentValue());
+        context.returnFromCallFrame();
     }
 
     @Override

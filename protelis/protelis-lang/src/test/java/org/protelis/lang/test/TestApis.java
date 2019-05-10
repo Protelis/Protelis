@@ -487,6 +487,14 @@ public class TestApis {
      * Test evaporation.pt.
      */
     @Test
+    public void testEvalAlignment() {
+        test("evalAlignment82");
+    }
+
+    /**
+     * Test evaporation.pt.
+     */
+    @Test
     public void testEvaporation() {
         testProgram("evaporation");
     }

@@ -35,10 +35,10 @@ dependencies {
      */
     if (isJava7Legacy) {
         println("Configuring legacy dependencies")
-        api "org.protelis:protelis.parser:${parserVersion}.java7legacy"
+        api("org.protelis:protelis.parser:${parserVersion}.java7legacy")
         implementation "com.google.code.findbugs:findbugs:$spotBugsLegacy"
     } else {
-        api "org.protelis:protelis.parser:$parserVersion"
+        api("org.protelis:protelis.parser:$parserVersion")
         implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
     }
 }
