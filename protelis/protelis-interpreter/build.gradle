@@ -22,7 +22,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    api "net.sourceforge.streamsupport:streamsupport:${streamVersion}"
+    api("net.sourceforge.streamsupport:streamsupport:${streamVersion}")
     api("org.eclipse.emf:org.eclipse.emf.ecore:$emfVersion")
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIOVersion"
