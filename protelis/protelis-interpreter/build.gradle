@@ -22,11 +22,13 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    api "net.sourceforge.streamsupport:streamsupport:${streamVersion}"
+    api("net.sf.trove4j:trove4j:$trove4jVersion")
+    api("net.sourceforge.streamsupport:streamsupport:${streamVersion}")
+    api("org.apache.commons:commons-math3:$math3Version")
+    api("org.eclipse.emf:org.eclipse.emf.ecore:$emfVersion")
+    api("com.google.guava:guava:$guavaVersion")
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIOVersion"
-    implementation "net.sf.trove4j:trove4j:$trove4jVersion"
-    implementation "com.google.guava:guava:$guavaVersion"
     implementation "org.apache.commons:commons-lang3:$lang3Version"
     implementation "org.danilopianini:javalib:$javalibVersion"
     implementation "org.springframework:spring-core:$springVersion"
@@ -35,10 +37,12 @@ dependencies {
      */
     if (isJava7Legacy) {
         println("Configuring legacy dependencies")
+        api("org.eclipse.xtext:org.eclipse.xtext.common.types:2.10.0")
         api("org.protelis:protelis.parser:${parserVersion}.java7legacy")
         implementation "com.google.code.findbugs:findbugs:$spotBugsLegacy"
     } else {
         api("org.protelis:protelis.parser:$parserVersion")
+        api("org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}")
         implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
     }
 }

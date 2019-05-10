@@ -19,7 +19,6 @@ import java8.util.Optional;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.danilopianini.lang.TriFunction;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 
