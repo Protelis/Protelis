@@ -1,0 +1,12 @@
+module evalAlignment82
+public def gradient(source){
+    rep (distance <- Infinity){
+        mux(source){
+            0
+        } else {
+            minHood( nbr(distance) + 1)
+        }
+    }
+}
+eval("import evalAlignment82
+gradient(env.has(\"source\"))")

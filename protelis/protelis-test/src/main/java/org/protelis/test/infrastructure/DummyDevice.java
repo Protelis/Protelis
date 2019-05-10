@@ -130,4 +130,9 @@ public final class DummyDevice extends AbstractExecutionContext
         }
         return tmp;
     }
+
+    @Override
+    public String toString() {
+        return "DummyDevice" + node.getId();
+    }
 }
