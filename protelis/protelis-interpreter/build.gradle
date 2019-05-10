@@ -23,6 +23,7 @@ targetCompatibility = 1.8
 
 dependencies {
     api "net.sourceforge.streamsupport:streamsupport:${streamVersion}"
+    api("org.eclipse.emf:org.eclipse.emf.ecore:$emfVersion")
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIOVersion"
     implementation "net.sf.trove4j:trove4j:$trove4jVersion"
@@ -38,7 +39,7 @@ dependencies {
         api("org.protelis:protelis.parser:${parserVersion}.java7legacy")
         implementation "com.google.code.findbugs:findbugs:$spotBugsLegacy"
     } else {
-        api("org.protelis:protelis.parser:$parserVersion)
+        api("org.protelis:protelis.parser:$parserVersion")
         implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
     }
 }
