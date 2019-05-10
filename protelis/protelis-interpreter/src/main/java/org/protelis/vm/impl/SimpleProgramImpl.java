@@ -91,14 +91,4 @@ public final class SimpleProgramImpl implements ProtelisProgram {
         return name + "\n" + prog;
     }
 
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof SimpleProgramImpl && ((SimpleProgramImpl) obj).name.equals(name);
-    }
-
 }
