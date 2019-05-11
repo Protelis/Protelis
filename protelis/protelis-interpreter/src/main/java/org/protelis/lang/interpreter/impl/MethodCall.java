@@ -14,8 +14,9 @@ import java8.util.stream.StreamSupport;
 
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.ReflectionUtils;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -24,10 +25,35 @@ import org.protelis.vm.ExecutionContext;
 public final class MethodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -2299070628855971997L;
-    private final boolean ztatic;
     private final Class<?> clazz;
-    private final String methodName;
     private transient Method method;
+    private final String methodName;
+    private final boolean ztatic;
+
+    /**
+     * @param metadata
+     *            A {@link Metadata} object containing information about the code that generated this AST node.
+     * @param clazz
+     *            the class where to search for the method
+     * @param methodName
+     *            the method name
+     * @param ztatic
+     *            true if the method is static
+     * @param branch
+     *            method arguments
+     */
+    public MethodCall(
+            final Metadata metadata,
+            final Class<?> clazz,
+            final String methodName,
+            final boolean ztatic,
+            final List<AnnotatedTree<?>> branch) {
+        super(metadata, branch);
+        this.clazz = clazz;
+        this.methodName = methodName;
+        this.ztatic = ztatic;
+        extractMethod();
+    }
 
     /**
      * @param metadata
@@ -53,29 +79,21 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
         extractMethod();
     }
 
-    /**
-     * @param metadata
-     *            A {@link Metadata} object containing information about the code that generated this AST node.
-     * @param clazz
-     *            the class where to search for the method
-     * @param methodName
-     *            the method name
-     * @param ztatic
-     *            true if the method is static
-     * @param branch
-     *            method arguments
-     */
-    public MethodCall(
-            final Metadata metadata,
-            final Class<?> clazz,
-            final String methodName,
-            final boolean ztatic,
-            final List<AnnotatedTree<?>> branch) {
-        super(metadata, branch);
-        this.clazz = clazz;
-        this.methodName = methodName;
-        this.ztatic = ztatic;
-        extractMethod();
+    @Override
+    public MethodCall copy() {
+        return new MethodCall(getMetadata(), clazz, methodName, ztatic, deepCopyBranches());
+    }
+
+    @Override
+    public void evaluate(final ExecutionContext context) {
+        projectAndEval(context);
+        // Obtain target and arguments
+        final Object target = ztatic ? null : getBranch(0).getAnnotation();
+        final Object[] s = getBranchesAnnotations();
+        final Object[] args = ztatic ? s : Arrays.copyOfRange(s, 1, s.length);
+        setAnnotation(method == null
+                ? ReflectionUtils.invokeFieldable(clazz, methodName, target, args)
+                : ReflectionUtils.invokeFieldable(method, target, args));
     }
 
     private void extractMethod() {
@@ -109,30 +127,18 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        // Obtain target and arguments
-        final Object target = ztatic ? null : getBranch(0).getAnnotation();
-        final Object[] s = getBranchesAnnotations();
-        final Object[] args = ztatic ? s : Arrays.copyOfRange(s, 1, s.length);
-        setAnnotation(method == null
-                ? ReflectionUtils.invokeFieldable(clazz, methodName, target, args)
-                : ReflectionUtils.invokeFieldable(method, target, args));
-    }
-
-    @Override
-    public MethodCall copy() {
-        return new MethodCall(getMetadata(), clazz, methodName, ztatic, deepCopyBranches());
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        extractMethod();
+    public Bytecode getBytecode() {
+        return Bytecode.METHOD_CALL;
     }
 
     @Override
     public String getName() {
         return methodName;
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        extractMethod();
     }
 
     @Override

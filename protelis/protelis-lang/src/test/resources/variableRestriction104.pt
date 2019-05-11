@@ -1,0 +1,6 @@
+let x = nbr(0);
+if (self.getDeviceUID().getId() % 2 == 0) {
+    maxHood(x + nbr(1))
+} else {
+    minHood(x + nbr(2))
+}

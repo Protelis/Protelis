@@ -202,7 +202,11 @@ public final class InfrastructureTester {
      */
     private static void generalTest(final ExceptionObserver obs, final String file, final int simulationSteps, final int stabilitySteps,
                     final boolean multirun, final Object f) {
-        final InputStream is = InfrastructureTester.class.getResourceAsStream("/" + file + ".yml");
+        final String resource = "/" + file + ".yml";
+        final InputStream is = InfrastructureTester.class.getResourceAsStream(resource);
+        if (is == null) {
+            throw new IllegalArgumentException(resource + " is not an accessible resource.");
+        }
         String test;
         try {
             test = IOUtils.toString(is, StandardCharsets.UTF_8);

@@ -487,6 +487,14 @@ public class TestApis {
      * Test evaporation.pt.
      */
     @Test
+    public void testEvalAlignment() {
+        test("evalAlignment82");
+    }
+
+    /**
+     * Test evaporation.pt.
+     */
+    @Test
     public void testEvaporation() {
         testProgram("evaporation");
     }
@@ -713,6 +721,14 @@ public class TestApis {
     @Test
     public void testHopDistanceTo() {
         test("hopDistanceTo");
+    }
+
+    /**
+     * Test multiC.pt.
+     */
+    @Test
+    public void testMeanHood104() {
+        test("meanHood");
     }
 
     /**
@@ -1081,6 +1097,14 @@ public class TestApis {
     @Test
     public void testUtils() {
         testProgram("utils");
+    }
+
+    /**
+     * Test for bug #104.
+     */
+    @Test
+    public void testVariableRestriction104() {
+        test("variableRestriction104");
     }
 
     /**

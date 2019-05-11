@@ -19,9 +19,9 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
-import org.protelis.lang.ProtelisRuntimeException;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 
 import java8.util.stream.IntStreams;
 
@@ -46,17 +46,13 @@ public class TestLanguage {
         runFile("/closure01.pt");
     }
 
-    /*
-     * TODO: this test has to be introduced as soon as a complete support to
-     * closures is provided
-     */
      /**
      * Test closures.
      */
-//     @Test
-//     public void testClosure02() {
-//         runFile("/closure02.pt");
-//     }
+     @Test
+     public void testClosure02() {
+         runFile("/closure02.pt");
+     }
 
     /**
      * Test the cyclic timer.

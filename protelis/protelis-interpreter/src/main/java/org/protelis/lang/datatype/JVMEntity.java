@@ -54,7 +54,7 @@ public final class JVMEntity implements Serializable {
             try {
                 type = Class.forName(typeName);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return type;
@@ -69,7 +69,7 @@ public final class JVMEntity implements Serializable {
             try {
                 switch (memberType) {
                     case FIELD:
-                        java.lang.reflect.Field field = getType().getField(memberName);
+                        final java.lang.reflect.Field field = getType().getField(memberName);
                         if (Modifier.isStatic(field.getModifiers())) {
                             value = field.get(null);
                         } else {
@@ -82,7 +82,7 @@ public final class JVMEntity implements Serializable {
                     default: throw new  IllegalStateException("Fix Protelis code, it's bugged.");
                 }
             } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return value;

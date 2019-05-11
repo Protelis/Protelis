@@ -15,21 +15,20 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.danilopianini.lang.HashUtils;
-import org.danilopianini.lang.LangUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.FunctionCall;
-import org.protelis.lang.util.JavaInteroperabilityUtils;
+import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.hash.Hashing;
 
 import java8.util.J8Arrays;
 import java8.util.function.BinaryOperator;
@@ -219,7 +218,12 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public int hashCode() {
         if (hash == 0) {
-            hash = HashUtils.hash32(arrayContents);
+            hash = Hashing.murmur3_32().newHasher()
+                .putObject(arrayContents, (array, dest) -> {
+                    for (final Object it: array) {
+                        dest.putInt(it.hashCode());
+                    }
+                }).hash().asInt();
         }
         return hash;
     }
@@ -326,8 +330,9 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
-        LangUtils.requireNonNull(defVal, fun);
-        return J8Arrays.stream(arrayContents).reduce(fun).orElse(defVal);
+        return J8Arrays.stream(arrayContents)
+            .reduce(Objects.requireNonNull(fun))
+            .orElse(Objects.requireNonNull(defVal));
     }
 
     @Override

@@ -1,11 +1,16 @@
 package org.protelis.lang.interpreter.impl;
 
-import java.util.List;
+import static org.protelis.lang.interpreter.util.Bytecode.REP;
+import static org.protelis.lang.interpreter.util.Bytecode.SHARE;
+import static org.protelis.lang.interpreter.util.Bytecode.SHARE_BODY;
+import static org.protelis.lang.interpreter.util.Bytecode.SHARE_INIT;
+import static org.protelis.lang.interpreter.util.Bytecode.SHARE_YIELD;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.base.Optional;
@@ -21,13 +26,12 @@ import java8.util.function.Consumer;
  * @param <T> returned type
  */
 public final class ShareCall<S, T> extends AbstractSATree<S, T> {
-    private static final byte BODY = 1;
-    private static final byte INIT = 0;
     private static final long serialVersionUID = 8643287734245198408L;
-    private static final byte YIELD = 2;
     private final Optional<Reference> fieldName;
     private final Optional<Reference> localName;
     private final Optional<AbstractAnnotatedTree<T>> yield;
+    private final AnnotatedTree<?> init;
+    private final AnnotatedTree<S> body;
 
     /**
      * Convenience constructor with {@link java8.util.Optional}.
@@ -50,7 +54,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
             final java8.util.Optional<Reference> localName,
             final java8.util.Optional<Reference> fieldName,
             final AnnotatedTree<?> init,
-            final AnnotatedTree<?> body,
+            final AnnotatedTree<S> body,
             final java8.util.Optional<AnnotatedTree<T>> yield) {
         this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
     }
@@ -74,7 +78,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
             final Optional<Reference> localName,
             final Optional<Reference> fieldName,
             final AnnotatedTree<?> init,
-            final AnnotatedTree<?> body,
+            final AnnotatedTree<S> body,
             final Optional<AnnotatedTree<T>> yield) {
         super(metadata, init, body);
         if (!(localName.isPresent() || fieldName.isPresent())) {
@@ -82,6 +86,8 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         }
         this.localName = localName;
         this.fieldName = fieldName;
+        this.init = init;
+        this.body = body;
         this.yield = yield.transform(it ->  {
             if (it instanceof AbstractAnnotatedTree) {
                 return (AbstractAnnotatedTree<T>) it;
@@ -92,13 +98,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     @Override
     public ShareCall<S, T> copy() {
-        final List<AnnotatedTree<?>> branches = deepCopyBranches();
         final ShareCall<S, T> res = new ShareCall<>(
                 getMetadata(),
                 localName,
                 fieldName,
-                branches.get(INIT),
-                branches.get(BODY),
+                init.copy(),
+                body.copy(),
                 yield.transform(AbstractAnnotatedTree::copy));
         return res;
     }
@@ -114,18 +119,16 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
     @SuppressWarnings("unchecked")
     @Override
     public void evaluate(final ExecutionContext context) {
-        final AnnotatedTree<?> initBranch = getBranch(INIT);
-        initBranch.evalInNewStackFrame(context, INIT);
-        final S localValue = ensureType(isErased() ? initBranch.getAnnotation() : getSuperscript());
-        final AnnotatedTree<?> body = getBranch(BODY);
-        ifPresent(localName, it -> context.putVariable(it, localValue, true));
-        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation), true));
-        context.newCallStackFrame(BODY);
-        final Runnable yieldEvaluation = () -> ifPresent(yield, it -> it.evalInNewStackFrame(context, YIELD)); // NOPMD: this is not a thread.
+        evalInNewStackFrame(init, context, SHARE_INIT);
+        final S localValue = ensureType(isErased() ? init.getAnnotation() : getSuperscript());
+        ifPresent(localName, it -> context.putVariable(it, localValue));
+        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation)));
+        context.newCallStackFrame(SHARE_BODY.getCode());
+        final Runnable yieldEvaluation = () -> ifPresent(yield, it -> evalInNewStackFrame(it, context, SHARE_YIELD)); // NOPMD: this is not a thread.
         if (body instanceof All) {
             final All multilineBody = (All) body;
             multilineBody.forEachWithIndex((i, b) -> {
-                context.newCallStackFrame(i.byteValue());
+                context.newCallStackFrame(i);
                 b.eval(context);
                 multilineBody.setAnnotation(b.getAnnotation());
             });
@@ -142,6 +145,11 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
     }
 
     @Override
+    public Bytecode getBytecode() {
+        return fieldName.isPresent() ? SHARE : REP;
+    }
+
+    @Override
     public String getName() {
         return fieldName.isPresent() ? "share" : "rep";
     }
@@ -154,11 +162,11 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
                 .transform(it -> it + field.transform(f -> ", ").or("")).or("")
             + field.or("")
             + " <- "
-            + stringFor(getBranch(INIT))
+            + stringFor(init)
             + ") { "
-            + stringFor(getBranch(BODY))
+            + stringFor(body)
             + " }"
-            + yield.transform(it -> " yield { " + stringFor(getBranch(YIELD)) + '}').or("");
+            + yield.transform(it -> " yield { " + stringFor(it) + '}').or("");
     }
 
     private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {

@@ -79,7 +79,7 @@ import it.unibo.alchemist.model.interfaces.TimeDistribution;
 /**
  * Loads a properly formatted YAML file and provides method for instancing a batch of scenarios.
  */
-public class YamlLoader implements Loader, Serializable {
+public final class YamlLoader implements Loader, Serializable {
 
     /**
      * 
@@ -167,7 +167,7 @@ public class YamlLoader implements Loader, Serializable {
 
     private transient Incarnation<?> incarnation;
 
-    private class PlaceHolder {
+    private final class PlaceHolder {
         private final String str;
 
         private PlaceHolder(final String str) {
@@ -744,10 +744,10 @@ public class YamlLoader implements Loader, Serializable {
     private static Optional<Map<?, Double>> aVariable(final Object o) {
         if (o instanceof Map<?, ?>) {
             final Map<?, ?> var = (Map<?, ?>) o;
-            final Object isVar = var.get(VARIABLE);
-            if (isVar instanceof Boolean) {
-                final boolean isAVar = (boolean) isVar;
-                if (isAVar) {
+            final Object maybeVar = var.get(VARIABLE);
+            if (maybeVar instanceof Boolean) {
+                final boolean isVar = (boolean) maybeVar;
+                if (isVar) {
                     return Optional.of((Map<?, Double>) var);
                 }
             }

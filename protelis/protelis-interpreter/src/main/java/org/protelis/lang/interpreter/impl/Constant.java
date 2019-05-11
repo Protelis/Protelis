@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Objects;
 
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -48,6 +49,11 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
         if (isErased()) {
             setAnnotation(constantValue);
         }
+    }
+
+    @Override
+    public final Bytecode getBytecode() {
+        return Bytecode.CONSTANT;
     }
 
     /**

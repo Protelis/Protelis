@@ -10,16 +10,16 @@ package org.protelis.lang.datatype;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.danilopianini.lang.LangUtils;
-import org.danilopianini.lang.util.FasterString;
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
 
 import gnu.trove.list.TByteList;
 import gnu.trove.list.array.TByteArrayList;
+import java8.util.Objects;
 import java8.util.Optional;
 
 /**
@@ -28,7 +28,7 @@ import java8.util.Optional;
 public final class FunctionDefinition implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private final FasterString functionName;
+    private final String functionName;
     private final int argNumber;
     private final List<Reference> args;
     private final TByteList stackCode;
@@ -40,16 +40,21 @@ public final class FunctionDefinition implements Serializable {
      * @param args   arguments
      */
     public FunctionDefinition(final Optional<ProtelisModule> module, final String name, final List<Reference> args) {
-        LangUtils.requireNonNull(module, name, args);
         argNumber = args.size();
-        final String moduleName = module.map(ProtelisModule::getName).orElse("$anonymous-module$");
-        functionName = new FasterString(moduleName + ':' + name);
+        if (argNumber > Byte.MAX_VALUE) {
+            throw new IllegalArgumentException("Currently the maximum number of allowed parameters for a function is "
+                    + Byte.MAX_VALUE
+                    + " " + name + " has " + argNumber + " parameters.");
+        }
+        final String moduleName = module
+            .map(ProtelisModule::getName)
+            .orElse("$anonymous-module$");
+        functionName = moduleName + ':' + Objects.requireNonNull(name);
         this.args = args;
-        //final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES + Long.BYTES + 1);
-        final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE + Long.SIZE / Byte.SIZE + 1);
-        bb.putInt(functionName.hashCode());
-        bb.putLong(functionName.hash64());
+        final byte[] asciibytes = functionName.getBytes(StandardCharsets.US_ASCII);
+        final ByteBuffer bb = ByteBuffer.allocate(asciibytes.length + 1);
         bb.put((byte) argNumber);
+        bb.put(asciibytes);
         stackCode = new TByteArrayList(bb.array());
     }
 
@@ -79,7 +84,7 @@ public final class FunctionDefinition implements Serializable {
     /**
      * @return function name
      */
-    public FasterString getName() {
+    public String getName() {
         return functionName;
     }
 
@@ -90,6 +95,9 @@ public final class FunctionDefinition implements Serializable {
 
     @Override
     public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) o;
             return functionName.equals(fd.functionName) && argNumber == fd.argNumber;

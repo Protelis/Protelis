@@ -11,8 +11,7 @@ package org.protelis.vm;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.danilopianini.lang.util.FasterString;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 
 /**
  * Executable representation of a Protelis program.
@@ -43,6 +42,6 @@ public interface ProtelisProgram extends Serializable {
      * @return Name of the program, or some default name if no specific name is
      *         provided
      */
-    FasterString getName();
+    String getName();
 
 }

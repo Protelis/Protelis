@@ -14,6 +14,7 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -54,10 +55,10 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
 
     @Override
     public void evaluate(final ExecutionContext context) {
+        projectAndEval(context);
         final Object[] a = new Object[getBranchesNumber()];
-        final TIntList fieldIndexes = new TIntArrayList();
+        final TIntList fieldIndexes = new TIntArrayList(getBranchesNumber());
         forEachWithIndex((i, branch) -> {
-            branch.evalInNewStackFrame(context, i.byteValue());
             final Object elem = branch.getAnnotation();
             a[i] = elem;
             if (elem instanceof Field) {
@@ -70,6 +71,11 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
             final Field res = Fields.apply(DatatypeFactory::createTuple, fieldIndexes.toArray(), a);
             setAnnotation(res);
         }
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.CREATE_TUPLE;
     }
 
     /**

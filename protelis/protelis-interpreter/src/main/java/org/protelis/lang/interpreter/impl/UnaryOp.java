@@ -11,8 +11,9 @@ package org.protelis.lang.interpreter.impl;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Op1;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Op1;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -56,6 +57,11 @@ public final class UnaryOp extends AbstractAnnotatedTree<Object> {
     @Override
     public String getName() {
         return op.name();
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return op.getBytecode();
     }
 
 }

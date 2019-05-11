@@ -10,34 +10,34 @@ package org.protelis.vm.impl;
 
 import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.danilopianini.lang.LangUtils;
-import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
+import org.protelis.vm.CodePath;
+import org.protelis.vm.CodePathFactory;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
-import org.protelis.vm.util.CodePath;
-import org.protelis.vm.util.Stack;
-import org.protelis.vm.util.StackImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.list.array.TByteArrayList;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import java8.util.Maps;
+import java8.util.Optional;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
 
@@ -48,12 +48,14 @@ import java8.util.function.Supplier;
  */
 public abstract class AbstractExecutionContext implements ExecutionContext {
 
+    private static final int MASK = 0xFF;
     private static final Logger L = LoggerFactory.getLogger(AbstractExecutionContext.class);
-    private final TByteList callStack = new TByteArrayList();
+    private final TIntList callStack = new TIntArrayList(10, -1);
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
+    private final CodePathFactory codePathFactory;
     private Map<Reference, ?> functions = Collections.emptyMap();
-    private Stack gamma;
+    private Map<Reference, Object> gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
     private Map<CodePath, Object> toSend;
@@ -62,6 +64,19 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final ExecutionEnvironment env;
     private int exportsSize;
     private int deferredExportSize;
+    private int variablesSize;
+
+    /**
+     * Create a new AbstractExecutionContext with a default, time-efficient code path factory.
+     * 
+     * @param execenv
+     *            The execution environment
+     * @param netmgr
+     *            Abstract network interface to be used
+     */
+    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr) {
+        this(execenv, netmgr, (stack, sizes) -> new DefaultTimeEfficientCodePath(stack));
+    }
 
     /**
      * Create a new AbstractExecutionContext.
@@ -70,11 +85,12 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      *            The execution environment
      * @param netmgr
      *            Abstract network interface to be used
+     * @param codePathFactory The code path factory to use
      */
-    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr) {
-        LangUtils.requireNonNull(execenv, netmgr);
-        nm = netmgr;
-        env = execenv;
+    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr, final CodePathFactory codePathFactory) {
+        nm = Objects.requireNonNull(netmgr);
+        env = Objects.requireNonNull(execenv);
+        this.codePathFactory = codePathFactory;
     }
 
     @Override
@@ -101,6 +117,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         });
         nm.shareState(toSend);
         exportsSize = toSend.size();
+        variablesSize = gamma.size();
         deferredExportSize = tobeComputedBeforeSending.size();
         // commit and clear including recursion into restricted contexts
         commitRecursively();
@@ -138,28 +155,45 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         env.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
-        gamma = new StackImpl(functions);
+        gamma = newLinkedHashMapWithExpectedSize(variablesSize);
+        gamma.putAll(functions);
         theta = Collections.unmodifiableMap(nm.getNeighborState());
-        newCallStackFrame((byte) 1);
+        newCallStackFrame(-1);
+    }
+
+    @Override
+    public final void newCallStackFrame(final int... id) {
+        if (id.length < 1) {
+            throw new IllegalArgumentException("Unable to push unidentified stack frame: frame id cannot be empty");
+        }
+        callFrameSizes.push(id.length);
+        callStack.add(id);
     }
 
     @Override
     public final void newCallStackFrame(final byte... id) {
-        callFrameSizes.push(id.length);
-        callStack.add(id);
-        gamma.push();
+        final int expectedSize = id.length / 4 + Math.min(id.length % 4, 1);
+        final int[] compact = new int[expectedSize];
+        final IntBuffer buffer = ByteBuffer.wrap(id).asIntBuffer();
+        final int bufferSize = buffer.remaining();
+        buffer.get(compact, 0, bufferSize);
+        if (bufferSize != expectedSize) {
+            for (int i = 0; i < id.length % 4; i++) {
+                compact[expectedSize - 1] |= (id[id.length - 1 - i] & MASK) << i * 8;
+            }
+        }
+        newCallStackFrame(compact);
     }
 
     @Override
     public final void returnFromCallFrame() {
         final int size = callFrameSizes.pop();
         callStack.remove(callStack.size() - size, size);
-        gamma.pop();
     }
 
     @Override
-    public final void putVariable(final Reference name, final Object value, final boolean canShadow) {
-        gamma.put(name, value, canShadow);
+    public final void putVariable(final Reference name, final Object value) {
+        gamma.put(name, value);
     }
 
     @Override
@@ -192,6 +226,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.callStack.addAll(callStack);
         restrictedInstance.functions = functions;
         restrictedInstance.exportsSize = exportsSize;
+        restrictedInstance.variablesSize = variablesSize;
         restrictedInstance.previousRoundTime = previousRoundTime;
         restrictedContexts.add(restrictedInstance);
         return restrictedInstance;
@@ -219,7 +254,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         /*
          * Compute where we stand
          */
-        final CodePath codePath = new CodePath(callStack);
+        final CodePath codePath = codePathFactory.createCodePath(callStack, callFrameSizes);
         final Field res = DatatypeFactory.createField(theta.size() + 1);
         for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
             final Object received = e.getValue().get(codePath);
@@ -275,11 +310,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         /*
          * try not to lose precision:
          */
-        final Class<? extends Number> tClass = PrimitiveUtils.toPrimitiveWrapper(previousRoundTime);
-        if (Double.class.equals(tClass) || Float.class.equals(tClass)) {
-            return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
+        final Class<? extends Number> tClass = Optional.of(previousRoundTime).orElse(0.0d).getClass();
+        if (tClass == Integer.class || tClass == Long.class || tClass == Short.class || tClass == Byte.class) {
+            return getCurrentTime().longValue() - previousRoundTime.longValue();
         }
-        return getCurrentTime().longValue() - previousRoundTime.longValue();
+        return getCurrentTime().doubleValue() - previousRoundTime.doubleValue();
     }
 
     @Override

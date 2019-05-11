@@ -12,6 +12,7 @@ import java8.util.function.Functions;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -21,7 +22,6 @@ import org.protelis.vm.ExecutionContext;
 public final class NBRCall extends AbstractAnnotatedTree<Field> {
 
     private static final long serialVersionUID = 5255917527687990281L;
-    private static final byte BRANCH = 1;
 
     /**
      * @param metadata
@@ -40,11 +40,15 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
 
     @Override
     public void evaluate(final ExecutionContext context) {
-        final AnnotatedTree<?> branch = getBranch(0);
-        branch.evalInNewStackFrame(context, BRANCH);
-        final Object childVal = branch.getAnnotation();
+        projectAndEval(context);
+        final Object childVal = getBranch(0).getAnnotation();
         final Field res = context.buildField(Functions.identity(), childVal);
         setAnnotation(res);
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.NBR;
     }
 
     @Override

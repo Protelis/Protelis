@@ -6,7 +6,7 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
 /**
  * Utility class that OpN classes use for reporting certain failure patterns.

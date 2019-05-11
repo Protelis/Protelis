@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.util.Reference;
+import org.protelis.lang.interpreter.util.Reference;
 
 import java8.util.function.Function;
 import java8.util.function.Supplier;
@@ -37,6 +37,12 @@ public interface ExecutionContext {
      * @param id
      *            stack frame type
      */
+    void newCallStackFrame(int... id);
+
+    /**
+     * @param id
+     *            stack frame type
+     */
     void newCallStackFrame(byte... id);
 
     /**
@@ -53,17 +59,14 @@ public interface ExecutionContext {
     void putMultipleVariables(Map<Reference, ?> map);
 
     /**
+     * Puts a variable value, overwriting the previous one, if any.
+     * 
      * @param name
      *            variable reference
      * @param value
      *            variable value
-     * @param canShadow
-     *            if no other variable with the same name exists, this parameter
-     *            is irrelevant. Otherwise, if true, the previous variable will
-     *            be shadowed. If false, the variable will be overridden (with
-     *            possible side effects upon return) instead.
      */
-    void putVariable(Reference name, Object value, boolean canShadow);
+    void putVariable(Reference name, Object value);
 
     /**
      * Give a field, returns a new {@link ExecutionContext} whose domain is the same of the field one.
@@ -92,7 +95,7 @@ public interface ExecutionContext {
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
      * A neighbor is considered to be aligned it it has reached the exact same
-     * {@link org.protelis.vm.util.CodePath}. The field will always contain at least one value,
+     * {@link org.protelis.vm.impl.DefaultTimeEfficientCodePath}. The field will always contain at least one value,
      * namely the value of the local device.
      * 
      * @param computeValue
@@ -112,7 +115,7 @@ public interface ExecutionContext {
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
      * A neighbor is considered to be aligned it it has reached the exact same
-     * {@link org.protelis.vm.util.CodePath}. The field will always contain at least one value,
+     * {@link org.protelis.vm.impl.DefaultTimeEfficientCodePath}. The field will always contain at least one value,
      * namely the value of the local device. The deferred version does not immediately schedule
      * the local value for being sent away. Rather, it schedules the provided {@link Supplier}
      * to be executed at the end of the round for obtaining the value to be shared. This

@@ -2,7 +2,7 @@ package org.protelis.lang.datatype;
 
 import java.util.Arrays;
 
-import org.danilopianini.lang.TriFunction;
+import org.protelis.lang.interpreter.util.TriFunction;
 
 import java8.util.function.BiFunction;
 import java8.util.function.BinaryOperator;

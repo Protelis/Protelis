@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -58,13 +59,6 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
         return res;
     }
 
-    /**
-     * @return the function body
-     */
-    protected AnnotatedTree<?> getBody() {
-        return fd.getBody();
-    }
-
     @Override
     public void evaluate(final ExecutionContext context) {
         /*
@@ -76,7 +70,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
          */
         context.newCallStackFrame(stackCode);
         forEachWithIndex((i, b) -> {
-            context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation(), true);
+            context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation());
         });
         /*
          * 2. Load a fresh body as superscript
@@ -92,9 +86,16 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
         setAnnotation(getSuperscript().getAnnotation());
     }
 
+    /**
+     * @return the function body
+     */
+    protected AnnotatedTree<?> getBody() {
+        return fd.getBody();
+    }
+
     @Override
-    public String getName() {
-        return fd.getName().toString();
+    public Bytecode getBytecode() {
+        return Bytecode.FUNCTION_CALL;
     }
 
     /**
@@ -102,6 +103,11 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
      */
     public FunctionDefinition getFunctionDefinition() {
         return fd;
+    }
+
+    @Override
+    public String getName() {
+        return fd.getName().toString();
     }
 
 }

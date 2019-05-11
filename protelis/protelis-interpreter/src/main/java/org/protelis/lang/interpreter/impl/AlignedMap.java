@@ -8,6 +8,10 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,18 +19,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
+import org.nustaq.serialization.FSTConfiguration;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.primitives.Longs;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
@@ -35,15 +48,31 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
 
-    private static final long serialVersionUID = -7655993075803732148L;
     private static final String APPLY = "apply";
-    private static final byte FILTER_POS = -1;
-    private static final byte RUN_POS = -2;
-    private static final Reference CURFIELD = new Reference(new Object());
+    private static final Reference CURFIELD = new Reference(new Serializable() {
+        private static final long serialVersionUID = 1L;
+    });
+    private static final FSTConfiguration SERIALIZER = FSTConfiguration.createDefaultConfiguration();
+    private static final long serialVersionUID = 1L;
+    private static final LoadingCache<Object, byte[]> STACK_IDENTIFIERS = CacheBuilder.newBuilder()
+            .maximumSize(1000)
+            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .build(new CacheLoader<Object, byte[]>() {
+                @Override
+                public byte[] load(final Object key) throws Exception {
+                    return SERIALIZER.asByteArray(key);
+                }
+            });
+    static {
+        SERIALIZER.registerClass(new Class[] {
+            String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class,
+        });
+    }
+    private final AnnotatedTree<?> defVal;
     private final AnnotatedTree<Field> fgen;
     private final AnnotatedTree<FunctionDefinition> filterOp;
+
     private final AnnotatedTree<FunctionDefinition> runOp;
-    private final AnnotatedTree<?> defVal;
 
     /**
      * @param metadata
@@ -153,12 +182,20 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             final List<AnnotatedTree<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(getMetadata(), key));
             args.add(new Variable(getMetadata(), CURFIELD));
-            restricted.putVariable(CURFIELD, value, true);
+            restricted.putVariable(CURFIELD, value);
             /*
              * Compute the code path: align on keys
              */
-            final byte[] hash = FileUtilities.serializeObject((Serializable) key);
-            restricted.newCallStackFrame(hash);
+            if (key instanceof Integer || key instanceof Short || key instanceof Byte) {
+                restricted.newCallStackFrame(((Number) key).intValue());
+            } else if (key instanceof Double) {
+                restricted.newCallStackFrame(Longs.toByteArray(Double.doubleToRawLongBits((double) key)));
+            } else if (key instanceof Serializable) {
+                final byte[] hash = FileUtilities.serializeObject(STACK_IDENTIFIERS.getUnchecked(key));
+                restricted.newCallStackFrame(hash);
+            } else {
+                throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());
+            }
             /*
              * Compute functions if needed
              */
@@ -170,7 +207,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
              * Run the actual filtering and operation
              */
             final DotOperator fop = funs.getFirst();
-            restricted.newCallStackFrame(FILTER_POS);
+            restricted.newCallStackFrame(ALIGNED_MAP_FILTER.getCode());
             fop.eval(restricted);
             restricted.returnFromCallFrame();
             final Object cond = fop.getAnnotation();
@@ -179,7 +216,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                     /*
                      * Filter passed, run operation.
                      */
-                    restricted.newCallStackFrame(RUN_POS);
+                    restricted.newCallStackFrame(ALIGNED_MAP_EXECUTE.getCode());
                     final DotOperator rop = funs.getSecond();
                     rop.eval(restricted);
                     restricted.returnFromCallFrame();
@@ -197,6 +234,11 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
         setAnnotation(DatatypeFactory.createTuple(resl));
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return ALIGNED_MAP;
     }
 
     @Override

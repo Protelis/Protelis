@@ -8,9 +8,13 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import org.protelis.lang.datatype.DatatypeFactory;
+import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.JVMEntity;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
-import org.protelis.lang.util.Reference;
 import org.protelis.vm.ExecutionContext;
 
 /**
@@ -18,7 +22,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class Variable extends AbstractAnnotatedTree<Object> {
 
-    private static final long serialVersionUID = -3739014755916345132L;
+    private static final long serialVersionUID = 1L;
     private final Reference name;
 
     /**
@@ -43,17 +47,31 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
         if (val == null) {
             /*
              * The variable cannot be read. Most probably, it is some node
-             * variable that is not set here. Defaults to false.
+             * variable that is not set here. Fail fast!
              */
             throw new IllegalStateException("Variable " + name + " cannot be resolved");
         }
         if (val instanceof JVMEntity) {
             val = ((JVMEntity) val).getValue();
+        } else if (val instanceof Field) {
+            /*
+             * Variable restriction. See:
+             * https://doi.org/10.1145/3285956
+             * rule [E-FLD]
+             */
+            final Field unrestricted = (Field) val;
+            final Field restricted = context.buildField(it -> it, (byte) 0);
+            val = DatatypeFactory.createField(restricted.size());
+            for (final DeviceUID device: restricted.nodeIterator()) {
+                ((Field) val).addSample(device, unrestricted.getSample(device));
+            }
         }
-        /*
-         * TODO: Restrict variable to aligned fields
-         */
         setAnnotation(val);
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return Bytecode.VARIABLE_ACCESS;
     }
 
     @Override

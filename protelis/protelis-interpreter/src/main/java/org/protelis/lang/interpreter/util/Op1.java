@@ -6,41 +6,51 @@
  * the GNU General Public License, with a linking exception, as described
  * in the file LICENSE.txt in this project's top directory.
  *******************************************************************************/
-package org.protelis.lang.util;
+package org.protelis.lang.interpreter.util;
 
-import static org.protelis.lang.util.OpUtils.unsupported;
+import static org.protelis.lang.interpreter.util.Bytecode.UNARY_MINUS;
+import static org.protelis.lang.interpreter.util.Bytecode.UNARY_NOT;
+import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java8.util.function.UnaryOperator;
-import java8.util.J8Arrays;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 
+import java8.util.J8Arrays;
+import java8.util.function.UnaryOperator;
+
 /**
  * Collection of functions and helper methods for unary operators.
  */
-public enum Op1 {
+public enum Op1 implements WithBytecode {
 
-    /**
-     * Not.
-     */
-    NOT("!", Op1::not),
     /**
      * Sign inversion.
      */
-    MINUS("-", Op1::minus);
+    MINUS(UNARY_MINUS, "-", Op1::minus),
+    /**
+     * Not.
+     */
+    NOT(UNARY_NOT, "!", Op1::not);
 
     private static final int[] FIELDS = new int[] { 0 };
     private static final Map<String, Op1> MAP = new ConcurrentHashMap<>();
+    private final Bytecode bytecode;
     private final UnaryOperation fun;
     private final String opName;
 
-    Op1(final String name, final UnaryOperation function) {
+    Op1(final Bytecode bytecode, final String name, final UnaryOperation function) {
         fun = function;
         opName = name;
+        this.bytecode = bytecode;
+    }
+
+    @Override
+    public Bytecode getBytecode() {
+        return bytecode;
     }
 
     /**
