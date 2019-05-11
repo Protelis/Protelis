@@ -19,19 +19,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.util.Pair;
 import org.danilopianini.io.FileUtilities;
+import org.nustaq.serialization.FSTConfiguration;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.primitives.Longs;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
@@ -44,10 +52,26 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
     private static final Reference CURFIELD = new Reference(new Serializable() {
         private static final long serialVersionUID = 1L;
     });
-    private static final long serialVersionUID = -7655993075803732148L;
+    private static final FSTConfiguration SERIALIZER = FSTConfiguration.createDefaultConfiguration();
+    private static final long serialVersionUID = 1L;
+    private static final LoadingCache<Object, byte[]> STACK_IDENTIFIERS = CacheBuilder.newBuilder()
+            .maximumSize(1000)
+            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .build(new CacheLoader<Object, byte[]>() {
+                @Override
+                public byte[] load(final Object key) throws Exception {
+                    return SERIALIZER.asByteArray(key);
+                }
+            });
+    static {
+        SERIALIZER.registerClass(new Class[] {
+            String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class,
+        });
+    }
     private final AnnotatedTree<?> defVal;
     private final AnnotatedTree<Field> fgen;
     private final AnnotatedTree<FunctionDefinition> filterOp;
+
     private final AnnotatedTree<FunctionDefinition> runOp;
 
     /**
@@ -162,11 +186,16 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             /*
              * Compute the code path: align on keys
              */
-            // TODO: Provide fast paths for primitives and Numbers
-            // TODO: Switch to FST https://github.com/RuedigerMoeller/fast-serialization
-            // TODO: Fail clearly in case of non-serializable key
-            final byte[] hash = FileUtilities.serializeObject((Serializable) key);
-            restricted.newCallStackFrame(hash);
+            if (key instanceof Integer || key instanceof Short || key instanceof Byte) {
+                restricted.newCallStackFrame(((Number) key).intValue());
+            } else if (key instanceof Double) {
+                restricted.newCallStackFrame(Longs.toByteArray(Double.doubleToRawLongBits((double) key)));
+            } else if (key instanceof Serializable) {
+                final byte[] hash = FileUtilities.serializeObject(STACK_IDENTIFIERS.getUnchecked(key));
+                restricted.newCallStackFrame(hash);
+            } else {
+                throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());
+            }
             /*
              * Compute functions if needed
              */

@@ -13,9 +13,11 @@ import java8.util.Optional;
 import java8.util.function.BinaryOperator;
 
 import org.apache.commons.math3.util.Pair;
-import org.danilopianini.lang.HashUtils;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
+
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
 /**
  * Core functionality for implementing a field.
@@ -110,7 +112,7 @@ public abstract class AbstractField implements Field {
 
     @Override
     public final boolean equals(final Object o) {
-        if (HashUtils.pointerEquals(this, o)) {
+        if (this == o) {
             return true;
         }
         if (o instanceof Field) {
@@ -129,12 +131,11 @@ public abstract class AbstractField implements Field {
 
     @Override
     public final int hashCode() {
-        int[] hash = new int[size()];
-        int i = 0;
+        final Hasher hasher = Hashing.murmur3_32().newHasher();
         for (final Pair<DeviceUID, Object> pv : coupleIterator()) {
-            hash[i++] = pv.hashCode();
+            hasher.putInt(pv.hashCode());
         }
-        return HashUtils.djb2int32(hash);
+        return hasher.hash().asInt();
     }
 
 }
