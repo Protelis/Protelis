@@ -83,7 +83,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
 
     @Override
     public String getName() {
-        return name.toString();
+        return name;
     }
 
     @Override

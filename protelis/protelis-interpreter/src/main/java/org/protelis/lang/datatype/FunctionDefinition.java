@@ -85,7 +85,7 @@ public final class FunctionDefinition implements Serializable {
      * @return function name
      */
     public String getName() {
-        return functionName.toString();
+        return functionName;
     }
 
     @Override
