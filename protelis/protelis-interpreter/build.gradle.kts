@@ -1,3 +1,6 @@
+import me.tatarka.RetrolambdaExec
+import me.tatarka.RetrolambdaTask
+
 buildscript {
     repositories {
         mavenCentral()
@@ -19,6 +22,11 @@ if (isJava7Legacy) {
         javaVersion = JavaVersion.VERSION_1_7
         defaultMethods(true)
         incremental(true)
+    }
+} else {
+    tasks.withType<RetrolambdaTask> {
+        println(this)
+        enabled = false
     }
 }
 
