@@ -2,11 +2,11 @@ import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 
 plugins {
     id("de.fayard.buildSrcVersions") version
-        "0.3.2"
+        Versions.de_fayard_buildsrcversions_gradle_plugin
     `java-library`
-    id("org.danilopianini.build-commons") version "0.4.0"
-    id("com.jfrog.bintray") version "1.8.4"
-    id("com.gradle.build-scan") version "2.3"
+    id("org.danilopianini.build-commons") version Versions.org_danilopianini_build_commons_gradle_plugin
+    id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
+    id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
 }
 
 val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
