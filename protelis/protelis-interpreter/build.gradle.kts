@@ -1,13 +1,13 @@
 buildscript {
-  repositories {
-     mavenCentral()
-  }
-  dependencies {
-      val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
-      if (isJava7Legacy) {
-          classpath("me.tatarka:gradle-retrolambda:3.7.1")
-      }
-  }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
+        if (isJava7Legacy) {
+            classpath("me.tatarka:gradle-retrolambda:3.7.1")
+        }
+    }
 }
 plugins {
     id("me.tatarka.retrolambda") version "3.7.1"
@@ -22,8 +22,10 @@ if (isJava7Legacy) {
     }
 }
 
-//sourceCompatibility = 1.8
-//targetCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 dependencies {
     api("net.sf.trove4j:trove4j:${extra["trove4jVersion"]}")
@@ -53,6 +55,6 @@ dependencies {
 
 eclipse {
     classpath {
-       isDownloadSources = true
+        isDownloadSources = true
     }
 }
