@@ -49,7 +49,6 @@ import java8.util.function.Supplier;
 public abstract class AbstractExecutionContext implements ExecutionContext {
 
     private static final int MASK = 0xFF;
-    private static final Logger L = LoggerFactory.getLogger(AbstractExecutionContext.class);
     private final TIntList callStack = new TIntArrayList(10, -1);
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
@@ -268,12 +267,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
          * nbr-like operation
          */
         if (Maps.putIfAbsent(destination, codePath, toBeSent) != null) {
-            L.error("The map is {}", toSend);
-            L.error("The codePath you are trying to insert is {}", codePath);
-            L.error("The value you are trying to insert is {}, while the current one is {}", localValue, toSend.get(codePath)); 
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path. "
-                    + "This is probably a bug in Protelis");
+                    + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
+                    + " into " + toSend +". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
+            );
         }
         return res;
     }
