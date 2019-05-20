@@ -27,8 +27,6 @@ import org.protelis.vm.CodePathFactory;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
