@@ -1,8 +1,8 @@
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 
-apply(plugin = "project-report")
-
 plugins {
+    id("de.fayard.buildSrcVersions") version
+        "0.3.2"
     `java-library`
     id("org.danilopianini.build-commons") version "0.4.0"
     id("com.jfrog.bintray") version "1.8.4"
@@ -13,6 +13,8 @@ val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LE
 if (isJava7Legacy) {
     println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
 }
+
+apply(plugin = "project-report")
 
 allprojects {
     if (isJava7Legacy) {
