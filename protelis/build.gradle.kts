@@ -105,22 +105,6 @@ allprojects {
 }
 
 subprojects.forEach { subproject -> rootProject.evaluationDependsOn(subproject.path) }
-/*
- * Remove tasks that should not exist in subprojects
- */
-//subprojects.each { it.tasks.remove(wrapper) }
-
-/*
- * Running a task on the parent project implies running the same task first on any subproject
- */
-//tasks.each { task ->
-//    subprojects.each { subproject ->
-//        def subtask = subproject.tasks.findByPath("${task.name}")
-//        if (subtask != null) {
-//            task.dependsOn(subtask)
-//        }
-//    }
-//}
 
 dependencies {
     api(project(":protelis-interpreter"))
