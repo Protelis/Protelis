@@ -14,8 +14,6 @@ import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java8.util.Optional;
 
