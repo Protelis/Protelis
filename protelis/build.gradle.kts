@@ -26,10 +26,10 @@ allprojects {
     apply(plugin =  "org.danilopianini.build-commons")
 
     dependencies {
-        testImplementation("junit:junit:${extra["junitVersion"]}")
+        testImplementation(Libs.junit)
         testImplementation(Libs.slf4j_api)
-        testRuntimeOnly("ch.qos.logback:logback-classic:${extra["logbackVersion"]}")
-        doclet("org.jboss.apiviz:apiviz:${extra["apivizVersion"]}")
+        testRuntimeOnly(Libs.logback_classic)
+        doclet(Libs.apiviz)
     }
 
     publishing.publications {
