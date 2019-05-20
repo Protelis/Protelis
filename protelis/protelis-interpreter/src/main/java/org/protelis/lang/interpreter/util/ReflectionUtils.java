@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +26,6 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
-import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 import org.protelis.vm.ExecutionContext;
@@ -33,11 +33,14 @@ import org.protelis.vm.ExecutionContext;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Primitives;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import java8.util.J8Arrays;
+import java8.util.function.Function;
 import java8.util.stream.Collectors;
 import java8.util.stream.RefStreams;
 
@@ -57,6 +60,21 @@ public final class ReflectionUtils {
                     return loadBestMethod(key.getLeft(), key.getMiddle(), al.toArray(args));
                 }
             });
+    private static final Map<Class<?>, Function<Number, ? extends Number>> NUMBER_CASTER = ImmutableMap
+        .<Class<?>, Function<Number, ? extends Number>>builder()
+        .put(Byte.class, Number::byteValue)
+        .put(Byte.TYPE, Number::byteValue)
+        .put(Short.class, Number::shortValue)
+        .put(Short.TYPE, Number::shortValue)
+        .put(Integer.class, Number::intValue)
+        .put(Integer.TYPE, Number::intValue)
+        .put(Long.class, Number::longValue)
+        .put(Long.TYPE, Number::longValue)
+        .put(Float.class, Number::floatValue)
+        .put(Float.TYPE, Number::floatValue)
+        .put(Double.class, Number::doubleValue)
+        .put(Double.TYPE, Number::doubleValue)
+        .build();
 
     private ReflectionUtils() {
     }
@@ -184,9 +202,9 @@ public final class ReflectionUtils {
                 final Class<?> expected = params[i];
                 final Object actual = useArgs[i];
                 if (!expected.isAssignableFrom(actual.getClass())
-                        && PrimitiveUtils.classIsNumber(expected)
+                        && classIsNumber(expected)
                         && actual instanceof Number) {
-                    useArgs[i] = PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
+                    useArgs[i] = castIfNeeded(expected, (Number) actual);
                 }
             }
             try {
@@ -271,11 +289,11 @@ public final class ReflectionUtils {
                      * Expected "self", implicitly loaded
                      */
                     p += 3;
-                } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
+                } else if (classIsPrimitive(expected) && classIsWrapper(actual)) {
                     p += computePointsForWrapper(expected, actual);
-                } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
+                } else if (classIsPrimitive(actual) && classIsWrapper(expected)) {
                     p += computePointsForWrapper(actual, expected);
-                } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
+                } else if (!(classIsNumber(expected) && classIsWrapper(actual))) {
                     /*
                      * At least one is not a number: conversion with precision loss does not apply.
                      */
@@ -410,4 +428,34 @@ public final class ReflectionUtils {
                 && (firstArgClass == null || !ExecutionContext.class.isAssignableFrom(firstArgClass));
     }
 
+    /**
+     * @param clazz
+     *            the class under test
+     * @return true if the class is a subclass of {@link Number} or it is a
+     *         number having primitive representation in Java
+     */
+    private static boolean classIsNumber(final Class<?> clazz) {
+        return Number.class.isAssignableFrom(clazz) || NUMBER_CASTER.containsKey(clazz);
+    }
+
+    private static Number castIfNeeded(final Class<?> dest, final Number arg) {
+        Objects.requireNonNull(dest);
+        Objects.requireNonNull(arg);
+        if (dest.isAssignableFrom(arg.getClass())) {
+            return arg;
+        }
+        final Function<Number, ? extends Number> cast = NUMBER_CASTER.get(dest);
+        if (cast != null) {
+            return cast.apply(arg);
+        }
+        throw new IllegalStateException("Impossible cast from " + arg.getClass() + " to " + dest);
+    }
+
+    private static boolean classIsWrapper(final Class<?> clazz) {
+        return Primitives.allWrapperTypes().contains(clazz);
+    }
+
+    private static boolean classIsPrimitive(final Class<?> clazz) {
+        return Primitives.allPrimitiveTypes().contains(clazz);
+    }
 }
