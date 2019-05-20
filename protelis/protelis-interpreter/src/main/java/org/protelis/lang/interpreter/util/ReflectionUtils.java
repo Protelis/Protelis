@@ -303,9 +303,7 @@ public final class ReflectionUtils {
     }
 
     private static Object[] repackageIfVarArgs(final Method m, final Object[] args) {
-        if (!m.isVarArgs()) {
-            return args;
-        } else {
+        if (m.isVarArgs()) {
             final Class<?>[] expectedArgs = m.getParameterTypes();
             // We will repackage into an array of the expected length
             final Object[] newargs = new Object[expectedArgs.length];
@@ -322,6 +320,8 @@ public final class ReflectionUtils {
             // Put the new array in the last argument and return
             newargs[newargs.length - 1] = vararg;
             return newargs;
+        } else {
+            return args;
         }
     }
 
