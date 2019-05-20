@@ -1,6 +1,6 @@
-apply plugin: 'project-report'
+apply(plugin: "project-report")
 subprojects {
-    apply plugin: 'java-library'
+    apply(plugin: "java-library")
 }
 
 buildscript {
@@ -8,10 +8,10 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "org.danilopianini:build-commons:${buildCommonsVersion}"
-        classpath "org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}"
-        classpath "com.gradle:build-scan-plugin:${buildScanPluginVersion}"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+        classpath("org.danilopianini:build-commons:${buildCommonsVersion}")
+        classpath("org.danilopianini:javadoc.io-linker:${javadocIOLinkerVersion}")
+        classpath("com.gradle:build-scan-plugin:${buildScanPluginVersion}")
+        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+")
     }
 }
 
@@ -24,25 +24,25 @@ ext {
 
 allprojects {
     if (isJava7Legacy) {
-        def isBeta = project.version.endsWith('-beta')
-        project.version = project.version - "-beta" + "-j7" + (isBeta? '-beta' : '')
+        def isBeta = project.version.endsWith("-beta")
+        project.version = project.version - "-beta" + "-j7" + (isBeta? "-beta" : "")
     }
 
-    apply plugin: 'org.danilopianini.build-commons'
+    apply(plugin: "org.danilopianini.build-commons")
 
     jacoco {
         toolVersion = jacocoVersion
     }
     configurations {
-        all*.exclude group: 'org.ow2.asm', module: 'asm-debug-all'
-        all*.exclude group: 'asm', module: 'asm'
+        all*.exclude(group: "org.ow2.asm", module: "asm-debug-all")
+        all*.exclude(group: "asm", module: "asm")
     }
 
     dependencies {
-        implementation "org.slf4j:slf4j-api:$slf4jVersion"
-        testImplementation "junit:junit:$junitVersion"
-        testRuntimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
-        doclet "org.jboss.apiviz:apiviz:$apivizVersion"
+        implementation("org.slf4j:slf4j-api:$slf4jVersion")
+        testImplementation("junit:junit:$junitVersion")
+        testRuntimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
+        doclet("org.jboss.apiviz:apiviz:$apivizVersion")
     }
 
     publishing.publications {
@@ -50,31 +50,31 @@ allprojects {
             pom {
                 developers {
                     developer {
-                        name = 'Danilo Pianini'
-                        email = 'danilo.pianini@unibo.it'
-                        url = 'http://www.danilopianini.org'
+                        name = "Danilo Pianini"
+                        email = "danilo.pianini@unibo.it"
+                        url = "http://www.danilopianini.org"
                     }
                     developer {
-                        name = 'Jacob Beal'
-                        email = 'jakebeal@gmail.com'
-                        url = 'http://web.mit.edu/jakebeal/www/'
+                        name = "Jacob Beal"
+                        email = "jakebeal@gmail.com"
+                        url = "http://web.mit.edu/jakebeal/www/"
                     }
                     developer {
-                        name = 'Matteo Francia'
-                        email = 'matteo.francia2@studio.unibo.it'
-                        url = 'https://github.com/w4bo'
+                        name = "Matteo Francia"
+                        email = "matteo.francia2@studio.unibo.it"
+                        url = "https://github.com/w4bo"
                     }
                 }
                 contributors {
                     contributor {
-                        name = 'Mirko Viroli'
-                        email = 'mirko.viroli@unibo.it'
-                        url = 'http://mirkoviroli.apice.unibo.it/'
+                        name = "Mirko Viroli"
+                        email = "mirko.viroli@unibo.it"
+                        url = "http://mirkoviroli.apice.unibo.it/"
                     }
                     contributor {
-                        name = 'Kyle Usbeck'
-                        email = 'kusbeck@bbn.com'
-                        url = 'https://dist-systems.bbn.com/people/kusbeck/'
+                        name = "Kyle Usbeck"
+                        email = "kusbeck@bbn.com"
+                        url = "https://dist-systems.bbn.com/people/kusbeck/"
                     }
                 }
             }
@@ -83,20 +83,20 @@ allprojects {
     /*
      * Use Bintray for beta releases
      */
-    apply plugin: 'com.jfrog.bintray'
-    def apiKeyName = 'BINTRAY_API_KEY'
-    def userKeyName = 'BINTRAY_USER'
+    apply plugin: "com.jfrog.bintray"
+    def apiKeyName = "BINTRAY_API_KEY"
+    def userKeyName = "BINTRAY_USER"
     bintray {
         user = System.env[userKeyName]
         key = System.env[apiKeyName]
         override = true
-        publications = ['main']
+        publications = ["main"]
         pkg {
-            repo = 'Protelis'
+            repo = "Protelis"
             name = project.name
-            userOrg = 'protelis'
+            userOrg = "protelis"
             vcsUrl = "$scmRootUrl/$scmRepoName"
-            licenses = ['GPL-3.0-or-later']
+            licenses = ["GPL-3.0-or-later"]
             version {
                 name = project.version
             }
@@ -135,7 +135,7 @@ tasks.each { task ->
 
 dependencies {
     compile subprojects.findAll {
-        !it.name.contains('test')
+        !it.name.contains("test")
     }
 }
 
@@ -149,32 +149,32 @@ task fatJar(type: Jar) {
     zip64 = true
     from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {
         // remove all signature files
-        exclude "META-INF/"
-        exclude "ant_tasks/"
-        exclude "about_files/"
-        exclude "help/about/"
-        exclude 'build'
-        exclude '.gradle'
-        exclude 'build.gradle'
-        exclude 'gradle'
-        exclude 'gradlew'
-        exclude 'gradlew.bat'
+        exclude("META-INF/")
+        exclude("ant_tasks/")
+        exclude("about_files/")
+        exclude("help/about/")
+        exclude("build")
+        exclude(".gradle")
+        exclude("build.gradle")
+        exclude("gradle")
+        exclude("gradlew")
+        exclude("gradlew.bat")
     }
     with jar
 }
 
 allprojects {
-    def jdocTasks = ['javadoc', 'uploadArchives', 'projectReport', 'buildDashboard', 'javadocJar']
+    def jdocTasks = ["javadoc", "uploadArchives", "projectReport", "buildDashboard", "javadocJar"]
     def selectedTasks = gradle.startParameter.taskNames ?: defaultTasks
     if (!selectedTasks.disjoint(jdocTasks)) {
-        apply plugin: 'org.danilopianini.javadoc.io-linker'
+        apply plugin: "org.danilopianini.javadoc.io-linker"
     }
 }
 
 apply plugin: com.gradle.scan.plugin.BuildScanPlugin
 buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }
 
-defaultTasks 'clean', 'build', 'check', 'javadoc', 'projectReport', 'buildDashboard', 'fatJar', 'signMainPublication'
+defaultTasks("clean", "build", "check", "javadoc", "projectReport", "buildDashboard", "fatJar", "signMainPublication")
