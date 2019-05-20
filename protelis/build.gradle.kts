@@ -2,18 +2,6 @@ import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 
 apply(plugin = "project-report")
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("org.danilopianini:build-commons:${extra["buildCommonsVersion"]}")
-        classpath("org.danilopianini:javadoc.io-linker:${extra["javadocIOLinkerVersion"]}")
-        classpath("com.gradle:build-scan-plugin:${extra["buildScanPluginVersion"]}")
-        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+")
-    }
-}
-
 plugins {
     `java-library`
     id("org.danilopianini.build-commons") version "0.4.0"
