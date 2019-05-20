@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
         if (isJava7Legacy) {
-            classpath("me.tatarka:gradle-retrolambda:3.7.1")
+            classpath(Libs.me_tatarka_retrolambda_gradle_plugin)
         }
     }
 }
@@ -36,28 +36,28 @@ java {
 }
 
 dependencies {
-    api("net.sf.trove4j:trove4j:${extra["trove4jVersion"]}")
-    api("net.sourceforge.streamsupport:streamsupport:${extra["streamVersion"]}")
-    api("org.apache.commons:commons-math3:${extra["math3Version"]}")
-    api("org.eclipse.emf:org.eclipse.emf.ecore:${extra["emfVersion"]}")
-    api("com.google.guava:guava:${extra["guavaVersion"]}")
-    implementation("commons-codec:commons-codec:${extra["commonsCodecVersion"]}")
-    implementation("commons-io:commons-io:${extra["commonsIOVersion"]}")
-    implementation("de.ruedigermoeller:fst:${extra["fstVersion"]}")
-    implementation("org.apache.commons:commons-lang3:${extra["lang3Version"]}")
-    implementation("org.springframework:spring-core:${extra["springVersion"]}")
+    api(Libs.trove4j)
+    api(Libs.streamsupport)
+    api(Libs.commons_math3)
+    api(Libs.org_eclipse_emf_ecore)
+    api(Libs.guava)
+    implementation(Libs.commons_codec)
+    implementation(Libs.commons_io)
+    implementation(Libs.fst)
+    implementation(Libs.commons_lang3)
+    implementation(Libs.spring_core)
     /*
      * Legacy dependencies picking
      */
     if (isJava7Legacy) {
         println("Configuring legacy dependencies")
         api("org.eclipse.xtext:org.eclipse.xtext.common.types:2.10.0")
-        api("org.protelis:protelis.parser:${extra["parserVersion"]}.java7legacy")
+        api("${Libs.protelis_parser}.java7legacy")
         compileOnly("com.google.code.findbugs:findbugs:${extra["spotBugsLegacy"]}")
     } else {
-        api("org.protelis:protelis.parser:${extra["parserVersion"]}")
-        api("org.eclipse.xtext:org.eclipse.xtext.common.types:${extra["xtextVersion"]}")
-        compileOnly("com.github.spotbugs:spotbugs-annotations:${extra["spotBugsVersion"]}")
+        api(Libs.protelis_parser)
+        api(Libs.org_eclipse_xtext_common_types)
+        compileOnly(Libs.spotbugs_annotations)
     }
 }
 
