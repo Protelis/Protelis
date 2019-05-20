@@ -28,6 +28,7 @@ import org.apache.commons.math3.util.Pair;
 import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
+import org.protelis.vm.ExecutionContext;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -81,58 +82,11 @@ public final class ReflectionUtils {
     }
 
     /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param target
-     *            the target object. It can be null, if the method which is
-     *            being invoked is static
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestMethod(
-            final Class<?> clazz,
-            final String methodName,
-            final Object target,
-            final Object[] args) {
-        return invokeMethod(searchBestMethod(clazz, methodName, args), target, args);
-    }
-
-    /**
-     * @param methodName
-     *            the method to be invoked
-     * @param target
-     *            the target object. It can not be null
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestNotStatic(final Object target, final String methodName, final Object[] args) {
-        Objects.requireNonNull(target);
-        return invokeBestMethod(target.getClass(), methodName, target, args);
-    }
-
-    /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestStatic(final Class<?> clazz, final String methodName, final Object... args) {
-        return invokeBestMethod(clazz, methodName, null, args);
-    }
-    /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
      * 
+     * @param context
+     *            the current {@link ExecutionContext}
      * @param clazz
      *            the class to search for a method
      * @param methodName
@@ -144,24 +98,28 @@ public final class ReflectionUtils {
      * @return the result of the method invocation
      */
     public static Object invokeFieldable(
+            final ExecutionContext context,
             final Class<?> clazz,
             final String methodName,
             final Object target,
             final Object[] args) {
         if (Field.class.isAssignableFrom(clazz) && target instanceof Field) {
             return invokeFieldable(
+                    context,
                     ((Field) target).valIterator().iterator().next().getClass(),
                     methodName,
                     target,
                     args);
         }
-        return invokeFieldable(searchBestMethod(clazz, methodName, args), target, args);
+        return invokeFieldable(context, searchBestMethod(clazz, methodName, args), target, args);
     }
 
     /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
      * 
+     * @param context
+     *            the current {@link ExecutionContext}
      * @param toInvoke
      *            the method to be invoked
      * @param target
@@ -171,6 +129,7 @@ public final class ReflectionUtils {
      * @return the result of the method invocation
      */
     public static Object invokeFieldable(
+            final ExecutionContext context,
             final Method toInvoke,
             final Object target,
             final Object[] args) {
@@ -208,7 +167,7 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
+    private static Object invokeMethod(final Method method, final Object target, final Object[] args) {
         Object[] useArgs = repackageIfVarArgs(method, args);
         try {
             return method.invoke(target, useArgs);
@@ -377,7 +336,7 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
+    private static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
         final List<Class<?>> originalClasses = new ArrayList<>(args.size());
         final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
         boolean atLeastOneField = false;
@@ -418,7 +377,7 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final Object... args) {
+    private static Method searchBestMethod(final Class<?> clazz, final String methodName, final Object... args) {
         return searchBestMethod(clazz, methodName, Arrays.asList(args));
     }
 

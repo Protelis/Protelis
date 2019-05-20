@@ -92,8 +92,8 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
         final Object[] s = getBranchesAnnotations();
         final Object[] args = ztatic ? s : Arrays.copyOfRange(s, 1, s.length);
         setAnnotation(method == null
-                ? ReflectionUtils.invokeFieldable(clazz, methodName, target, args)
-                : ReflectionUtils.invokeFieldable(method, target, args));
+                ? ReflectionUtils.invokeFieldable(context, clazz, methodName, target, args)
+                : ReflectionUtils.invokeFieldable(context, method, target, args));
     }
 
     private void extractMethod() {
