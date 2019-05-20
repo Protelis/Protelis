@@ -26,8 +26,8 @@ allprojects {
     apply(plugin =  "org.danilopianini.build-commons")
 
     dependencies {
-        implementation("org.slf4j:slf4j-api:${extra["slf4jVersion"]}")
         testImplementation("junit:junit:${extra["junitVersion"]}")
+        testImplementation(Libs.slf4j_api)
         testRuntimeOnly("ch.qos.logback:logback-classic:${extra["logbackVersion"]}")
         doclet("org.jboss.apiviz:apiviz:${extra["apivizVersion"]}")
     }
