@@ -1,10 +1,24 @@
+import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 
 plugins {
     id("de.fayard.buildSrcVersions") version
         Versions.de_fayard_buildsrcversions_gradle_plugin
+    id("org.danilopianini.git-sensitive-semantic-versioning") version
+        Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
+    eclipse
     `java-library`
-    id("org.danilopianini.build-commons") version Versions.org_danilopianini_build_commons_gradle_plugin
+    jacoco
+    id("com.github.spotbugs") version
+        "1.6.9"
+    pmd
+    checkstyle
+    id("org.jlleitschuh.gradle.ktlint") version
+            "8.0.0"
+    signing
+    `maven-publish`
+    id("org.danilopianini.publish-on-central") version
+            "0.1.1"
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
 }
@@ -14,22 +28,93 @@ if (isJava7Legacy) {
     println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
 }
 
-apply(plugin = "project-report")
+apply(plugin = "com.gradle.build-scan")
 
 allprojects {
-    if (isJava7Legacy) {
-        val isBeta = project.version.toString().endsWith("-beta")
-        project.version = project.version.toString().dropLast(5) + "-j7" + ("-beta".takeIf { isBeta } ?: "")
+
+    apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning")
+    apply(plugin = "eclipse")
+    apply(plugin = "java-library")
+    apply(plugin = "jacoco")
+    apply(plugin = "com.github.spotbugs")
+    apply(plugin = "checkstyle")
+    apply(plugin = "pmd")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "project-report")
+    apply(plugin = "build-dashboard")
+    apply(plugin = "signing")
+    apply(plugin = "maven-publish")
+    apply(plugin = "org.danilopianini.publish-on-central")
+    apply(plugin = "com.jfrog.bintray")
+
+    gitSemVer {
+        version = computeGitSemVer().let {
+            if (isJava7Legacy) {
+                if (it.contains("-")) {
+                    it.replace("-", "-")
+                } else {
+                    it + "-j7"
+                }
+            } else { it }
+        }
+        println(version)
     }
 
-    apply(plugin = "java-library")
-    apply(plugin =  "org.danilopianini.build-commons")
+    repositories {
+        mavenCentral()
+    }
 
+    val doclet by configurations.creating
     dependencies {
         testImplementation(Libs.junit)
         testImplementation(Libs.slf4j_api)
         testRuntimeOnly(Libs.logback_classic)
         doclet(Libs.apiviz)
+    }
+
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
+    tasks.withType<Test> {
+        failFast = true
+        testLogging { events("passed", "skipped", "failed", "standardError") }
+    }
+
+    spotbugs {
+        isIgnoreFailures = true
+        effort = "max"
+        reportLevel = "low"
+        val excludeFile = File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
+        if (excludeFile.exists()) {
+            excludeFilterConfig = project.resources.text.fromFile(excludeFile)
+        }
+    }
+
+    tasks.withType<SpotBugsTask> {
+        reports {
+            xml.setEnabled(false)
+            html.setEnabled(true)
+        }
+    }
+
+    pmd {
+        setIgnoreFailures(true)
+        ruleSets = listOf()
+        ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
+    }
+
+    tasks.withType<Javadoc> {
+        isFailOnError = false
+        options {
+            val title = "Protelis ${project.version} Javadoc API"
+            windowTitle(title)
+            docletpath = doclet.files.toList()
+            doclet("org.jboss.apiviz.APIviz")
+            if (this is CoreJavadocOptions) {
+                addBooleanOption("nopackagediagram", true)
+            }
+        }
     }
 
     publishing.publications {
@@ -112,8 +197,8 @@ dependencies {
 }
 
 tasks.withType<Javadoc> {
-    dependsOn(subprojects.map{ it.tasks.javadoc })
-    source(subprojects.map{ it.tasks.javadoc.get().source })
+    dependsOn(subprojects.map { it.tasks.javadoc })
+    source(subprojects.map { it.tasks.javadoc.get().source })
 }
 
 tasks.register<Jar>("fatJar") {

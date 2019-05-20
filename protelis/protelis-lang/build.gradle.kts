@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":protelis-interpreter"))
-	testImplementation(project(":protelis-test"))
+    testImplementation(project(":protelis-test"))
 }
 
 sourceSets {

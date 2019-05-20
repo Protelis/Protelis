@@ -44,6 +44,8 @@ object Versions {
     const val org_danilopianini_build_commons_gradle_plugin: String = "0.4.0" 
             // available: "0.4.0+0ls.7bb38ef"
 
+    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.1.0" 
+
     const val org_eclipse_emf_ecore: String = "2.12.0" // available: "2.15.0"
 
     const val org_eclipse_xtext_common_types: String = "2.16.0" // available: "2.17.1"

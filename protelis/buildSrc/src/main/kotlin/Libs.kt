@@ -106,6 +106,10 @@ object Libs {
             "org.danilopianini.build-commons:org.danilopianini.build-commons.gradle.plugin:" +
             Versions.org_danilopianini_build_commons_gradle_plugin
 
+    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String =
+            "org.danilopianini.git-sensitive-semantic-versioning:org.danilopianini.git-sensitive-semantic-versioning.gradle.plugin:" +
+            Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
+
     /**
      * http://www.eclipse.org/emf */
     const val org_eclipse_emf_ecore: String = "org.eclipse.emf:org.eclipse.emf.ecore:" +
