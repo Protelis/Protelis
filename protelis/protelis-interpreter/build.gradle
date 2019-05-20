@@ -4,13 +4,13 @@ buildscript {
   }
   dependencies {
       if (isJava7Legacy) {
-          classpath 'me.tatarka:gradle-retrolambda:3.7.1'
+          classpath("me.tatarka:gradle-retrolambda:3.7.1")
       }
   }
 }
 
 if (isJava7Legacy) {
-    apply plugin: 'me.tatarka.retrolambda'
+    apply(plugin: "me.tatarka.retrolambda")
     retrolambda {
       javaVersion JavaVersion.VERSION_1_7
       defaultMethods true
@@ -44,7 +44,7 @@ dependencies {
     } else {
         api("org.protelis:protelis.parser:$parserVersion")
         api("org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}")
-        implementation "com.github.spotbugs:spotbugs-annotations:$spotBugsVersion"
+        implementation("com.github.spotbugs:spotbugs-annotations:$spotBugsVersion")
     }
 }
 
