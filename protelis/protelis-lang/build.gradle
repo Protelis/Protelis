@@ -1,3 +1,7 @@
+plugins {
+    id("org.protelis.protelisdoc") version "0.1.0-dev+0d7866ecf1"
+}
+
 dependencies {
     implementation project(':protelis-interpreter')
 	testImplementation project(':protelis-test')
