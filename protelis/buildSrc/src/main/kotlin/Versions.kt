@@ -59,7 +59,7 @@ object Versions {
 
     const val slf4j_api: String = "1.7.26" 
 
-    const val spring_core: String = "5.1.4.RELEASE" // available: "5.1.7.RELEASE"
+    const val spring_core: String = "5.1.7.RELEASE"
 
     /**
      *
