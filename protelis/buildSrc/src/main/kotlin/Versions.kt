@@ -39,7 +39,7 @@ object Versions {
 
     const val streamsupport: String = "1.7.0" 
 
-    const val commons_lang3: String = "3.8.1" // available: "3.9"
+    const val commons_lang3: String = "3.9"
 
     const val commons_math3: String = "3.6.1" 
 
