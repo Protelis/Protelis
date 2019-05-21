@@ -105,11 +105,11 @@ public enum HoodOp implements WithBytecode {
           of(create(Object.class, DatatypeFactory::createTuple)));
 
     private final Bytecode bytecode;
-    private final Function<Field, Object> defs; // NOPMD
+    private final SerializableFunction defs;
     private final SerializableBifunction function;
 
     /**
-     * @param fun
+     * @param fun the reduction function
      * @param empty
      *            function that generates a default in case of empty field
      * @param suppliers
@@ -235,5 +235,8 @@ public enum HoodOp implements WithBytecode {
 
     @FunctionalInterface
     private interface SerializableBifunction extends BiFunction<Field, DeviceUID, Object>, Serializable { }
+
+    @FunctionalInterface
+    private interface SerializableFunction extends Function<Field, Object>, Serializable { }
 
 }
