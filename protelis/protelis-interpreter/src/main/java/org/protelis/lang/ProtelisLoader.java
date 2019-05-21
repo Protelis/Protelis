@@ -341,7 +341,7 @@ public final class ProtelisLoader {
             for (final Diagnostic d : recursivelyCollectErrors(resource)) {
                 sb.append("Error");
                 if (d.getLocation() != null) {
-                    final String place = d.getLocation().toString().split("#")[0];
+                    final String place = d.getLocation().split("#")[0];
                     sb.append(" in ");
                     sb.append(place);
                 }
