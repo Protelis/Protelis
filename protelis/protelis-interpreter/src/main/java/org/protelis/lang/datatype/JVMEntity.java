@@ -9,6 +9,8 @@ import org.eclipse.xtext.common.types.JvmOperation;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import javax.annotation.Nullable;
+
 /**
  * A runtime Protelis view of a {@link JvmFeature}.
  *
@@ -21,6 +23,7 @@ public final class JVMEntity implements Serializable {
     private final String typeName;
     @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient Object value;
+    @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient Class<?> type;
 
     /**
