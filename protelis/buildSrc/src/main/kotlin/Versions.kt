@@ -9,7 +9,7 @@ import kotlin.String
 object Versions {
     const val logback_classic: String = "1.3.0-alpha4" 
 
-    const val spotbugs_annotations: String = "3.1.10" // available: "3.1.12"
+    const val spotbugs_annotations: String = "3.1.12"
 
     const val guava: String = "27.1-jre" 
 
@@ -44,7 +44,7 @@ object Versions {
     const val org_danilopianini_build_commons_gradle_plugin: String = "0.4.0" 
             // available: "0.4.0+0ls.7bb38ef"
 
-    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.1.0" 
+    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.2.1"
 
     const val org_eclipse_emf_ecore: String = "2.12.0" // available: "2.15.0"
 
