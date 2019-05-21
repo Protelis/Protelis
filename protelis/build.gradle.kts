@@ -9,16 +9,13 @@ plugins {
     eclipse
     `java-library`
     jacoco
-    id("com.github.spotbugs") version
-        "1.6.9"
+    id("com.github.spotbugs") version Versions.com_github_spotbugs_gradle_plugin
     pmd
     checkstyle
-    id("org.jlleitschuh.gradle.ktlint") version
-            "8.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
     signing
     `maven-publish`
-    id("org.danilopianini.publish-on-central") version
-            "0.1.1"
+    id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
 }
