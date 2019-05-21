@@ -62,7 +62,7 @@ public enum HoodOp implements WithBytecode {
      * Pick local value.
      */
     LOCAL(HOOD_LOCAL,
-        (field, id) -> field.getSample(id),
+        Field::getSample,
         () -> {
             throw new IllegalStateException("Local field pick operation must always work");
         },
