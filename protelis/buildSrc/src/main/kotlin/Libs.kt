@@ -10,6 +10,10 @@ object Libs {
      * http://logback.qos.ch */
     const val logback_classic: String = "ch.qos.logback:logback-classic:" + Versions.logback_classic
 
+    const val com_github_spotbugs_gradle_plugin: String =
+            "com.github.spotbugs:com.github.spotbugs.gradle.plugin:" +
+            Versions.com_github_spotbugs_gradle_plugin
+
     /**
      * https://spotbugs.github.io/ */
     const val spotbugs_annotations: String = "com.github.spotbugs:spotbugs-annotations:" +
@@ -26,6 +30,10 @@ object Libs {
     const val com_jfrog_bintray_gradle_plugin: String =
             "com.jfrog.bintray:com.jfrog.bintray.gradle.plugin:" +
             Versions.com_jfrog_bintray_gradle_plugin
+
+    /**
+     * https://github.com/pinterest/ktlint */
+    const val ktlint: String = "com.pinterest:ktlint:" + Versions.ktlint
 
     /**
      * http://commons.apache.org/proper/commons-codec/ */
@@ -78,13 +86,13 @@ object Libs {
      * http://commons.apache.org/proper/commons-math/ */
     const val commons_math3: String = "org.apache.commons:commons-math3:" + Versions.commons_math3
 
-    const val org_danilopianini_build_commons_gradle_plugin: String =
-            "org.danilopianini.build-commons:org.danilopianini.build-commons.gradle.plugin:" +
-            Versions.org_danilopianini_build_commons_gradle_plugin
-
     const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String =
             "org.danilopianini.git-sensitive-semantic-versioning:org.danilopianini.git-sensitive-semantic-versioning.gradle.plugin:" +
             Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
+
+    const val org_danilopianini_publish_on_central_gradle_plugin: String =
+            "org.danilopianini.publish-on-central:org.danilopianini.publish-on-central.gradle.plugin:" +
+            Versions.org_danilopianini_publish_on_central_gradle_plugin
 
     /**
      * http://www.eclipse.org/emf */
@@ -100,6 +108,10 @@ object Libs {
     /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
+
+    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String =
+            "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +
+            Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
 
     /**
      * http://protelis.org */
