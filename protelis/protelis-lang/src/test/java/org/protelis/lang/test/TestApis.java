@@ -1,7 +1,6 @@
 package org.protelis.lang.test;
 
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
