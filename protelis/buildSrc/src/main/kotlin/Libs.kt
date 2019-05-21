@@ -66,30 +66,6 @@ object Libs {
     const val trove4j: String = "net.sf.trove4j:trove4j:" + Versions.trove4j
 
     /**
-     * https://pmd.github.io/ */
-    const val pmd_core: String = "net.sourceforge.pmd:pmd-core:" + Versions.net_sourceforge_pmd
-
-    /**
-     * https://pmd.github.io/ */
-    const val pmd_java: String = "net.sourceforge.pmd:pmd-java:" + Versions.net_sourceforge_pmd
-
-    /**
-     * https://pmd.github.io/ */
-    const val pmd_jsp: String = "net.sourceforge.pmd:pmd-jsp:" + Versions.net_sourceforge_pmd
-
-    /**
-     * https://pmd.github.io/ */
-    const val pmd_plsql: String = "net.sourceforge.pmd:pmd-plsql:" + Versions.net_sourceforge_pmd
-
-    /**
-     * https://pmd.github.io/ */
-    const val pmd_vm: String = "net.sourceforge.pmd:pmd-vm:" + Versions.net_sourceforge_pmd
-
-    /**
-     * https://pmd.github.io/ */
-    const val pmd_xml: String = "net.sourceforge.pmd:pmd-xml:" + Versions.net_sourceforge_pmd
-
-    /**
      * http://sourceforge.net/projects/streamsupport/ */
     const val streamsupport: String = "net.sourceforge.streamsupport:streamsupport:" +
             Versions.streamsupport

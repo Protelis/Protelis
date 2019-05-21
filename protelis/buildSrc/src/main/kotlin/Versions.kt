@@ -33,9 +33,7 @@ object Versions {
 
     const val trove4j: String = "3.0.3" 
 
-    const val net_sourceforge_pmd: String = "6.10.0" // available: "6.14.0"
-
-    const val streamsupport: String = "1.7.0" 
+    const val streamsupport: String = "1.7.0"
 
     const val commons_lang3: String = "3.8.1" // available: "3.9"
 
