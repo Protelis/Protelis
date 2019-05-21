@@ -36,9 +36,7 @@ public class TestApis {
      * Print the current method name.
      */
     @Rule
-    //CHECKSTYLE:OFF
-    public final TestRule watcher = new TestWatcher() {
-    //CHECKSTYLE:ON
+    public static final TestRule WATCHER = new TestWatcher() {
         protected void starting(final Description description) {
             L.info(description.getMethodName());
         }
