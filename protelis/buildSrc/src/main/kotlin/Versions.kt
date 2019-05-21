@@ -43,7 +43,7 @@ object Versions {
 
     const val commons_math3: String = "3.6.1" 
 
-    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.2.1" 
+    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.2.2"
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1" 
 
