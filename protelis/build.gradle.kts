@@ -58,7 +58,6 @@ allprojects {
                 }
             } else { it }
         }
-        println(version)
     }
 
     repositories {
