@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -189,6 +190,7 @@ public final class ReflectionUtils {
         return ReflectionUtils.invokeMethod(context, toInvoke, target, args);
     }
 
+    @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "we need to intercept all runtime events")
     private static Object invokeMethod(final ExecutionContext context, final Method method, final Object target, final Object[] args) {
         final Object[] useArgs = repackageIfRequired(context, method, args);
         try {
