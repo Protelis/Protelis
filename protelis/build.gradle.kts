@@ -26,6 +26,10 @@ if (isJava7Legacy) {
 }
 
 apply(plugin = "com.gradle.build-scan")
+apply(plugin = "com.jfrog.bintray")
+apply(plugin = "com.gradle.build-scan")
+
+val scmUrl = "git:git@github.com:Protelis/Protelis"
 
 allprojects {
 
@@ -114,6 +118,16 @@ allprojects {
         }
     }
 
+    publishOnCentral {
+        fun String.fromProperties(): String = extra[this].toString()
+        projectDescription.set("projectDescription".fromProperties())
+        projectLongName.set("longName".fromProperties())
+        licenseName.set("licenseName".fromProperties())
+        licenseUrl.set("licenseUrl".fromProperties())
+        projectUrl.set("http://www.protelis.org")
+        scmConnection.set(scmUrl)
+    }
+
     publishing.publications {
         withType<MavenPublication> {
             pom {
@@ -152,7 +166,6 @@ allprojects {
     /*
      * Use Bintray for beta releases
      */
-    apply(plugin = "com.jfrog.bintray")
     val apiKeyName = "BINTRAY_API_KEY"
     val userKeyName = "BINTRAY_USER"
     bintray {
@@ -164,7 +177,7 @@ allprojects {
             repo = "Protelis"
             name = project.name
             userOrg = "protelis"
-            vcsUrl = "${extra["scmRootUrl"]}/${extra["scmRepoName"]}"
+            vcsUrl = scmUrl
             setLicenses("GPL-3.0-or-later")
             with(version) {
                 name = project.version.toString()
@@ -217,7 +230,6 @@ tasks.register<Jar>("fatJar") {
     with(tasks.jar.get() as CopySpec)
 }
 
-apply(plugin = "com.gradle.build-scan")
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
