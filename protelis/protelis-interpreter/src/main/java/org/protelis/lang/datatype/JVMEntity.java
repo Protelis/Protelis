@@ -9,8 +9,6 @@ import org.eclipse.xtext.common.types.JvmOperation;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import javax.annotation.Nullable;
-
 /**
  * A runtime Protelis view of a {@link JvmFeature}.
  *
