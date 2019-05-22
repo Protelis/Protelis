@@ -76,12 +76,16 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     /**
-     * Create a new AbstractExecutionContext.
+     * Create a new AbstractExecutionContext with the specified
+     * {@link CodePathFactory}. Subclasses which want to use hashing or other means
+     * to encode {@link CodePath}s can call this constructor, e.g.:
      * 
-     * @param execenv
-     *            The execution environment
-     * @param netmgr
-     *            Abstract network interface to be used
+     * <pre>
+     * super(execenv, netmgr, new HashingCodePathFactory(Hashing.sha256()));
+     * </pre>
+     * 
+     * @param execenv         The execution environment
+     * @param netmgr          Abstract network interface to be used
      * @param codePathFactory The code path factory to use
      */
     protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr, final CodePathFactory codePathFactory) {
@@ -268,7 +272,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path. "
                     + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
-                    + " into " + toSend +". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
+                    + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
             );
         }
         return res;
