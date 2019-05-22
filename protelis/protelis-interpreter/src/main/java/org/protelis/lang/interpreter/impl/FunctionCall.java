@@ -107,7 +107,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
 
     @Override
     public String getName() {
-        return fd.getName().toString();
+        return fd.getName();
     }
 
 }

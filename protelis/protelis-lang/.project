@@ -35,11 +35,6 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>ch.acanda.eclipse.pmd.builder.PMDBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>

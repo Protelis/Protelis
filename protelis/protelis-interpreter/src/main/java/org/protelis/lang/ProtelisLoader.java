@@ -102,8 +102,6 @@ import org.protelis.parser.protelis.VarUse;
 import org.protelis.parser.protelis.Yield;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.base.Charsets;
@@ -130,7 +128,6 @@ import java8.util.stream.StreamSupport;
  */
 public final class ProtelisLoader {
 
-    private static final Logger L = LoggerFactory.getLogger("Protelis Loader");
     private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
         @Override
         protected XtextResourceSet initialValue() {
@@ -209,7 +206,6 @@ public final class ProtelisLoader {
             }
             return parseURI(program);
         } catch (IOException e) {
-            L.debug("{} is not a URI that points to a resolvable resource, nor is classpath:/{}.pt", program, program);
             return parseAnonymousModule(program);
         }
     }
@@ -345,7 +341,7 @@ public final class ProtelisLoader {
             for (final Diagnostic d : recursivelyCollectErrors(resource)) {
                 sb.append("Error");
                 if (d.getLocation() != null) {
-                    final String place = d.getLocation().toString().split("#")[0];
+                    final String place = d.getLocation().split("#")[0];
                     sb.append(" in ");
                     sb.append(place);
                 }

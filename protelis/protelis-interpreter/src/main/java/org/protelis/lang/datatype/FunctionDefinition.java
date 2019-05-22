@@ -8,19 +8,17 @@
  *******************************************************************************/
 package org.protelis.lang.datatype;
 
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
+import gnu.trove.list.array.TByteArrayList;
+import java8.util.Objects;
+import java8.util.Optional;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
 
-import gnu.trove.list.TByteList;
-import gnu.trove.list.array.TByteArrayList;
-import java8.util.Objects;
-import java8.util.Optional;
+import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * First-class Protelis function.
@@ -31,7 +29,7 @@ public final class FunctionDefinition implements Serializable {
     private final String functionName;
     private final int argNumber;
     private final List<Reference> args;
-    private final TByteList stackCode;
+    private final TByteArrayList stackCode;
     private AnnotatedTree<?> functionBody;
 
     /**
