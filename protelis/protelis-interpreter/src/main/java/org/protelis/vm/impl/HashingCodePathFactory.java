@@ -47,13 +47,6 @@ public class HashingCodePathFactory implements CodePathFactory {
     /**
      * @param hashFunction the hashing algorithm to use
      */
-    public HashingCodePathFactory(final Supplier<HashFunction> hashFunction) {
-        this(hashFunction.get()::newHasher);
-    }
-
-    /**
-     * @param hashFunction the hashing algorithm to use
-     */
     public HashingCodePathFactory(final HasherSupplier hashFunction) {
         algorithm = hashFunction;
     }
