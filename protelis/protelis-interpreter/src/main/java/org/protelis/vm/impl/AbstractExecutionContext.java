@@ -51,7 +51,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
     private final CodePathFactory codePathFactory;
-    private Map<Reference, ?> functions = Collections.emptyMap();
+    private Optional<Map<Reference, ?>> functions = Optional.empty();
     private Map<Reference, Object> gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
@@ -96,7 +96,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
     @Override
     public final void setGloballyAvailableReferences(final Map<Reference, ?> knownFunctions) {
-        functions = Collections.unmodifiableMap(knownFunctions);
+        if (functions.isEmpty()) {
+            functions = Optional.of(knownFunctions);
+        } else {
+            throw new IllegalStateException("Globally available references cannot be set twice");
+        }
     }
 
     @Override
@@ -157,7 +161,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
         gamma = newLinkedHashMapWithExpectedSize(variablesSize);
-        gamma.putAll(functions);
+        gamma.putAll(functions.orElseGet(Collections::emptyMap));
         theta = Collections.unmodifiableMap(nm.getNeighborState());
         newCallStackFrame(-1);
     }
@@ -299,7 +303,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * @return Map from function name to function objects
      */
     protected final Map<Reference, ?> getFunctions() {
-        return functions;
+        return functions.orElseGet(Collections::emptyMap);
     }
 
     /**
