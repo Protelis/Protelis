@@ -21,6 +21,7 @@ public final class JVMEntity implements Serializable {
     private final String typeName;
     @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient Object value;
+    @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient Class<?> type;
 
     /**

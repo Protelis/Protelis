@@ -16,28 +16,32 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
-import org.danilopianini.lang.PrimitiveUtils;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
+import org.protelis.vm.ExecutionContext;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Primitives;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import java8.util.J8Arrays;
-import java8.util.Optional;
+import java8.util.function.Function;
 import java8.util.stream.Collectors;
 import java8.util.stream.RefStreams;
 
@@ -57,15 +61,40 @@ public final class ReflectionUtils {
                     return loadBestMethod(key.getLeft(), key.getMiddle(), al.toArray(args));
                 }
             });
+    private static final Map<Class<?>, Function<Number, ? extends Number>> NUMBER_CASTER = ImmutableMap
+        .<Class<?>, Function<Number, ? extends Number>>builder()
+        .put(Byte.class, Number::byteValue)
+        .put(Byte.TYPE, Number::byteValue)
+        .put(Short.class, Number::shortValue)
+        .put(Short.TYPE, Number::shortValue)
+        .put(Integer.class, Number::intValue)
+        .put(Integer.TYPE, Number::intValue)
+        .put(Long.class, Number::longValue)
+        .put(Long.TYPE, Number::longValue)
+        .put(Float.class, Number::floatValue)
+        .put(Float.TYPE, Number::floatValue)
+        .put(Double.class, Number::doubleValue)
+        .put(Double.TYPE, Number::doubleValue)
+        .build();
 
     private ReflectionUtils() {
     }
 
     private static boolean compatibleLength(final Method m, final Object[] args) {
+        final Class<?>[] paramTypes = m.getParameterTypes();
+        final boolean requiresContext = paramTypes.length > 0
+                && ExecutionContext.class.isAssignableFrom(paramTypes[0]);
+        /*
+         * The method must be invoked with enough arguments to match at least the count
+         * of non-ExecutionContext parameters (except if varargs, in which case one less
+         * argument is allowed), and at most the total number of parameters (unless it
+         * is varargs, in which case there is no limit)
+         */
         if (m.isVarArgs()) {
-            return args.length >= (m.getParameterTypes().length - 1);
+            return args.length >= (paramTypes.length - 1 - (requiresContext ? -1 : 0));
         } else {
-            return m.getParameterTypes().length == args.length;
+            final int diff = paramTypes.length - args.length;
+            return diff == 0 || requiresContext && diff == 1;
         }
     }
 
@@ -80,59 +109,18 @@ public final class ReflectionUtils {
         return 0;
     }
 
-    /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param target
-     *            the target object. It can be null, if the method which is
-     *            being invoked is static
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestMethod(
-            final Class<?> clazz,
-            final String methodName,
-            final Object target,
-            final Object[] args) {
-        return invokeMethod(searchBestMethod(clazz, methodName, args), target, args);
+    private static String formatArguments(final Object[] args) {
+        return RefStreams.of(args)
+            .map(it -> it + ": " + it.getClass().getSimpleName())
+            .collect(Collectors.joining(",", "(", ")"));
     }
 
-    /**
-     * @param methodName
-     *            the method to be invoked
-     * @param target
-     *            the target object. It can not be null
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestNotStatic(final Object target, final String methodName, final Object[] args) {
-        Objects.requireNonNull(target);
-        return invokeBestMethod(target.getClass(), methodName, target, args);
-    }
-
-    /**
-     * @param clazz
-     *            the class where to search for suitable methods
-     * @param methodName
-     *            the method to be invoked
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeBestStatic(final Class<?> clazz, final String methodName, final Object... args) {
-        return invokeBestMethod(clazz, methodName, null, args);
-    }
     /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
      * 
+     * @param context
+     *            the current {@link ExecutionContext}
      * @param clazz
      *            the class to search for a method
      * @param methodName
@@ -144,24 +132,28 @@ public final class ReflectionUtils {
      * @return the result of the method invocation
      */
     public static Object invokeFieldable(
+            final ExecutionContext context,
             final Class<?> clazz,
             final String methodName,
             final Object target,
             final Object[] args) {
         if (Field.class.isAssignableFrom(clazz) && target instanceof Field) {
             return invokeFieldable(
+                    context,
                     ((Field) target).valIterator().iterator().next().getClass(),
                     methodName,
                     target,
                     args);
         }
-        return invokeFieldable(searchBestMethod(clazz, methodName, args), target, args);
+        return invokeFieldable(context, searchBestMethod(clazz, methodName, args), target, args);
     }
 
     /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
      * 
+     * @param context
+     *            the current {@link ExecutionContext}
      * @param toInvoke
      *            the method to be invoked
      * @param target
@@ -171,6 +163,7 @@ public final class ReflectionUtils {
      * @return the result of the method invocation
      */
     public static Object invokeFieldable(
+            final ExecutionContext context,
             final Method toInvoke,
             final Object target,
             final Object[] args) {
@@ -188,28 +181,18 @@ public final class ReflectionUtils {
         }
         if (fieldTarget || fieldIndexes.size() > 0) {
             return Fields.apply(
-                    (actualT, actualA) -> ReflectionUtils.invokeMethod(toInvoke, actualT, actualA),
+                    (actualT, actualA) -> ReflectionUtils.invokeMethod(context, toInvoke, actualT, actualA),
                     fieldTarget,
                     fieldIndexes.toArray(),
                     target,
                     args);
         }
-        return ReflectionUtils.invokeMethod(toInvoke, target, args);
+        return ReflectionUtils.invokeMethod(context, toInvoke, target, args);
     }
 
-    /**
-     * @param method
-     *            the methods to invoke
-     * @param target
-     *            the target object. It can be null, if the method which is
-     *            being invoked is static
-     * @param args
-     *            the arguments for the method
-     * @return the result of the invocation, or an {@link IllegalStateException}
-     *         if something goes wrong.
-     */
-    public static Object invokeMethod(final Method method, final Object target, final Object[] args) {
-        Object[] useArgs = repackageIfVarArgs(method, args);
+    @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "we need to intercept all runtime events")
+    private static Object invokeMethod(final ExecutionContext context, final Method method, final Object target, final Object[] args) {
+        final Object[] useArgs = repackageIfRequired(context, method, args);
         try {
             return method.invoke(target, useArgs);
         } catch (Exception exc) { // NOPMD: Generic exception caught by purpose
@@ -221,9 +204,9 @@ public final class ReflectionUtils {
                 final Class<?> expected = params[i];
                 final Object actual = useArgs[i];
                 if (!expected.isAssignableFrom(actual.getClass())
-                        && PrimitiveUtils.classIsNumber(expected)
+                        && classIsNumber(expected)
                         && actual instanceof Number) {
-                    useArgs[i] = PrimitiveUtils.castIfNeeded(expected, (Number) actual).get();
+                    useArgs[i] = castIfNeeded(expected, (Number) actual);
                 }
             }
             try {
@@ -253,12 +236,6 @@ public final class ReflectionUtils {
         }
     }
 
-    private static String formatArguments(final Object[] args) {
-        return RefStreams.of(args)
-            .map(it -> it + ": " + it.getClass().getSimpleName())
-            .collect(Collectors.joining(",", "(", ")"));
-    }
-
     private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
         Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
         Objects.requireNonNull(methodName, "Method name can not be null.");
@@ -274,7 +251,7 @@ public final class ReflectionUtils {
             .toArray(Method[]::new);
         if (candidates.length == 0) {
             throw new IllegalArgumentException("No accessible method named " + methodName
-                    + " with " + argClass.length + " parameters is available in " + clazz);
+                    + " callable with " + Arrays.toString(argClass) + " parameters is available in " + clazz);
         }
         if (candidates.length == 1 && argClass.length == 0) {
             /*
@@ -287,21 +264,38 @@ public final class ReflectionUtils {
          */
         final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
         for (final Method m: candidates) {
-            int p = 0;
+            final Class<?>[] expectedParameters = m.getParameterTypes();
+            final Class<?>[] actualArgClass;
+            if (shouldPushContext(expectedParameters, argClass.length == 0 ? null : argClass[0])) {
+                /*
+                 * Push "self" as implicit parameter
+                 */
+                actualArgClass = new Class<?>[argClass.length + 1];
+                actualArgClass[0] = ExecutionContext.class;
+                System.arraycopy(argClass, 0, actualArgClass, 1, argClass.length);
+            } else {
+                actualArgClass = argClass;
+            }
             boolean compatible = true;
-            for (int i = 0; compatible && i < argClass.length; i++) {
+            int p = 0;
+            for (int i = 0; compatible && i < actualArgClass.length; i++) {
                 final Class<?> expected = nthArgumentType(m, i);
-                final Class<?> actual = argClass[i];
+                final Class<?> actual = actualArgClass[i];
                 if (expected.isAssignableFrom(actual)) {
                     /*
                      * No downcast nor coercion required, there is compatibility
                      */
                     p += 3;
-                } else if (PrimitiveUtils.classIsPrimitive(expected) && PrimitiveUtils.classIsWrapper(actual)) {
+                } else if (ExecutionContext.class.isAssignableFrom(expected)) {
+                    /*
+                     * Expected "self", implicitly loaded
+                     */
+                    p += 3;
+                } else if (classIsPrimitive(expected) && classIsWrapper(actual)) {
                     p += computePointsForWrapper(expected, actual);
-                } else if (PrimitiveUtils.classIsPrimitive(actual) && PrimitiveUtils.classIsWrapper(expected)) {
+                } else if (classIsPrimitive(actual) && classIsWrapper(expected)) {
                     p += computePointsForWrapper(actual, expected);
-                } else if (!(PrimitiveUtils.classIsNumber(expected) && PrimitiveUtils.classIsWrapper(actual))) {
+                } else if (!(classIsNumber(expected) && classIsWrapper(actual))) {
                     /*
                      * At least one is not a number: conversion with precision loss does not apply.
                      */
@@ -321,16 +315,13 @@ public final class ReflectionUtils {
         /*
          * Find best
          */
-        final Optional<Method> best = stream(lm)
+        return stream(lm)
                 .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
-                .map(Pair::getSecond);
-        if (best.isPresent()) {
-            return best.get();
-        }
-        throw new IllegalStateException("Method selection for " + methodName
-                + " inside " + clazz
-                + " has been restricted to " + Arrays.toString(candidates)
-                + " however none of them is compatible with arguments " + Arrays.toString(argClass));
+                .map(Pair::getSecond)
+                .orElseThrow(() -> new IllegalStateException("Method selection for " + methodName
+                    + " inside " + clazz
+                    + " has been restricted to " + Arrays.toString(candidates)
+                    + " however none of them is compatible with arguments " + Arrays.toString(argClass)));
     }
 
     private static Class<?> nthArgumentType(final Method m, final int n) {
@@ -343,26 +334,37 @@ public final class ReflectionUtils {
         }
     }
 
-    private static Object[] repackageIfVarArgs(final Method m, final Object[] args) {
-        if (!m.isVarArgs()) {
-            return args;
-        } else {
-            final Class<?>[] expectedArgs = m.getParameterTypes();
+    private static Object[] repackageIfRequired(final ExecutionContext context, final Method m, final Object[] args) {
+        final Class<?>[] expectedArgs = m.getParameterTypes();
+        final boolean pushContext = shouldPushContext(expectedArgs, args.length == 0 ? null : args[0].getClass());
+        if (m.isVarArgs() || pushContext) {
             // We will repackage into an array of the expected length
             final Object[] newargs = new Object[expectedArgs.length];
             // repackage all the base args
-            System.arraycopy(args, 0, newargs, 0, Math.max(expectedArgs.length - 1, 0));
-            // Determine how many arguments need repackaging
-            final int numVarArgs = args.length - (expectedArgs.length - 1);
-            // Make an array of the appropriate type, then fill it in
-            final Class<?> varargType = expectedArgs[expectedArgs.length - 1];
-            Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
-            for (int i = 0; i < numVarArgs; i++) {
-                vararg[i] = args[i + expectedArgs.length - 1];
+            final int start;
+            if (pushContext) {
+                newargs[0] = context;
+                start = 1;
+            } else {
+                start = 0;
             }
-            // Put the new array in the last argument and return
-            newargs[newargs.length - 1] = vararg;
+            final int copiedArgCount = expectedArgs.length - start - (m.isVarArgs() ? 1 : 0);
+            System.arraycopy(args, 0, newargs, start, Math.max(copiedArgCount, 0));
+            if (m.isVarArgs()) {
+                // Determine how many arguments need repackaging
+                final int numVarArgs = args.length - copiedArgCount;
+                // Make an array of the appropriate type, then fill it in
+                final Class<?> varargType = expectedArgs[copiedArgCount];
+                Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
+                for (int i = 0; i < numVarArgs; i++) {
+                    vararg[i] = args[i + expectedArgs.length - 1];
+                }
+                // Put the new array in the last argument and return
+                newargs[newargs.length - 1] = vararg;
+            }
             return newargs;
+        } else {
+            return args;
         }
     }
 
@@ -377,7 +379,7 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
+    private static Method searchBestMethod(final Class<?> clazz, final String methodName, final List<Object> args) {
         final List<Class<?>> originalClasses = new ArrayList<>(args.size());
         final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
         boolean atLeastOneField = false;
@@ -418,8 +420,44 @@ public final class ReflectionUtils {
      * @return the result of the invocation, or an {@link IllegalStateException}
      *         if something goes wrong.
      */
-    public static Method searchBestMethod(final Class<?> clazz, final String methodName, final Object... args) {
+    private static Method searchBestMethod(final Class<?> clazz, final String methodName, final Object... args) {
         return searchBestMethod(clazz, methodName, Arrays.asList(args));
     }
 
+    private static boolean shouldPushContext(final Class<?>[] expectedArgs, final Class<?> firstArgClass) {
+        return expectedArgs.length > 0
+                && ExecutionContext.class.isAssignableFrom(expectedArgs[0])
+                && (firstArgClass == null || !ExecutionContext.class.isAssignableFrom(firstArgClass));
+    }
+
+    /**
+     * @param clazz
+     *            the class under test
+     * @return true if the class is a subclass of {@link Number} or it is a
+     *         number having primitive representation in Java
+     */
+    private static boolean classIsNumber(final Class<?> clazz) {
+        return Number.class.isAssignableFrom(clazz) || NUMBER_CASTER.containsKey(clazz);
+    }
+
+    private static Number castIfNeeded(final Class<?> dest, final Number arg) {
+        Objects.requireNonNull(dest);
+        Objects.requireNonNull(arg);
+        if (dest.isAssignableFrom(arg.getClass())) {
+            return arg;
+        }
+        final Function<Number, ? extends Number> cast = NUMBER_CASTER.get(dest);
+        if (cast != null) {
+            return cast.apply(arg);
+        }
+        throw new IllegalStateException("Impossible cast from " + arg.getClass() + " to " + dest);
+    }
+
+    private static boolean classIsWrapper(final Class<?> clazz) {
+        return Primitives.allWrapperTypes().contains(clazz);
+    }
+
+    private static boolean classIsPrimitive(final Class<?> clazz) {
+        return Primitives.allPrimitiveTypes().contains(clazz);
+    }
 }

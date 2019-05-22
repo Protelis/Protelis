@@ -103,8 +103,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
         projectAndEval(context);
         final Object result = body.getAnnotation().reduceVals(
                 (a, b) -> function == null
-//                    ? JavaInteroperabilityUtils.runStaticMethod(context, clazz, methodName, a, b)
-                    ? ReflectionUtils.invokeBestStatic(clazz, methodName, a, b)
+                    ? ReflectionUtils.invokeFieldable(context, clazz, methodName, null, new Object[] { a, b })
                     : JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(context, function, a, b),
                 inclusive ? null : context.getDeviceUID(),
                 empty.getAnnotation());

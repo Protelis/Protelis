@@ -35,8 +35,6 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.datatype.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java8.util.J8Arrays;
@@ -83,7 +81,6 @@ public enum Op2 implements WithBytecode {
     /** Arithmetic multiplication operation. */
     TIMES(BINARY_TIMES, "*", Op2::times);
 
-    private static final Logger L = LoggerFactory.getLogger(Op2.class);
     private static final String UNCHECKED = "unchecked";
     private static final int[] BOTH = new int[] { 0, 1 };
     private static final int[] LEFT = new int[] { 0 };
@@ -228,7 +225,6 @@ public enum Op2 implements WithBytecode {
                  * Comparison of different types, fallback to lexicographic
                  * comparison
                  */
-                L.debug("Comparison of different types.");
             }
         }
         /*

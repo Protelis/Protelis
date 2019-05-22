@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.util.Pair;
-import org.danilopianini.io.FileUtilities;
 import org.nustaq.serialization.FSTConfiguration;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
@@ -191,7 +190,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             } else if (key instanceof Double) {
                 restricted.newCallStackFrame(Longs.toByteArray(Double.doubleToRawLongBits((double) key)));
             } else if (key instanceof Serializable) {
-                final byte[] hash = FileUtilities.serializeObject(STACK_IDENTIFIERS.getUnchecked(key));
+                final byte[] hash = STACK_IDENTIFIERS.getUnchecked(key);
                 restricted.newCallStackFrame(hash);
             } else {
                 throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());

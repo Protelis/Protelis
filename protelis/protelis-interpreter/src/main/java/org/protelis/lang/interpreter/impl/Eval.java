@@ -14,8 +14,6 @@ import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java8.util.Optional;
 
@@ -25,7 +23,6 @@ import java8.util.Optional;
 public final class Eval extends AbstractSATree<ProtelisProgram, Object> {
 
     private static final byte DYN_CODE_INDEX = -1;
-    private static final Logger L = LoggerFactory.getLogger(Eval.class);
     private static final long serialVersionUID = 8811510896686579514L;
 
     /**
@@ -56,7 +53,6 @@ public final class Eval extends AbstractSATree<ProtelisProgram, Object> {
                 final ProtelisProgram result = ProtelisLoader.parseAnonymousModule(program);
                 setSuperscript(result);
             } catch (IllegalArgumentException e) {
-                L.error("Non parse-able program", e);
                 throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
             }
         }
