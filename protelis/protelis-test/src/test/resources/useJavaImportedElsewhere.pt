@@ -1,4 +1,5 @@
-// EXPECTED_RESULT: import java.lang.Math.PI java.lang.Math.PI
+// EXPECTED_RESULT: import java.lang.Math.PI PI
+
 module useJavaImportedElsewhere
 import protelis:test:usejava
 
