@@ -1,6 +1,7 @@
 module evalAlignment82
+import java.lang.Double.POSITIVE_INFINITY
 public def gradient(source){
-    rep (distance <- Infinity){
+    rep (distance <- POSITIVE_INFINITY){
         mux(source){
             0
         } else {
