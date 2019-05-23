@@ -41,6 +41,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import java8.util.J8Arrays;
+import java8.util.Optional;
 import java8.util.function.Function;
 import java8.util.stream.Collectors;
 import java8.util.stream.RefStreams;
@@ -216,7 +217,8 @@ public final class ReflectionUtils {
                         + " cannot get invoked because it is not accessible.", e); 
             } catch (IllegalArgumentException e) {
                 final boolean isStatic = target == null;
-                final String errorMessage = e.getMessage()
+                final String errorMessage = Optional.ofNullable(e.getMessage())
+                        .orElse("Probable argument type mismatch")
                     + ": cannot invoke "
                     + method
                     + " with arguments " + formatArguments(useArgs)
