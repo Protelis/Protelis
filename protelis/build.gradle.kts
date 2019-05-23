@@ -1,5 +1,6 @@
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     id("de.fayard.buildSrcVersions") version
@@ -66,7 +67,10 @@ allprojects {
 
     tasks.withType<Test> {
         failFast = true
-        testLogging { events("passed", "skipped", "failed", "standardError") }
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+            events("passed", "skipped", "failed", "standardError")
+        }
     }
 
     spotbugs {
