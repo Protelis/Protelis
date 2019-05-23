@@ -35,9 +35,9 @@ matrix:
       os: linux
     - jdk: openjdk8
       os: osx
-    - jdk: openjdk8
+    - jdk: openjdk9
       os: osx
-    - jdk: openjdk8
+    - jdk: openjdk10
       os: osx
 
 before_install: >-
