@@ -2,6 +2,8 @@ module protelis:coord:graph
 import protelis:lang:utils
 import protelis:coord:tree
 import protelis:coord:nonselfstabilizing:accumulation
+import java.lang.Double.POSITIVE_INFINITY
+import java.lang.Double.NEGATIVE_INFINITY
 
 /**
  * Check if circular dependencies exist.
@@ -64,7 +66,7 @@ public def greatestLowerBound(myId, inbound, nodes) {
     let spread = spreadBoundValue(myId, inbound, nodes);
     let v =
         if (spread.get(0).size() == nodes.size()) { spread.get(1) }
-        else { Infinity };
+        else { POSITIVE_INFINITY };
     gossip(v, min) == v
 }
 
@@ -139,7 +141,7 @@ public def nbrWrapper(myId, connections, nbrMessage, null) {
 }
 
 def spreadBoundValue(myId, connections, nodes) {
-    share (nbrV <- [[-Infinity], -Infinity]) {
+    share (nbrV <- [[NEGATIVE_INFINITY], NEGATIVE_INFINITY]) {
         mux (nodes.contains(myId)) {
             [intersection(nodes, connections).union([myId]), 0]
         } else {
@@ -156,9 +158,9 @@ def spreadBoundValue(myId, connections, nodes) {
                             } else { [c, a.get(1)] }
                         }
                     }
-                }, [], nbrWrapper(myId, connections, nbrV, [[-Infinity], -Infinity])
+                }, [], nbrWrapper(myId, connections, nbrV, [[NEGATIVE_INFINITY], NEGATIVE_INFINITY])
             );
-            if (isEmpty(aggr)) { [[-Infinity], -Infinity] }
+            if (isEmpty(aggr)) { [[NEGATIVE_INFINITY], NEGATIVE_INFINITY] }
             else { [aggr.get(0), aggr.get(1) + 1] }
         }
     }
