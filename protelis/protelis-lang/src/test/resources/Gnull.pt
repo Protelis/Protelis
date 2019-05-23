@@ -1,3 +1,5 @@
 // EXPECTED_RESULT: true
 import protelis:coord:spreading
+import java.lang.Double.POSITIVE_INFINITY
+let Infinity = POSITIVE_INFINITY;
 Gnull(Infinity, false) == false && Gnull(false, false) == false && Gnull(true, false) == true
