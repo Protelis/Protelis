@@ -15,6 +15,7 @@ import org.protelis.lang.interpreter.impl.All;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.loading.Metadata;
 
+import java8.util.Objects;
 import java8.util.stream.Stream;
 import java8.util.stream.StreamSupport;
 
@@ -34,8 +35,8 @@ public final class ProtelisRuntimeException extends RuntimeException {
      * @param origin    the point in the Protelis program in which the Java
      *                  exception was thrown
      */
-    public ProtelisRuntimeException(final Throwable javaCause, final AnnotatedTree<?> origin) {
-        super(javaCause.getLocalizedMessage(), javaCause);
+    public ProtelisRuntimeException(@Nonnull final Throwable javaCause, final AnnotatedTree<?> origin) {
+        super(Objects.requireNonNull(javaCause.getLocalizedMessage()), javaCause);
         protelisStackTrace.add(origin);
     }
 
