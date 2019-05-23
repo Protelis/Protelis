@@ -328,6 +328,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test operation of "if" restrictive branching.
+     */
+    @Test
+    public void testIf03() {
+        runFile("/if03.pt");
+    }
+
+    /**
      * Test unionHood with only local contribution.
      */
     @Test

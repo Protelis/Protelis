@@ -1,4 +1,4 @@
 /*
  * EXPECTED_RESULT: false
  */
-anyHood(nbr(true));
+anyHood(nbr(true))

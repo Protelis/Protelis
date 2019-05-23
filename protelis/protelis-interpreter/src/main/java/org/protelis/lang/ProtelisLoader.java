@@ -81,6 +81,7 @@ import org.protelis.parser.protelis.ExprList;
 import org.protelis.parser.protelis.Expression;
 import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.GenericHood;
+import org.protelis.parser.protelis.IfWithoutElse;
 import org.protelis.parser.protelis.ImportDeclaration;
 import org.protelis.parser.protelis.ImportSection;
 import org.protelis.parser.protelis.JavaImport;
@@ -100,6 +101,7 @@ import org.protelis.parser.protelis.VarDef;
 import org.protelis.parser.protelis.VarDefList;
 import org.protelis.parser.protelis.VarUse;
 import org.protelis.parser.protelis.Yield;
+import org.protelis.parser.protelis.impl.BlockImpl;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -386,7 +388,14 @@ public final class ProtelisLoader {
         final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
                 .collect(Collectors.toMap(ProtelisLoader::toR, nameToFun::get, throwException(), LinkedHashMap::new));
         final ProgramState programState = new ProgramState(refToFun);
-        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.translate(fd.getBody(), programState)));
+        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.block(
+                Objects.requireNonNull(
+                    fd.getBody(),
+                    "The program " + root.getName() + " cannot be created because the required function "
+                    + ((ProtelisModule) fd.eContainer()).getName() + ":" + fd.getName() + " has errors in its body"),
+                programState)
+            )
+        );
         /*
          * Create the main program
          */
@@ -408,9 +417,9 @@ public final class ProtelisLoader {
                 }
             }
             globalReferences.putAll(refToFun);
-            return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), programState), globalReferences);
+            return new SimpleProgramImpl(root, Dispatch.block(root.getProgram(), programState), globalReferences);
         }
-        return new SimpleProgramImpl(root, Dispatch.translate(root.getProgram(), programState), refToFun);
+        return new SimpleProgramImpl(root, Dispatch.block(root.getProgram(), programState), refToFun);
     }
 
     private static List<AnnotatedTree<?>> callArgs(final Call call, final ProgramState env) {
@@ -421,7 +430,7 @@ public final class ProtelisLoader {
         return Optional.ofNullable(l)
                 .map(ExprList::getArgs)
                 .map(StreamSupport::stream)
-                .map(s -> s.map(e -> Dispatch.translate(e, env))
+                .map(s -> s.map(e -> Dispatch.expression(e, env))
                         .collect(Collectors.<AnnotatedTree<?>>toList()))
                 .orElse(Collections.emptyList());
     }
@@ -433,21 +442,12 @@ public final class ProtelisLoader {
                 final org.protelis.parser.protelis.AlignedMap alMap = (org.protelis.parser.protelis.AlignedMap) e;
                 return new AlignedMap(
                     metadataFor(e),
-                    translate(alMap.getArg(), m),
-                    translate(alMap.getCond(), m),
-                    translate(alMap.getOp(), m),
-                    translate(alMap.getDefault(), m));
+                    expression(alMap.getArg(), m),
+                    expression(alMap.getCond(), m),
+                    expression(alMap.getOp(), m),
+                    expression(alMap.getDefault(), m));
             }),
-        ASSIGNMENT(Assignment.class,
-            (e, m) -> new AssignmentOp(metadataFor(e), toR(((Assignment) e).getRefVar()), translate(((Assignment) e).getRight(), m))),
-        BLOCK(Block.class,
-            (e, m) -> {
-                final List<AnnotatedTree<?>> statements = new LinkedList<>();
-                for (Block b = (Block) e; b != null; b = b.getOthers()) {
-                    statements.add(translate(b.getFirst(), m));
-                }
-                return new All(metadataFor(e), statements);
-            }),
+        BLOCK(Block.class, (e, m) -> block((Block) e, m)),
         BOOLEAN(BooleanVal.class,
                 (e, m) -> new Constant<>(metadataFor(e), ((BooleanVal) e).isVal())),
         BUILTIN_HOOD(BuiltinHoodOp.class,
@@ -455,7 +455,7 @@ public final class ProtelisLoader {
                 final BuiltinHoodOp hood = (BuiltinHoodOp) e;
                 return new HoodCall(
                         metadataFor(e),
-                        translate(hood.getArg(), m),
+                        expression(hood.getArg(), m),
                         HoodOp.get(hood.getName().replace(HOOD_END, "")),
                         hood.isInclusive());
             }),
@@ -467,49 +467,29 @@ public final class ProtelisLoader {
             }
             return new FunctionCall(metadataFor(e), m.resolveFunction(toR(ref)), callArgs(call, m));
         }),
-        DECLARATION(VarDef.class,
-            (e, m) -> new AssignmentOp(metadataFor(e), toR(e), translate(((VarDef) e).getRight(), m))),
         DOUBLE(DoubleVal.class,
             (e, m) -> new Constant<>(metadataFor(e), ((DoubleVal) e).getVal())),
-        E(org.protelis.parser.protelis.E.class,
-            (e, m) -> new Constant<>(metadataFor(e), Math.E)),
         ENV(org.protelis.parser.protelis.Env.class,
             (e, m) -> new Env(metadataFor(e))),
         EVAL(org.protelis.parser.protelis.Eval.class,
             (e, m) -> new Eval(metadataFor(e), translate(((org.protelis.parser.protelis.Eval) e).getArg(), m))),
-        EXPRESSION(Expression.class,
-            (e, m) -> {
-                final Expression exp = (Expression) e;
-                if (exp.getMethodName() != null) {
-                    return new DotOperator(metadataFor(e), exp.getMethodName(), translate(exp.getLeft(), m), exprListArgs(exp.getArgs(), m));
-                }
-                if (exp.getV() != null) {
-                    return translate(exp.getV(), m);
-                }
-                if (exp.getLeft() == null) {
-                    return new UnaryOp(metadataFor(e), exp.getName(), translate(exp.getRight(), m));
-                }
-                if (exp.getRight() == null) {
-                    return new UnaryOp(metadataFor(e), exp.getName(), translate(exp.getLeft(), m));
-                }
-                return new BinaryOp(metadataFor(e), exp.getName(), translate(exp.getLeft(), m), translate(exp.getRight(), m));
-            }),
+        EXPRESSION(Expression.class, (e, m) -> expression((Expression) e, m)),
         GENERIC_HOOD(GenericHood.class,
             (e, m) -> {
                 final GenericHood hood = (GenericHood) e;
                 final boolean inclusive = hood.getName().length() > 4;
-                final AnnotatedTree<?> nullResult = translate(hood.getDefault(), m);
-                final AnnotatedTree<Field> field = translate(hood.getArg(), m);
+                final AnnotatedTree<?> nullResult = expression(hood.getDefault(), m);
+                final AnnotatedTree<Field> field = expression(hood.getArg(), m);
                 final EObject ref = hood.getReference();
                 if (ref == null) {
-                    return new GenericHoodCall(metadataFor(e), inclusive, translate(hood.getOp(), m), nullResult, field);
+                    return new GenericHoodCall(metadataFor(e), inclusive, lambda(hood.getOp(), m), nullResult, field);
                 }
                 if (ref instanceof VarUse) {
                     final VarUse refVar = (VarUse) ref;
                     if (refVar.getReference() instanceof JvmOperation) {
                         return new GenericHoodCall(metadataFor(e), inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
                     }
-                    return new GenericHoodCall(metadataFor(e), inclusive, translate(ref, m), nullResult, field);
+                    return new GenericHoodCall(metadataFor(e), inclusive, variable(refVar, m), nullResult, field);
                 } else {
                     throw new IllegalStateException("Unexpected type of function in hood call: " + ref.getClass());
                 }
@@ -518,42 +498,22 @@ public final class ProtelisLoader {
             (e, m) -> {
                 final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
                 return new If<>(metadataFor(e), 
-                        translate(ifop.getCond(), m),
-                        translate(ifop.getThen(), m),
-                        translate(ifop.getElse(), m));
+                        expression(ifop.getCond(), m),
+                        blockUnsafe(ifop.getThen(), m),
+                        block(ifop.getElse(), m));
             }),
-        LAMBDA(Lambda.class,
-            (e, m) -> {
-                final Lambda l = (Lambda) e;
-                final EObject argobj = l.getArgs();
-                final List<VarDef> args = argobj == null ? Collections.emptyList()
-                        : argobj instanceof VarDef ? Lists.newArrayList((VarDef) l.getArgs())
-                        : ((VarDefList) argobj).getArgs();
-                final AnnotatedTree<?> body = translate(l.getBody(), m);
-                final List<AnnotatedTree<?>> bodyEntities = new ArrayList<>();
-                bodyEntities.add(body);
-                for (int i = 0; i < bodyEntities.size(); i++) { //NOPMD: it can't be a foreach, it changes the collection while iterating.
-                    bodyEntities.addAll(bodyEntities.get(i).getBranches());
-                }
-                final String base = Base64.encodeBase64String(
-                        Hashing.sha256().hashString(bodyEntities.toString(), Charsets.UTF_8).asBytes());
-                final FunctionDefinition lambda = new FunctionDefinition(empty(), "$" + base, toR(args));
-                lambda.setBody(body);
-                return new Constant<>(metadataFor(e), lambda);
-            }),
+        LAMBDA(Lambda.class, (e, m) -> lambda((Lambda) e, m)),
         MUX(Mux.class,
             (e, m) -> {
                 final Mux mux = (Mux) e;
                 return new TernaryOp(metadataFor(e),
                         mux.getName(),
-                        translate(mux.getCond(), m),
-                        translate(mux.getThen(), m),
-                        translate(mux.getElse(), m));
+                        expression(mux.getCond(), m),
+                        block(mux.getThen(), m),
+                        block(mux.getElse(), m));
             }),
         NBR(NBR.class,
-            (e, m) -> new NBRCall(metadataFor(e), translate(((NBR) e).getArg(), m))),
-        PI(Pi.class,
-            (e, m) -> new Constant<>(metadataFor(e), Math.PI)),
+            (e, m) -> new NBRCall(metadataFor(e), expression(((NBR) e).getArg(), m))),
         REP(Rep.class,
             (e, m) -> {
                 final Rep rep = (Rep) e;
@@ -561,8 +521,8 @@ public final class ProtelisLoader {
                 final Optional<Reference> local = Optional.of(toR(init.getX()));
                 final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(rep.getYields())
                         .map(Yield::getBody)
-                        .map(it -> translate(it, m));
-                return new ShareCall<>(metadataFor(e), local, empty(), translate(init.getW(), m), translate(rep.getBody(), m), yield);
+                        .map(it -> blockUnsafe(it, m));
+                return new ShareCall<>(metadataFor(e), local, empty(), expression(init.getW(), m), block(rep.getBody(), m), yield);
             }),
         SELF(org.protelis.parser.protelis.Self.class,
             (e, m) -> e instanceof org.protelis.parser.protelis.Self ? new Self(metadataFor(e)) : null),
@@ -573,15 +533,14 @@ public final class ProtelisLoader {
             final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoader::toR);
             final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(s.getYields())
                     .map(Yield::getBody)
-                    .map(it -> translate(it, m));
-            return new ShareCall<>(metadataFor(e), local, field, translate(init.getW(), m), translate(s.getBody(), m), yield);
+                    .map(it -> blockUnsafe(it, m));
+            return new ShareCall<>(metadataFor(e), local, field, expression(init.getW(), m), block(s.getBody(), m), yield);
         }),
         STRING(StringVal.class,
             (e, m) -> new Constant<>(metadataFor(e), ((StringVal) e).getVal())),
         TUPLE(TupleVal.class,
             (e, m) -> new CreateTuple(metadataFor(e), exprListArgs(((TupleVal) e).getArgs(), m))),
-        VARIABLE(VarUse.class,
-            (e, m) -> new Variable(metadataFor(e), toR(((VarUse) e).getReference())));
+        VARIABLE(VarUse.class, (e, m) -> variable((VarUse) e, m));
 
         private BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator;
         private Class<? extends EObject> type;
@@ -589,6 +548,86 @@ public final class ProtelisLoader {
         Dispatch(final Class<? extends EObject> type, final BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator) {
             this.translator = translator;
             this.type = type;
+        }
+
+        private static <T> AnnotatedTree<T> variable(VarUse expression, ProgramState state) {
+            return (AnnotatedTree<T>) new Variable(metadataFor(expression), toR(expression.getReference()));
+        }
+
+        private static AnnotatedTree<?> block(final Block block, final ProgramState state) {
+            if (block instanceof VarDef) {
+                return variableDefinition((VarDef) block, state);
+            }
+            final Metadata meta = metadataFor(block);
+            if (block instanceof IfWithoutElse) {
+                final IfWithoutElse ifOp = (IfWithoutElse) block;
+                return new If<>(meta, expression(ifOp.getCond(), state), block(ifOp.getThen(), state), null);
+            }
+            if (block instanceof Assignment) {
+                final Assignment assignment = (Assignment) block;
+                return new AssignmentOp(meta, toR(assignment.getRefVar()), expression(assignment.getRight(), state));
+            }
+            if (block instanceof Expression) {
+                return expression((Expression) block, state);
+            }
+            final List<AnnotatedTree<?>> statements = new LinkedList<>();
+            for (Block b = (Block) block; b != null; b = b.getNext()) {
+                statements.add(block(b.getFirst(), state));
+            }
+            return new All(metadataFor(block), statements);
+        }
+
+        @SuppressWarnings("unchecked")
+        private static <T> AnnotatedTree<T> blockUnsafe(final Block block, final ProgramState state) {
+            return (AnnotatedTree<T>) block(block, state);
+        }
+
+        private static AssignmentOp variableDefinition(final VarDef definition, final ProgramState state) {
+            return new AssignmentOp(metadataFor(definition), toR(definition), expression(definition.getRight(), state));
+        }
+
+        private static AnnotatedTree<?> expressionRaw(final Expression expression, final ProgramState state) {
+            if (expression.getV() != null) {
+                return translate(expression.getV(), state);
+            }
+            final Metadata meta = metadataFor(expression);
+            final String methodName = expression.getMethodName();
+            if (methodName != null) {
+                final AnnotatedTree<?> target = expression(expression.getLeft(), state);
+                final List<AnnotatedTree<?>> arguments = exprListArgs(expression.getArgs(), state);
+                return new DotOperator(meta, methodName, target, arguments);
+            }
+            if (expression.getLeft() == null) {
+                return new UnaryOp(meta, expression.getName(), expression(expression.getRight(), state));
+            }
+            final AnnotatedTree<?> left = expression(expression.getLeft(), state);
+            if (expression.getRight() == null) {
+                return new UnaryOp(meta, expression.getName(), left);
+            }
+            return new BinaryOp(meta, expression.getName(), left, expression(expression.getRight(), state));
+        }
+
+        @SuppressWarnings("unchecked")
+        private static <T> AnnotatedTree<T> expression(final Expression expression, final ProgramState state) {
+            return (AnnotatedTree<T>) expressionRaw(expression, state);
+        }
+
+        private static AnnotatedTree<FunctionDefinition> lambda(final Lambda expression, final ProgramState state) {
+            final EObject argobj = expression.getArgs();
+            final List<VarDef> args = argobj == null ? Collections.emptyList()
+                    : argobj instanceof VarDef ? Lists.newArrayList((VarDef) expression.getArgs())
+                    : ((VarDefList) argobj).getArgs();
+            final AnnotatedTree<?> body = block(expression.getBody(), state);
+            final List<AnnotatedTree<?>> bodyEntities = new ArrayList<>();
+            bodyEntities.add(body);
+            for (int i = 0; i < bodyEntities.size(); i++) { //NOPMD: it can't be a foreach, it changes the collection while iterating.
+                bodyEntities.addAll(bodyEntities.get(i).getBranches());
+            }
+            final String base = Base64.encodeBase64String(
+                    Hashing.sha256().hashString(bodyEntities.toString(), Charsets.UTF_8).asBytes());
+            final FunctionDefinition lambda = new FunctionDefinition(empty(), "$" + base, toR(args));
+            lambda.setBody(body);
+            return new Constant<>(metadataFor(expression), lambda);
         }
 
         @SuppressWarnings("unchecked")

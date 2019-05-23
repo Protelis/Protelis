@@ -5,14 +5,14 @@ import protelis:lang:time
 
 def reduce(tuple, fn) {
 	if (tuple.size() <= 1) {
-		tuple.get(0);
+		tuple.get(0)
 	} else {
-		fn.apply(tuple.get(0),reduce(tuple.subTupleEnd(1),fn));
+		fn.apply(tuple.get(0),reduce(tuple.subTupleEnd(1),fn))
 	}
 }
 
 def networkDiameter() {
-	env.get("diameter");
+	env.get("diameter")
 }
 
 def distributedClock(persistence) {
@@ -44,8 +44,8 @@ public def timeReplicated(process, persistence, alpha) {
 		 * Add process if the clock is new
 		 */
 		if(isNewClock(processes, clock)) {
-			processes = processes.append([clock, [process, default]])
-		} else {0};
+			processes = processes.append([clock, [process, default]]);
+		};
 		/*
 		 * Align on clock, execute process
 		 */

@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -24,7 +25,8 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
 
     private static final long serialVersionUID = -4830593657731078743L;
     private final AnnotatedTree<Boolean> conditionExpression;
-    private final AnnotatedTree<T> thenExpression, elseExpression;
+    private final AnnotatedTree<T> elseExpression;
+    private final AnnotatedTree<T> thenExpression;
 
     /**
      * @param metadata
@@ -40,7 +42,7 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
         super(metadata, cond);
         conditionExpression = cond;
         thenExpression = then;
-        elseExpression = otherwise;
+        elseExpression = otherwise == null ? Nop.nop() : otherwise;
     }
 
     @Override
@@ -78,6 +80,34 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
     public String toString() {
         return getName() + " (" + stringFor(conditionExpression) + ") { "
                 + stringFor(thenExpression) + " } else { " + stringFor(thenExpression) + '}';
+    }
+
+    private static class Nop extends AbstractAnnotatedTree<Void> {
+
+        private static final Nop INSTANCE = new Nop();
+        private static final long serialVersionUID = 1L;
+
+        protected Nop() {
+            super(JavaInteroperabilityUtils.METADATA);
+        }
+
+        @Override
+        public AnnotatedTree<Void> copy() {
+            return INSTANCE;
+        }
+        @Override
+        protected void evaluate(final ExecutionContext context) { }
+
+        @Override
+        public Bytecode getBytecode() {
+            throw new IllegalStateException("Nop operation has no bytecode representation.");
+        }
+
+        @SuppressWarnings("unchecked")
+        public static <T> AbstractAnnotatedTree<T> nop() {
+            return (AbstractAnnotatedTree<T>) INSTANCE;
+        }
+
     }
 
 }

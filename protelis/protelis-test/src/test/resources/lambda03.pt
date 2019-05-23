@@ -18,4 +18,4 @@ def switch() {
 		}
 	}
 }
-((switch).apply()).apply();
+((switch).apply()).apply()
