@@ -3,6 +3,8 @@ import protelis:coord:meta
 import protelis:coord:spreading
 import protelis:lang:utils
 import protelis:state:time
+import java.lang.Double.POSITIVE_INFINITY
+import java.lang.Double.NaN
 
 /**
  * Aggregation of local information.
@@ -117,7 +119,7 @@ public def cMultiIdempotent(potential, f, local, default) {
  * @return          num, minimum value
  */
 public def cMultiMin(potential, local) {
-    cMultiIdempotent(potential, min, local, Infinity)
+    cMultiIdempotent(potential, min, local, POSITIVE_INFINITY)
 }
 
 /**
@@ -240,7 +242,7 @@ public def diameter(source) {
 public def diameterWithMetric(source, metric) {
     let d = distanceToWithMetric(source, metric);
     2 * share (maxd <- 0) {
-        max(if (d < Infinity) { d } else { 0 }, maxHood(maxd))
+        max(if (d < POSITIVE_INFINITY) { d } else { 0 }, maxHood(maxd))
     }
 }
 
