@@ -514,7 +514,7 @@ public final class ProtelisLoader {
             (e, m) -> new Constant<>(metadataFor(e), ((StringVal) e).getVal())),
         TUPLE(TupleVal.class,
             (e, m) -> new CreateTuple(metadataFor(e), exprListArgs(((TupleVal) e).getArgs(), m))),
-        VARIABLE(VarUse.class, (e, m) -> variable((VarUse)e, m));
+        VARIABLE(VarUse.class, (e, m) -> variable((VarUse) e, m));
 
         private BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator;
         private Class<? extends EObject> type;
