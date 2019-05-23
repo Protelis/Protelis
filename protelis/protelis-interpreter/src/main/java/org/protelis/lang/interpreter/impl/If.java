@@ -11,7 +11,6 @@ package org.protelis.lang.interpreter.impl;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
-import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
@@ -42,30 +41,41 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
         super(metadata, cond);
         conditionExpression = cond;
         thenExpression = then;
-        elseExpression = otherwise == null ? Nop.nop() : otherwise;
+        elseExpression = otherwise;
     }
 
     @Override
     public AnnotatedTree<T> copy() {
-        return new If<>(getMetadata(), conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
+        return new If<>(getMetadata(),
+                conditionExpression.copy(),
+                thenExpression.copy(),
+                elseExpression == null ? null : elseExpression.copy());
     }
 
     @Override
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final boolean isTrue = conditionExpression.getAnnotation();
-        final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
-        final AnnotatedTree<T> erased = isTrue ? elseExpression : thenExpression;
-        final Bytecode opCode = isTrue ? Bytecode.IF_THEN : Bytecode.IF_ELSE;
-        if (!erased.isErased()) {
-            erased.erase();
+        if (elseExpression == null) {
+            if (isTrue) {
+                evalInNewStackFrame(thenExpression, context, Bytecode.IF_THEN);
+            } else {
+                thenExpression.erase();
+            }
+        } else {
+            final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
+            final AnnotatedTree<T> erased = isTrue ? elseExpression : thenExpression;
+            final Bytecode opCode = isTrue ? Bytecode.IF_THEN : Bytecode.IF_ELSE;
+            if (!erased.isErased()) {
+                erased.erase();
+            }
+            evalInNewStackFrame(selected, context, opCode);
+            final T result = selected.getAnnotation();
+            if (result instanceof Field) {
+                throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + result);
+            }
+            setAnnotation(result);
         }
-        evalInNewStackFrame(selected, context, opCode);
-        final T result = selected.getAnnotation();
-        if (result instanceof Field) {
-            throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + result);
-        }
-        setAnnotation(result);
     }
 
     @Override
@@ -80,34 +90,6 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
     public String toString() {
         return getName() + " (" + stringFor(conditionExpression) + ") { "
                 + stringFor(thenExpression) + " } else { " + stringFor(thenExpression) + '}';
-    }
-
-    private static class Nop extends AbstractAnnotatedTree<Void> {
-
-        private static final Nop INSTANCE = new Nop();
-        private static final long serialVersionUID = 1L;
-
-        protected Nop() {
-            super(JavaInteroperabilityUtils.METADATA);
-        }
-
-        @Override
-        public AnnotatedTree<Void> copy() {
-            return INSTANCE;
-        }
-        @Override
-        protected void evaluate(final ExecutionContext context) { }
-
-        @Override
-        public Bytecode getBytecode() {
-            throw new IllegalStateException("Nop operation has no bytecode representation.");
-        }
-
-        @SuppressWarnings("unchecked")
-        public static <T> AbstractAnnotatedTree<T> nop() {
-            return (AbstractAnnotatedTree<T>) INSTANCE;
-        }
-
     }
 
 }
