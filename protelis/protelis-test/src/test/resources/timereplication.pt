@@ -44,7 +44,7 @@ public def timeReplicated(process, persistence, alpha) {
 		 * Add process if the clock is new
 		 */
 		if(isNewClock(processes, clock)) {
-			processes = processes.append([clock, [process, default]]);
+			processes = processes.append([clock, [process, default]])
 		};
 		/*
 		 * Align on clock, execute process
