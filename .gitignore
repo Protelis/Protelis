@@ -8,3 +8,4 @@ version.info
 .metadata/
 .recommenders/
 */*/.settings/*.prefs
+**/out/
