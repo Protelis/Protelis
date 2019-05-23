@@ -463,7 +463,7 @@ public final class ProtelisLoader {
                     if (refVar.getReference() instanceof JvmOperation) {
                         return new GenericHoodCall(metadataFor(e), inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
                     }
-                    return new GenericHoodCall(metadataFor(e), inclusive, variable(refVar, m), nullResult, field);
+                    return new GenericHoodCall(metadataFor(e), inclusive, variableUnsafe(refVar, m), nullResult, field);
                 } else {
                     throw new IllegalStateException("Unexpected type of function in hood call: " + ref.getClass());
                 }
@@ -472,8 +472,8 @@ public final class ProtelisLoader {
             (e, m) -> {
                 final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
                 return new If<>(metadataFor(e), 
-                        expression(ifop.getIf().getCond(), m),
-                        blockUnsafe(ifop.getIf().getThen(), m),
+                        expression(ifop.getCond(), m),
+                        blockUnsafe(ifop.getThen(), m),
                         block(ifop.getElse(), m));
             }),
         LAMBDA(Lambda.class, (e, m) -> lambda((Lambda) e, m)),
@@ -514,14 +514,7 @@ public final class ProtelisLoader {
             (e, m) -> new Constant<>(metadataFor(e), ((StringVal) e).getVal())),
         TUPLE(TupleVal.class,
             (e, m) -> new CreateTuple(metadataFor(e), exprListArgs(((TupleVal) e).getArgs(), m))),
-        VARIABLE(VarUse.class, (e, m) -> {
-            final Metadata meta = metadataFor(e);
-            final EObject ref = ((VarUse) e).getReference();
-            if (ref instanceof JvmFeature) {
-                return new JvmConstant(meta, new JVMEntity((JvmFeature) ref));
-            }
-            return new Variable(meta, toR(ref));
-        });
+        VARIABLE(VarUse.class, (e, m) -> variable((VarUse)e, m));
 
         private BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator;
         private Class<? extends EObject> type;
@@ -531,8 +524,18 @@ public final class ProtelisLoader {
             this.type = type;
         }
 
-        private static <T> AnnotatedTree<T> variable(VarUse expression, ProgramState state) {
-            return (AnnotatedTree<T>) new Variable(metadataFor(expression), toR(expression.getReference()));
+        private static AnnotatedTree<?> variable(VarUse expression, ProgramState state) {
+            final Metadata meta = metadataFor(expression);
+            final EObject ref = ((VarUse) expression).getReference();
+            if (ref instanceof JvmFeature) {
+                return new JvmConstant(meta, new JVMEntity((JvmFeature) ref));
+            }
+            return new Variable(meta, toR(ref));
+        }
+
+        @SuppressWarnings("unchecked")
+        private static <T> AnnotatedTree<T> variableUnsafe(VarUse expression, ProgramState state) {
+            return (AnnotatedTree<T>) variable(expression, state);
         }
 
         private static AnnotatedTree<?> block(final Block block, final ProgramState state) {
@@ -542,7 +545,12 @@ public final class ProtelisLoader {
             final Metadata meta = metadataFor(block);
             if (block instanceof IfWithoutElse) {
                 final IfWithoutElse ifOp = (IfWithoutElse) block;
-                return new If<>(meta, expression(ifOp.getCond(), state), block(ifOp.getThen(), state), null);
+                final List<AnnotatedTree<?>> then = ifOp.getThen().stream()
+                        .map(it -> translate(it, state))
+                        .collect(java.util.stream.Collectors.toList());
+                final AnnotatedTree<?> thenBranch = then.size() == 1? then.get(0)
+                        : new All(meta, then);
+                return new If<>(meta, expression(ifOp.getCond(), state), thenBranch, null);
             }
             if (block instanceof Assignment) {
                 final Assignment assignment = (Assignment) block;
