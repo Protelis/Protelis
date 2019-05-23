@@ -333,7 +333,14 @@ public final class ProtelisLoader {
     public static ProtelisProgram parse(final Resource resource) {
         Objects.requireNonNull(resource);
         if (!resource.getErrors().isEmpty()) {
-            final StringBuilder sb = new StringBuilder("The Protelis program cannot be created because of the following errors:\n");
+            final String moduleName = Optional.ofNullable(resource.getContents())
+                    .map(it -> it.get(0))
+                    .map(it -> (ProtelisModule) it)
+                    .map(ProtelisModule::getName)
+                    .orElse("without declared module");
+            final StringBuilder sb = new StringBuilder("Program " + moduleName
+                    + " from resource " + resource.getURI()
+                    + " cannot be created because of the following errors:\n");
             for (final Diagnostic d : recursivelyCollectErrors(resource)) {
                 sb.append("Error");
                 if (d.getLocation() != null) {
