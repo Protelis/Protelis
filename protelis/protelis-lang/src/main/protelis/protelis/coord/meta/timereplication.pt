@@ -64,7 +64,7 @@ public def timeReplicated(process, default, p, k) {
     rep (processes <- []) {
         // Add process if the clock is new
         if (isNewClock(processes, clock)) {
-            processes = processes.append([clock, process, default]);
+            processes = processes.append([clock, process, default])
         };
         // Align on clock, execute process
         alignedExecution(processes.filter(self, process -> {clock - process.get(0) < p * k }), default)
