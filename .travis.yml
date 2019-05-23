@@ -33,11 +33,11 @@ matrix:
     - jdk: openjdk8
       env: PUBLISH="false"
       os: linux
-    - jdk: oraclejdk8
+    - jdk: openjdk8
       os: osx
-    - jdk: oraclejdk9
+    - jdk: openjdk8
       os: osx
-    - jdk: oraclejdk10
+    - jdk: openjdk8
       os: osx
 
 before_install: >-
