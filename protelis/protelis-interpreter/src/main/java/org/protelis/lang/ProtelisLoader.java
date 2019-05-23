@@ -34,9 +34,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
-import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.JvmFeature;
-import org.eclipse.xtext.common.types.JvmField;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
@@ -49,10 +47,10 @@ import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.AlignedMap;
 import org.protelis.lang.interpreter.impl.All;
+import org.protelis.lang.interpreter.impl.AssignmentOp;
 import org.protelis.lang.interpreter.impl.BinaryOp;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
-import org.protelis.lang.interpreter.impl.AssignmentOp;
 import org.protelis.lang.interpreter.impl.DotOperator;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
@@ -60,6 +58,7 @@ import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.impl.GenericHoodCall;
 import org.protelis.lang.interpreter.impl.HoodCall;
 import org.protelis.lang.interpreter.impl.If;
+import org.protelis.lang.interpreter.impl.JvmConstant;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.interpreter.impl.NBRCall;
 import org.protelis.lang.interpreter.impl.Self;
@@ -82,13 +81,10 @@ import org.protelis.parser.protelis.Expression;
 import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.GenericHood;
 import org.protelis.parser.protelis.IfWithoutElse;
-import org.protelis.parser.protelis.ImportDeclaration;
 import org.protelis.parser.protelis.ImportSection;
-import org.protelis.parser.protelis.JavaImport;
 import org.protelis.parser.protelis.Lambda;
 import org.protelis.parser.protelis.Mux;
 import org.protelis.parser.protelis.NBR;
-import org.protelis.parser.protelis.Pi;
 import org.protelis.parser.protelis.ProtelisImport;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.Rep;
@@ -101,7 +97,6 @@ import org.protelis.parser.protelis.VarDef;
 import org.protelis.parser.protelis.VarDefList;
 import org.protelis.parser.protelis.VarUse;
 import org.protelis.parser.protelis.Yield;
-import org.protelis.parser.protelis.impl.BlockImpl;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -111,7 +106,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
@@ -399,26 +393,6 @@ public final class ProtelisLoader {
         /*
          * Create the main program
          */
-        if (root.getImports() != null) {
-            final List<ImportDeclaration> allImports = root.getImports().getImportDeclarations();
-            final Map<Reference, Object> globalReferences = new LinkedHashMap<>(refToFun.size() + allImports.size());
-            for (final ImportDeclaration imp : allImports) {
-                if (imp instanceof JavaImport) {
-                    final JavaImport javaImport = (JavaImport) imp;
-                    final JvmDeclaredType type = javaImport.getImportedType();
-                    final Iterable<JvmField> fields = type.getDeclaredFields();
-                    final Iterable<JvmOperation> methods = type.getDeclaredOperations();
-                    for (final JvmFeature feature: Iterables.concat(fields, methods)) {
-                        if (feature.isStatic()
-                            && (javaImport.isWildcard() || feature.getSimpleName().equals(javaImport.getImportedMemberName()))) {
-                            globalReferences.put(toR(feature), new JVMEntity(feature));
-                        }
-                    }
-                }
-            }
-            globalReferences.putAll(refToFun);
-            return new SimpleProgramImpl(root, Dispatch.block(root.getProgram(), programState), globalReferences);
-        }
         return new SimpleProgramImpl(root, Dispatch.block(root.getProgram(), programState), refToFun);
     }
 
@@ -498,8 +472,8 @@ public final class ProtelisLoader {
             (e, m) -> {
                 final org.protelis.parser.protelis.If ifop = (org.protelis.parser.protelis.If) e;
                 return new If<>(metadataFor(e), 
-                        expression(ifop.getCond(), m),
-                        blockUnsafe(ifop.getThen(), m),
+                        expression(ifop.getIf().getCond(), m),
+                        blockUnsafe(ifop.getIf().getThen(), m),
                         block(ifop.getElse(), m));
             }),
         LAMBDA(Lambda.class, (e, m) -> lambda((Lambda) e, m)),
@@ -540,7 +514,14 @@ public final class ProtelisLoader {
             (e, m) -> new Constant<>(metadataFor(e), ((StringVal) e).getVal())),
         TUPLE(TupleVal.class,
             (e, m) -> new CreateTuple(metadataFor(e), exprListArgs(((TupleVal) e).getArgs(), m))),
-        VARIABLE(VarUse.class, (e, m) -> variable((VarUse) e, m));
+        VARIABLE(VarUse.class, (e, m) -> {
+            final Metadata meta = metadataFor(e);
+            final EObject ref = ((VarUse) e).getReference();
+            if (ref instanceof JvmFeature) {
+                return new JvmConstant(meta, new JVMEntity((JvmFeature) ref));
+            }
+            return new Variable(meta, toR(ref));
+        });
 
         private BiFunction<EObject, ProgramState, AnnotatedTree<?>> translator;
         private Class<? extends EObject> type;

@@ -362,6 +362,15 @@ public class TestLanguage {
     }
 
     /**
+     * Test that java elements imported in referenced modules are available within
+     * such modules.
+     */
+    @Test
+    public void testJavaImportsInExternalModules() {
+        runFile("/useJavaImportedElsewhere.pt");
+    }
+
+    /**
      * Test a simple anonymous function inline definition and application.
      */
     @Test
@@ -513,14 +522,6 @@ public class TestLanguage {
         runFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
     }
 
-    /**
-     * Test unqualified call of batch-imported static Java methods.
-     */
-    @Test
-    public void testMethod03() {
-        runFile("/method03.pt");
-    }
-
 //    /**
 //     * Test minHood.
 //     */
@@ -528,6 +529,14 @@ public class TestLanguage {
 //    public void testMinHood03() {
 //        runFile("/minhood03.pt");
 //    }
+
+    /**
+     * Test unqualified call of batch-imported static Java methods.
+     */
+    @Test
+    public void testMethod03() {
+        runFile("/method03.pt");
+    }
 
     /**
      * Test "dot" call of non-static Java methods.

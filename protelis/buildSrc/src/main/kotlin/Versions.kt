@@ -55,7 +55,7 @@ object Versions {
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.0.0" 
 
-    const val protelis_parser: String = "9.1.0"
+    const val protelis_parser: String = "9.0.0"
 
     const val slf4j_api: String = "1.7.26" 
 
