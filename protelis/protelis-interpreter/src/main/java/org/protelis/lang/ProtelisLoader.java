@@ -524,7 +524,7 @@ public final class ProtelisLoader {
             this.type = type;
         }
 
-        private static AnnotatedTree<?> variable(VarUse expression, ProgramState state) {
+        private static AnnotatedTree<?> variable(final VarUse expression, final ProgramState state) {
             final Metadata meta = metadataFor(expression);
             final EObject ref = ((VarUse) expression).getReference();
             if (ref instanceof JvmFeature) {
@@ -534,7 +534,7 @@ public final class ProtelisLoader {
         }
 
         @SuppressWarnings("unchecked")
-        private static <T> AnnotatedTree<T> variableUnsafe(VarUse expression, ProgramState state) {
+        private static <T> AnnotatedTree<T> variableUnsafe(final VarUse expression, final ProgramState state) {
             return (AnnotatedTree<T>) variable(expression, state);
         }
 
@@ -548,7 +548,7 @@ public final class ProtelisLoader {
                 final List<AnnotatedTree<?>> then = ifOp.getThen().stream()
                         .map(it -> translate(it, state))
                         .collect(java.util.stream.Collectors.toList());
-                final AnnotatedTree<?> thenBranch = then.size() == 1? then.get(0)
+                final AnnotatedTree<?> thenBranch = then.size() == 1 ? then.get(0)
                         : new All(meta, then);
                 return new If<>(meta, expression(ifOp.getCond(), state), thenBranch, null);
             }
