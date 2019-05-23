@@ -512,7 +512,7 @@ public def gradient(source, init, metric, accumulate) {
  * @return       T, broadcasted value
  */
 public def hopBroadcast(source, value) {
-    broadcastWithMetric(source, value, () -> { 1 });
+    broadcastWithMetric(source, value, () -> { 1 })
 }
 
 /*
