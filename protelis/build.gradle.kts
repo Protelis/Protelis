@@ -20,11 +20,6 @@ plugins {
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
 }
 
-val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
-if (isJava7Legacy) {
-    println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
-}
-
 apply(plugin = "com.gradle.build-scan")
 apply(plugin = "com.jfrog.bintray")
 apply(plugin = "com.gradle.build-scan")
@@ -49,15 +44,7 @@ allprojects {
     apply(plugin = "com.jfrog.bintray")
 
     gitSemVer {
-        version = computeGitSemVer().let {
-            if (isJava7Legacy) {
-                if (it.contains("-")) {
-                    it.replace("-", "-")
-                } else {
-                    it + "-j7"
-                }
-            } else { it }
-        }
+        version = computeGitSemVer()
     }
 
     repositories {
@@ -66,6 +53,7 @@ allprojects {
 
     val doclet by configurations.creating
     dependencies {
+        compileOnly(Libs.spotbugs_annotations)
         testImplementation(Libs.junit)
         testImplementation(Libs.slf4j_api)
         testRuntimeOnly(Libs.logback_classic)
