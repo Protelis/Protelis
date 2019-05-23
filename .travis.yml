@@ -87,7 +87,6 @@ deploy:
       repo: Protelis/Protelis
       branch: develop
       jdk: openjdk8
-      condition: $JAVA7LEGACY = false
   - provider: surge
     skip_cleanup: true
     project: "./protelis/report"
@@ -96,7 +95,6 @@ deploy:
       repo: Protelis/Protelis
       branch: develop
       jdk: openjdk8
-      condition: $JAVA7LEGACY = false
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
@@ -105,7 +103,6 @@ deploy:
       repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
-      condition: $JAVA7LEGACY = false
   - provider: surge
     skip_cleanup: true
     project: "./protelis/report"
@@ -114,7 +111,6 @@ deploy:
       repo: Protelis/Protelis
       tags: true
       jdk: openjdk8
-      condition: $JAVA7LEGACY = false
 after_deploy: echo Deployment phase concluded.
 
 notifications:
