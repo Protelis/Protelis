@@ -51,7 +51,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final NetworkManager nm;
     private final CodePathFactory codePathFactory;
-    private Map<Reference, ?> functions = Collections.emptyMap();
+    private Optional<Map<Reference, ?>> functions = Optional.empty();
     private Map<Reference, Object> gamma;
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
@@ -76,12 +76,16 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     }
 
     /**
-     * Create a new AbstractExecutionContext.
+     * Create a new AbstractExecutionContext with the specified
+     * {@link CodePathFactory}. Subclasses which want to use hashing or other means
+     * to encode {@link CodePath}s can call this constructor, e.g.:
      * 
-     * @param execenv
-     *            The execution environment
-     * @param netmgr
-     *            Abstract network interface to be used
+     * <pre>
+     * super(execenv, netmgr, new HashingCodePathFactory(Hashing.sha256()));
+     * </pre>
+     * 
+     * @param execenv         The execution environment
+     * @param netmgr          Abstract network interface to be used
      * @param codePathFactory The code path factory to use
      */
     protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr, final CodePathFactory codePathFactory) {
@@ -92,7 +96,11 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
     @Override
     public final void setGloballyAvailableReferences(final Map<Reference, ?> knownFunctions) {
-        functions = Collections.unmodifiableMap(knownFunctions);
+        if (functions.isEmpty()) {
+            functions = Optional.of(knownFunctions);
+        } else {
+            throw new IllegalStateException("Globally available references cannot be set twice");
+        }
     }
 
     @Override
@@ -153,7 +161,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
         gamma = newLinkedHashMapWithExpectedSize(variablesSize);
-        gamma.putAll(functions);
+        gamma.putAll(functions.orElseGet(Collections::emptyMap));
         theta = Collections.unmodifiableMap(nm.getNeighborState());
         newCallStackFrame(-1);
     }
@@ -268,7 +276,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path. "
                     + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
-                    + " into " + toSend +". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
+                    + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
             );
         }
         return res;
@@ -295,7 +303,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * @return Map from function name to function objects
      */
     protected final Map<Reference, ?> getFunctions() {
-        return functions;
+        return functions.orElseGet(Collections::emptyMap);
     }
 
     /**

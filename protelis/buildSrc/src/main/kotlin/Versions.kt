@@ -39,11 +39,11 @@ object Versions {
 
     const val streamsupport: String = "1.7.0" 
 
-    const val commons_lang3: String = "3.9"
+    const val commons_lang3: String = "3.9" 
 
     const val commons_math3: String = "3.6.1" 
 
-    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.2.2"
+    const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.2.2" 
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1" 
 
@@ -55,11 +55,11 @@ object Versions {
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.0.0" 
 
-    const val protelis_parser: String = "8.2.0" 
+    const val protelis_parser: String = "8.2.0" // available: "9.0.0"
 
     const val slf4j_api: String = "1.7.26" 
 
-    const val spring_core: String = "5.1.7.RELEASE"
+    const val spring_core: String = "5.1.7.RELEASE" 
 
     /**
      *
@@ -71,7 +71,7 @@ object Versions {
 
         const val currentVersion: String = "5.4.1"
 
-        const val nightlyVersion: String = "5.6-20190521000240+0000"
+        const val nightlyVersion: String = "5.6-20190522000044+0000"
 
         const val releaseCandidate: String = ""
     }

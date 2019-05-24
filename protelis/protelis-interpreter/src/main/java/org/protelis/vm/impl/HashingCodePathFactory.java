@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.protelis.vm.CodePath;
 import org.protelis.vm.CodePathFactory;
 
+import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 
 import gnu.trove.list.TIntList;
@@ -13,7 +14,7 @@ import gnu.trove.stack.TIntStack;
 import java8.util.function.Supplier;
 
 /**
- * An hash-based {@link CodePath} factory. It allows for predictable packet
+ * A hash-based {@link CodePath} factory. It allows for predictable packet
  * sizes, as codepath length is no affected by the evaluation tree depth at
  * which the field was built. It is arguably more secure than the default option
  * (if a cryptographic hashing function is used) as receivers cannot deduce the
@@ -22,11 +23,26 @@ import java8.util.function.Supplier;
  * probability of collision. Using decent hash functions (e.g. SHA) should
  * however make the event very unlikely. In any case, there is a trade-off
  * between collision probability and packet size.
+ * 
+ * Implementations of {@link AbstractExecutionContext} can use it by passing the
+ * factory instance in the super constructor call, e.g.:
+ * 
+ * <pre>
+ * super(execenv, netmgr, new HashingCodePathFactory(Hashing.sha256()));
+ * </pre>
+ * 
  */
 public class HashingCodePathFactory implements CodePathFactory {
 
     private static final long serialVersionUID = 1L;
     private final HasherSupplier algorithm;
+
+    /**
+     * @param hashFunction the hashing algorithm to use
+     */
+    public HashingCodePathFactory(final HashFunction hashFunction) {
+        this(hashFunction::newHasher);
+    }
 
     /**
      * @param hashFunction the hashing algorithm to use

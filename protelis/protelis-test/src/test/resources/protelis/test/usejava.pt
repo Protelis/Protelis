@@ -1,0 +1,8 @@
+module protelis:test:usejava
+
+import java.lang.Math.min
+import java.lang.Math.PI
+
+public def refToJavaFunction() { min }
+
+public def refToJavaField() { PI }

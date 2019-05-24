@@ -3,6 +3,8 @@ import org.apache.commons.math3.util.FastMath.floor
 import protelis:coord:meta
 import protelis:lang:utils
 import protelis:state:time
+import java.lang.Double.POSITIVE_INFINITY
+import java.lang.Double.NEGATIVE_INFINITY
 
 /*
  * Add v to the field of distances from the current device.
@@ -84,7 +86,7 @@ public def boundG(region, null, source, initial, metric, accumulate) {
  * @return       num, field of minimum distances to the closest source
  */
 public def boundDistanceTo(region, source) {
-    boundSpreading(region, () -> { distanceTo(source) }, Infinity)
+    boundSpreading(region, () -> { distanceTo(source) }, POSITIVE_INFINITY)
 }
 
 /*
@@ -209,7 +211,7 @@ public def crfGradient(source, maxHop) {
  * @return       num, minimum distance from the source
  */
 public def crfGradientWithMetric(source, metric, maxHop) {
-    share (potential, nbrPotential <- [Infinity, 0]) {
+    share (potential, nbrPotential <- [POSITIVE_INFINITY, 0]) {
         mux (source) {
             [0, 0]
         } else {
@@ -247,7 +249,7 @@ public def bisGradient(source, radius, speed) {
  * @return       num, minimum distance from the source
  */
 public def bisGradientWithMetric(source, metric, radius, speed) {
-    let val = if (source) {0} else {Infinity};
+    let val = if (source) {0} else {POSITIVE_INFINITY};
     let loc = [val, val];
     share (nbrOld <- loc) {
         let nx = nbrOld.get(0) + metric.apply();
@@ -345,7 +347,7 @@ public def distanceTo(source) {
  * @return       num, field of minimum distances to the closest source
  */
 public def distanceToWithMetric(source, metric) {
-    G(source, if (source) {0} else {Infinity}, metric, (v) -> { v + metric.apply() })
+    G(source, if (source) {0} else {POSITIVE_INFINITY}, metric, (v) -> { v + metric.apply() })
 }
 
 /**
@@ -365,7 +367,7 @@ def flex_distorce(minD, metric) {
 }
 def flex_slope(d, nbrD, minD, metric) {
    let slope = maxHood([(d - nbrD) / flex_distorce(minD, metric), nbr(d), flex_distorce(minD, metric)]);
-   max(slope, [-Infinity, Infinity, 0])
+   max(slope, [NEGATIVE_INFINITY, POSITIVE_INFINITY, 0])
 }
 
 /**
@@ -392,7 +394,7 @@ public def flexGradient(source, epsilon, rate, range, distortion) {
  * @param metric     () -> num, estimate distance from other devices
  */
 public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metric) {
-    share (d, nbrD <- Infinity) {
+    share (d, nbrD <- POSITIVE_INFINITY) {
         mux (source) { 0 } 
         else {
             let dist = range * distortion;
@@ -424,7 +426,7 @@ public def flexGradientWithMetric(source, epsilon, rate, range, distortion, metr
  * @return           T, accumulated value
  */
 public def G(source, initial, metric, accumulate) {
-    share (nbrDistanceValue <- [Infinity, initial]) {
+    share (nbrDistanceValue <- [POSITIVE_INFINITY, initial]) {
         mux (source) {
             // If the device is a source then G return a 0 potential
             // and the initial value
@@ -438,8 +440,8 @@ public def G(source, initial, metric, accumulate) {
             	    // values estimation
                 	accumulate.apply(nbrDistanceValue.get(1))
 	            ]);
-	        if (minTuple.get(0) == Infinity) { // if no neighbors or no path to source
-		        [Infinity, initial] // default: reset to initial value
+	        if (minTuple.get(0) == POSITIVE_INFINITY) { // if no neighbors or no path to source
+		        [POSITIVE_INFINITY, initial] // default: reset to initial value
 	        } else {
 	        	minTuple
 	        }
@@ -457,7 +459,7 @@ public def G(source, initial, metric, accumulate) {
  * @return        T, v or default
  */
 public def Gnull(v, default) {
-    mux (v == Infinity) {
+    mux (v == POSITIVE_INFINITY) {
         default
     } else {
         v
@@ -495,7 +497,7 @@ public def gradcast(source, local, gradient, accumulate) {
 public def gradient(source, init, metric, accumulate) {
     G(source, [0, init], metric,
         v -> {
-            let x = Gnull(v, [Infinity, init]);
+            let x = Gnull(v, [POSITIVE_INFINITY, init]);
             [ addRangeWithMetric(x.get(0), metric), accumulate.apply(x.get(1)) ]
         }
     )
@@ -510,7 +512,7 @@ public def gradient(source, init, metric, accumulate) {
  * @return       T, broadcasted value
  */
 public def hopBroadcast(source, value) {
-    broadcastWithMetric(source, value, () -> { 1 });
+    broadcastWithMetric(source, value, () -> { 1 })
 }
 
 /*
@@ -554,7 +556,7 @@ public def multiGradient(sources, init, metric, accumulate) {
     multiInstance(
         sources,
         id -> { gradient(id == getUID(), init, metric, accumulate) },
-        [Infinity, init]
+        [POSITIVE_INFINITY, init]
     )
 }
 

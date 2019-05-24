@@ -1,8 +1,9 @@
 module protelis:coord:sparsechoice
 import protelis:coord:spreading
+import java.lang.Double.POSITIVE_INFINITY
 
 def default() {
-    [Infinity, Infinity]
+    [POSITIVE_INFINITY, POSITIVE_INFINITY]
 }
 
 def breakUsingUids(uid, grain, metric) {
