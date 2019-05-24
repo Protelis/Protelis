@@ -96,6 +96,12 @@ allprojects {
         ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
     }
 
+    ktlint {
+        filter {
+            exclude("**/protelis2kotlin/**")
+        }
+    }
+
     tasks.withType<Javadoc> {
         isFailOnError = false
         options {
