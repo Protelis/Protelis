@@ -19,6 +19,7 @@ plugins {
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
+    id("org.protelis.protelisdoc") version "0.1.0"
 }
 
 apply(plugin = "com.gradle.build-scan")
@@ -30,6 +31,7 @@ val scmUrl = "git:git@github.com:Protelis/Protelis"
 allprojects {
 
     apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning")
+    apply(plugin = "org.protelis.protelisdoc")
     apply(plugin = "eclipse")
     apply(plugin = "java-library")
     apply(plugin = "jacoco")
