@@ -1,7 +1,6 @@
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jlleitschuh.gradle.ktlint.KtlintCheckTask
 
 plugins {
     id("de.fayard.buildSrcVersions") version
@@ -15,12 +14,12 @@ plugins {
     pmd
     checkstyle
     id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+    id("org.protelis.protelisdoc") version "0.1.0"
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
-    id("org.protelis.protelisdoc") version "0.1.0"
 }
 
 apply(plugin = "com.gradle.build-scan")
@@ -32,7 +31,6 @@ val scmUrl = "git:git@github.com:Protelis/Protelis"
 allprojects {
 
     apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning")
-    apply(plugin = "org.protelis.protelisdoc")
     apply(plugin = "eclipse")
     apply(plugin = "java-library")
     apply(plugin = "jacoco")
@@ -40,6 +38,8 @@ allprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+//    apply(plugin = "org.protelis.protelisdoc")
     apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
     apply(plugin = "signing")
@@ -99,7 +99,13 @@ allprojects {
         ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
     }
 
-    tasks.findByName("generateKotlinFromProtelis")?.mustRunAfter(tasks.withType<KtlintCheckTask>())
+    ktlint {
+        filter {
+            exclude {
+                it.file.path.toString().contains("protelis2kotlin")
+            }
+        }
+    }
 
     tasks.withType<Javadoc> {
         isFailOnError = false
