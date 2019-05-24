@@ -1,6 +1,7 @@
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jlleitschuh.gradle.ktlint.KtlintCheckTask
 
 plugins {
     id("de.fayard.buildSrcVersions") version
@@ -98,11 +99,7 @@ allprojects {
         ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
     }
 
-    ktlint {
-        filter {
-            exclude("**/protelis2kotlin/**")
-        }
-    }
+    tasks.findByName("generateKotlinFromProtelis")?.mustRunAfter(tasks.withType<KtlintCheckTask>())
 
     tasks.withType<Javadoc> {
         isFailOnError = false
