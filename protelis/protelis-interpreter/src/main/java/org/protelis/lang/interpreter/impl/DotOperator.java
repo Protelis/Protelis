@@ -105,9 +105,9 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
             final Object[] args = getBranchesAnnotations();
             if (isApply && target instanceof JVMEntity) {
                 final JVMEntity jvmEntity = (JVMEntity) target;
-                setAnnotation(ReflectionUtils.invokeFieldable(jvmEntity.getType(), jvmEntity.getMemberName(), null, args));
+                setAnnotation(ReflectionUtils.invokeFieldable(context, jvmEntity.getType(), jvmEntity.getMemberName(), null, args));
             } else {
-                setAnnotation(ReflectionUtils.invokeFieldable(target.getClass(), methodName, target, args));
+                setAnnotation(ReflectionUtils.invokeFieldable(context, target.getClass(), methodName, target, args));
             }
         }
         context.returnFromCallFrame();

@@ -23,6 +23,8 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 
+import com.google.common.collect.ImmutableList;
+
 import java8.util.stream.IntStreams;
 
 /**
@@ -39,6 +41,22 @@ public class TestLanguage {
     }
 
     /**
+     * Test import of a module as part of an anonymous expression.
+     */
+    @Test
+    public void testAnonymousLoadModule() {
+        runFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
+    }
+
+     /**
+     * Test Boolean logic operators.
+     */
+    @Test
+    public void testBinary01() {
+        runFile("/binary01.pt");
+    }
+
+    /**
      * Test closures.
      */
     @Test
@@ -46,7 +64,7 @@ public class TestLanguage {
         runFile("/closure01.pt");
     }
 
-     /**
+    /**
      * Test closures.
      */
      @Test
@@ -63,36 +81,11 @@ public class TestLanguage {
     }
 
     /**
-     * Test Boolean logic operators.
-     */
-    @Test
-    public void testBinary01() {
-        runFile("/binary01.pt");
-    }
-
-    /**
      * Test putting and getting of environment variables.
      */
     @Test
     public void testEnvironment01() {
         runFile("/environment01.pt");
-    }
-
-    /**
-     * Smoke test of basic dynamic program evaluation.
-     */
-    @Test
-    public void testEval01() {
-        runFile("/eval01.pt");
-    }
-
-    /**
-     * Test of dynamic evaluation of a complex program, including function
-     * definitions.
-     */
-    @Test
-    public void testEval02() {
-        runFile("/eval02.pt");
     }
 
     /**
@@ -121,6 +114,23 @@ public class TestLanguage {
     @Test
     public void testErrorMessage03() {
         runExpectingErrors("import non:existent:protelismodule\n1\n", IllegalStateException.class, "resource", "protelismodule", "does not exist");
+    }
+
+    /**
+     * Smoke test of basic dynamic program evaluation.
+     */
+    @Test
+    public void testEval01() {
+        runFile("/eval01.pt");
+    }
+
+    /**
+     * Test of dynamic evaluation of a complex program, including function
+     * definitions.
+     */
+    @Test
+    public void testEval02() {
+        runFile("/eval02.pt");
     }
 
     /**
@@ -318,6 +328,16 @@ public class TestLanguage {
     }
 
     /**
+     * Test unionHood with only local contribution.
+     */
+    @Test
+    public void testImplicitSelf() {
+        for (final String test: ImmutableList.of("Map", "Reduce", "Filter")) {
+            runFile("/Tuple" + test + "02.pt");
+        }
+    }
+
+    /**
      * Test that the issue described at https://github.com/Protelis/Protelis/issues/127 is solved.
      */
     @Test
@@ -331,6 +351,15 @@ public class TestLanguage {
     @Test
     public void testJavaField01() {
         runFile("/javaField01.pt");
+    }
+
+    /**
+     * Test that java elements imported in referenced modules are available within
+     * such modules.
+     */
+    @Test
+    public void testJavaImportsInExternalModules() {
+        runFile("/useJavaImportedElsewhere.pt");
     }
 
     /**
@@ -355,6 +384,54 @@ public class TestLanguage {
     @Test
     public void testLambda03() {
         runFileWithMultipleRuns("/lambda03.pt");
+    }
+
+    /**
+     * Test loading of a file from name without explicit classpath statement.
+     */
+    @Test
+    public void testLoadFile() {
+        runFile("/sum.pt");
+    }
+
+    /**
+     * Test loading of a file with explicit classpath statement.
+     */
+    @Test
+    public void testLoadFromClasspath() {
+        runFileWithExplicitResult("classpath:/sum.pt", 8d);
+    }
+
+    /**
+     * Test loading from a module name with default package.
+     */
+    @Test
+    public void testLoadFromModuleName01() {
+        runFileWithExplicitResult("modules04", 1d);
+    }
+
+    /**
+     * Test loading from a module name from a nested package.
+     */
+    @Test
+    public void testLoadFromModuleName02() {
+        runFileWithExplicitResult("protelis:test:circular02", 1d);
+    }
+
+    /**
+     * Test loading from a module name from a nested package.
+     */
+    @Test
+    public void testLoadFromModuleName03() {
+        assertNotNull(ProtelisLoader.parse("replicatedgossip"));
+    }
+
+    /**
+     * Test parsing of anonymous expression.
+     */
+    @Test
+    public void testLoadModule() {
+        runFileWithExplicitResult("5+3", 8d);
     }
 
     /**
@@ -437,6 +514,14 @@ public class TestLanguage {
         runFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
     }
 
+//    /**
+//     * Test minHood.
+//     */
+//    @Test
+//    public void testMinHood03() {
+//        runFile("/minhood03.pt");
+//    }
+
     /**
      * Test unqualified call of batch-imported static Java methods.
      */
@@ -510,14 +595,6 @@ public class TestLanguage {
         runFile("/minhood02.pt");
     }
 
-//    /**
-//     * Test minHood.
-//     */
-//    @Test
-//    public void testMinHood03() {
-//        runFile("/minhood03.pt");
-//    }
-
     /**
      * Test showing that when unqualified imported Protelis method names
      * conflict, first imported shadows later imports.
@@ -562,14 +639,6 @@ public class TestLanguage {
     }
 
     /**
-     * Test operation of "mux" inclusive branching.
-     */
-    @Test
-    public void testMux01() {
-        runFileWithMultipleRuns("/mux01.pt");
-    }
-
-    /**
      * Test two statement sequence.
      */
     @Test
@@ -599,6 +668,14 @@ public class TestLanguage {
     @Test
     public void testMultiStatement04() {
         runFile("/multistatement04.pt");
+    }
+
+    /**
+     * Test operation of "mux" inclusive branching.
+     */
+    @Test
+    public void testMux01() {
+        runFileWithMultipleRuns("/mux01.pt");
     }
 
     /**
@@ -683,62 +760,6 @@ public class TestLanguage {
     @Test
     public void testSum() {
         runFile("/sum.pt");
-    }
-
-    /**
-     * Test loading of a file from name without explicit classpath statement.
-     */
-    @Test
-    public void testLoadFile() {
-        runFile("/sum.pt");
-    }
-
-    /**
-     * Test loading of a file with explicit classpath statement.
-     */
-    @Test
-    public void testLoadFromClasspath() {
-        runFileWithExplicitResult("classpath:/sum.pt", 8d);
-    }
-
-    /**
-     * Test parsing of anonymous expression.
-     */
-    @Test
-    public void testLoadModule() {
-        runFileWithExplicitResult("5+3", 8d);
-    }
-
-    /**
-     * Test import of a module as part of an anonymous expression.
-     */
-    @Test
-    public void testAnonymousLoadModule() {
-        runFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
-    }
-
-    /**
-     * Test loading from a module name with default package.
-     */
-    @Test
-    public void testLoadFromModuleName01() {
-        runFileWithExplicitResult("modules04", 1d);
-    }
-
-    /**
-     * Test loading from a module name from a nested package.
-     */
-    @Test
-    public void testLoadFromModuleName02() {
-        runFileWithExplicitResult("protelis:test:circular02", 1d);
-    }
-
-    /**
-     * Test loading from a module name from a nested package.
-     */
-    @Test
-    public void testLoadFromModuleName03() {
-        assertNotNull(ProtelisLoader.parse("replicatedgossip"));
     }
 
     /**
@@ -830,6 +851,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test the Tuple.filter method.
+     */
+    @Test
+    public void testTupleFilter01() {
+        runFile("/TupleFilter01.pt");
+    }
+
+    /**
      * Test the Tuple.map method.
      */
     @Test
@@ -843,14 +872,6 @@ public class TestLanguage {
     @Test
     public void testTupleReduce01() {
         runFile("/TupleReduce01.pt");
-    }
-
-    /**
-     * Test the Tuple.filter method.
-     */
-    @Test
-    public void testTupleFilter01() {
-        runFile("/TupleFilter01.pt");
     }
 
     /**

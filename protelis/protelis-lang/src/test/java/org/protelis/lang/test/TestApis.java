@@ -1,6 +1,6 @@
 package org.protelis.lang.test;
 
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
@@ -35,10 +35,8 @@ public class TestApis {
     /**
      * Print the current method name.
      */
-    @Rule
-    //CHECKSTYLE:OFF
-    public final TestRule watcher = new TestWatcher() {
-    //CHECKSTYLE:ON
+    @ClassRule
+    public static final TestRule WATCHER = new TestWatcher() {
         protected void starting(final Description description) {
             L.info(description.getMethodName());
         }

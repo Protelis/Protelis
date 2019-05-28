@@ -1,0 +1,6 @@
+// EXPECTED_RESULT: import java.lang.Math.PI PI
+
+module useJavaImportedElsewhere
+import protelis:test:usejava
+
+refToJavaFunction().apply(refToJavaField(), refToJavaField())
