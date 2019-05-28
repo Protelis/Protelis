@@ -556,7 +556,7 @@ public final class ProtelisLoader {
                     if (refVar.getReference() instanceof JvmOperation) {
                         return new GenericHoodCall(meta, inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
                     }
-                    return new GenericHoodCall(meta, inclusive, variableUnsafe(refVar, state), nullResult, field);
+                    return new GenericHoodCall(meta, inclusive, variableUnsafe(refVar), nullResult, field);
                 } else {
                     throw new IllegalStateException("Unexpected type of function in hood call: " + ref.getClass());
                 }
@@ -597,7 +597,7 @@ public final class ProtelisLoader {
             return new BinaryOp(meta, expression.getName(), left, expression(expression.getRight(), state));
         }
 
-        private static AnnotatedTree<FunctionDefinition> lambda(final Lambda expression, final ProgramState state) {
+        private static AnnotatedTree<FunctionDefinition> lambda(@Nonnull final Lambda expression, @Nonnull final ProgramState state) {
             final EObject argobj = expression.getArgs();
             final List<VarDef> args = argobj == null ? Collections.emptyList()
                     : argobj instanceof VarDef ? Lists.newArrayList((VarDef) expression.getArgs())
@@ -630,7 +630,7 @@ public final class ProtelisLoader {
 
         private static AnnotatedTree<?> primary(final EObject val, final ProgramState state) {
             if (val instanceof VarUse) {
-                return variable((VarUse) val, state);
+                return variable((VarUse) val);
             }
             if (val instanceof Local) {
                 return local((Local) val, state);
@@ -723,9 +723,9 @@ public final class ProtelisLoader {
             return sideEffect((SideEffect) expression, state);
         }
 
-        private static AnnotatedTree<?> variable(final VarUse expression, final ProgramState state) {
+        private static AnnotatedTree<?> variable(@Nonnull final VarUse expression) {
             final Metadata meta = metadataFor(expression);
-            final EObject ref = ((VarUse) expression).getReference();
+            final EObject ref = expression.getReference();
             if (ref instanceof JvmFeature) {
                 return new JvmConstant(meta, new JVMEntity((JvmFeature) ref));
             }
@@ -737,8 +737,8 @@ public final class ProtelisLoader {
         }
 
         @SuppressWarnings("unchecked")
-        private static <T> AnnotatedTree<T> variableUnsafe(final VarUse expression, final ProgramState state) {
-            return (AnnotatedTree<T>) variable(expression, state);
+        private static <T> AnnotatedTree<T> variableUnsafe(final VarUse expression) {
+            return (AnnotatedTree<T>) variable(expression);
         }
 
     }
@@ -748,7 +748,7 @@ public final class ProtelisLoader {
         private ProgramState(final Map<Reference, FunctionDefinition> functions) {
             this.functions = functions;
         }
-        public FunctionDefinition resolveFunction(final Reference r) {
+        FunctionDefinition resolveFunction(final Reference r) {
             return functions.get(r);
         }
     }
