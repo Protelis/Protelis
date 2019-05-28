@@ -6,5 +6,5 @@ let op = (key,field)->{minHood PlusSelf(field+1)};
 let default = 0;
 
 rep(m <- [[1, 2]]) {
-	alignedMap(nbr(m),cond,op,default);
+	alignedMap(nbr(m),cond,op,default)
 }

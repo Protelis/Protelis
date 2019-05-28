@@ -1,9 +1,11 @@
 module replicatedgossip
 import java.lang.Math.min
+import java.lang.Double.NEGATIVE_INFINITY
 import timereplication
 import naivegossip
+
 timeReplicated(
-	() -> {gossip(min, -Infinity)},
+	() -> {gossip(min, -NEGATIVE_INFINITY)},
 	10,
 	0.9
 )

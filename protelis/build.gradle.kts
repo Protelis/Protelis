@@ -1,5 +1,6 @@
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     id("de.fayard.buildSrcVersions") version
@@ -13,16 +14,12 @@ plugins {
     pmd
     checkstyle
     id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+    id("org.protelis.protelisdoc") version "0.1.1-dev08+b8184c8"
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
-}
-
-val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
-if (isJava7Legacy) {
-    println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
 }
 
 apply(plugin = "com.gradle.build-scan")
@@ -41,6 +38,8 @@ allprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+//    apply(plugin = "org.protelis.protelisdoc")
     apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
     apply(plugin = "signing")
@@ -49,15 +48,7 @@ allprojects {
     apply(plugin = "com.jfrog.bintray")
 
     gitSemVer {
-        version = computeGitSemVer().let {
-            if (isJava7Legacy) {
-                if (it.contains("-")) {
-                    it.replace("-", "-")
-                } else {
-                    it + "-j7"
-                }
-            } else { it }
-        }
+        version = computeGitSemVer()
     }
 
     repositories {
@@ -66,6 +57,7 @@ allprojects {
 
     val doclet by configurations.creating
     dependencies {
+        compileOnly(Libs.spotbugs_annotations)
         testImplementation(Libs.junit)
         testImplementation(Libs.slf4j_api)
         testRuntimeOnly(Libs.logback_classic)
@@ -78,7 +70,10 @@ allprojects {
 
     tasks.withType<Test> {
         failFast = true
-        testLogging { events("passed", "skipped", "failed", "standardError") }
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+            events("passed", "skipped", "failed", "standardError")
+        }
     }
 
     spotbugs {
@@ -103,6 +98,18 @@ allprojects {
         ruleSets = listOf()
         ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
     }
+
+    ktlint {
+        filter {
+            exclude {
+                it.file.path.toString().contains("protelis2kotlin")
+            }
+        }
+    }
+
+//    Protelis2KotlinDoc {
+//        automaticDependencies.set(false)
+//    }
 
     tasks.withType<Javadoc> {
         isFailOnError = false

@@ -4,6 +4,7 @@ import protelis:coord:meta:timereplication
 import protelis:coord:sparsechoice
 import protelis:coord:spreading
 import protelis:lang:utils
+import java.lang.Double.POSITIVE_INFINITY
 
 /**
  * Constrain the spreading of f only across a region.
@@ -29,7 +30,7 @@ public def boundSpreading(region, f, null) {
  */
 public def findSources(source) {
     let k = 5;
-    findSourcesWithId(source, getUID(), roundTripTime(diameter(S(Infinity, nbrRange))) / (k - 1), k);
+    findSourcesWithId(source, getUID(), roundTripTime(diameter(S(POSITIVE_INFINITY, nbrRange))) / (k - 1), k)
 }
 
 /*

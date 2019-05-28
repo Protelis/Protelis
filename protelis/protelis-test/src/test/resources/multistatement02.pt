@@ -1,4 +1,5 @@
 // EXPECTED_RESULT: 256
 let x = 2; // 2
 x = x * x; // 4 
-x = x ^ x // 256
+x = x ^ x; // 256
+x

@@ -1,6 +1,6 @@
 import protelis:coord:meta
 import protelis:coord:spreading
-
+import java.lang.Double.NaN
 let d = env.get("partition");
 multiRegion(d, 
     (key) -> { key ==  d },

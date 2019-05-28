@@ -1,4 +1,6 @@
 import protelis:coord:spreading
+import java.lang.Double.POSITIVE_INFINITY
+let Infinity = POSITIVE_INFINITY;
 let res = 
     alignedMap(
         nbr([["0", "bar"], ["3", "foo"]]),

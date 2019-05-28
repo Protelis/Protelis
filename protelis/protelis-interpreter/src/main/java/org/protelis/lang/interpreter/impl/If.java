@@ -24,7 +24,8 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
 
     private static final long serialVersionUID = -4830593657731078743L;
     private final AnnotatedTree<Boolean> conditionExpression;
-    private final AnnotatedTree<T> thenExpression, elseExpression;
+    private final AnnotatedTree<T> elseExpression;
+    private final AnnotatedTree<T> thenExpression;
 
     /**
      * @param metadata
@@ -45,25 +46,36 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
 
     @Override
     public AnnotatedTree<T> copy() {
-        return new If<>(getMetadata(), conditionExpression.copy(), thenExpression.copy(), elseExpression.copy());
+        return new If<>(getMetadata(),
+                conditionExpression.copy(),
+                thenExpression.copy(),
+                elseExpression == null ? null : elseExpression.copy());
     }
 
     @Override
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final boolean isTrue = conditionExpression.getAnnotation();
-        final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
-        final AnnotatedTree<T> erased = isTrue ? elseExpression : thenExpression;
-        final Bytecode opCode = isTrue ? Bytecode.IF_THEN : Bytecode.IF_ELSE;
-        if (!erased.isErased()) {
-            erased.erase();
+        if (elseExpression == null) {
+            if (isTrue) {
+                evalInNewStackFrame(thenExpression, context, Bytecode.IF_THEN);
+            } else {
+                thenExpression.erase();
+            }
+        } else {
+            final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
+            final AnnotatedTree<T> erased = isTrue ? elseExpression : thenExpression;
+            final Bytecode opCode = isTrue ? Bytecode.IF_THEN : Bytecode.IF_ELSE;
+            if (!erased.isErased()) {
+                erased.erase();
+            }
+            evalInNewStackFrame(selected, context, opCode);
+            final T result = selected.getAnnotation();
+            if (result instanceof Field) {
+                throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + result);
+            }
+            setAnnotation(result);
         }
-        evalInNewStackFrame(selected, context, opCode);
-        final T result = selected.getAnnotation();
-        if (result instanceof Field) {
-            throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + result);
-        }
-        setAnnotation(result);
     }
 
     @Override

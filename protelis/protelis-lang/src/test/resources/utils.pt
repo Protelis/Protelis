@@ -1,5 +1,7 @@
 // EXPECTED_RESULT: true
 import protelis:lang:utils
+import java.lang.Double.POSITIVE_INFINITY
+let Infinity = POSITIVE_INFINITY;
 //composeF(
 //    composeV(
         and(

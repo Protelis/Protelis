@@ -1,14 +1,15 @@
 import protelis:coord:spreading
 import protelis:lang:utils
-def null() { ["nullId", [Infinity /* distance */, 0 /* null value */]] }
+import java.lang.Double.POSITIVE_INFINITY
+def null() { ["nullId", [POSITIVE_INFINITY /* distance */, 0 /* null value */]] }
 let res = 
     multiGradient(["0", "11"], 1, nbrRange, identity)
         .reduce(
             self,
             null(),
             (a, b) -> {
-                let x = if (a.get(1) == Infinity) { null() } else { a };
-                let y = if (b.get(1) == Infinity) { null() } else { b };
+                let x = if (a.get(1) == POSITIVE_INFINITY) { null() } else { a };
+                let y = if (b.get(1) == POSITIVE_INFINITY) { null() } else { b };
                 ["nullId", [x.get(1).get(0) + y.get(1).get(0), x.get(1).get(1) + y.get(1).get(1)]]
             }
         );

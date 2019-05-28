@@ -1,0 +1,9 @@
+/*
+ * EXPECTED_RESULT: 1
+ */
+let a = 0;
+if(true){
+	a = a + 1;
+	a
+};
+a
