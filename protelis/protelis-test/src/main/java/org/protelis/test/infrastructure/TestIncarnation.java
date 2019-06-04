@@ -120,7 +120,7 @@ public final class TestIncarnation implements Incarnation<Object> {
             final ProtelisNode pNode = (ProtelisNode) node;
             try {
                 return new RunProtelisProgram(env, pNode, reaction, rand, param);
-            } catch (ClassNotFoundException | RuntimeException e) { // NOPMD: we want to catch any runtime exception
+            } catch (RuntimeException e) { // NOPMD: we want to catch any runtime exception
                 throw new IllegalArgumentException("Could not create the requested Protelis program: " + param, e);
             }
         }
