@@ -63,7 +63,7 @@ after_success: >-
     cd protelis;
     JAVA_VERSION=$(java -version 2>&1)
     if $SHOULD_CONFIGURE && $PUBLISH; then
-        ./gradlew javadoc buildDashboard projectReport bintrayUpload publish --scan
+        ./gradlew javadoc buildDashboard projectReport publish --scan
         mkdir -p report
         cp --parent */build/reports build/reports report -R
     fi
