@@ -98,14 +98,13 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     @Override
     public ShareCall<S, T> copy() {
-        final ShareCall<S, T> res = new ShareCall<>(
+        return new ShareCall<>(
                 getMetadata(),
                 localName,
                 fieldName,
                 init.copy(),
                 body.copy(),
                 yield.transform(AbstractAnnotatedTree::copy));
-        return res;
     }
 
     @SuppressWarnings("unchecked")

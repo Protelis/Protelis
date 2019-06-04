@@ -65,10 +65,6 @@ object Libs {
      * http://junit.org */
     const val junit: String = "junit:junit:" + Versions.junit
 
-    const val me_tatarka_retrolambda_gradle_plugin: String =
-            "me.tatarka.retrolambda:me.tatarka.retrolambda.gradle.plugin:" +
-            Versions.me_tatarka_retrolambda_gradle_plugin
-
     /**
      * http://trove4j.sf.net */
     const val trove4j: String = "net.sf.trove4j:trove4j:" + Versions.trove4j
@@ -100,18 +96,31 @@ object Libs {
             Versions.org_eclipse_emf_ecore
 
     /**
-     * https://www.eclipse.org/Xtext/ */
-    const val org_eclipse_xtext_common_types: String =
-            "org.eclipse.xtext:org.eclipse.xtext.common.types:" +
-            Versions.org_eclipse_xtext_common_types
-
-    /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
+
+    /**
+     * https://kotlinlang.org/ */
+    const val kotlin_scripting_compiler_embeddable: String =
+            "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
+            Versions.kotlin_scripting_compiler_embeddable
+
+    /**
+     * https://kotlinlang.org/ */
+    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" + Versions.kotlin_stdlib
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String =
             "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +
             Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+
+    const val org_protelis_protelisdoc_gradle_plugin: String =
+            "org.protelis.protelisdoc:org.protelis.protelisdoc.gradle.plugin:" +
+            Versions.org_protelis_protelisdoc_gradle_plugin
+
+    /**
+     * https://github.com/Protelis/protelis-interpreter */
+    const val protelis_interpreter: String = "org.protelis:protelis-interpreter:" +
+            Versions.protelis_interpreter
 
     /**
      * http://protelis.org */

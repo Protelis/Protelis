@@ -7,4 +7,4 @@ import org.protelis.test.infrastructure.DummyContext.makeTestField
 def maxF(a, b) {
     java::lang::Math::max(a, b)
 }
-hoodPlusSelf(maxF, 0, makeTestField());
+hoodPlusSelf(maxF, 0, makeTestField())
