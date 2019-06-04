@@ -178,7 +178,9 @@ allprojects {
         user = System.getenv(userKeyName)
         key = System.getenv(apiKeyName)
         override = true
-        setPublications("main")
+        publishing.publications.withType<MavenPublication>().names.forEach {
+            setPublications(it)
+        }
         with(pkg) {
             repo = "Protelis"
             name = project.name
