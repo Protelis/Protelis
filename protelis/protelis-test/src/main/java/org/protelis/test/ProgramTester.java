@@ -174,7 +174,6 @@ public final class ProgramTester {
      * @param runs
      *            number of runs
      */
-    @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE", justification="false positive")
     public static void runFile(final String file, final int runs) {
         final Object execResult = runProgram(Objects.requireNonNull(file, "File in test cannot be null"), runs);
         final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
