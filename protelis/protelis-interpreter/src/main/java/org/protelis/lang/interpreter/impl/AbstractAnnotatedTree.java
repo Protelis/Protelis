@@ -154,6 +154,13 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
     }
 
     /**
+     * @return true if this node can get annotated with null values - namely, if it is an interaction with Java
+     */
+    protected boolean isNullable() {
+        return false;
+    }
+
+    /**
      * Facility to run lambdas across all the branches.
      * 
      * @param action
@@ -270,7 +277,8 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
      *            the annotation to set
      */
     protected final void setAnnotation(final T obj) {
-        annotation = obj;
+        annotation = isNullable() ? obj : Objects.requireNonNull(obj, () -> 
+            this.getClass().getSimpleName() + " does not allow null return values. In: " + stringFor(this));
         erased = false;
     }
 

@@ -151,4 +151,9 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
                 .collect(Collectors.joining(", ", "(", ")"));
     }
 
+    @Override
+    protected boolean isNullable() {
+        return true;
+    }
+
 }
