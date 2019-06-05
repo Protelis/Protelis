@@ -56,7 +56,7 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
      *             if required classes can not be found
      */
     public RunProtelisProgram(final Environment<Object> env, final ProtelisNode n, final Reaction<Object> r,
-                    final RandomGenerator rand, final String prog) throws SecurityException {
+                    final RandomGenerator rand, final String prog) {
         this(env, n, r, rand, ProtelisLoader.parse(prog));
     }
 
