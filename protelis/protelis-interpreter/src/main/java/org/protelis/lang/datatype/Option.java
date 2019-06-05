@@ -37,8 +37,8 @@ import com.google.common.collect.ImmutableMap;
  */
 public final class Option<E> implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     private static final Option<Object> EMPTY_OPTION = new Option<>(null);
+    private static final long serialVersionUID = 1L;
     private static final ImmutableMap<String, Boolean> TESTERS = ImmutableMap.of(
             "isPresent", true,
             "isNotPresent", false,
@@ -87,18 +87,6 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * Inverse filter operation using Protelis functions.
-     * 
-     * @param ctx  the execution context
-     * @param test the function used as predicate. Must return boolean.
-     * @return If the test passes, the Option is emptied, otherwise, it's left
-     *         unchanged.
-     */
-    public Option<E> filterNot(final ExecutionContext ctx, final FunctionDefinition test) {
-        return filter(ctx, test).isEmpty() ? this : empty();
-    }
-
-    /**
      * @see java.util.Optional#filter(Predicate)
      * 
      * @param test predicate to test
@@ -111,6 +99,18 @@ public final class Option<E> implements Serializable {
             return this;
         }
         return empty();
+    }
+
+    /**
+     * Inverse filter operation using Protelis functions.
+     * 
+     * @param ctx  the execution context
+     * @param test the function used as predicate. Must return boolean.
+     * @return If the test passes, the Option is emptied, otherwise, it's left
+     *         unchanged.
+     */
+    public Option<E> filterNot(final ExecutionContext ctx, final FunctionDefinition test) {
+        return filter(ctx, test).isEmpty() ? this : empty();
     }
 
     /**
@@ -319,6 +319,14 @@ public final class Option<E> implements Serializable {
         throw new IllegalArgumentException("Protelis function over Option take a single argument. Illegal: " + fun);
     }
 
+    public Optional<E> toGuava() {
+        return internal;
+    }
+
+    public java.util.Optional<E> toJavaUtil() {
+        return internal.toJavaUtil();
+    }
+
     @Override
     public String toString() {
         return isEmpty() ? "Option.None" : "Option.Some(" + internal.get() + ')';
@@ -352,15 +360,7 @@ public final class Option<E> implements Serializable {
     public static <E> Option<E> of(final E o) {
         return new Option<>(o);
     }
-
     public static <E> Option<E> ofNullable(final E o) {
         return of(o);
-    }
-
-    public java.util.Optional<E> toJavaUtil() {
-        return internal.toJavaUtil();
-    }
-    public Optional<E> toGuava() {
-        return internal;
     }
 }
