@@ -9,6 +9,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Option;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
@@ -52,6 +53,7 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
                 elseExpression == null ? null : elseExpression.copy());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
@@ -59,8 +61,10 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
         if (elseExpression == null) {
             if (isTrue) {
                 evalInNewStackFrame(thenExpression, context, Bytecode.IF_THEN);
+                setAnnotation(thenExpression.getAnnotation());
             } else {
                 thenExpression.erase();
+                setAnnotation((T) Option.empty());
             }
         } else {
             final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
