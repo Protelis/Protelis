@@ -1,5 +1,6 @@
 package org.protelis.lang.datatype;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -19,9 +20,25 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-public class Option<E> {
+/**
+ * An immutable object that may contain a non-null reference to another object. Each instance of
+ * this type either contains a non-null reference, or contains nothing (in which case we say that
+ * the reference is "absent"); it is never said to "contain {@code null}".
+ *
+ * <p>A non-null {@code Option<E>} reference can be used as a replacement for a nullable {@code T}
+ * reference. It allows you to represent "a {@code T} that must be present" and a "a {@code T} that
+ * might be absent" as two distinct types in your program, which can aid clarity.
+ * 
+ * Protelis recommends to import and use Option when interacting with Java methods that may return null.
+ *
+ * @param <E> the type of instance that can be contained. {@code Option} is naturally covariant on
+ *     this type, so it is safe to cast an {@code Option<T>} to {@code Option<S>} for any
+ *     supertype {@code S} of {@code T}.
+ */
+public final class Option<E> implements Serializable {
 
-    private static final Option<Object> EMPTY = new Option<>(null);
+    private static final long serialVersionUID = 1L;
+    private static final Option<Object> EMPTY_OPTION = new Option<>(null);
     private static final ImmutableMap<String, Boolean> TESTERS = ImmutableMap.of(
             "isPresent", true,
             "isNotPresent", false,
@@ -33,23 +50,33 @@ public class Option<E> {
         this(null);
     }
 
-    private Option(E o) {
+    private Option(final E o) {
         internal = Optional.fromNullable(o); 
     }
 
+    /**
+     * @return a set representation of the Option, for compatibility with {@link Optional}
+     */
     public Set<E> asSet() {
         return internal.asSet();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj == this || internal.equals(((Option<?>) obj).internal);
+    public boolean equals(final Object obj) {
+        return obj == this || obj instanceof Option && internal.equals(((Option<?>) obj).internal);
     }
 
-    public Option<E> filter(ExecutionContext ctx, FunctionDefinition test) {
+    /**
+     * Filter operation using Protelis functions.
+     * 
+     * @param ctx  the execution context
+     * @param test the function used as predicate. Must return boolean.
+     * @return If the test passes, the Option is unchanged. Otherwise, it's emptied.
+     */
+    public Option<E> filter(final ExecutionContext ctx, final FunctionDefinition test) {
         return runProtelis(ctx, test, value -> {
             if (value instanceof Boolean) {
-                boolean condition = (boolean) value;
+                final boolean condition = (boolean) value;
                 if (condition) {
                     return this;
                 }
@@ -59,23 +86,65 @@ public class Option<E> {
         });
     }
 
-    public Option<E> filterNot(ExecutionContext ctx, FunctionDefinition test) {
+    /**
+     * Inverse filter operation using Protelis functions.
+     * 
+     * @param ctx  the execution context
+     * @param test the function used as predicate. Must return boolean.
+     * @return If the test passes, the Option is emptied, otherwise, it's left
+     *         unchanged.
+     */
+    public Option<E> filterNot(final ExecutionContext ctx, final FunctionDefinition test) {
         return filter(ctx, test).isEmpty() ? this : empty();
     }
 
-    public Option<E> filter(Predicate<? super E> test) {
+    /**
+     * @see java.util.Optional#filter(Predicate)
+     * 
+     * @param test predicate to test
+     * @return an {@code Option} describing the value of this {@code Option} if a
+     *         value is present and the value matches the given predicate, otherwise
+     *         an empty {@code Option}
+     */
+    public Option<E> filter(final Predicate<? super E> test) {
         if (isPresent() && test.test(get())) {
             return this;
         }
         return empty();
     }
 
-    public Option<E> filterNot(Predicate<? super E> test) {
+    /**
+     * Inverse of {@link #filter(Predicate)}.
+     * 
+     * @see java.util.Optional#filter(Predicate)
+     * 
+     * @param test predicate to test
+     * @return an {@code Option} describing the value of this {@code Option} if a
+     *         value is present and the value does not match the given predicate,
+     *         otherwise an empty {@code Option}
+     */
+    public Option<E> filterNot(final Predicate<? super E> test) {
         return filter(e -> !test.test(e));
     }
 
+    /**
+     * {@link java.util.Optional#flatMap(Function)} function callable via Protelis.
+     * 
+     * @param <X> The type parameter to the {@code Optional} returned
+     * @param ctx {@link ExecutionContext}
+     * @param fun Function to run. Must accept a single parameter and return an
+     *            Option, {@link Optional}, {@link java.util.Optional}, or a Java
+     *            class with a get() method and one of the following methods
+     *            isPresent(), isNotPresent(), isEmpty(), isAbsent():
+     * @return the result of applying an {@code Optional}-bearing mapping function
+     *         to the value of this {@code Optional}, if a value is present,
+     *         otherwise an empty {@code Optional}
+     * @throws IllegalAccessException    in case of issues with Java reflection
+     * @throws InvocationTargetException in case of error while invoking Java
+     *                                   reflectively
+     */
     @SuppressWarnings("unchecked")
-    public <X> Option<X> flatMap(ExecutionContext ctx, FunctionDefinition fun) throws IllegalAccessException, InvocationTargetException {
+    public <X> Option<X> flatMap(final ExecutionContext ctx, final FunctionDefinition fun) throws IllegalAccessException, InvocationTargetException {
         runProtelis(ctx, fun, value -> {
             if (value instanceof Option) {
                 final Option<?> result = (Option<?>) value;
@@ -113,7 +182,7 @@ public class Option<E> {
                         + ", expects no parameter, and returns boolean."));
                 boolean isPresent;
                 try {
-                    isPresent = (boolean) tester.invoke(value);
+                    isPresent = TESTERS.get(tester.getName()) == (boolean) tester.invoke(value);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new IllegalStateException(e);
                 }
@@ -141,18 +210,28 @@ public class Option<E> {
         throw new IllegalArgumentException("Flat-mapping function must take one parameter and return Option.");
     }
 
-    public <X> Option<X> flatMap(Function<? super E, Option<X>> fun) {
+    /**
+     * @see java.util.Optional#flatMap(Function).
+     * 
+     * @param <X> The type parameter to the {@code Optional} returned
+     * @param fun a mapping function to apply to the value, if present the mapping
+     *            function
+     * @return the result of applying an {@code Optional}-bearing mapping function
+     *         to the value of this {@code Optional}, if a value is present,
+     *         otherwise an empty {@code Optional}
+     */
+    public <X> Option<X> flatMap(final Function<? super E, Option<X>> fun) {
         if (isPresent()) {
             return fun.apply(get());
         }
         return empty();
     }
 
+    /**
+     * @return the internal value of the {@link Option}, or a {@link RuntimeException} if absent.
+     */
     public E get() {
-        if (isPresent()) {
-            return internal.get();
-        }
-        throw new NullPointerException("Cannot access value of empty Option");
+        return internal.get();
     }
 
     @Override
@@ -160,13 +239,13 @@ public class Option<E> {
         return internal.hashCode();
     }
 
-    public void ifPresent(Consumer<? super E> consumer) {
+    public void ifPresent(final Consumer<? super E> consumer) {
         if (isPresent()) {
             consumer.accept(get());
         }
     }
 
-    public Object ifPresent(ExecutionContext ctx, FunctionDefinition consumer) {
+    public Object ifPresent(final ExecutionContext ctx, final FunctionDefinition consumer) {
         return runProtelis(ctx, consumer, Option::of)
             .orElseThrow(() -> new IllegalStateException("ifPresent must bind to a valid value. Problematic function: " + consumer));
     }
@@ -183,54 +262,54 @@ public class Option<E> {
         return internal.isPresent();
     }
 
-    public Option<Object> map(ExecutionContext ctx, FunctionDefinition mapper) {
+    public Option<Object> map(final ExecutionContext ctx, final FunctionDefinition mapper) {
         return runProtelis(ctx, mapper, Option::of);
     }
 
-    public <X> Option<X> map(Function<? super E,? extends X> mapper) {
+    public <X> Option<X> map(final Function<? super E,? extends X> mapper) {
         return flatMap(it -> of(mapper.apply(it)));
     }
 
-    public Object or(ExecutionContext ctx, FunctionDefinition other) {
+    public Object or(final ExecutionContext ctx, final FunctionDefinition other) {
         return orElseGet(ctx, other);
     }
 
-    public Option<? extends E> or(java.util.Optional<? extends E> other) {
+    public Option<? extends E> or(final java.util.Optional<? extends E> other) {
         return isPresent() ? this : other.map(Option::of).orElseGet(Option::empty);
     }
 
-    public Option<? extends E> or(Option<? extends E> other) {
+    public Option<? extends E> or(final Option<? extends E> other) {
         return isPresent() ? this : other;
     }
 
-    public Option<? extends E> or(Optional<? extends E> other) {
+    public Option<? extends E> or(final Optional<? extends E> other) {
         return isPresent() ? this : of(other.orNull());
     }
 
-    public E or(Supplier<? extends E> other) {
+    public E or(final Supplier<? extends E> other) {
         return orElseGet(other);
     }
 
-    public E orElse(E other) {
+    public E orElse(final E other) {
         return internal.or(other);
     }
 
-    public Object orElseGet(ExecutionContext ctx, FunctionDefinition other) {
+    public Object orElseGet(final ExecutionContext ctx, final FunctionDefinition other) {
         return ifPresent(ctx, other);
     }
 
-    public E orElseGet(Supplier<? extends E> other) {
+    public E orElseGet(final Supplier<? extends E> other) {
         return internal.or(other.get());
     }
 
-    public <X extends RuntimeException> E orElseThrow(Supplier<? extends X> exceptionSupplier) {
+    public <X extends RuntimeException> E orElseThrow(final Supplier<? extends X> exceptionSupplier) {
         if (isPresent()) {
             return get();
         }
         throw exceptionSupplier.get();
     }
 
-    private <X> Option<X> runProtelis(ExecutionContext ctx, FunctionDefinition fun, Function<Object, Option<X>> converter) {
+    private <X> Option<X> runProtelis(final ExecutionContext ctx, final FunctionDefinition fun, final Function<Object, Option<X>> converter) {
         if (fun.getArgNumber() == 1) {
             if (isPresent()) {
                 final Object value = JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, fun, ImmutableList.of(get()));
@@ -246,11 +325,11 @@ public class Option<E> {
         return isEmpty() ? "Option.None" : "Option.Some(" + internal.get() + ')';
     }
 
-    public Option<Object> transform(ExecutionContext ctx, FunctionDefinition mapper) {
+    public Option<Object> transform(final ExecutionContext ctx, final FunctionDefinition mapper) {
         return map(ctx, mapper);
     }
 
-    public <X> Option<X> transform(Function<? super E,? extends X> mapper) {
+    public <X> Option<X> transform(final Function<? super E,? extends X> mapper) {
         return map(mapper);
     }
 
@@ -260,10 +339,10 @@ public class Option<E> {
 
     @SuppressWarnings("unchecked")
     public static <E> Option<E> empty() {
-        return (Option<E>) EMPTY;
+        return (Option<E>) EMPTY_OPTION;
     }
 
-    public static <E> Option<E> fromNullable(E o) {
+    public static <E> Option<E> fromNullable(final E o) {
         return ofNullable(o);
     }
 
@@ -271,11 +350,18 @@ public class Option<E> {
         return null;
     }
 
-    public static <E> Option<E> of(E o) {
+    public static <E> Option<E> of(final E o) {
         return new Option<>(o);
     }
 
-    public static <E> Option<E> ofNullable(E o) {
+    public static <E> Option<E> ofNullable(final E o) {
         return of(o);
+    }
+
+    public java.util.Optional<E> toJavaUtil() {
+        return internal.toJavaUtil();
+    }
+    public Optional<E> toGuava() {
+        return internal;
     }
 }
