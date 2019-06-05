@@ -22,7 +22,7 @@ public final class TestJavaNull {
             ResourceList programs = scanResult.getResourcesWithExtension("pt");
             ResourceList exceptions = programs.filter(it -> it.getPath().contains("error"));
             ResourceList regular = programs.filter(it -> !exceptions.contains(it));
-            regular.forEach(it -> ProgramTester.runFile('/' + it.getPath(), 1));
+            regular.forEach(it -> ProgramTester.runFile('/' + it.getPath()));
             exceptions.forEach(it -> ProgramTester.runExpectingErrors('/' + it.getPath(), Throwable.class));
         }
     }
