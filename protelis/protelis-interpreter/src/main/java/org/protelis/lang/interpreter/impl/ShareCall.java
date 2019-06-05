@@ -6,6 +6,8 @@ import static org.protelis.lang.interpreter.util.Bytecode.SHARE_BODY;
 import static org.protelis.lang.interpreter.util.Bytecode.SHARE_INIT;
 import static org.protelis.lang.interpreter.util.Bytecode.SHARE_YIELD;
 
+import javax.annotation.Nonnull;
+
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -50,12 +52,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
      *            body
      */
     public ShareCall(
-            final Metadata metadata,
-            final java8.util.Optional<Reference> localName,
-            final java8.util.Optional<Reference> fieldName,
-            final AnnotatedTree<?> init,
-            final AnnotatedTree<S> body,
-            final java8.util.Optional<AnnotatedTree<T>> yield) {
+            @Nonnull final Metadata metadata,
+            @Nonnull final java8.util.Optional<Reference> localName,
+            @Nonnull final java8.util.Optional<Reference> fieldName,
+            @Nonnull final AnnotatedTree<?> init,
+            @Nonnull final AnnotatedTree<S> body,
+            @Nonnull final java8.util.Optional<AnnotatedTree<T>> yield) {
         this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
     }
 
@@ -74,12 +76,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
      *            body
      */
     public ShareCall(
-            final Metadata metadata,
-            final Optional<Reference> localName,
-            final Optional<Reference> fieldName,
-            final AnnotatedTree<?> init,
-            final AnnotatedTree<S> body,
-            final Optional<AnnotatedTree<T>> yield) {
+            @Nonnull final Metadata metadata,
+            @Nonnull final Optional<Reference> localName,
+            @Nonnull final Optional<Reference> fieldName,
+            @Nonnull final AnnotatedTree<?> init,
+            @Nonnull final AnnotatedTree<S> body,
+            @Nonnull final Optional<AnnotatedTree<T>> yield) {
         super(metadata, init, body);
         if (!(localName.isPresent() || fieldName.isPresent())) {
             throw new IllegalArgumentException("Share cannot get initialized without at least a variable bind.");
