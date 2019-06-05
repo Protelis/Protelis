@@ -547,19 +547,14 @@ public final class ProtelisLoader {
                 final boolean inclusive = hood.getName().length() > 4;
                 final AnnotatedTree<?> nullResult = expression(hood.getDefault(), state);
                 final AnnotatedTree<Field> field = expression(hood.getArg(), state);
-                final EObject ref = hood.getReference();
+                final VarUse ref = hood.getReference();
                 if (ref == null) {
                     return new GenericHoodCall(meta, inclusive, lambda(hood.getOp(), state), nullResult, field);
                 }
-                if (ref instanceof VarUse) {
-                    final VarUse refVar = (VarUse) ref;
-                    if (refVar.getReference() instanceof JvmOperation) {
-                        return new GenericHoodCall(meta, inclusive, (JvmOperation) refVar.getReference(), nullResult, field);
-                    }
-                    return new GenericHoodCall(meta, inclusive, variableUnsafe(refVar), nullResult, field);
-                } else {
-                    throw new IllegalStateException("Unexpected type of function in hood call: " + ref.getClass());
+                if (ref.getReference() instanceof JvmOperation) {
+                    return new GenericHoodCall(meta, inclusive, (JvmOperation) ref.getReference(), nullResult, field);
                 }
+                return new GenericHoodCall(meta, inclusive, variableUnsafe(ref), nullResult, field);
             }
             if (expression instanceof Mux) {
                 final Mux mux = (Mux) expression;
