@@ -77,7 +77,6 @@ allprojects {
     }
 
     spotbugs {
-        isIgnoreFailures = true
         effort = "max"
         reportLevel = "low"
         val excludeFile = File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
