@@ -748,7 +748,7 @@ public final class ProtelisLoader {
         private ProgramState(final Map<Reference, FunctionDefinition> functions) {
             this.functions = functions;
         }
-        FunctionDefinition resolveFunction(final Reference r) {
+        private FunctionDefinition resolveFunction(final Reference r) {
             return functions.get(r);
         }
     }
