@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -69,7 +68,7 @@ public final class Option<E> implements Serializable {
     /**
      * Filter operation using Protelis functions.
      * 
-     * @param ctx  the execution context
+     * @param ctx {@link ExecutionContext}  the execution context
      * @param test the function used as predicate. Must return boolean.
      * @return If the test passes, the Option is unchanged. Otherwise, it's emptied.
      */
@@ -104,7 +103,7 @@ public final class Option<E> implements Serializable {
     /**
      * Inverse filter operation using Protelis functions.
      * 
-     * @param ctx  the execution context
+     * @param ctx {@link ExecutionContext}  the execution context
      * @param test the function used as predicate. Must return boolean.
      * @return If the test passes, the Option is emptied, otherwise, it's left
      *         unchanged.
@@ -260,47 +259,110 @@ public final class Option<E> implements Serializable {
         return internal.isPresent();
     }
 
+    /**
+     * @param ctx    {@link ExecutionContext}
+     * @param mapper a mapping function to apply to the value, if present
+     * @return an {@code Option} describing the result of applying a mapping
+     *         function to the value of this {@code Option}, if a value is present,
+     *         otherwise an empty {@code Option}.
+     */
     public Option<Object> map(final ExecutionContext ctx, final FunctionDefinition mapper) {
         return runProtelis(ctx, mapper, Option::of);
     }
 
-    public <X> Option<X> map(final Function<? super E,? extends X> mapper) {
+    /**
+     * @see java.util.Optional#map(Function)
+     * 
+     * @param <X>    The type of the result of the mapping function
+     * @param mapper a mapping function to apply to the value, if present
+     * @return an {@code Option} describing the result of applying a mapping
+     *         function to the value of this {@code Option}, if a value is present,
+     *         otherwise an empty {@code Option}
+     */
+    public <X> Option<X> map(final Function<? super E, ? extends X> mapper) {
         return flatMap(it -> of(mapper.apply(it)));
     }
 
-    public Object or(final ExecutionContext ctx, final FunctionDefinition other) {
-        return orElseGet(ctx, other);
-    }
-
+    /**
+     * Return the value if present, otherwise return {@code other}.
+     *
+     * @param other alternative
+     * @return this {@code Optional} if it has a value present; {@code other}
+     *         otherwise.
+     */
     public Option<? extends E> or(final java.util.Optional<? extends E> other) {
         return isPresent() ? this : other.map(Option::of).orElseGet(Option::empty);
     }
 
+    /**
+     * Return the value if present, otherwise return {@code other}.
+     *
+     * @param other alternative
+     * @return this {@code Optional} if it has a value present; {@code other}
+     *         otherwise.
+     */
     public Option<? extends E> or(final Option<? extends E> other) {
         return isPresent() ? this : other;
     }
 
+    /**
+     * Return the value if present, otherwise return {@code other}.
+     *
+     * @param other alternative
+     * @return this {@code Optional} if it has a value present; {@code other}
+     *         otherwise.
+     */
     public Option<? extends E> or(final Optional<? extends E> other) {
         return isPresent() ? this : of(other.orNull());
     }
 
-    public E or(final Supplier<? extends E> other) {
-        return orElseGet(other);
-    }
-
+    /**
+     * Return the value if present, otherwise return {@code other}.
+     *
+     * @param other the value to be returned if there is no value present
+     * @return the value, if present, otherwise {@code other}
+     */
     public E orElse(final E other) {
         return internal.or(other);
     }
 
+    /**
+     * Return the value if present, otherwise invoke {@code other} and return the
+     * result of that invocation.
+     *
+     * @param ctx   {@link ExecutionContext}
+     * @param other a 0-ary protelis function
+     * @return the value if present otherwise the result of {@code other.get()}
+     */
     @SuppressWarnings("unchecked")
     public E orElseGet(final ExecutionContext ctx, final FunctionDefinition other) {
-        return internal.or(() -> (E) JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, other, ImmutableList.of()));
+        if (other.getArgNumber() == 0) {
+            return internal.or(() -> (E) JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, other, ImmutableList.of()));
+        }
+        throw new IllegalArgumentException("Optional supplier function must be 0-ary. Illegal function: " + other);
     }
 
+    /**
+     * Return the value if present, otherwise invoke {@code other} and return the
+     * result of that invocation.
+     *
+     * @param other a {@code Supplier} whose result is returned if no value is
+     *              present
+     * @return the value if present otherwise the result of {@code other.get()}
+     */
     public E orElseGet(final Supplier<? extends E> other) {
         return internal.or(other.get());
     }
 
+    /**
+     * Return the contained value, if present, otherwise throw an exception
+     * to be created by the provided supplier.
+     *
+     * @param <X> Type of the exception to be thrown
+     * @param exceptionSupplier The supplier which will return the exception to
+     * be thrown
+     * @return the present value
+     */
     public <X extends RuntimeException> E orElseThrow(final Supplier<? extends X> exceptionSupplier) {
         if (isPresent()) {
             return get();
@@ -319,10 +381,16 @@ public final class Option<E> implements Serializable {
         throw new IllegalArgumentException("Protelis function over Option take a single argument. Illegal: " + fun);
     }
 
+    /**
+     * @return a Guava compatible view of this Option
+     */
     public Optional<E> toGuava() {
         return internal;
     }
 
+    /**
+     * @return a {@link java.util.Optional} view of this Option
+     */
     public java.util.Optional<E> toJavaUtil() {
         return internal.toJavaUtil();
     }
@@ -332,35 +400,98 @@ public final class Option<E> implements Serializable {
         return isEmpty() ? "Option.None" : "Option.Some(" + internal.get() + ')';
     }
 
+    /**
+     * @param ctx    {@link ExecutionContext}
+     * @param mapper a mapping function to apply to the value, if present
+     * @return an {@code Option} describing the result of applying a mapping
+     *         function to the value of this {@code Option}, if a value is present,
+     *         otherwise an empty {@code Option}.
+     */
     public Option<Object> transform(final ExecutionContext ctx, final FunctionDefinition mapper) {
         return map(ctx, mapper);
     }
 
-    public <X> Option<X> transform(final Function<? super E,? extends X> mapper) {
+    /**
+     * @see java.util.Optional#map(Function)
+     * 
+     * @param <X>    The type of the result of the mapping function
+     * @param mapper a mapping function to apply to the value, if present
+     * @return an {@code Option} describing the result of applying a mapping
+     *         function to the value of this {@code Option}, if a value is present,
+     *         otherwise an empty {@code Option}
+     */
+    public <X> Option<X> transform(final Function<? super E, ? extends X> mapper) {
         return map(mapper);
     }
 
+    /**
+     * Returns an empty {@code Option} instance.  No value is present for this
+     * Optional.
+     *
+     * @param <E> Type of the non-existent value
+     * @return an empty {@code Option}
+     */
     public static <E> Option<E> absent() {
         return empty();
     }
 
+    /**
+     * Returns an empty {@code Option} instance.  No value is present for this
+     * Optional.
+     *
+     * @param <E> Type of the non-existent value
+     * @return an empty {@code Option}
+     */
     @SuppressWarnings("unchecked")
     public static <E> Option<E> empty() {
         return (Option<E>) EMPTY_OPTION;
     }
 
-    public static <E> Option<E> fromNullable(final E o) {
-        return ofNullable(o);
+    /**
+     * Returns an {@code Option} describing the specified value, if non-null,
+     * otherwise returns an empty {@code Option}.
+     *
+     * @param <E>   the class of the value
+     * @param value the possibly-null value to describe
+     * @return an {@code Option} with a present value if the specified value is
+     *         non-null, otherwise an empty {@code Option}
+     */
+    public static <E> Option<E> fromNullable(final E value) {
+        return ofNullable(value);
     }
 
+    /**
+     * Null-factory: this method returns null and it is designed to be used as null factory by Protelis code.
+     * 
+     * @return null
+     */
     public static Object none() {
         return null;
     }
 
-    public static <E> Option<E> of(final E o) {
-        return new Option<>(o);
+    /**
+     * Returns an {@code Option} describing the specified value, if non-null,
+     * otherwise returns an empty {@code Option}.
+     *
+     * @param <E>   the class of the value
+     * @param value the possibly-null value to describe
+     * @return an {@code Option} with a present value if the specified value is
+     *         non-null, otherwise an empty {@code Option}
+     */
+    public static <E> Option<E> of(final E value) {
+        return new Option<>(value);
     }
-    public static <E> Option<E> ofNullable(final E o) {
-        return of(o);
+
+    /**
+     * Returns an {@code Option} describing the specified value, if non-null,
+     * otherwise returns an empty {@code Option}.
+     *
+     * @param <E>   the class of the value
+     * @param value the possibly-null value to describe
+     * @return an {@code Option} with a present value if the specified value is
+     *         non-null, otherwise an empty {@code Option}
+     */
+    public static <E> Option<E> ofNullable(final E value) {
+        return of(value);
     }
 }
