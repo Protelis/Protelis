@@ -239,25 +239,23 @@ public final class Option<E> implements Serializable {
         return internal.hashCode();
     }
 
-    public void ifPresent(final Consumer<? super E> consumer) {
-        if (isPresent()) {
-            consumer.accept(get());
-        }
-    }
-
-    public Object ifPresent(final ExecutionContext ctx, final FunctionDefinition consumer) {
-        return runProtelis(ctx, consumer, Option::of)
-            .orElseThrow(() -> new IllegalStateException("ifPresent must bind to a valid value. Problematic function: " + consumer));
-    }
-
+    /**
+     * @return true if the Option has no value
+     */
     public boolean isAbsent() {
         return isEmpty();
     }
 
+    /**
+     * @return true if the Option has no value
+     */
     public boolean isEmpty() {
         return !isPresent();
     }
 
+    /**
+     * @return true if the Option is holding a value
+     */
     public boolean isPresent() {
         return internal.isPresent();
     }
@@ -294,8 +292,9 @@ public final class Option<E> implements Serializable {
         return internal.or(other);
     }
 
-    public Object orElseGet(final ExecutionContext ctx, final FunctionDefinition other) {
-        return ifPresent(ctx, other);
+    @SuppressWarnings("unchecked")
+    public E orElseGet(final ExecutionContext ctx, final FunctionDefinition other) {
+        return internal.or(() -> (E) JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, other, ImmutableList.of()));
     }
 
     public E orElseGet(final Supplier<? extends E> other) {
