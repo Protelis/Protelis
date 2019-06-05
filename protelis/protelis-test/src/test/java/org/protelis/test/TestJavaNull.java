@@ -50,7 +50,7 @@ public final class TestJavaNull {
     /**
      * @return with 50% probability null, with 50% probability the "notNull" String.
      */
-    public static String mayReturnNull() {
+    public static String maybeNull() {
         return Math.random() > 0.5 ? null : "notNull";
     }
 
