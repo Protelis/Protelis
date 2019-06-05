@@ -14,7 +14,7 @@ plugins {
     pmd
     checkstyle
     id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
-    id("org.protelis.protelisdoc") version "0.1.1-dev08+b8184c8"
+//    id("org.protelis.protelisdoc") version "0.1.1-dev08+b8184c8"
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
@@ -38,7 +38,7 @@ allprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+//    apply(plugin = "org.jetbrains.kotlin.jvm")
 //    apply(plugin = "org.protelis.protelisdoc")
     apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
