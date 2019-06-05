@@ -96,4 +96,9 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
                 + stringFor(thenExpression) + " } else { " + stringFor(thenExpression) + '}';
     }
 
+    @Override
+    protected boolean isNullable() {
+        return elseExpression == null;
+    }
+
 }
