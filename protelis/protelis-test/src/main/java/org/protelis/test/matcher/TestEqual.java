@@ -16,7 +16,7 @@ import java8.util.function.BiConsumer;
  */
 public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
     private final ExceptionObserver obs;
-    private static final String ERROR_TEMPLATE = "\n --- Simulation result\n --- %s\n[N%s] expected: %s, found: %s";
+    private static final String ERROR_TEMPLATE = "%n --- Simulation result%n --- %s%n[N%s] expected: %s, found: %s";
     /**
      * @param obs
      *            exception observer
@@ -45,7 +45,8 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                             assertEquals(pair.getRight(), singleNodeResult);
                         }
                     } catch (Exception | AssertionError e) { // NOPMD
-                        obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE, getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                        obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE,
+                                getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
                         break;
                     }
                 }
