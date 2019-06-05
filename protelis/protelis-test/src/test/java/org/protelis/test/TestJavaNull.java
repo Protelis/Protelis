@@ -19,9 +19,9 @@ public final class TestJavaNull {
     @Test
     public void testProtelisOption() {
         try (ScanResult scanResult = new ClassGraph().whitelistPathsNonRecursive("protelis/option").scan()) {
-            ResourceList programs = scanResult.getResourcesWithExtension("pt");
-            ResourceList exceptions = programs.filter(it -> it.getPath().contains("error"));
-            ResourceList regular = programs.filter(it -> !exceptions.contains(it));
+            final ResourceList programs = scanResult.getResourcesWithExtension("pt");
+            final ResourceList exceptions = programs.filter(it -> it.getPath().contains("error"));
+            final ResourceList regular = programs.filter(it -> !exceptions.contains(it));
             regular.forEach(it -> ProgramTester.runFile('/' + it.getPath()));
             exceptions.forEach(it -> ProgramTester.runExpectingErrors('/' + it.getPath(), Throwable.class));
         }
