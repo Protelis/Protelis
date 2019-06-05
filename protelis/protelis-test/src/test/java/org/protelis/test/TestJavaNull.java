@@ -43,7 +43,7 @@ public final class TestJavaNull {
     /**
      * @return null
      */
-    public String returnsNull() {
+    public static String returnsNull() {
         return null;
     }
 
