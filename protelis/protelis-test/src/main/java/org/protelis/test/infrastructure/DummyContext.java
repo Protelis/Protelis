@@ -26,7 +26,7 @@ import java8.util.stream.IntStreams;
  *
  */
 @SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
-public final class DummyContext extends AbstractExecutionContext {
+public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
     private static final DeviceUID DUMMYUID = new DeviceUID() {
         private static final long serialVersionUID = 2306021805006825289L;
@@ -78,7 +78,7 @@ public final class DummyContext extends AbstractExecutionContext {
     }
 
     @Override
-    protected AbstractExecutionContext instance() {
+    protected DummyContext instance() {
         return new DummyContext();
     }
 
