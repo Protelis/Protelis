@@ -103,15 +103,20 @@ object Libs {
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
 
+    const val org_jetbrains_kotlin_jvm_gradle_plugin: String =
+            "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:" +
+            Versions.org_jetbrains_kotlin_jvm_gradle_plugin
+
     /**
      * https://kotlinlang.org/ */
     const val kotlin_scripting_compiler_embeddable: String =
             "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
-            Versions.kotlin_scripting_compiler_embeddable
+            Versions.org_jetbrains_kotlin
 
     /**
      * https://kotlinlang.org/ */
-    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" + Versions.kotlin_stdlib
+    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
+            Versions.org_jetbrains_kotlin
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String =
             "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +

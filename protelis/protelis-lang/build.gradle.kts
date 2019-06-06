@@ -1,5 +1,5 @@
 plugins {
-    id("org.protelis.protelisdoc") version "0.1.1-dev0f+1c1a147"
+    id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
 }
 
 dependencies {
