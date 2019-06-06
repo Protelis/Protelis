@@ -145,4 +145,9 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
         return new DotOperator(target.getMetadata(), true, null, target, args);
     }
 
+    @Override
+    protected boolean isNullable() {
+        return true;
+    }
+
 }

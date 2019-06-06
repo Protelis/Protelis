@@ -105,7 +105,7 @@ public enum HoodOp implements WithBytecode {
           of(create(Object.class, DatatypeFactory::createTuple)));
 
     private final Bytecode bytecode;
-    private final SerializableFunction defs;
+    private final SerializableFunction defs; // NOPMD false positive, not a singular field
     private final SerializableBifunction function;
 
     /**

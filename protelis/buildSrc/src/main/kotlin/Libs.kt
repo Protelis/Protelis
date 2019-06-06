@@ -52,6 +52,10 @@ object Libs {
     const val fst: String = "de.ruedigermoeller:fst:" + Versions.fst
 
     /**
+     * https://github.com/classgraph/classgraph */
+    const val classgraph: String = "io.github.classgraph:classgraph:" + Versions.classgraph
+
+    /**
      * https://github.com/AlchemistSimulator/alchemist-interfaces */
     const val alchemist_interfaces: String = "it.unibo.alchemist:alchemist-interfaces:" +
             Versions.it_unibo_alchemist
@@ -116,11 +120,6 @@ object Libs {
     const val org_protelis_protelisdoc_gradle_plugin: String =
             "org.protelis.protelisdoc:org.protelis.protelisdoc.gradle.plugin:" +
             Versions.org_protelis_protelisdoc_gradle_plugin
-
-    /**
-     * https://github.com/Protelis/protelis-interpreter */
-    const val protelis_interpreter: String = "org.protelis:protelis-interpreter:" +
-            Versions.protelis_interpreter
 
     /**
      * http://protelis.org */

@@ -23,12 +23,13 @@ env:
     - secure: "I4+Yjiu5Y5khd4MzFtY5UP2P+L72wklqgZ4uDNhQ+RJeIgOmbKit0tluWda/KpFVEC9K+SuGLURtzsL9XnmiBRbPdOaB/a6cJPW4TUzmpxbyu4Zl2OlcqngVOBku7al+54cMergdXFK0eflXlDik/8RH0stOd79tPoyDerdfUhoy1Tbdi0F014UBhHM4YraB7Tcunchw4InjcEWBtLY7VZMyw1CCeajf9r7ucXRyUnSjAjvR7jPVKg4+yiCefkC45xR0sok0cHec/HjDw9HReV40PkBNmTSTT8qjWPgH118zzMWR38B7gVvOIvPG549939yHv/q94VIIKn0ZDFwtk2CtcyX4HD35QM/EmfBHboEq55ckmSuz3L48X+C78697+4lZ4aa7/30y8TJIEiDeuAmNtvXAvf7zio+3lZs5OpyEAbHlpvt8ggzutrG6o9EskfgJ8c5g3zLP3/Q8OtefqR3DWArNNMpYk6UpL7JEN8LekloCOofM1XZh21ucqss+k1MC5IG3o9sCIs9ToW3CX9Kf9LGtpYhbnQPCNw9BBUxuIaignXOODGdYxjMmDQyZ+s1+mJr2WxHmmMxyu+TBFh5H9few26JDNWxO4+C2Ql95qlL9zUiRQFWsR3eOAqzbshY0yhTju0vIrsxxqxK+gtXij9jnKAfjvD3/Ai3bnIQ="
     - secure: "hhegqLy8o3Q0SJXFX5fqnixwQyADBNv5NSotuXEFf3qsb1/0CvGu+0rFkP0z+Aq5p8amv71NTl7KHvcpGodpNl28HYjbsfg3wbszdJIJuyX6fGxxMdaegb++coSU6mav9Of7zKbeg+uoE/qkE/CpGeak5L872xM3TiS0mA4+Eer3hArHDHt5zAzsUkEkZCgiuMYhUXopYB7BX1N/c/E3Sj8fD2yryDa4mfs5kaXChAbi/k4A6+CsScaF+F7v1XKaoJRy2PgYw28V9AsHr5Y6DwBYyGloZUGAWAcc6qHZaJqcO2ltVSAT1duTOi6kEy7Mvxyv4buj3hhMbq1OpINukCSKfLwwj3+gQOiOCDAmMIJPm/mJzjMS+puMu0+5K3bCRq2IrjyGkP6ZOflINaF6Pi4djBpZp2+ksTSdO73hJYSu6PltXS/XTEEocQYxvFM4cXNy1clxvMFI0aoC0Ihc7GdVheDbO0A1bJ0y9bxGEb0fYrEH1RyDvzxV4mXZFG8x9M4+sKhyIU7Et4dGB9d/YQCVp00//POOdKeXSlXFR/6SOp4eRga/G6S3a6aBJDcO7maiwC4rt9r6fPotGZvYuFRbVG4U2XvhW65V5LY4UVniGz5nBNu/EksMg5ULBMp+1IhJ79cMjotzj+pNvUwpBml6CbNzSYGY1BUUrIVZy9E="
   matrix:
-    - PUBLISH=false
+    - PUBLISH="false"
 
 matrix:
   include:
     - jdk: openjdk8
       env: PUBLISH="true"
+      os: linux
   exclude:
     - jdk: openjdk8
       env: PUBLISH="false"

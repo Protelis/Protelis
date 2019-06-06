@@ -1,0 +1,8 @@
+/*
+ * EXPECTED_RESULT: true
+ */
+import org.protelis.test.TestJavaNull.expectsNull
+import org.protelis.lang.datatype.Option.none
+import org.protelis.lang.datatype.Option.fromNullable
+
+fromNullable(expectsNull(none())).isEmpty()

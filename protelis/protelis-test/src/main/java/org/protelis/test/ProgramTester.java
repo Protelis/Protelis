@@ -23,6 +23,8 @@ import org.protelis.vm.ProtelisVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java8.util.Objects;
 import java8.util.function.Consumer;
 import java8.util.stream.IntStream;
 import java8.util.stream.IntStreams;
@@ -173,10 +175,10 @@ public final class ProgramTester {
      *            number of runs
      */
     public static void runFile(final String file, final int runs) {
-        final Object execResult = runProgram(file, runs);
+        final Object execResult = runProgram(Objects.requireNonNull(file, "File in test cannot be null"), runs);
         final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
-        final InputStream is = ProgramTester.class.getResourceAsStream(fileWithExt);
-        try {
+        try (InputStream is = Objects.requireNonNull(ProgramTester.class.getResourceAsStream(fileWithExt), 
+                "Unable to load resource: " + file + " (transformed in: " + fileWithExt + ')')) {
             final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final Matcher extractor = EXTRACT_RESULT.matcher(test);
             if (extractor.find()) {
