@@ -37,6 +37,7 @@ public class TestApis {
      */
     @ClassRule
     public static final TestRule WATCHER = new TestWatcher() {
+        @Override
         protected void starting(final Description description) {
             L.info(description.getMethodName());
         }
