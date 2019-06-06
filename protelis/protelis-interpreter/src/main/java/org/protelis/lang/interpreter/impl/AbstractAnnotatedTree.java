@@ -24,6 +24,7 @@ import org.protelis.lang.interpreter.util.WithBytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java8.util.Optional;
 import java8.util.function.BiConsumer;
 import java8.util.function.Consumer;
 import java8.util.stream.IntStream;
@@ -154,6 +155,13 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
     }
 
     /**
+     * @return true if this node can get annotated with null values - namely, if it is an interaction with Java
+     */
+    protected boolean isNullable() {
+        return false;
+    }
+
+    /**
      * Facility to run lambdas across all the branches.
      * 
      * @param action
@@ -270,7 +278,8 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
      *            the annotation to set
      */
     protected final void setAnnotation(final T obj) {
-        annotation = obj;
+        annotation = isNullable() ? obj : Objects.requireNonNull(obj, () -> 
+            this.getClass().getSimpleName() + " does not allow null return values. In: " + stringFor(this));
         erased = false;
     }
 
@@ -310,6 +319,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
      *         via {@link #getName()}
      */
     protected static final String stringFor(final AnnotatedTree<?> tree) {
-        return tree.isErased() ? tree.getName() : tree.getAnnotation().toString();
+        return Objects.requireNonNull(tree, "Impossible to convert a null AnnotatedTree to a String")
+            .isErased()
+                ? tree.getName()
+                : Optional.ofNullable(tree.getAnnotation()).map(Object::toString).orElse("null");
     }
 }

@@ -45,7 +45,7 @@ import org.yaml.snakeyaml.Yaml;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
-
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.alchemist.SupportedIncarnations;
 import it.unibo.alchemist.loader.displacements.Displacement;
 import it.unibo.alchemist.loader.export.Extractor;

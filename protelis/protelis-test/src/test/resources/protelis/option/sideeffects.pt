@@ -1,0 +1,15 @@
+/*
+ * EXPECTED_RESULT: true
+ */
+module protelis:option:sideeffects
+import org.protelis.test.TestJavaNull.returnsVoid
+import org.protelis.test.TestJavaNull.expectsNull
+import org.protelis.lang.datatype.Option.none
+import org.protelis.lang.datatype.Option.fromNullable
+
+returnsVoid();
+returnsVoid();
+if (true) {
+    returnsVoid()
+};
+fromNullable(returnsVoid()).isEmpty()
