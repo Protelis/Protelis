@@ -24,15 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-
-import java8.util.J8Arrays;
-import java8.util.Optional;
 import java.util.ResourceBundle;
-import java8.util.function.Supplier;
-import java8.util.stream.Collectors;
-import java8.util.stream.RefStreams;
-import java8.util.stream.Stream;
-import java8.util.stream.StreamSupport;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -45,7 +37,6 @@ import org.yaml.snakeyaml.Yaml;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.alchemist.SupportedIncarnations;
 import it.unibo.alchemist.loader.displacements.Displacement;
 import it.unibo.alchemist.loader.export.Extractor;
@@ -75,6 +66,13 @@ import it.unibo.alchemist.model.interfaces.Position;
 import it.unibo.alchemist.model.interfaces.Reaction;
 import it.unibo.alchemist.model.interfaces.Time;
 import it.unibo.alchemist.model.interfaces.TimeDistribution;
+import java8.util.J8Arrays;
+import java8.util.Optional;
+import java8.util.function.Supplier;
+import java8.util.stream.Collectors;
+import java8.util.stream.RefStreams;
+import java8.util.stream.Stream;
+import java8.util.stream.StreamSupport;
 
 /**
  * Loads a properly formatted YAML file and provides method for instancing a batch of scenarios.
