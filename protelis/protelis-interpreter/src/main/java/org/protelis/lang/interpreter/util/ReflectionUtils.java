@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.util;
 
-import static java8.util.stream.StreamSupport.stream;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,13 +16,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -41,13 +41,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
-import java8.util.J8Arrays;
-import java8.util.Optional;
-import java8.util.function.Function;
-import java8.util.stream.Collectors;
-import java8.util.stream.RefStreams;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
@@ -116,7 +112,7 @@ public final class ReflectionUtils {
     }
 
     private static String formatArguments(final Object[] args) {
-        return RefStreams.of(args)
+        return Arrays.stream(args)
             .map(it -> it + ": " + it.getClass().getSimpleName())
             .collect(Collectors.joining(",", "(", ")"));
     }
@@ -251,7 +247,7 @@ public final class ReflectionUtils {
         Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
         Objects.requireNonNull(methodName, "Method name can not be null.");
         Objects.requireNonNull(argClass, "Method arguments can not be null.");
-        final Method[] candidates = J8Arrays.stream(clazz.getMethods())
+        final Method[] candidates = Arrays.stream(clazz.getMethods())
             // Parameter number
             .filter(m -> compatibleLength(m, argClass))
             // Method name
@@ -326,7 +322,7 @@ public final class ReflectionUtils {
         /*
          * Find best
          */
-        return stream(lm)
+        return lm.stream()
                 .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
                 .map(Pair::getSecond)
                 .orElseThrow(() -> new IllegalStateException("Method selection for " + methodName

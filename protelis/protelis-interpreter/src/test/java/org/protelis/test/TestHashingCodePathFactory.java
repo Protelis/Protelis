@@ -26,7 +26,7 @@ public class TestHashingCodePathFactory {
      */
     @Test
     public void testSerialization() {
-        for (HashFunction fun : ImmutableList.of(murmur3_128(), sha256(), sha384(), sha512(), crc32(), sipHash24())) {
+        for (final HashFunction fun : ImmutableList.of(murmur3_128(), sha256(), sha384(), sha512(), crc32(), sipHash24())) {
             assertNotNull(deserialize(serialize(new HashingCodePathFactory(fun))));
         }
     }

@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
@@ -34,10 +37,6 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
-import java8.util.Maps;
-import java8.util.Optional;
-import java8.util.function.Function;
-import java8.util.function.Supplier;
 
 /**
  * Partial implementation of ExecutionContext, containing functionality expected
@@ -96,10 +95,10 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
 
     @Override
     public final void setGloballyAvailableReferences(final Map<Reference, ?> knownFunctions) {
-        if (functions.isEmpty()) {
-            functions = Optional.of(knownFunctions);
-        } else {
+        if (functions.isPresent()) {
             throw new IllegalStateException("Globally available references cannot be set twice");
+        } else {
+            functions = Optional.of(knownFunctions);
         }
     }
 
@@ -108,7 +107,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         // send precisely once
         tobeComputedBeforeSending.forEach((codepath, supplier) -> {
             final Object computed = supplier.get();
-            final Object previous = Maps.putIfAbsent(toSend, codepath, computed);
+            final Object previous = toSend.putIfAbsent(codepath, computed);
             if (previous != null) {
                 throw new IllegalStateException("Duplicated field entry with the same codepath "
                     + "caused by the computation of a deferred build field: this is likely a bug in Protelis.\n"
@@ -272,7 +271,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
          * If there is a request to build a field, then it means this is a
          * nbr-like operation
          */
-        if (Maps.putIfAbsent(destination, codePath, toBeSent) != null) {
+        if (destination.putIfAbsent(codePath, toBeSent) != null) {
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path. "
                     + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath

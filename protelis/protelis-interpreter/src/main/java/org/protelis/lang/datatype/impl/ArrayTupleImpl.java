@@ -13,6 +13,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -29,11 +32,6 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
-
-import java8.util.J8Arrays;
-import java8.util.function.BinaryOperator;
-import java8.util.function.Function;
-import java8.util.function.Predicate;
 
 /**
  * Implementation of a Tuple using an array data structure.
@@ -165,7 +163,7 @@ public final class ArrayTupleImpl implements Tuple {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 1) {
             return DatatypeFactory
-                    .createTuple(J8Arrays.stream(arrayContents)
+                    .createTuple(Arrays.stream(arrayContents)
                         .map(it -> new Constant<>(JavaInteroperabilityUtils.METADATA, it))
                         .filter(elem -> {
                             final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, Lists.newArrayList(elem));
@@ -185,7 +183,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple filter(final Predicate<Object> fun) {
         Objects.requireNonNull(fun);
-        return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents).filter(fun).toArray());
+        return DatatypeFactory.createTuple(Arrays.stream(arrayContents).filter(fun).toArray());
     }
 
     /**
@@ -268,7 +266,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getArgNumber() == 1) {
-            return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents)
+            return DatatypeFactory.createTuple(Arrays.stream(arrayContents)
                 .map(it -> new Constant<>(JavaInteroperabilityUtils.METADATA, it))
                 .map(elem -> {
                     final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, Lists.newArrayList(elem));
@@ -283,12 +281,12 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final Function<Object, Object> fun) {
         Objects.requireNonNull(fun);
-        return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents).map(fun).toArray());
+        return DatatypeFactory.createTuple(Arrays.stream(arrayContents).map(fun).toArray());
     }
 
     @Override
     public Object max(final Object def) {
-        return J8Arrays.stream(arrayContents).max(COMPARE_TO).orElse(def);
+        return Arrays.stream(arrayContents).max(COMPARE_TO).orElse(def);
     }
 
     @Override
@@ -306,7 +304,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Object min(final Object def) {
-        return J8Arrays.stream(arrayContents).min(COMPARE_TO).orElse(def);
+        return Arrays.stream(arrayContents).min(COMPARE_TO).orElse(def);
     }
 
     @Override
@@ -318,7 +316,7 @@ public final class ArrayTupleImpl implements Tuple {
     public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getArgNumber() == 2) {
-            return J8Arrays.stream(arrayContents).reduce((first, second) -> {
+            return Arrays.stream(arrayContents).reduce((first, second) -> {
                 final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun,
                         Lists.newArrayList(new Constant<>(JavaInteroperabilityUtils.METADATA, first), new Constant<>(JavaInteroperabilityUtils.METADATA, second)));
                 fc.eval(ctx);
@@ -330,7 +328,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
-        return J8Arrays.stream(arrayContents)
+        return Arrays.stream(arrayContents)
             .reduce(Objects.requireNonNull(fun))
             .orElse(Objects.requireNonNull(defVal));
     }
@@ -425,7 +423,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple unwrap(final int i) {
-        return DatatypeFactory.createTuple(J8Arrays.stream(arrayContents).map((o) -> {
+        return DatatypeFactory.createTuple(Arrays.stream(arrayContents).map((o) -> {
             if (o instanceof Tuple) {
                 return ((Tuple) o).get(i);
             }

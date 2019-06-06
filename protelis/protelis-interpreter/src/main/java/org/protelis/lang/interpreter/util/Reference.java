@@ -2,6 +2,7 @@ package org.protelis.lang.interpreter.util;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
@@ -12,8 +13,6 @@ import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.VarDef;
 
 import com.google.common.collect.ImmutableList;
-
-import java8.util.Optional;
 
 /**
  * Implements a Serializable reference to an Object.

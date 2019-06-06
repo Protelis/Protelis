@@ -9,12 +9,11 @@
 package org.protelis.lang.datatype;
 
 import java.io.Serializable;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.protelis.vm.ExecutionContext;
-
-import java8.util.function.BinaryOperator;
-import java8.util.function.Function;
-import java8.util.function.Predicate;
 
 /**
  * Implementation of mathematical tuples as indexed objects T = [element0,

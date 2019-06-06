@@ -13,14 +13,13 @@ package org.protelis.vm.impl;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
-
-import java8.util.Optional;
 
 /**
  * Base implementation of {@link ProtelisProgram}.

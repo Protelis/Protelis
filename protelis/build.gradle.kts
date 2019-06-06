@@ -14,12 +14,12 @@ plugins {
     pmd
     checkstyle
     id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
-//    id("org.protelis.protelisdoc") version "0.1.1-dev08+b8184c8"
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
+    id("org.jetbrains.kotlin.jvm") version Versions.org_jetbrains_kotlin_jvm_gradle_plugin
 }
 
 apply(plugin = "com.gradle.build-scan")
@@ -38,8 +38,7 @@ allprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-//    apply(plugin = "org.jetbrains.kotlin.jvm")
-//    apply(plugin = "org.protelis.protelisdoc")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
     apply(plugin = "signing")
@@ -93,7 +92,6 @@ allprojects {
     }
 
     pmd {
-        setIgnoreFailures(true)
         ruleSets = listOf()
         ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
     }
@@ -105,10 +103,6 @@ allprojects {
             }
         }
     }
-
-//    Protelis2KotlinDoc {
-//        automaticDependencies.set(false)
-//    }
 
     tasks.withType<Javadoc> {
         isFailOnError = false

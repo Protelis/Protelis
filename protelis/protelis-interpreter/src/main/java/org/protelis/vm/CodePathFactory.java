@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
-import java8.lang.FunctionalInterface;
 
 /**
  * A function which is able to build a {@link CodePath} given the current
