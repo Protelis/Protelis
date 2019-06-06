@@ -1,9 +1,9 @@
 package org.protelis.lang.datatype;
 
+import java.util.function.BinaryOperator;
+
 import org.protelis.lang.datatype.impl.ArrayTupleImpl;
 import org.protelis.lang.datatype.impl.FieldMapImpl;
-
-import java8.util.function.BinaryOperator;
 
 /**
  * Utility class for {@link Tuple}.

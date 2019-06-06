@@ -37,8 +37,6 @@ object Versions {
 
     const val trove4j: String = "3.0.3" 
 
-    const val streamsupport: String = "1.7.0" // available: "1.7.1"
-
     const val commons_lang3: String = "3.9" 
 
     const val commons_math3: String = "3.6.1" 
@@ -57,7 +55,7 @@ object Versions {
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.0.0" 
 
-    const val org_protelis_protelisdoc_gradle_plugin: String = "0.1.1-dev0f+1c1a147"
+    const val org_protelis_protelisdoc_gradle_plugin: String = "0.1.2"
 
     const val protelis_parser: String = "9.1.0" 
 

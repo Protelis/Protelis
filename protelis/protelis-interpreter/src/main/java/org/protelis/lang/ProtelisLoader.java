@@ -8,13 +8,11 @@
  *******************************************************************************/
 package org.protelis.lang;
 
-import static java8.util.Optional.empty;
-import static java8.util.stream.StreamSupport.stream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -22,11 +20,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -117,13 +119,6 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
-import java8.util.Maps;
-import java8.util.Optional;
-import java8.util.function.BinaryOperator;
-import java8.util.function.Functions;
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
-
 /**
  * Main entry-point class for loading/parsing Protelis programs.
  */
@@ -175,7 +170,7 @@ public final class ProtelisLoader {
     private static List<AnnotatedTree<?>> exprListArgs(final ExprList l, final ProgramState env) {
         return Optional.ofNullable(l)
                 .map(ExprList::getArgs)
-                .map(StreamSupport::stream)
+                .map(Collection::stream)
                 .map(s -> s.map(e -> Dispatch.expression(e, env))
                         .collect(Collectors.<AnnotatedTree<?>>toList()))
                 .orElse(Collections.emptyList());
@@ -305,10 +300,10 @@ public final class ProtelisLoader {
         /*
          * Function definitions are in place, now create function bodies.
          */
-        final Map<Reference, FunctionDefinition> refToFun = stream(nameToFun.keySet())
+        final Map<Reference, FunctionDefinition> refToFun = nameToFun.keySet().stream()
                 .collect(Collectors.toMap(ProtelisLoader::toR, nameToFun::get, throwException(), LinkedHashMap::new));
         final ProgramState programState = new ProgramState(refToFun);
-        Maps.forEach(nameToFun, (fd, fun) -> fun.setBody(Dispatch.block(
+        nameToFun.forEach((fd, fun) -> fun.setBody(Dispatch.block(
                 Objects.requireNonNull(
                     fd.getBody(),
                     "The program " + root.getName() + " cannot be created because the required function "
@@ -407,10 +402,10 @@ public final class ProtelisLoader {
     }
 
     private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {
-        return StreamSupport.parallelStream(resource.getResourceSet().getResources())
+        return resource.getResourceSet().getResources().parallelStream()
                 .map(Resource::getErrors)
                 .filter(err -> !err.isEmpty())
-                .flatMap(StreamSupport::stream)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
@@ -430,7 +425,7 @@ public final class ProtelisLoader {
              */
             final ImportSection imports = module.getImports();
             if (imports != null) {
-                stream(imports.getImportDeclarations())
+                imports.getImportDeclarations().stream()
                     .filter(it -> it instanceof ProtelisImport)
                     .map(it -> (ProtelisImport) it)
                     .forEach(it -> recursivelyInitFunctions(it.getModule(), nameToFun, completed));
@@ -438,9 +433,9 @@ public final class ProtelisLoader {
             /*
              * Init local functions
              */
-            nameToFun.putAll(stream(module.getDefinitions())
+            nameToFun.putAll(module.getDefinitions().stream()
                 .collect(Collectors.toMap(
-                    Functions.identity(),
+                    Function.identity(),
                     fd -> new FunctionDefinition(Optional.of(module), fd.getName(), toR(extractArgs(fd)))
                 ))
             );
@@ -490,7 +485,7 @@ public final class ProtelisLoader {
     }
 
     private static List<Reference> toR(final List<?> l) {
-        return stream(l).map(ProtelisLoader::toR).collect(Collectors.toList());
+        return l.stream().map(ProtelisLoader::toR).collect(Collectors.toList());
     }
 
     private static Reference toR(final Object o) {
@@ -605,7 +600,7 @@ public final class ProtelisLoader {
             }
             final String base = Base64.encodeBase64String(
                     Hashing.sha256().hashString(bodyEntities.toString(), Charsets.UTF_8).asBytes());
-            final FunctionDefinition lambda = new FunctionDefinition(empty(), "$" + base, toR(args));
+            final FunctionDefinition lambda = new FunctionDefinition(Optional.empty(), "$" + base, toR(args));
             lambda.setBody(body);
             return new Constant<>(metadataFor(expression), lambda);
         }
@@ -649,7 +644,7 @@ public final class ProtelisLoader {
                 final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(rep.getYields())
                         .map(Yield::getBody)
                         .map(it -> blockUnsafe(it, state));
-                return new ShareCall<>(meta, local, empty(), expression(init.getW(), state), block(rep.getBody(), state), yield);
+                return new ShareCall<>(meta, local, Optional.empty(), expression(init.getW(), state), block(rep.getBody(), state), yield);
             }
             if (val instanceof Share) {
                 final Share s = (Share) val;
@@ -700,7 +695,7 @@ public final class ProtelisLoader {
                 final IfWithoutElse ifOp = (IfWithoutElse) statement;
                 final List<AnnotatedTree<?>> then = ifOp.getThen().stream()
                         .map(it -> statement(it, state))
-                        .collect(java.util.stream.Collectors.toList());
+                        .collect(Collectors.toList());
                 final AnnotatedTree<?> thenBranch = then.size() == 1 ? then.get(0)
                         : new All(meta, then);
                 return new If<>(meta, expression(ifOp.getCond(), state), thenBranch, null);

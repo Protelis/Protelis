@@ -1,13 +1,12 @@
 package org.protelis.lang.datatype;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.protelis.lang.interpreter.util.TriFunction;
-
-import java8.util.function.BiFunction;
-import java8.util.function.BinaryOperator;
-import java8.util.function.Function;
-import java8.util.function.UnaryOperator;
 
 /**
  * Utility class for {@link Field}.

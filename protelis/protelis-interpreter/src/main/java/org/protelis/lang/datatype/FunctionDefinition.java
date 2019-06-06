@@ -9,8 +9,6 @@
 package org.protelis.lang.datatype;
 
 import gnu.trove.list.array.TByteArrayList;
-import java8.util.Objects;
-import java8.util.Optional;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
@@ -19,6 +17,8 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * First-class Protelis function.

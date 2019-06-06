@@ -5,7 +5,6 @@ java {
 
 dependencies {
     api(Libs.trove4j)
-    api(Libs.streamsupport)
     api(Libs.commons_math3)
     api(Libs.org_eclipse_emf_ecore)
     api(Libs.guava)

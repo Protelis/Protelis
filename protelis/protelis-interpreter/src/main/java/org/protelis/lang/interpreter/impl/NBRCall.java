@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java8.util.function.Functions;
+import java.util.function.Function;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -42,7 +42,7 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object childVal = getBranch(0).getAnnotation();
-        final Field res = context.buildField(Functions.identity(), childVal);
+        final Field res = context.buildField(Function.identity(), childVal);
         setAnnotation(res);
     }
 

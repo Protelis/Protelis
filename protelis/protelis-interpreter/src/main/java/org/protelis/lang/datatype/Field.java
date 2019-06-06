@@ -9,10 +9,9 @@
 package org.protelis.lang.datatype;
 
 import java.io.Serializable;
+import java.util.function.BinaryOperator;
 
 import org.apache.commons.math3.util.Pair;
-
-import java8.util.function.BinaryOperator;
 
 /**
  * A field is a function associating a collection of devices to values.

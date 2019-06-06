@@ -74,11 +74,6 @@ object Libs {
     const val trove4j: String = "net.sf.trove4j:trove4j:" + Versions.trove4j
 
     /**
-     * http://sourceforge.net/projects/streamsupport/ */
-    const val streamsupport: String = "net.sourceforge.streamsupport:streamsupport:" +
-            Versions.streamsupport
-
-    /**
      * http://commons.apache.org/proper/commons-lang/ */
     const val commons_lang3: String = "org.apache.commons:commons-lang3:" + Versions.commons_lang3
 
