@@ -6,6 +6,11 @@ import static org.protelis.lang.interpreter.util.Bytecode.SHARE_BODY;
 import static org.protelis.lang.interpreter.util.Bytecode.SHARE_INIT;
 import static org.protelis.lang.interpreter.util.Bytecode.SHARE_YIELD;
 
+import java.util.Objects;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -14,9 +19,6 @@ import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.base.Optional;
-
-import java8.util.Objects;
-import java8.util.function.Consumer;
 
 /**
  * Share construct. Supersedes the previous rep implementation. Paper to be
@@ -50,12 +52,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
      *            body
      */
     public ShareCall(
-            final Metadata metadata,
-            final java8.util.Optional<Reference> localName,
-            final java8.util.Optional<Reference> fieldName,
-            final AnnotatedTree<?> init,
-            final AnnotatedTree<S> body,
-            final java8.util.Optional<AnnotatedTree<T>> yield) {
+            @Nonnull final Metadata metadata,
+            @Nonnull final java.util.Optional<Reference> localName,
+            @Nonnull final java.util.Optional<Reference> fieldName,
+            @Nonnull final AnnotatedTree<?> init,
+            @Nonnull final AnnotatedTree<S> body,
+            @Nonnull final java.util.Optional<AnnotatedTree<T>> yield) {
         this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
     }
 
@@ -74,12 +76,12 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
      *            body
      */
     public ShareCall(
-            final Metadata metadata,
-            final Optional<Reference> localName,
-            final Optional<Reference> fieldName,
-            final AnnotatedTree<?> init,
-            final AnnotatedTree<S> body,
-            final Optional<AnnotatedTree<T>> yield) {
+            @Nonnull final Metadata metadata,
+            @Nonnull final Optional<Reference> localName,
+            @Nonnull final Optional<Reference> fieldName,
+            @Nonnull final AnnotatedTree<?> init,
+            @Nonnull final AnnotatedTree<S> body,
+            @Nonnull final Optional<AnnotatedTree<T>> yield) {
         super(metadata, init, body);
         if (!(localName.isPresent() || fieldName.isPresent())) {
             throw new IllegalArgumentException("Share cannot get initialized without at least a variable bind.");
@@ -98,14 +100,13 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     @Override
     public ShareCall<S, T> copy() {
-        final ShareCall<S, T> res = new ShareCall<>(
+        return new ShareCall<>(
                 getMetadata(),
                 localName,
                 fieldName,
                 init.copy(),
                 body.copy(),
                 yield.transform(AbstractAnnotatedTree::copy));
-        return res;
     }
 
     @SuppressWarnings("unchecked")
@@ -175,7 +176,7 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         }
     }
 
-    private static <T> Optional<T> toGuava(final java8.util.Optional<T> origin) {
+    private static <T> Optional<T> toGuava(final java.util.Optional<T> origin) {
         return Optional.fromNullable(origin.orElse(null));
     }
 

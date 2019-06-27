@@ -12,13 +12,12 @@
 package org.protelis.vm;
 
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.util.Reference;
-
-import java8.util.function.Function;
-import java8.util.function.Supplier;
 
 /**
  * Interface between a ProtelisVM and environment in which it is executing. The

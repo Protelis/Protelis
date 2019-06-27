@@ -9,9 +9,9 @@ def map(f, t){
 	}
 }
 def inc(x) {
-	x + 1;
+	x + 1
 }
 def square(x) {
-	x ^ 2;
+	x ^ 2
 }
 map(square, map(inc, [ 5, 4, 3, 2, 1, 0 ]))

@@ -6,6 +6,8 @@ package org.protelis.lang.interpreter.util;
 import java.io.PrintStream;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -14,9 +16,6 @@ import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.All;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.loading.Metadata;
-
-import java8.util.stream.Stream;
-import java8.util.stream.StreamSupport;
 
 /**
  * This class represents a runtime error in the Protelis interpreter.
@@ -34,8 +33,8 @@ public final class ProtelisRuntimeException extends RuntimeException {
      * @param origin    the point in the Protelis program in which the Java
      *                  exception was thrown
      */
-    public ProtelisRuntimeException(final Throwable javaCause, final AnnotatedTree<?> origin) {
-        super(javaCause.getLocalizedMessage(), javaCause);
+    public ProtelisRuntimeException(@Nonnull final Throwable javaCause, final AnnotatedTree<?> origin) {
+        super(Objects.requireNonNull(javaCause.getLocalizedMessage()), javaCause);
         protelisStackTrace.add(origin);
     }
 
@@ -55,7 +54,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
     }
 
     private Stream<AnnotatedTree<?>> stream() {
-        return StreamSupport.stream(protelisStackTrace);
+        return protelisStackTrace.stream();
     }
 
     @Override

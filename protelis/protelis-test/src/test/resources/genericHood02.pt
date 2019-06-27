@@ -5,4 +5,4 @@ import java.lang.Math.max
 def maxF(a, b) {
     java::lang::Math::max(a, b)
 }
-hoodPlusSelf(maxF, 0, nbr(1));
+hoodPlusSelf(maxF, 0, nbr(1))

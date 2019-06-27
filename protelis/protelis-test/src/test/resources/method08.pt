@@ -7,4 +7,4 @@ import com.google.common.collect.Lists.newArrayList
 let l = newArrayList(5,3,7,2,1); // Check call of varargs with multiple args
 l.addAll(newArrayList()); // Check call of varargs with zero args
 // Check call of dynamically selected varargs method 
-l.get(2) + format("Stringy %s %s", "a", "b").length();
+l.get(2) + format("Stringy %s %s", "a", "b").length()

@@ -6,11 +6,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-import java8.util.stream.Collectors;
-
-import java8.util.J8Arrays;
-import java8.util.stream.Stream;
-import java8.util.stream.StreamSupport;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -101,7 +98,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     private void extractMethod(final int parameterCount) {
-        Stream<Method> methods = J8Arrays.stream(clazz.getMethods());
+        Stream<Method> methods = Arrays.stream(clazz.getMethods());
         if (ztatic) {
             methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
         } else {
@@ -145,10 +142,15 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     public String toString() {
         return (ztatic ? "" : stringFor(getBranch(0)) + '.')
             + getName()
-            + StreamSupport.stream(getBranches())
+            + getBranches().stream()
                 .skip(ztatic ? 0 : 1)
                 .map(MethodCall::stringFor)
                 .collect(Collectors.joining(", ", "(", ")"));
+    }
+
+    @Override
+    protected boolean isNullable() {
+        return true;
     }
 
 }

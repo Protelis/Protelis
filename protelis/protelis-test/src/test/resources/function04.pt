@@ -6,22 +6,22 @@
  */ 
 def f(x,y){
 	if(x) {
-		2+g();
+		2+g()
 	} else {
 	    if(y) {
-	    	1+h();
+	    	1+h()
 	    } else {
-			3;
+			3
 		}
 	}
 }
 
 def g() {
-  f(false,true);
+  f(false,true)
 }
 
 def h() {
-  f(false,false);
+  f(false,false)
 }
 
-f(true,false);
+f(true,false)

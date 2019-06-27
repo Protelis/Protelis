@@ -13,14 +13,13 @@ import static org.protelis.lang.interpreter.util.Bytecode.UNARY_NOT;
 import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.UnaryOperator;
 
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
-
-import java8.util.J8Arrays;
-import java8.util.function.UnaryOperator;
 
 /**
  * Collection of functions and helper methods for unary operators.
@@ -80,7 +79,7 @@ public enum Op1 implements WithBytecode {
     public static Op1 getOp(final String name) {
         Op1 op = MAP.get(name);
         if (op == null) {
-            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;

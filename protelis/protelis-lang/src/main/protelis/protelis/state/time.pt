@@ -154,7 +154,7 @@ public def isFallingEdge(signal) {
         } else {
             [signal, false]
         }
-    }.get(1);
+    }.get(1)
 }
 
 /**
@@ -183,7 +183,7 @@ public def isRisingEdge(signal) {
         } else {
             [signal, false]
         }
-    }.get(1);
+    }.get(1)
 }
 
 /**

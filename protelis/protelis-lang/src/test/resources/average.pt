@@ -1,2 +1,2 @@
 import protelis:coord:accumulation
-average(env.has("source"), self.getDeviceUID().getId());
+average(env.has("source"), self.getDeviceUID().getId())

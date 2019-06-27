@@ -24,7 +24,11 @@ import static org.protelis.lang.interpreter.util.Bytecode.HOOD_SUM;
 import static org.protelis.lang.interpreter.util.Bytecode.HOOD_UNION;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -32,11 +36,6 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.datatype.Tuples;
-
-import java8.util.J8Arrays;
-import java8.util.function.BiFunction;
-import java8.util.function.Function;
-import java8.util.function.Supplier;
 
 /**
  * Collection of functions and helper methods for reducing fields into local
@@ -105,7 +104,7 @@ public enum HoodOp implements WithBytecode {
           of(create(Object.class, DatatypeFactory::createTuple)));
 
     private final Bytecode bytecode;
-    private final SerializableFunction defs;
+    private final SerializableFunction defs; // NOPMD false positive, not a singular field
     private final SerializableBifunction function;
 
     /**
@@ -196,7 +195,7 @@ public enum HoodOp implements WithBytecode {
      * @return the corresponding {@link HoodOp}
      */
     public static HoodOp get(final String reducer) {
-        return J8Arrays.stream(values()).filter(ho -> ho.name().equalsIgnoreCase(reducer))
+        return Arrays.stream(values()).filter(ho -> ho.name().equalsIgnoreCase(reducer))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No built-in hood operation matches " + reducer));
     }

@@ -5,6 +5,7 @@ import org.apache.commons.math3.util.FastMath.floor
 import org.apache.commons.math3.util.FastMath.min
 import protelis:coord:sharedtimer
 import protelis:coord:spreading
+import java.lang.Double.POSITIVE_INFINITY
 
 /*
  * This function should return false if the clock is out of date
@@ -26,7 +27,7 @@ def clock(tuple) {
 }
 
 def emptyProcess(default) {
-    rep (p <- [Infinity, () -> {"EMPTY"}, default]) {
+    rep (p <- [POSITIVE_INFINITY, () -> {"EMPTY"}, default]) {
         p
     }
 }
@@ -44,7 +45,7 @@ def alignedExecution(processes, default) {
             [p.get(0), p.get(1), p.get(1).apply()]
         },
         emptyProcess(default)
-    ).map(self, tProc -> { tProc.get(1) } );
+    ).map(self, tProc -> { tProc.get(1) } )
 }
 
 /**
@@ -64,7 +65,7 @@ public def timeReplicated(process, default, p, k) {
         // Add process if the clock is new
         if (isNewClock(processes, clock)) {
             processes = processes.append([clock, process, default])
-        } else {0};
+        };
         // Align on clock, execute process
         alignedExecution(processes.filter(self, process -> {clock - process.get(0) < p * k }), default)
     }

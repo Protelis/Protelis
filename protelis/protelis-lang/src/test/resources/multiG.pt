@@ -1,5 +1,6 @@
 import protelis:coord:spreading
 import protelis:lang:utils
+import java.lang.Double.POSITIVE_INFINITY
 def null() { ["nullId", 0] }
 let res = 
     multiG(["0", "11"], 1, nbrRange, identity)
@@ -7,8 +8,8 @@ let res =
             self,
             null(),
             (a, b) -> {
-                let x = if (a.get(1) == Infinity) { null() } else { a };
-                let y = if (b.get(1) == Infinity) { null() } else { b };
+                let x = if (a.get(1) == POSITIVE_INFINITY) { null() } else { a };
+                let y = if (b.get(1) == POSITIVE_INFINITY) { null() } else { b };
                 ["nullId", x.get(1) + y.get(1)]
             }
         );

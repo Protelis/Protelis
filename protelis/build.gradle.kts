@@ -1,5 +1,6 @@
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     id("de.fayard.buildSrcVersions") version
@@ -18,11 +19,7 @@ plugins {
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
-}
-
-val isJava7Legacy = project.hasProperty("java7Legacy") || System.getenv("JAVA7LEGACY") == "true"
-if (isJava7Legacy) {
-    println("This build will generate the *LEGACY*, Java-7 compatible, build of Protelis")
+    id("org.jetbrains.kotlin.jvm") version Versions.org_jetbrains_kotlin_jvm_gradle_plugin
 }
 
 apply(plugin = "com.gradle.build-scan")
@@ -41,6 +38,7 @@ allprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
     apply(plugin = "signing")
@@ -49,15 +47,7 @@ allprojects {
     apply(plugin = "com.jfrog.bintray")
 
     gitSemVer {
-        version = computeGitSemVer().let {
-            if (isJava7Legacy) {
-                if (it.contains("-")) {
-                    it.replace("-", "-")
-                } else {
-                    it + "-j7"
-                }
-            } else { it }
-        }
+        version = computeGitSemVer()
     }
 
     repositories {
@@ -66,6 +56,7 @@ allprojects {
 
     val doclet by configurations.creating
     dependencies {
+        compileOnly(Libs.spotbugs_annotations)
         testImplementation(Libs.junit)
         testImplementation(Libs.slf4j_api)
         testRuntimeOnly(Libs.logback_classic)
@@ -78,11 +69,13 @@ allprojects {
 
     tasks.withType<Test> {
         failFast = true
-        testLogging { events("passed", "skipped", "failed", "standardError") }
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+            events("passed", "skipped", "failed", "standardError")
+        }
     }
 
     spotbugs {
-        isIgnoreFailures = true
         effort = "max"
         reportLevel = "low"
         val excludeFile = File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
@@ -99,9 +92,16 @@ allprojects {
     }
 
     pmd {
-        setIgnoreFailures(true)
         ruleSets = listOf()
         ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
+    }
+
+    ktlint {
+        filter {
+            exclude {
+                it.file.path.toString().contains("protelis2kotlin")
+            }
+        }
     }
 
     tasks.withType<Javadoc> {
@@ -171,7 +171,9 @@ allprojects {
         user = System.getenv(userKeyName)
         key = System.getenv(apiKeyName)
         override = true
-        setPublications("main")
+        publishing.publications.withType<MavenPublication>().names.forEach {
+            setPublications(it)
+        }
         with(pkg) {
             repo = "Protelis"
             name = project.name

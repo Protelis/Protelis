@@ -27,8 +27,12 @@ import static org.protelis.lang.interpreter.util.Bytecode.BINARY_TIMES;
 import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.FastMath;
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -37,10 +41,6 @@ import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.datatype.Tuple;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java8.util.J8Arrays;
-import java8.util.function.BiFunction;
-import java8.util.function.BinaryOperator;
-import java8.util.stream.IntStreams;
 
 /**
  * Infix operator that takes two inputs, such as addition, division, or
@@ -139,7 +139,7 @@ public enum Op2 implements WithBytecode {
     public static Op2 getOp(final String name) {
         Op2 op = MAP.get(name);
         if (op == null) {
-            op = J8Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;
@@ -294,7 +294,7 @@ public enum Op2 implements WithBytecode {
             final Tuple ta = (Tuple) a;
             final Tuple tb = (Tuple) b;
             if (ta.size() == tb.size()) {
-                return (O) DatatypeFactory.createTuple(IntStreams.range(0, ta.size())
+                return (O) DatatypeFactory.createTuple(IntStream.range(0, ta.size())
                         .mapToObj(i -> arithmetic(op, (I) ta.get(i), (I) tb.get(i), f))
                         .toArray());
             }
@@ -304,7 +304,7 @@ public enum Op2 implements WithBytecode {
 
     @SuppressWarnings(UNCHECKED)
     private static <I, O> Tuple tupleArithmetic(final String op, final boolean numFirst, final I num, final Tuple t, final BiFunction<Double, Double, O> f) {
-        return DatatypeFactory.createTuple(IntStreams.range(0, t.size())
+        return DatatypeFactory.createTuple(IntStream.range(0, t.size())
                 .mapToObj(i -> numFirst
                         ? arithmetic(op, num, (I) t.get(i), f)
                         : arithmetic(op, (I) t.get(i), num, f))

@@ -328,6 +328,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test operation of "if" restrictive branching.
+     */
+    @Test
+    public void testIf03() {
+        runFile("/if03.pt");
+    }
+
+    /**
      * Test unionHood with only local contribution.
      */
     @Test
@@ -839,12 +847,13 @@ public class TestLanguage {
         Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] <= [1, 2]", 1));
         Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0, 0] <= [1, 2, -1]", 1));
         // comparison involving infinity
-        Assert.assertEquals(true, ProgramTester.runProgram("[Infinity] == [Infinity]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[Infinity, 1] < [Infinity, 2]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, Infinity] < [2, 0]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[-Infinity, 1] < [-Infinity, 2]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[Infinity] > [-Infinity]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[Infinity] > [Infinity]", 1));
+        final String prefix = "import java.lang.Double.POSITIVE_INFINITY let Infinity = POSITIVE_INFINITY; "; // NOPMD
+        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] == [Infinity]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity, 1] < [Infinity, 2]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[1, Infinity] < [2, 0]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[-Infinity, 1] < [-Infinity, 2]", 1));
+        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] > [-Infinity]", 1));
+        Assert.assertEquals(false, ProgramTester.runProgram(prefix + "[Infinity] > [Infinity]", 1));
         // comparison of nested tuples
         Assert.assertEquals(true, ProgramTester.runProgram("[1, [2], 1] >= [1, [2], 0]", 1));
         Assert.assertEquals(false, ProgramTester.runProgram("[1, [2], 1] >= [1, [2, 1], 0]", 1));

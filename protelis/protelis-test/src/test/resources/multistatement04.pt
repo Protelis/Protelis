@@ -1,7 +1,9 @@
 // EXPECTED_RESULT: 2
 let x = 0;
 if(false) {
-	x = 1
+	x = 1;
+	x
 } else {
-	x = 2
+	x = 2;
+	x
 }

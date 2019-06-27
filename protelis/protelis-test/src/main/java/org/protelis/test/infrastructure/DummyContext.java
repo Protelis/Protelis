@@ -18,15 +18,16 @@ import org.protelis.vm.impl.AbstractExecutionContext;
 import org.protelis.vm.impl.SimpleExecutionEnvironment;
 import org.protelis.vm.impl.SimpleNetworkManager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java8.util.stream.IntStreams;
 
 /**
  * A **dummy** Protelis VM to be used for testing.
  *
  */
+@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 public final class DummyContext extends AbstractExecutionContext {
 
-    private final Random rng = new Random(0);
     private static final DeviceUID DUMMYUID = new DeviceUID() {
         private static final long serialVersionUID = 2306021805006825289L;
 
@@ -35,6 +36,7 @@ public final class DummyContext extends AbstractExecutionContext {
             return "DummyUID";
         };
     };
+    private final Random rng = new Random(0);
 
     /**
      *
@@ -48,11 +50,6 @@ public final class DummyContext extends AbstractExecutionContext {
      */
     public DummyContext(final NetworkManager networkManager) {
         super(new SimpleExecutionEnvironment(), networkManager);
-    }
-
-    @Override
-    public DeviceUID getDeviceUID() {
-        return DUMMYUID;
     }
 
     // ATTENTION: System.currentTimeMillis() is not reproducible
@@ -76,13 +73,32 @@ public final class DummyContext extends AbstractExecutionContext {
     }
 
     @Override
-    public double nextRandomDouble() {
-        return rng.nextDouble();
+    public DeviceUID getDeviceUID() {
+        return DUMMYUID;
     }
 
     @Override
     protected AbstractExecutionContext instance() {
         return new DummyContext();
+    }
+
+    /**
+     * Test utility.
+     * 
+     * @param entries
+     *            how many entries for the field
+     * @return a field with populated with numbers from 0 to 99
+     */
+    @SuppressWarnings("serial")
+    public Field makeTestField(final int entries) {
+        final Field res = DatatypeFactory.createField(entries);
+        IntStreams.range(0, entries).forEach(n -> res.addSample(new DeviceUID() { }, (double) n));
+        return res;
+    }
+
+    @Override
+    public double nextRandomDouble() {
+        return rng.nextDouble();
     }
 
     @Override
@@ -100,20 +116,6 @@ public final class DummyContext extends AbstractExecutionContext {
         IntStreams.range(0, 100).forEach(n -> res.addSample(new DeviceUID() {
             private static final long serialVersionUID = 1L;
         }, (double) n));
-        return res;
-    }
-
-    /**
-     * Test utility.
-     * 
-     * @param entries
-     *            how many entries for the field
-     * @return a field with populated with numbers from 0 to 99
-     */
-    @SuppressWarnings("serial")
-    public Field makeTestField(final int entries) {
-        final Field res = DatatypeFactory.createField(entries);
-        IntStreams.range(0, entries).forEach(n -> res.addSample(new DeviceUID() { }, (double) n));
         return res;
     }
 

@@ -3,4 +3,4 @@
  */
 import java.lang.Math.min
 import org.protelis.test.infrastructure.DummyContext.makeTestField
-hoodPlusSelf(min, 10, makeTestField());
+hoodPlusSelf(min, 10, makeTestField())

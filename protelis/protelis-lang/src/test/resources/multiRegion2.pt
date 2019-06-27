@@ -1,10 +1,10 @@
 import protelis:coord:meta
 import protelis:lang:utils
 import protelis:coord:nonselfstabilizing:accumulation
-
+import java.lang.Double.POSITIVE_INFINITY
 multiRegion(
     env.get("childPartition"), 
     (key) -> { key < 0.6 },
     () -> { gossip(env.get("n"), min) },
-    Infinity
+    POSITIVE_INFINITY
 )

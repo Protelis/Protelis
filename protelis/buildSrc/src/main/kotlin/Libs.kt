@@ -52,6 +52,10 @@ object Libs {
     const val fst: String = "de.ruedigermoeller:fst:" + Versions.fst
 
     /**
+     * https://github.com/classgraph/classgraph */
+    const val classgraph: String = "io.github.classgraph:classgraph:" + Versions.classgraph
+
+    /**
      * https://github.com/AlchemistSimulator/alchemist-interfaces */
     const val alchemist_interfaces: String = "it.unibo.alchemist:alchemist-interfaces:" +
             Versions.it_unibo_alchemist
@@ -65,18 +69,9 @@ object Libs {
      * http://junit.org */
     const val junit: String = "junit:junit:" + Versions.junit
 
-    const val me_tatarka_retrolambda_gradle_plugin: String =
-            "me.tatarka.retrolambda:me.tatarka.retrolambda.gradle.plugin:" +
-            Versions.me_tatarka_retrolambda_gradle_plugin
-
     /**
      * http://trove4j.sf.net */
     const val trove4j: String = "net.sf.trove4j:trove4j:" + Versions.trove4j
-
-    /**
-     * http://sourceforge.net/projects/streamsupport/ */
-    const val streamsupport: String = "net.sourceforge.streamsupport:streamsupport:" +
-            Versions.streamsupport
 
     /**
      * http://commons.apache.org/proper/commons-lang/ */
@@ -100,18 +95,31 @@ object Libs {
             Versions.org_eclipse_emf_ecore
 
     /**
-     * https://www.eclipse.org/Xtext/ */
-    const val org_eclipse_xtext_common_types: String =
-            "org.eclipse.xtext:org.eclipse.xtext.common.types:" +
-            Versions.org_eclipse_xtext_common_types
-
-    /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
+
+    const val org_jetbrains_kotlin_jvm_gradle_plugin: String =
+            "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:" +
+            Versions.org_jetbrains_kotlin_jvm_gradle_plugin
+
+    /**
+     * https://kotlinlang.org/ */
+    const val kotlin_scripting_compiler_embeddable: String =
+            "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
+            Versions.org_jetbrains_kotlin
+
+    /**
+     * https://kotlinlang.org/ */
+    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
+            Versions.org_jetbrains_kotlin
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String =
             "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +
             Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+
+    const val org_protelis_protelisdoc_gradle_plugin: String =
+            "org.protelis.protelisdoc:org.protelis.protelisdoc.gradle.plugin:" +
+            Versions.org_protelis_protelisdoc_gradle_plugin
 
     /**
      * http://protelis.org */

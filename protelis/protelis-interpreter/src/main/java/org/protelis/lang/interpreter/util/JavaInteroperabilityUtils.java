@@ -3,9 +3,7 @@ package org.protelis.lang.interpreter.util;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import java8.util.J8Arrays;
-import java8.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
@@ -14,8 +12,6 @@ import org.protelis.lang.interpreter.impl.DotOperator;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
-
-import static java8.util.stream.StreamSupport.stream;
 
 /**
  * Collection of utilities that ease the interoperability with Java.
@@ -112,7 +108,7 @@ public final class JavaInteroperabilityUtils {
     }
 
     private static List<AnnotatedTree<?>> toAnnotatedTree(final Object[] a) {
-        return J8Arrays.stream(a).map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
+        return Arrays.stream(a).map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
     }
 
     /**
@@ -164,7 +160,7 @@ public final class JavaInteroperabilityUtils {
             final ExecutionContext ctx,
             final FunctionDefinition fd,
             final List<?> args) {
-        final List<AnnotatedTree<?>> arguments = stream(args).map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
+        final List<AnnotatedTree<?>> arguments = args.stream().map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
         return runProtelisFunction(ctx, new Constant<>(METADATA, fd), arguments);
     }
 

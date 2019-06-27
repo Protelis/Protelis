@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.util;
 
-import static java8.util.stream.StreamSupport.stream;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,10 +16,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -38,12 +41,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
-import java8.util.J8Arrays;
-import java8.util.function.Function;
-import java8.util.stream.Collectors;
-import java8.util.stream.RefStreams;
 
 /**
  * Utilities that make easier to cope with Java Reflection.
@@ -80,8 +80,10 @@ public final class ReflectionUtils {
     private ReflectionUtils() {
     }
 
-    private static boolean compatibleLength(final Method m, final Object[] args) {
-        final Class<?>[] paramTypes = m.getParameterTypes();
+    private static boolean compatibleLength(@Nonnull final Method m, @Nonnull final Object[] args) {
+        Objects.requireNonNull(args, "Argument list cannot be null. Tried to invoke: " + m);
+        final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
+            .getParameterTypes();
         final boolean requiresContext = paramTypes.length > 0
                 && ExecutionContext.class.isAssignableFrom(paramTypes[0]);
         /*
@@ -110,7 +112,7 @@ public final class ReflectionUtils {
     }
 
     private static String formatArguments(final Object[] args) {
-        return RefStreams.of(args)
+        return Arrays.stream(args)
             .map(it -> it + ": " + it.getClass().getSimpleName())
             .collect(Collectors.joining(",", "(", ")"));
     }
@@ -163,10 +165,10 @@ public final class ReflectionUtils {
      * @return the result of the method invocation
      */
     public static Object invokeFieldable(
-            final ExecutionContext context,
-            final Method toInvoke,
-            final Object target,
-            final Object[] args) {
+            @Nonnull final ExecutionContext context,
+            @Nonnull final Method toInvoke,
+            @Nullable final Object target,
+            @Nonnull final Object[] args) {
         if (!compatibleLength(toInvoke, args)) {
             throw new IllegalArgumentException("Number of parameters of " + toInvoke
                     + " does not match the provided array " + Arrays.toString(args));
@@ -191,7 +193,11 @@ public final class ReflectionUtils {
     }
 
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "we need to intercept all runtime events")
-    private static Object invokeMethod(final ExecutionContext context, final Method method, final Object target, final Object[] args) {
+    private static Object invokeMethod(
+            @Nonnull final ExecutionContext context,
+            @Nonnull final Method method,
+            @Nullable final Object target,
+            @Nonnull final Object[] args) {
         final Object[] useArgs = repackageIfRequired(context, method, args);
         try {
             return method.invoke(target, useArgs);
@@ -216,7 +222,8 @@ public final class ReflectionUtils {
                         + " cannot get invoked because it is not accessible.", e); 
             } catch (IllegalArgumentException e) {
                 final boolean isStatic = target == null;
-                final String errorMessage = e.getMessage()
+                final String errorMessage = Optional.ofNullable(e.getMessage())
+                        .orElse("Probable argument type mismatch")
                     + ": cannot invoke "
                     + method
                     + " with arguments " + formatArguments(useArgs)
@@ -240,7 +247,7 @@ public final class ReflectionUtils {
         Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
         Objects.requireNonNull(methodName, "Method name can not be null.");
         Objects.requireNonNull(argClass, "Method arguments can not be null.");
-        final Method[] candidates = J8Arrays.stream(clazz.getMethods())
+        final Method[] candidates = Arrays.stream(clazz.getMethods())
             // Parameter number
             .filter(m -> compatibleLength(m, argClass))
             // Method name
@@ -265,7 +272,7 @@ public final class ReflectionUtils {
         final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
         for (final Method m: candidates) {
             final Class<?>[] expectedParameters = m.getParameterTypes();
-            final Class<?>[] actualArgClass;
+            final Class<?>[] actualArgClass; // NOPMD: false positive
             if (shouldPushContext(expectedParameters, argClass.length == 0 ? null : argClass[0])) {
                 /*
                  * Push "self" as implicit parameter
@@ -315,7 +322,7 @@ public final class ReflectionUtils {
         /*
          * Find best
          */
-        return stream(lm)
+        return lm.stream()
                 .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
                 .map(Pair::getSecond)
                 .orElseThrow(() -> new IllegalStateException("Method selection for " + methodName
@@ -334,14 +341,14 @@ public final class ReflectionUtils {
         }
     }
 
-    private static Object[] repackageIfRequired(final ExecutionContext context, final Method m, final Object[] args) {
+    private static Object[] repackageIfRequired(@Nonnull final ExecutionContext context, @Nonnull final Method m, @Nonnull final Object[] args) {
         final Class<?>[] expectedArgs = m.getParameterTypes();
-        final boolean pushContext = shouldPushContext(expectedArgs, args.length == 0 ? null : args[0].getClass());
+        final boolean pushContext = shouldPushContext(expectedArgs, args.length == 0 || args[0] == null ? null : args[0].getClass());
         if (m.isVarArgs() || pushContext) {
             // We will repackage into an array of the expected length
             final Object[] newargs = new Object[expectedArgs.length];
             // repackage all the base args
-            final int start;
+            final int start; // NOPMD: false positive
             if (pushContext) {
                 newargs[0] = context;
                 start = 1;

@@ -2,6 +2,7 @@ package org.protelis.vm.impl;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import org.protelis.vm.CodePath;
 import org.protelis.vm.CodePathFactory;
@@ -9,9 +10,9 @@ import org.protelis.vm.CodePathFactory;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
-import java8.util.function.Supplier;
 
 /**
  * A hash-based {@link CodePath} factory. It allows for predictable packet
@@ -32,6 +33,7 @@ import java8.util.function.Supplier;
  * </pre>
  * 
  */
+@SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "False positive, checked by a test.")
 public class HashingCodePathFactory implements CodePathFactory {
 
     private static final long serialVersionUID = 1L;

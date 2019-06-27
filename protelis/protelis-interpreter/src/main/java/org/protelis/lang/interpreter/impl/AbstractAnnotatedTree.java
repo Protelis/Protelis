@@ -8,14 +8,16 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import static java8.util.stream.StreamSupport.parallelStream;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -23,11 +25,6 @@ import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 import org.protelis.lang.interpreter.util.WithBytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
-
-import java8.util.function.BiConsumer;
-import java8.util.function.Consumer;
-import java8.util.stream.IntStream;
-import java8.util.stream.IntStreams;
 
 /**
  * Basic implementation of an {@link AnnotatedTree}.
@@ -154,6 +151,13 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
     }
 
     /**
+     * @return true if this node can get annotated with null values - namely, if it is an interaction with Java
+     */
+    protected boolean isNullable() {
+        return false;
+    }
+
+    /**
      * Facility to run lambdas across all the branches.
      * 
      * @param action
@@ -212,24 +216,12 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
     }
 
     private IntStream indexStream() {
-        return IntStreams.range(0, getBranchesNumber());
+        return IntStream.range(0, getBranchesNumber());
     }
 
     @Override
     public final boolean isErased() {
         return erased;
-    }
-
-    /**
-     * Facility to run lambdas across all the branches in a PARALELL fashion. Be
-     * EXTREMELY careful with this. If you are not sure whether or not you
-     * should use this, you should not.
-     * 
-     * @param action
-     *            the Consumer to execute
-     */
-    protected final void parallelForEach(final Consumer<? super AnnotatedTree<?>> action) {
-        parallelStream(branches).forEach(action);
     }
 
     /**
@@ -270,7 +262,8 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
      *            the annotation to set
      */
     protected final void setAnnotation(final T obj) {
-        annotation = obj;
+        annotation = isNullable() ? obj : Objects.requireNonNull(obj, () -> 
+            this.getClass().getSimpleName() + " does not allow null return values. In: " + stringFor(this));
         erased = false;
     }
 
@@ -310,6 +303,9 @@ public abstract class AbstractAnnotatedTree<T> implements AnnotatedTree<T>, With
      *         via {@link #getName()}
      */
     protected static final String stringFor(final AnnotatedTree<?> tree) {
-        return tree.isErased() ? tree.getName() : tree.getAnnotation().toString();
+        return Objects.requireNonNull(tree, "Impossible to convert a null AnnotatedTree to a String")
+            .isErased()
+                ? tree.getName()
+                : Optional.ofNullable(tree.getAnnotation()).map(Object::toString).orElse("null");
     }
 }

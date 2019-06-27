@@ -8,14 +8,14 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import java.util.Optional;
+
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
-
-import java8.util.Optional;
 
 /**
  * Evaluate a Protelis sub-program.
