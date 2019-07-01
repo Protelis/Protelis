@@ -40,15 +40,15 @@ public class HashingCodePathFactory implements CodePathFactory {
     /**
      * @param hashFunction the hashing algorithm to use
      */
-    public HashingCodePathFactory(final HashFunction hashFunction) {
-        this(hashFunction::newHasher);
+    public HashingCodePathFactory(final HasherSupplier hashFunction) {
+        algorithm = hashFunction;
     }
 
     /**
      * @param hashFunction the hashing algorithm to use
      */
-    public HashingCodePathFactory(final HasherSupplier hashFunction) {
-        algorithm = hashFunction;
+    public HashingCodePathFactory(final HashFunction hashFunction) {
+        this(hashFunction::newHasher);
     }
 
     @Override
@@ -96,11 +96,23 @@ public class HashingCodePathFactory implements CodePathFactory {
             }
             this.hash = copy ? Arrays.copyOf(hash, hash.length) : hash;
         }
+
         @Override
         public boolean equals(final Object obj) {
             return obj instanceof HashingCodePath
                     && Arrays.equals(hash, ((HashingCodePath) obj).hash);
         }
+
+        /**
+         * @return a byte[] representation of the hash. The returned array does not map
+         *         on the internal status of {@link HashingCodePath} and can get
+         *         modified.
+         */
+        public byte[] getHash() {
+            return Arrays.copyOf(hash, hash.length);
+        }
+        
+
         @Override
         public int hashCode() {
             // CHECKSTYLE: MagicNumber OFF
@@ -111,5 +123,4 @@ public class HashingCodePathFactory implements CodePathFactory {
             // CHECKSTYLE: MagicNumber ON
         }
     }
-
 }
