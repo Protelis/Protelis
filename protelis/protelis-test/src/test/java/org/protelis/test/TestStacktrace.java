@@ -1,5 +1,6 @@
 package org.protelis.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -36,5 +37,16 @@ public final class TestStacktrace {
             }
         });
     }
-
+    /**
+     * Test issue #231.
+     */
+    @Test
+    public void testRuntimeErrorOnClassCastFailure() {
+        ProgramTester.runExpectingErrors("minHood([])", ProtelisRuntimeException.class, e -> {
+            assertNotNull(e.getMessage());
+            final String fullTrace = e.toString();
+            assertTrue("Exception does not include type cast failure indication\n" + fullTrace,
+                    e.getMessage().contains("cannot be cast"));
+        });
+    }
 }

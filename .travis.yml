@@ -1,17 +1,11 @@
-os:
-  - linux
-  - osx
-language: java
-jdk:
-  - openjdk8
-  - openjdk9
-  - openjdk10
-  - openjdk11
-  - openjdk12
-
+language: bash
 git:
   depth: false
-
+os:
+  - osx
+  - linux
+  - windows
+dist: xenial
 env:
   global:
     - TERM=dumb
@@ -22,26 +16,32 @@ env:
     - secure: "acaM42nAfxH9PqMa8DzptC9+0UP5CxIvhQW+FrTW3SkDDI2b4rdAmpOlg7dsaiuYXVwEwRKDwu+HmGayClC1JTeEjwXV6adH/2DPS7GwdZlxinX66PMxrOtJ8kfyuyr/LbTHNv4kvnVngGf7iyx9b9/7+1Yygs8znI71GNUY7SOg0nDVmk/aXZKWk3dg4OO3F1NEmwVDrWVHL+PIznZjpPiUZfmi+KJA+uJDAB6QnhBV78YlVi5FBG3NZG7V35ecFpIZ1w0Hqdst7QneRN4Sra3hJ22r8VJDWc4bcdVZ5dcXIOzTHIqeL9O4/oIOBHqgHjgIpYiXp93HSwoJD+PRXvF7JVXrebiIT6QT2+iLM7ph+Wj/suxTTsymhYI7iMBzRP0WDpsywBdx+LR7oBpoa32/v6KxCkdzt0RslUeMtRBRTltzAl9Sh9zcbw3RQtyBEpwtLwKF6+zfSUulTCP/JNMOHtfoYIv7+ZvgjRHXe0Jt3Ad/1HbHDpth9udYiBb3O9/bBWYl/rqxUAwGIGR9+pWPOIfIumZptI12eIiYOU2KLJ5P3/KRe9zIjVmH426TRrC1L/CQs4+N8Rt0S6nS5mkJ/tumxitfpmh+A+lt14P9sKxud8TCZpfHfmD1YOWwQA25oa3Kj+pErV1zm/zlHuGdmUYoeOkHOIL3Ruyx+OY="
     - secure: "I4+Yjiu5Y5khd4MzFtY5UP2P+L72wklqgZ4uDNhQ+RJeIgOmbKit0tluWda/KpFVEC9K+SuGLURtzsL9XnmiBRbPdOaB/a6cJPW4TUzmpxbyu4Zl2OlcqngVOBku7al+54cMergdXFK0eflXlDik/8RH0stOd79tPoyDerdfUhoy1Tbdi0F014UBhHM4YraB7Tcunchw4InjcEWBtLY7VZMyw1CCeajf9r7ucXRyUnSjAjvR7jPVKg4+yiCefkC45xR0sok0cHec/HjDw9HReV40PkBNmTSTT8qjWPgH118zzMWR38B7gVvOIvPG549939yHv/q94VIIKn0ZDFwtk2CtcyX4HD35QM/EmfBHboEq55ckmSuz3L48X+C78697+4lZ4aa7/30y8TJIEiDeuAmNtvXAvf7zio+3lZs5OpyEAbHlpvt8ggzutrG6o9EskfgJ8c5g3zLP3/Q8OtefqR3DWArNNMpYk6UpL7JEN8LekloCOofM1XZh21ucqss+k1MC5IG3o9sCIs9ToW3CX9Kf9LGtpYhbnQPCNw9BBUxuIaignXOODGdYxjMmDQyZ+s1+mJr2WxHmmMxyu+TBFh5H9few26JDNWxO4+C2Ql95qlL9zUiRQFWsR3eOAqzbshY0yhTju0vIrsxxqxK+gtXij9jnKAfjvD3/Ai3bnIQ="
     - secure: "hhegqLy8o3Q0SJXFX5fqnixwQyADBNv5NSotuXEFf3qsb1/0CvGu+0rFkP0z+Aq5p8amv71NTl7KHvcpGodpNl28HYjbsfg3wbszdJIJuyX6fGxxMdaegb++coSU6mav9Of7zKbeg+uoE/qkE/CpGeak5L872xM3TiS0mA4+Eer3hArHDHt5zAzsUkEkZCgiuMYhUXopYB7BX1N/c/E3Sj8fD2yryDa4mfs5kaXChAbi/k4A6+CsScaF+F7v1XKaoJRy2PgYw28V9AsHr5Y6DwBYyGloZUGAWAcc6qHZaJqcO2ltVSAT1duTOi6kEy7Mvxyv4buj3hhMbq1OpINukCSKfLwwj3+gQOiOCDAmMIJPm/mJzjMS+puMu0+5K3bCRq2IrjyGkP6ZOflINaF6Pi4djBpZp2+ksTSdO73hJYSu6PltXS/XTEEocQYxvFM4cXNy1clxvMFI0aoC0Ihc7GdVheDbO0A1bJ0y9bxGEb0fYrEH1RyDvzxV4mXZFG8x9M4+sKhyIU7Et4dGB9d/YQCVp00//POOdKeXSlXFR/6SOp4eRga/G6S3a6aBJDcO7maiwC4rt9r6fPotGZvYuFRbVG4U2XvhW65V5LY4UVniGz5nBNu/EksMg5ULBMp+1IhJ79cMjotzj+pNvUwpBml6CbNzSYGY1BUUrIVZy9E="
-  matrix:
+    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
     - PUBLISH="false"
-
+  matrix:
+    - JDK="adopt@1.8.212-04"
+    - JDK="adopt-openj9@1.8.212-04"
+    - JDK="adopt@1.9.181-0"
+    - JDK="adopt@1.10.0-2"
+    - JDK="adopt@1.11.28-0"
+    - JDK="adopt-openj9@1.11.28-0"
+    - JDK="adopt@1.12.33-0"
+    - JDK="1.12.0-1"
 matrix:
   include:
-    - jdk: openjdk8
-      env: PUBLISH="true"
-      os: linux
+    - os: linux
+      env: PUBLISH="true" JDK="adopt@1.8.212-04"
   exclude:
-    - jdk: openjdk8
-      env: PUBLISH="false"
-      os: linux
-    - jdk: openjdk8
-      os: osx
-    - jdk: openjdk9
-      os: osx
-    - jdk: openjdk10
-      os: osx
-
-before_install: >-
+    - os: linux
+      env: JDK="adopt@1.8.212-04"
+    # No certificates configured
+    - os: windows
+      env: JDK="adopt@1.9.181-0"
+    - os: windows
+      env: JDK="adopt@1.10.0-2"
+before_install: |-
+    curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
+    bash .install-jdk-travis.sh
     if [ $TRAVIS_OS_NAME = 'linux' ]; then
         sudo apt-get -qq update;
         sudo apt-get install -y graphviz;
@@ -49,25 +49,31 @@ before_install: >-
     else
         export SHOULD_CONFIGURE="$(echo 'false')"
     fi;
-
 install:  >-
     if $SHOULD_CONFIGURE; then
         openssl aes-256-cbc -K $encrypted_e9b2eb0f7f1a_key -iv $encrypted_e9b2eb0f7f1a_iv -in prepare_environment.sh.enc -out prepare_environment.sh -d
         bash prepare_environment.sh
     fi
-
-script: >-
-    cd protelis;
-    ./gradlew clean check fatJar --scan;
-
-after_success: >-
-    cd protelis;
+before_script:
+  - "if [ -f ~/.windows_config ]; then source ~/.windows_config; fi"
+script: |-
+    cd protelis
+    ./gradlew clean check fatJar --scan
+before_cache:
+  - curl "${GRAVIS}.clean_gradle_cache.sh" --output .clean_gradle_cache.sh
+  - bash .clean_gradle_cache.sh
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.jabba/
+after_success: |-
+    cd protelis
     if $SHOULD_CONFIGURE && $PUBLISH; then
         ./gradlew javadoc buildDashboard projectReport publish --scan
         mkdir -p report
         cp --parent */build/reports build/reports report -R
     fi
-    
 deploy:
   - provider: releases
     skip_cleanup: true
