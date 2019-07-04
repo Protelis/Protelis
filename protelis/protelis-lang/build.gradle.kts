@@ -1,6 +1,6 @@
-//plugins {
-//    id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
-//}
+// plugins {
+//     id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
+// }
 
 dependencies {
     implementation(project(":protelis-interpreter"))
