@@ -46,7 +46,8 @@ public final class TestStacktrace {
             assertNotNull(e.getMessage());
             final String fullTrace = e.toString();
             assertTrue("Exception does not include type cast failure indication\n" + fullTrace,
-                    e.getMessage().contains("cannot be cast"));
+                    e.getMessage().contains("cannot be cast")
+                    || e.getMessage().matches(".*Tuple.*incompatible\\swith.*Field.*"));
         });
     }
 }
