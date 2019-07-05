@@ -65,7 +65,6 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-    - $HOME/.jabba/
 after_success: |-
     cd protelis
     if $SHOULD_CONFIGURE && $PUBLISH; then
