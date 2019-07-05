@@ -39,12 +39,13 @@ matrix:
       env: JDK="adopt@1.9.181-0"
     - os: windows
       env: JDK="adopt@1.10.0-2"
-before_install: |-
-    curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-    bash .install-jdk-travis.sh
+before_install:
+  - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
+  - bash .install-jdk-travis.sh
+  - |-
     if [ $TRAVIS_OS_NAME = 'linux' ]; then
-        sudo apt-get -qq update;
-        sudo apt-get install -y graphviz;
+        sudo apt-get -qq update
+        sudo apt-get install -y graphviz
         export SHOULD_CONFIGURE="$(if [ $TRAVIS_PULL_REQUEST = "false" ] && [ $TRAVIS_REPO_SLUG = 'Protelis/Protelis' ]; then echo 'true'; else echo 'false'; fi)"
     else
         export SHOULD_CONFIGURE="$(echo 'false')"
