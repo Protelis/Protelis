@@ -41,7 +41,7 @@ matrix:
       env: JDK="adopt@1.10.0-2"
 before_install:
   - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-  - bash .install-jdk-travis.sh
+  - bash .install-jdk-travis.sh && source ~/.jdk_config
   - |-
     if [ $TRAVIS_OS_NAME = 'linux' ]; then
         sudo apt-get -qq update
@@ -55,8 +55,6 @@ install:  >-
         openssl aes-256-cbc -K $encrypted_e9b2eb0f7f1a_key -iv $encrypted_e9b2eb0f7f1a_iv -in prepare_environment.sh.enc -out prepare_environment.sh -d
         bash prepare_environment.sh
     fi
-before_script:
-  - "if [ -f ~/.windows_config ]; then source ~/.windows_config; fi"
 script: |-
     cd protelis
     ./gradlew clean check fatJar --scan
