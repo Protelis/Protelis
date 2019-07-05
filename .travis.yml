@@ -82,7 +82,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
-      jdk: openjdk8
+      condition: $PUBLISH
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
@@ -90,7 +90,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       branch: develop
-      jdk: openjdk8
+      condition: $PUBLISH
   - provider: surge
     skip_cleanup: true
     project: "./protelis/report"
@@ -98,7 +98,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       branch: develop
-      jdk: openjdk8
+      condition: $PUBLISH
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
@@ -106,7 +106,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
-      jdk: openjdk8
+      condition: $PUBLISH
   - provider: surge
     skip_cleanup: true
     project: "./protelis/report"
@@ -114,7 +114,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
-      jdk: openjdk8
+      condition: $PUBLISH
 after_deploy: echo Deployment phase concluded.
 
 notifications:
