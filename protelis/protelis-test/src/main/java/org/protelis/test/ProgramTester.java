@@ -32,6 +32,7 @@ import java8.util.stream.IntStreams;
  * Test a protelis program.
  */
 public final class ProgramTester {
+    private static final Logger LOGGER = LoggerFactory.getLogger("Protelis Test");
     private static final String SL_NAME = "singleLineComment";
     private static final String ML_NAME = "multilineComment";
     private static final String EXPECTED = "EXPECTED_RESULT:";
@@ -43,7 +44,6 @@ public final class ProgramTester {
     private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
     private static final int MIN_CYCLE_NUM = 1;
     private static final int MAX_CYCLE_NUM = 100;
-    private static final Logger L = LoggerFactory.getLogger(ProgramTester.class);
 
     private ProgramTester() {
     }
@@ -88,9 +88,13 @@ public final class ProgramTester {
             final String message = (searchCause ? result.getCause() : result)
                     .getMessage().toLowerCase(Locale.ENGLISH);
             assertNotNull(message);
-            for (final String messagePart : messageContents) {
-                assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
-                        message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
+            if (Locale.getDefault().equals(Locale.ENGLISH)) {
+                for (final String messagePart : messageContents) {
+                    assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
+                            message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
+                }
+            } else {
+                LOGGER.warn("Check of exception message content disabled on non-English locale " + Locale.getDefault());
             }
         });
     }
@@ -227,7 +231,7 @@ public final class ProgramTester {
         final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();
-            L.debug("[rnd {}] res: {}", i, vm.getCurrentValue());
+            LOGGER.debug("[rnd {}] res: {}", i, vm.getCurrentValue());
         }
         return vm.getCurrentValue();
     }
