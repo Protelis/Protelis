@@ -21,7 +21,6 @@ env:
   matrix:
     - JDK="adopt@1.8.212-04"
     - JDK="adopt-openj9@1.8.212-04"
-    - JDK="adopt@1.9.181-0"
     - JDK="adopt@1.10.0-2"
     - JDK="adopt@1.11.28-0"
     - JDK="adopt-openj9@1.11.0-3"
@@ -34,9 +33,6 @@ matrix:
   exclude:
     - os: linux
       env: JDK="adopt@1.8.212-04"
-    # No certificates configured
-    - os: windows
-      env: JDK="adopt@1.9.181-0"
     - os: windows
       env: JDK="adopt@1.10.0-2"
 before_install:
