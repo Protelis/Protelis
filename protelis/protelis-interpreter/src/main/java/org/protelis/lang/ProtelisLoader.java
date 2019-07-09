@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -108,6 +109,8 @@ import org.protelis.parser.protelis.VarUse;
 import org.protelis.parser.protelis.Yield;
 import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.base.Charsets;
@@ -133,6 +136,10 @@ public final class ProtelisLoader {
                     .build();
         }
     };
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProtelisLoader.class);
+    private static final String OPEN_J9_EMF_WORKED_AROUND = "Working around OpenJ9 + Eclipse EMF bug."
+            + "See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=549084"
+            + "and https://github.com/eclipse/openj9/issues/6370";
     private static final String PROTELIS_FILE_EXTENSION = "pt";
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
         .expireAfterAccess(1, TimeUnit.MINUTES)
@@ -150,6 +157,7 @@ public final class ProtelisLoader {
             return new PathMatchingResourcePatternResolver();
         }
     };
+
     private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
         @Override
         protected XtextResourceSet initialValue() {
@@ -192,20 +200,24 @@ public final class ProtelisLoader {
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
         if (LOADED_RESOURCES.get().getIfPresent(realURI) == null && !alreadyInQueue.contains(realURI)) {
             alreadyInQueue.add(realURI);
-            final URI uri = URI.createURI(realURI);
+            final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(realURI));
             final org.springframework.core.io.Resource protelisFile = RESOLVER.get().getResource(realURI);
-            final InputStream is = protelisFile.getInputStream();
-            final String ss = IOUtils.toString(is, "UTF-8");
-            is.close();
-            final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
-            while (matcher.find()) {
-                final int start = matcher.start(1);
-                final int end = matcher.end(1);
-                final String imp = ss.substring(start, end);
-                final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
-                loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+            if (protelisFile.exists()) {
+                final InputStream is = protelisFile.getInputStream();
+                final String ss = IOUtils.toString(is, "UTF-8");
+                is.close();
+                final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
+                while (matcher.find()) {
+                    final int start = matcher.start(1);
+                    final int end = matcher.end(1);
+                    final String imp = ss.substring(start, end);
+                    final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
+                    loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+                }
+                LOADED_RESOURCES.get().put(realURI, workAroundOpenJ9EMFBug(() -> target.getResource(uri, true)));
+            } else {
+                throw new IllegalStateException("expected resource " + realURI + " was not found");
             }
-            LOADED_RESOURCES.get().put(realURI, target.getResource(uri, true));
         }
     }
 
@@ -342,6 +354,7 @@ public final class ProtelisLoader {
      *            Xtext transparently. {@link URI}s of type "platform:/" are
      *            supported, for those who work within an Eclipse environment.
      * @return an {@link ProtelisProgram} comprising the constructed program
+     * @throws IOException 
      * @throws IllegalArgumentException
      *             when the program has errors
      */
@@ -350,13 +363,19 @@ public final class ProtelisLoader {
             throw new IllegalArgumentException("The empty string is not a valid program, nor a valid module name");
         }
         try {
-            if (REGEX_PROTELIS_MODULE.matcher(Objects.requireNonNull(program, "The Protelis Program can not be null"))
-                    .matches()) {
-                return parseURI("classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION);
+            if (REGEX_PROTELIS_MODULE.matcher(program).matches()) {
+                final String programURI = "classpath:/" + program.replace(':', '/') + "." + PROTELIS_FILE_EXTENSION;
+                final Optional<ProtelisProgram> programResource = resourceFromURIString(programURI)
+                        .map(ProtelisLoader::parse);
+                if (programResource.isPresent()) {
+                    return programResource.get();
+                }
             }
-            return parseURI(program);
+            return resourceFromURIString(program)
+                .map(ProtelisLoader::parse)
+                .orElseGet(() -> parseAnonymousModule(program));
         } catch (IOException e) {
-            return parseAnonymousModule(program);
+            throw new IllegalStateException(program + " looks like an URI, but its resolution failed (see cause)", e);
         }
     }
 
@@ -398,7 +417,7 @@ public final class ProtelisLoader {
      *             when the program has errors
      */
     public static ProtelisProgram parseURI(final String programURI) throws IOException {
-        return parse(resourceFromURIString(programURI));
+        return parse(resourceFromURIString(programURI).orElseThrow(IllegalArgumentException::new));
     }
 
     private static List<Diagnostic> recursivelyCollectErrors(final Resource resource) {
@@ -448,9 +467,10 @@ public final class ProtelisLoader {
      * @return a dummy:/ resource that can be used to interpret the program
      */
     public static Resource resourceFromString(final String program) {
-        final URI uri = URI.createURI("dummy:/protelis-generated-program-"
-        + Hashing.sha512().hashString(program, StandardCharsets.UTF_8)
-        + ".pt");
+        final String programId = "dummy:/protelis-generated-program-"
+            + Hashing.sha512().hashString(program, StandardCharsets.UTF_8)
+            + ".pt";
+        final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(programId));
         synchronized (XTEXT) {
             Resource r = XTEXT.get().getResource(uri, false);
             if (r == null) {
@@ -471,11 +491,15 @@ public final class ProtelisLoader {
         }
     }
 
-    private static Resource resourceFromURIString(final String programURI) throws IOException {
-        loadResourcesRecursively(XTEXT.get(), programURI);
+    private static Optional<Resource> resourceFromURIString(final String programURI) throws IOException {
         final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
-        final URI uri = URI.createURI(realURI);
-        return XTEXT.get().getResource(uri, true);
+        if (RESOLVER.get().getResource(realURI).exists()) {
+            loadResourcesRecursively(XTEXT.get(), programURI);
+            final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(realURI));
+            return Optional.of(XTEXT.get().getResource(uri, true));
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static <T> BinaryOperator<T> throwException() {
@@ -493,6 +517,15 @@ public final class ProtelisLoader {
             return REFERENCES.get(o);
         } catch (ExecutionException e) {
             throw new IllegalStateException("Unable to create a reference for " + o, e);
+        }
+    }
+
+    private static <R> R workAroundOpenJ9EMFBug(final Supplier<R> fun) {
+        try {
+            return fun.get();
+        } catch (AssertionError e) {
+            LOGGER.warn(OPEN_J9_EMF_WORKED_AROUND, e);
+            return fun.get();
         }
     }
 

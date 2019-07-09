@@ -12,6 +12,7 @@ dependencies {
     implementation(Libs.commons_io)
     implementation(Libs.fst)
     implementation(Libs.commons_lang3)
+    implementation(Libs.slf4j_api)
     implementation(Libs.spring_core)
 }
 

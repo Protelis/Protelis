@@ -90,11 +90,6 @@ object Libs {
             Versions.org_danilopianini_publish_on_central_gradle_plugin
 
     /**
-     * https://www.eclipse.org/emf */
-    const val org_eclipse_emf_ecore: String = "org.eclipse.emf:org.eclipse.emf.ecore:" +
-            Versions.org_eclipse_emf_ecore
-
-    /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
 

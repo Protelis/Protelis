@@ -45,8 +45,6 @@ object Versions {
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1" 
 
-    const val org_eclipse_emf_ecore: String = "2.12.0" // available: "2.18.0"
-
     const val apiviz: String = "1.3.2.GA" 
 
     const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.31" // available: "1.3.41"
@@ -55,7 +53,7 @@ object Versions {
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.0.0" // available: "8.1.0"
 
-    const val protelis_parser: String = "9.1.2"
+    const val protelis_parser: String = "9.1.2" 
 
     const val slf4j_api: String = "1.7.26" 
 
@@ -71,7 +69,7 @@ object Versions {
 
         const val currentVersion: String = "5.5"
 
-        const val nightlyVersion: String = "5.6-20190706000041+0000"
+        const val nightlyVersion: String = "5.6-20190709000031+0000"
 
         const val releaseCandidate: String = ""
     }
