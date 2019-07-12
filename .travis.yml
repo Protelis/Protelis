@@ -67,8 +67,8 @@ jobs:
         - bash prepare_environment.sh
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - ./gradlew generateProtelisDoc -x test --scan --parallel
-        - ./gradlew javadoc buildDashboard projectReport fatJar -x test --scan --parallel
+        - ./gradlew generateProtelisDoc -x test --scan
+        - ./gradlew javadoc buildDashboard projectReport fatJar -x test --scan
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
       after_success:
