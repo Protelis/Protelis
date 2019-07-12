@@ -31,7 +31,6 @@ env:
     - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
     - PUBLISH="false"
     - OFFICIAL_REPO_SLUG="Protelis/Protelis"
-    - REFERENCE_OS="linux"
   matrix:
     - *reference_jdk
     - JDK="adopt-openj9@1.8.212-04"
