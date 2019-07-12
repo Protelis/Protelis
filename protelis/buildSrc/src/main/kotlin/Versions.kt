@@ -13,7 +13,7 @@ object Versions {
 
     const val spotbugs_annotations: String = "3.1.12" 
 
-    const val guava: String = "27.1-jre" // available: "28.0-jre"
+    const val guava: String = "28.0-jre" 
 
     const val com_gradle_build_scan_gradle_plugin: String = "2.3" 
 
@@ -29,7 +29,7 @@ object Versions {
 
     const val fst: String = "2.57" 
 
-    const val classgraph: String = "4.8.37" // available: "4.8.43"
+    const val classgraph: String = "4.8.43" 
 
     const val it_unibo_alchemist: String = "4.0.0" // available: "8.2.2"
 
@@ -47,9 +47,9 @@ object Versions {
 
     const val apiviz: String = "1.3.2.GA" 
 
-    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.31" // available: "1.3.41"
+    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.41" 
 
-    const val org_jetbrains_kotlin: String = "1.3.31" // available: "1.3.41"
+    const val org_jetbrains_kotlin: String = "1.3.41" 
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.1.0" 
 
@@ -57,7 +57,7 @@ object Versions {
 
     const val slf4j_api: String = "1.7.26" 
 
-    const val spring_core: String = "5.1.7.RELEASE" // available: "5.1.8.RELEASE"
+    const val spring_core: String = "5.1.8.RELEASE" 
 
     /**
      *
