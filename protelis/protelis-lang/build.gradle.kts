@@ -1,4 +1,3 @@
-import it.unibo.protelis2kotlin.Protelis2KotlinDocPlugin
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
