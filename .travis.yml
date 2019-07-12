@@ -1,7 +1,7 @@
 reference_jdk: &reference_jdk
   'JDK="adopt@1.8.212-04"'
 reference_os: &reference_os
-  'windows'
+  'linux'
 official_repo: &official_repo
   'Protelis/Protelis'
 language: bash
