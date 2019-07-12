@@ -1,6 +1,9 @@
-// plugins {
-//     id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
-// }
+import it.unibo.protelis2kotlin.Protelis2KotlinDocPlugin
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+    id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
+}
 
 dependencies {
     implementation(project(":protelis-interpreter"))
@@ -19,5 +22,11 @@ sourceSets {
             srcDir("src/main/protelis")
             srcDir("src/test/resources")
         }
+    }
+}
+
+if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+    setOf("configureGenerateProtelisDoc", "generateProtelisDoc", "generateKotlinFromProtelis").map {
+        tasks.getByName(it)?.enabled = false
     }
 }

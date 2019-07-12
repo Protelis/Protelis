@@ -112,6 +112,10 @@ object Libs {
             "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +
             Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
 
+    const val org_protelis_protelisdoc_gradle_plugin: String =
+            "org.protelis.protelisdoc:org.protelis.protelisdoc.gradle.plugin:" +
+            Versions.org_protelis_protelisdoc_gradle_plugin
+
     /**
      * http://protelis.org */
     const val protelis_parser: String = "org.protelis:protelis.parser:" + Versions.protelis_parser
