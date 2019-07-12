@@ -2,6 +2,8 @@ reference_jdk: &reference_jdk
   'JDK="adopt@1.8.212-04"'
 reference_os: &reference_os
   'linux'
+official_repo: &official_repo
+  'Protelis/Protelis'
 language: bash
 git:
   depth: false
@@ -93,7 +95,7 @@ deploy:
     file_glob: true
     file: "${HOME}/build/${TRAVIS_REPO_SLUG}/protelis/build/libs/protelis-redist*.jar"
     on:
-      repo: Protelis/Protelis
+      repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
   - provider: surge
@@ -101,7 +103,7 @@ deploy:
     project: "./protelis/build/docs/javadoc/"
     domain: protelis-unstable-doc.surge.sh
     on:
-      repo: Protelis/Protelis
+      repo: *official_repo
       branch: develop
       condition: $PUBLISH = "true"
   - provider: surge
@@ -109,7 +111,7 @@ deploy:
     project: "./protelis/report"
     domain: protelis-unstable-reports.surge.sh
     on:
-      repo: Protelis/Protelis
+      repo: *official_repo
       branch: develop
       condition: $PUBLISH = "true"
   - provider: surge
@@ -117,7 +119,7 @@ deploy:
     project: "./protelis/build/docs/javadoc/"
     domain: protelis-doc.surge.sh
     on:
-      repo: Protelis/Protelis
+      repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
   - provider: surge
@@ -125,7 +127,7 @@ deploy:
     project: "./protelis/report"
     domain: protelis-reports.surge.sh
     on:
-      repo: Protelis/Protelis
+      repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
 after_deploy: echo Deployment phase concluded.
