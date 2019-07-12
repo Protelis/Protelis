@@ -72,7 +72,6 @@ jobs:
       after_success:
         - ./gradlew publish --scan --parallel
 before_install:
-  -  if [[ $PUBLISH ]]; then echo deploy enabled; else deploy disabled; fi
   - curl "${GRAVIS}.disable-windows-defender.sh" --output .disable-windows-defender.sh
   - source .disable-windows-defender.sh
   - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
@@ -97,7 +96,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
-      condition: $PUBLISH
+      condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
@@ -105,7 +104,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       branch: develop
-      condition: $PUBLISH
+      condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
     project: "./protelis/report"
@@ -113,7 +112,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       branch: develop
-      condition: $PUBLISH
+      condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
     project: "./protelis/build/docs/javadoc/"
@@ -121,7 +120,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
-      condition: $PUBLISH
+      condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
     project: "./protelis/report"
@@ -129,7 +128,7 @@ deploy:
     on:
       repo: Protelis/Protelis
       tags: true
-      condition: $PUBLISH
+      condition: $PUBLISH = "true"
 after_deploy: echo Deployment phase concluded.
 
 notifications:
