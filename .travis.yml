@@ -71,17 +71,6 @@ jobs:
         - ./gradlew javadoc buildDashboard projectReport fatJar -x test --scan
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
-        - ls $TRAVIS_BUILD_DIR
-        - ls $TRAVIS_BUILD_DIR/protelis/
-        - ls $TRAVIS_BUILD_DIR/protelis/build/
-        - ls $TRAVIS_BUILD_DIR/protelis/build/docs/
-        - ls $TRAVIS_BUILD_DIR/protelis/build/docs/javadoc/
-        - ls $TRAVIS_BUILD_DIR/protelis/report
-        - ls $TRAVIS_BUILD_DIR/protelis/protelis-lang/
-        - ls $TRAVIS_BUILD_DIR/protelis/protelis-lang/build/
-        - ls $TRAVIS_BUILD_DIR/protelis/protelis-lang/build/protelis-docs/
-        - ls $TRAVIS_BUILD_DIR/protelis/build/docs/javadoc/
-        - cd "$TRAVIS_BUILD_DIR"/protelis
       after_success:
         - ./gradlew publish --scan --parallel
 before_install:
@@ -112,7 +101,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "$TRAVIS_BUILD_DIR/protelis/build/docs/javadoc/"
+    project: "./protelis/build/docs/javadoc/"
     domain: protelis-unstable-doc.surge.sh
     on:
       repo: *official_repo
@@ -120,7 +109,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "$TRAVIS_BUILD_DIR/protelis/report"
+    project: "./protelis/report"
     domain: protelis-unstable-reports.surge.sh
     on:
       repo: *official_repo
@@ -128,7 +117,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "$TRAVIS_BUILD_DIR/protelis/protelis-lang/build/protelis-docs/"
+    project: "./protelis/protelis-lang/build/protelis-docs/"
     domain: protelis-lang-unstable-doc.surge.sh
     on:
       repo: *official_repo
@@ -136,7 +125,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "$TRAVIS_BUILD_DIR/protelis/build/docs/javadoc/"
+    project: "./protelis/build/docs/javadoc/"
     domain: protelis-doc.surge.sh
     on:
       repo: *official_repo
@@ -144,7 +133,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "$TRAVIS_BUILD_DIR/protelis/report"
+    project: "./protelis/report"
     domain: protelis-reports.surge.sh
     on:
       repo: *official_repo
@@ -152,7 +141,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "$TRAVIS_BUILD_DIR/protelis/protelis-lang/build/protelis-docs/"
+    project: "./protelis/protelis-lang/build/protelis-docs/"
     domain: protelis-lang-doc.surge.sh
     on:
       repo: *official_repo
