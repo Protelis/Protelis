@@ -20,7 +20,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
  * A simple implementation of a Protelis-based device, encapsulating a
  * ProtelisVM and a network interface.
  */
-public final class DummyDevice extends AbstractExecutionContext
+public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
                 implements SpatiallyEmbeddedDevice, LocalizedDevice, TimeAwareDevice {
     private final RandomGenerator r;
     private final ProtelisNode node;
@@ -77,7 +77,7 @@ public final class DummyDevice extends AbstractExecutionContext
     }
 
     @Override
-    protected AbstractExecutionContext instance() {
+    protected DummyDevice instance() {
         return new DummyDevice(env, node, react, r, netmgr);
     }
 

@@ -42,8 +42,16 @@ import gnu.trove.stack.array.TIntArrayStack;
  * Partial implementation of ExecutionContext, containing functionality expected
  * to be shared between most implementations. Instantiations of Protelis should
  * generally extend this class.
+ *
+ * @param <S> self-type. Subclasses must parameterize AbstractExecutionContext
+ *            with themselves, and return themselves in instance(). This forces
+ *            a compiler check on the type of instanced contexts, ensuring (if
+ *            no foolish cast is used) that restricted contexts have all the
+ *            methods available in the main {@link ExecutionContext}. For
+ *            instance, if your class is MyContext, it should be written as
+ *            MyContext extends AbstractExecutionContext<MyContext>.
  */
-public abstract class AbstractExecutionContext implements ExecutionContext {
+public abstract class AbstractExecutionContext<S extends AbstractExecutionContext<S>> implements ExecutionContext {
 
     private static final int MASK = 0xFF;
     private final TIntList callStack = new TIntArrayList(10, -1);
@@ -55,7 +63,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
     private Map<CodePath, Object> toSend;
-    private final List<AbstractExecutionContext> restrictedContexts = Lists.newArrayList(); 
+    private final List<AbstractExecutionContext<S>> restrictedContexts = Lists.newArrayList(); 
     private Number previousRoundTime;
     private final ExecutionEnvironment env;
     private int exportsSize;
@@ -143,7 +151,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         theta = null;
         toSend = null;
         tobeComputedBeforeSending = null;
-        for (final AbstractExecutionContext rctx: restrictedContexts) {
+        for (final AbstractExecutionContext<S> rctx: restrictedContexts) {
             rctx.commitRecursively();
         }
         restrictedContexts.clear();
@@ -211,10 +219,10 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
      * 
      * @return Child execution context
      */
-    protected abstract AbstractExecutionContext instance();
+    protected abstract S instance();
 
     @Override
-    public final AbstractExecutionContext restrictDomain(final Field f) {
+    public final S restrictDomain(final Field f) {
         final Map<DeviceUID, Map<CodePath, Object>> restricted = newLinkedHashMapWithExpectedSize(theta.size());
         final DeviceUID localDevice = getDeviceUID();
         for (final DeviceUID n : f.nodeIterator()) {
@@ -222,7 +230,8 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
                 restricted.put(n, theta.get(n));
             }
         }
-        final AbstractExecutionContext restrictedInstance = instance();
+        final S correctlyTypedInstance = instance();
+        final AbstractExecutionContext<S> restrictedInstance = correctlyTypedInstance;
         restrictedInstance.theta = restricted;
         restrictedInstance.gamma = gamma;
         restrictedInstance.toSend = toSend;
@@ -233,7 +242,7 @@ public abstract class AbstractExecutionContext implements ExecutionContext {
         restrictedInstance.variablesSize = variablesSize;
         restrictedInstance.previousRoundTime = previousRoundTime;
         restrictedContexts.add(restrictedInstance);
-        return restrictedInstance;
+        return correctlyTypedInstance;
     }
 
     @Override
