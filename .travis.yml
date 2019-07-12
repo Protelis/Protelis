@@ -67,7 +67,7 @@ jobs:
         - bash prepare_environment.sh
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - ./gradlew javadoc buildDashboard projectReport fatJar -x test --scan --parallel
+        - ./gradlew javadoc generateProtelisDoc buildDashboard projectReport fatJar -x test --scan --parallel
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
       after_success:
@@ -93,14 +93,14 @@ deploy:
     api_key:
       secure: RbsjBbESCgf2L6eerGH+tdrne5zJDlmq/ttzFnBXeN2n726W3xk7w08tQQVDlL+d90RPSbqVUGHS/erB7y3kGVYkfj0/w21PMZSY42Tw4r57YExSywPTBN+LDi/Cfrj1Kqknqk6WGOCKXSPkmyYLFaj+/qel7QxNDXVn8VEDfh2k5AdZVhdJW8bqNHM3aF8XxfyXgzg+Wg9NXrEz6UcztES3PoWjlDGgspOUel7/UMmsNnlWkt0MC5Bv8t0PviHaThD7qjiJfiDxIc3KhvWQWokRhcUxJVTnR1pjzMAXEypjGZANOEqxsLi8HAGwUmjsJp4Xv4GnIolRQMGYDDqxNvQKMU2vjqfSTSsnKb6TAP+et3igaoxjc4oZd9caeOl/dye8pY5KdA+ao/i7+vyUfIqo/b+hbq/cbLNDU8b/H1o5AeaeNMrdmUTi/vzKkbF7iyv0d702kQoHTAOZWRUYMzCo41eZPQbIutjWj+7yqARDyQE6S0k/jBzI44+RT0b3bkwXXV9fEd/pdqpeCg9nphO9i5Q/sC6bXBdGN+mO0DqbioqE1r9t8hZ38nVK3DodJq1n/hENSl3P9kNU0TZ3HY3nlotECa9WuLoWWIDNQI+LmgeEu0Ibc7MrVcLTAurl+l8V/zdwSEKQ0j4w9FrNFhpElO9TQYb2m3ChXEcubxI=
     file_glob: true
-    file: "${HOME}/build/${TRAVIS_REPO_SLUG}/protelis/build/libs/protelis-redist*.jar"
+    file: "$TRAVIS_BUILD_DIR/protelis/build/libs/protelis-redist*.jar"
     on:
       repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "./protelis/build/docs/javadoc/"
+    project: "$TRAVIS_BUILD_DIR/protelis/build/docs/javadoc/"
     domain: protelis-unstable-doc.surge.sh
     on:
       repo: *official_repo
@@ -108,7 +108,7 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "./protelis/report"
+    project: "$TRAVIS_BUILD_DIR/protelis/report"
     domain: protelis-unstable-reports.surge.sh
     on:
       repo: *official_repo
@@ -116,7 +116,15 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "./protelis/build/docs/javadoc/"
+    project: "$TRAVIS_BUILD_DIR/protelis/protelis-lang/build/protelis-docs/"
+    domain: protelis-lang-unstable-doc.surge.sh
+    on:
+      repo: *official_repo
+      branch: develop
+      condition: $PUBLISH = "true"
+  - provider: surge
+    skip_cleanup: true
+    project: "$TRAVIS_BUILD_DIR/protelis/build/docs/javadoc/"
     domain: protelis-doc.surge.sh
     on:
       repo: *official_repo
@@ -124,13 +132,20 @@ deploy:
       condition: $PUBLISH = "true"
   - provider: surge
     skip_cleanup: true
-    project: "./protelis/report"
+    project: "$TRAVIS_BUILD_DIR/protelis/report"
     domain: protelis-reports.surge.sh
     on:
       repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
-after_deploy: echo Deployment phase concluded.
+  - provider: surge
+    skip_cleanup: true
+    project: "$TRAVIS_BUILD_DIR/protelis/protelis-lang/build/protelis-docs/"
+    domain: protelis-lang-doc.surge.sh
+    on:
+      repo: *official_repo
+      tags: true
+      condition: $PUBLISH = "true"
 
 notifications:
   email:
