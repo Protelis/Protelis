@@ -89,7 +89,7 @@ allprojects {
     tasks.withType<SpotBugsTask> {
         reports {
             xml.isEnabled = false
-            html.setEnabled(true)
+            html.isEnabled = true
         }
     }
 
