@@ -131,8 +131,7 @@ public final class TestIncarnation implements Incarnation<Object> {
     @Override
     public Object createConcentration(final String s) {
         try {
-            final ProtelisProgram program = ProtelisLoader
-                            .parse(Objects.requireNonNull(s, "The concentration can not be null."));
+            final ProtelisProgram program = ProtelisLoader.parse(Objects.requireNonNull(s, "The concentration can not be null."));
             final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
             vm.runCycle();
             return vm.getCurrentValue();

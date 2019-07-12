@@ -113,7 +113,6 @@ public class HashingCodePathFactory implements CodePathFactory {
         public byte[] getHash() {
             return Arrays.copyOf(hash, hash.length);
         }
-        
 
         @Override
         public int hashCode() {

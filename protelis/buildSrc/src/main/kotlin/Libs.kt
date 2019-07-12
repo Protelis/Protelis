@@ -56,12 +56,12 @@ object Libs {
     const val classgraph: String = "io.github.classgraph:classgraph:" + Versions.classgraph
 
     /**
-     * https://github.com/AlchemistSimulator/alchemist-interfaces */
+     * https://github.com/DanySK/alchemist-interfaces */
     const val alchemist_interfaces: String = "it.unibo.alchemist:alchemist-interfaces:" +
             Versions.it_unibo_alchemist
 
     /**
-     * https://github.com/AlchemistSimulator/alchemist-loading */
+     * https://github.com/DanySK/alchemist-loading */
     const val alchemist_loading: String = "it.unibo.alchemist:alchemist-loading:" +
             Versions.it_unibo_alchemist
 
@@ -90,11 +90,6 @@ object Libs {
             Versions.org_danilopianini_publish_on_central_gradle_plugin
 
     /**
-     * http://www.eclipse.org/emf */
-    const val org_eclipse_emf_ecore: String = "org.eclipse.emf:org.eclipse.emf.ecore:" +
-            Versions.org_eclipse_emf_ecore
-
-    /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
 
@@ -116,10 +111,6 @@ object Libs {
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String =
             "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +
             Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
-
-    const val org_protelis_protelisdoc_gradle_plugin: String =
-            "org.protelis.protelisdoc:org.protelis.protelisdoc.gradle.plugin:" +
-            Versions.org_protelis_protelisdoc_gradle_plugin
 
     /**
      * http://protelis.org */

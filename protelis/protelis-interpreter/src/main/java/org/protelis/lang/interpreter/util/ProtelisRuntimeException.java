@@ -34,7 +34,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      *                  exception was thrown
      */
     public ProtelisRuntimeException(@Nonnull final Throwable javaCause, final AnnotatedTree<?> origin) {
-        super(Objects.requireNonNull(javaCause.getLocalizedMessage()), javaCause);
+        super(computeMessage(javaCause), javaCause);
         protelisStackTrace.add(origin);
     }
 
@@ -45,6 +45,13 @@ public final class ProtelisRuntimeException extends RuntimeException {
      */
     public void fillInStackFrame(final AnnotatedTree<?> element) {
         protelisStackTrace.add(element);
+    }
+
+    private StringBuilder header() {
+        return new StringBuilder(1000)
+            .append(getClass().getName())
+            .append(": ")
+            .append(getCause().getMessage());
     }
 
     @Override
@@ -89,11 +96,13 @@ public final class ProtelisRuntimeException extends RuntimeException {
         return trace.toString();
     }
 
-    private StringBuilder header() {
-        return new StringBuilder(1000)
-            .append(getClass().getName())
-            .append(": ")
-            .append(getCause().getMessage());
+    private static String computeMessage(final Throwable cause) {
+        final String original = Objects.requireNonNull(cause.getMessage());
+        final String localized = Objects.requireNonNull(cause.getLocalizedMessage());
+        if (original.equals(localized)) {
+            return original;
+        }
+        return localized + "(non-localized: " + original + ")";
     }
 
     private static String extractLines(@Nonnull final AnnotatedTree<?> origin) {
