@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -86,7 +88,7 @@ allprojects {
 
     tasks.withType<SpotBugsTask> {
         reports {
-            xml.setEnabled(false)
+            xml.isEnabled = false
             html.setEnabled(true)
         }
     }
@@ -229,6 +231,7 @@ tasks.register<Jar>("fatJar") {
         exclude("gradlew.bat")
     }
     with(tasks.jar.get() as CopySpec)
+    dependsOn(subprojects.flatMap { it.tasks.withType<Jar>() })
 }
 
 buildScan {
