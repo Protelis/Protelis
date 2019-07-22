@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,7 +56,7 @@ public final class ReflectionUtils {
             .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(1, TimeUnit.HOURS)
             .build(new CacheLoader<Triple<Class<?>, String, List<Class<?>>>, Method>() {
                 @Override
-                public Method load(final Triple<Class<?>, String, List<Class<?>>> key) {
+                public Method load(@Nonnull final Triple<Class<?>, String, List<Class<?>>> key) {
                     final List<Class<?>> al = key.getRight();
                     final Class<?>[] args = new Class<?>[al.size()];
                     return loadBestMethod(key.getLeft(), key.getMiddle(), al.toArray(args));
@@ -80,24 +81,59 @@ public final class ReflectionUtils {
     private ReflectionUtils() {
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, @Nonnull final Object[] args) {
-        Objects.requireNonNull(args, "Argument list cannot be null. Tried to invoke: " + m);
+    private static Number castIfNeeded(final Class<?> dest, final Number arg) {
+        Objects.requireNonNull(dest);
+        Objects.requireNonNull(arg);
+        if (dest.isAssignableFrom(arg.getClass())) {
+            return arg;
+        }
+        final Function<Number, ? extends Number> cast = NUMBER_CASTER.get(dest);
+        if (cast != null) {
+            return cast.apply(arg);
+        }
+        throw new IllegalStateException("Impossible cast from " + arg.getClass() + " to " + dest);
+    }
+
+    /**
+     * @param clazz
+     *            the class under test
+     * @return true if the class is a subclass of {@link Number} or it is a
+     *         number having primitive representation in Java
+     */
+    private static boolean classIsNumber(final Class<?> clazz) {
+        return Number.class.isAssignableFrom(clazz) || NUMBER_CASTER.containsKey(clazz);
+    }
+
+    private static boolean classIsPrimitive(final Class<?> clazz) {
+        return Primitives.allPrimitiveTypes().contains(clazz);
+    }
+
+    private static boolean classIsWrapper(final Class<?> clazz) {
+        return Primitives.allWrapperTypes().contains(clazz);
+    }
+
+    private static boolean compatibleLength(@Nonnull final Method m, int args, Class<?> firstArgType) {
         final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
-            .getParameterTypes();
+                .getParameterTypes();
         final boolean requiresContext = paramTypes.length > 0
                 && ExecutionContext.class.isAssignableFrom(paramTypes[0]);
+        final boolean providesContext = args > 0
+                && firstArgType != null
+                && ExecutionContext.class.isAssignableFrom(firstArgType);
         /*
          * The method must be invoked with enough arguments to match at least the count
          * of non-ExecutionContext parameters (except if varargs, in which case one less
          * argument is allowed), and at most the total number of parameters (unless it
          * is varargs, in which case there is no limit)
          */
-        if (m.isVarArgs()) {
-            return args.length >= (paramTypes.length - 1 - (requiresContext ? -1 : 0));
-        } else {
-            final int diff = paramTypes.length - args.length;
-            return diff == 0 || requiresContext && diff == 1;
-        }
+        final int toBeInjected = requiresContext && !providesContext ? 1 : 0;
+        final int actualArgsLength = toBeInjected + args;
+        return m.isVarArgs() ? actualArgsLength >= paramTypes.length - 1 : actualArgsLength == paramTypes.length;
+    }
+
+    private static boolean compatibleLength(@Nonnull final Method m, @Nonnull final Object[] args) {
+        Objects.requireNonNull(args, "Argument list cannot be null. Tried to invoke: " + m);
+        return compatibleLength(m, args.length, args.length > 0 && args[0] != null ? args[0].getClass() : null);
     }
 
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
@@ -142,7 +178,7 @@ public final class ReflectionUtils {
         if (Field.class.isAssignableFrom(clazz) && target instanceof Field) {
             return invokeFieldable(
                     context,
-                    ((Field) target).valIterator().iterator().next().getClass(),
+                    ((Field<?>) target).getExpectedType(),
                     methodName,
                     target,
                     args);
@@ -249,12 +285,12 @@ public final class ReflectionUtils {
         Objects.requireNonNull(argClass, "Method arguments can not be null.");
         final Method[] candidates = Arrays.stream(clazz.getMethods())
             // Parameter number
-            .filter(m -> compatibleLength(m, argClass))
+            .filter(m -> compatibleLength(m, argClass.length, argClass.length > 0 ? argClass[0] : null))
             // Method name
             .filter(m -> m.getName().equals(methodName))
             // Only pick accessibile methods, mapping to superclass/interfaces if needed
             .map(MethodUtils::getAccessibleMethod)
-            .filter(it -> it != null)
+            .filter(Objects::nonNull)
             .toArray(Method[]::new);
         if (candidates.length == 0) {
             throw new IllegalArgumentException("No accessible method named " + methodName
@@ -273,7 +309,7 @@ public final class ReflectionUtils {
         for (final Method m: candidates) {
             final Class<?>[] expectedParameters = m.getParameterTypes();
             final Class<?>[] actualArgClass; // NOPMD: false positive
-            if (shouldPushContext(expectedParameters, argClass.length == 0 ? null : argClass[0])) {
+            if (shouldPushContext(expectedParameters, argClass)) {
                 /*
                  * Push "self" as implicit parameter
                  */
@@ -323,7 +359,7 @@ public final class ReflectionUtils {
          * Find best
          */
         return lm.stream()
-                .max((pm1, pm2) -> pm1.getFirst().compareTo(pm2.getFirst()))
+                .max(Comparator.comparing(Pair::getFirst))
                 .map(Pair::getSecond)
                 .orElseThrow(() -> new IllegalStateException("Method selection for " + methodName
                     + " inside " + clazz
@@ -343,7 +379,7 @@ public final class ReflectionUtils {
 
     private static Object[] repackageIfRequired(@Nonnull final ExecutionContext context, @Nonnull final Method m, @Nonnull final Object[] args) {
         final Class<?>[] expectedArgs = m.getParameterTypes();
-        final boolean pushContext = shouldPushContext(expectedArgs, args.length == 0 || args[0] == null ? null : args[0].getClass());
+        final boolean pushContext = shouldPushContext(expectedArgs, args);
         if (m.isVarArgs() || pushContext) {
             // We will repackage into an array of the expected length
             final Object[] newargs = new Object[expectedArgs.length];
@@ -363,8 +399,8 @@ public final class ReflectionUtils {
                 // Make an array of the appropriate type, then fill it in
                 final Class<?> varargType = expectedArgs[copiedArgCount];
                 Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
-                for (int i = 0; i < numVarArgs; i++) {
-                    vararg[i] = args[i + expectedArgs.length - 1];
+                if (numVarArgs >= 0) {
+                    System.arraycopy(args, expectedArgs.length - 1, vararg, 0, numVarArgs);
                 }
                 // Put the new array in the last argument and return
                 newargs[newargs.length - 1] = vararg;
@@ -393,7 +429,7 @@ public final class ReflectionUtils {
         for (final Object arg: args) {
             final Class<?> argClass = arg.getClass();
             if (arg instanceof Field) {
-                fieldedClasses.add(((Field) arg).getExpectedType());
+                fieldedClasses.add(((Field<?>) arg).getExpectedType());
                 atLeastOneField = true;
             } else {
                 fieldedClasses.add(argClass);
@@ -431,40 +467,19 @@ public final class ReflectionUtils {
         return searchBestMethod(clazz, methodName, Arrays.asList(args));
     }
 
-    private static boolean shouldPushContext(final Class<?>[] expectedArgs, final Class<?> firstArgClass) {
-        return expectedArgs.length > 0
+    private static boolean shouldPushContext(final Class<?>[] expectedArgs, final Class<?>[] argClass) {
+        return shouldPushContext(expectedArgs, argClass.length, argClass.length == 0 ? null : argClass[0]);
+    }
+
+    private static boolean shouldPushContext(Class<?>[] expectedArgs, final int argLength, final Class<?> firstArgClass) {
+        return expectedArgs.length == argLength + 1
                 && ExecutionContext.class.isAssignableFrom(expectedArgs[0])
                 && (firstArgClass == null || !ExecutionContext.class.isAssignableFrom(firstArgClass));
     }
 
-    /**
-     * @param clazz
-     *            the class under test
-     * @return true if the class is a subclass of {@link Number} or it is a
-     *         number having primitive representation in Java
-     */
-    private static boolean classIsNumber(final Class<?> clazz) {
-        return Number.class.isAssignableFrom(clazz) || NUMBER_CASTER.containsKey(clazz);
-    }
-
-    private static Number castIfNeeded(final Class<?> dest, final Number arg) {
-        Objects.requireNonNull(dest);
-        Objects.requireNonNull(arg);
-        if (dest.isAssignableFrom(arg.getClass())) {
-            return arg;
-        }
-        final Function<Number, ? extends Number> cast = NUMBER_CASTER.get(dest);
-        if (cast != null) {
-            return cast.apply(arg);
-        }
-        throw new IllegalStateException("Impossible cast from " + arg.getClass() + " to " + dest);
-    }
-
-    private static boolean classIsWrapper(final Class<?> clazz) {
-        return Primitives.allWrapperTypes().contains(clazz);
-    }
-
-    private static boolean classIsPrimitive(final Class<?> clazz) {
-        return Primitives.allPrimitiveTypes().contains(clazz);
+    private static boolean shouldPushContext(final Class<?>[] expectedArgs, final Object[] args) {
+        return shouldPushContext(expectedArgs,
+                args.length,
+                args.length == 0 || args[0] == null ? null : args[0].getClass());
     }
 }

@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.protelis.lang.datatype.DatatypeFactory;
-import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -59,12 +57,9 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
              * https://doi.org/10.1145/3285956
              * rule [E-FLD]
              */
-            final Field unrestricted = (Field) val;
-            final Field restricted = context.buildField(it -> it, (byte) 0);
-            val = DatatypeFactory.createField(restricted.size());
-            for (final DeviceUID device: restricted.nodeIterator()) {
-                ((Field) val).addSample(device, unrestricted.getSample(device));
-            }
+            final Field<?> unrestricted = (Field<?>) val;
+            final Field<Byte> restricted = context.buildField(it -> it, (byte) 0);
+            val = unrestricted.projectOn(restricted);
         }
         setAnnotation(val);
     }

@@ -537,7 +537,10 @@ public final class ProtelisLoader {
             }
             final List<AnnotatedTree<?>> statements = new LinkedList<>();
             for (Block b = (Block) block; b != null; b = b.getNext()) {
-                statements.add(block(b.getFirst(), state));
+                statements.add(statement(b.getFirst(), state));
+            }
+            if (statements.size() == 1) {
+                return statements.get(0);
             }
             return new All(metadataFor(block), statements);
         }
@@ -573,8 +576,8 @@ public final class ProtelisLoader {
             if (expression instanceof GenericHood) {
                 final GenericHood hood = (GenericHood) expression;
                 final boolean inclusive = hood.getName().length() > 4;
-                final AnnotatedTree<?> nullResult = expression(hood.getDefault(), state);
-                final AnnotatedTree<Field> field = expression(hood.getArg(), state);
+                final AnnotatedTree<Object> nullResult = expression(hood.getDefault(), state);
+                final AnnotatedTree<Field<Object>> field = expression(hood.getArg(), state);
                 final VarUse ref = hood.getReference();
                 if (ref == null) {
                     return new GenericHoodCall(meta, inclusive, lambda(hood.getOp(), state), nullResult, field);

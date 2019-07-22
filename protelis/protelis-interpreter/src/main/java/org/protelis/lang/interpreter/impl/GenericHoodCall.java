@@ -18,13 +18,16 @@ import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.util.function.BinaryOperator;
+
 /**
  * Reduce a field into a local value by reduction using a {@link org.protelis.lang.interpreter.util.HoodOp}.
  */
+@Deprecated
 public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
-    private final AnnotatedTree<Field> body;
+    private final AnnotatedTree<Field<Object>> body;
     private final Class<?> clazz;
     private final AnnotatedTree<?> empty;
     private final AnnotatedTree<FunctionDefinition> function;
@@ -48,7 +51,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
             final boolean includeSelf,
             final AnnotatedTree<FunctionDefinition> fun,
             final AnnotatedTree<?> nullResult,
-            final AnnotatedTree<Field> arg) {
+            final AnnotatedTree<Field<Object>> arg) {
         super(metadata, fun, nullResult, arg);
         body = arg;
         function = fun;
@@ -76,7 +79,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
             final boolean includeSelf,
             final JvmOperation fun,
             final AnnotatedTree<?> nullResult,
-            final AnnotatedTree<Field> arg) {
+            final AnnotatedTree<Field<Object>> arg) {
         super(metadata, nullResult, arg);
         body = arg;
         empty = nullResult;
@@ -101,12 +104,12 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
          * Evaluate the function, the nullResult, and the argument
          */
         projectAndEval(context);
-        final Object result = body.getAnnotation().reduceVals(
-                (a, b) -> function == null
-                    ? ReflectionUtils.invokeFieldable(context, clazz, methodName, null, new Object[] { a, b })
-                    : JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(context, function, a, b),
-                inclusive ? null : context.getDeviceUID(),
-                empty.getAnnotation());
+        final BinaryOperator<Object> merger = (a, b) -> function == null
+                ? ReflectionUtils.invokeFieldable(context, clazz, methodName, null, new Object[] { a, b })
+                : JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(context, function, a, b);
+        final Object result = inclusive
+            ? body.getAnnotation().foldValuesIncludingLocal(merger)
+            : body.getAnnotation().reduceValues(merger).orElse(empty.getAnnotation());
         setAnnotation(result);
     }
 

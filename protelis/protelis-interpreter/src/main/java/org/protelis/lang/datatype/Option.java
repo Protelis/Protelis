@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -36,7 +37,7 @@ import com.google.common.collect.ImmutableMap;
  */
 public final class Option<E> implements Serializable {
 
-    private static final Option<Object> EMPTY_OPTION = new Option<>(null);
+    private static final Option<Object> EMPTY_OPTION = new Option<>(Optional.absent());
     private static final long serialVersionUID = 1L;
     private static final ImmutableMap<String, Boolean> TESTERS = ImmutableMap.of(
             "isPresent", true,
@@ -45,12 +46,16 @@ public final class Option<E> implements Serializable {
             "isAbsent", false);
     private final Optional<E> internal;
 
-    private Option() {
-        this(null);
+    private Option(final E o) {
+        this(Optional.fromNullable(o));
     }
 
-    private Option(final E o) {
-        internal = Optional.fromNullable(o); 
+    private Option(final java.util.Optional<E> o) {
+        this(o.orElse(null));
+    }
+
+    private Option(final Optional<E> o) {
+        internal = o;
     }
 
     /**
@@ -283,6 +288,16 @@ public final class Option<E> implements Serializable {
         return flatMap(it -> of(mapper.apply(it)));
     }
 
+    public Option<E> merge(Option<E> other, final BinaryOperator<E> combiner) {
+        if (isPresent()) {
+            if (other.isPresent()) {
+                return map(it -> combiner.apply(it, other.get()));
+            }
+            return this;
+        }
+        return other;
+    }
+
     /**
      * Return the value if present, otherwise return {@code other}.
      *
@@ -445,6 +460,20 @@ public final class Option<E> implements Serializable {
     @SuppressWarnings("unchecked")
     public static <E> Option<E> empty() {
         return (Option<E>) EMPTY_OPTION;
+    }
+
+    /**
+     * @return a Guava compatible view of this Option
+     */
+    public static <E> Option<E> fromGuava(Optional<E> origin) {
+        return new Option<>(origin);
+    }
+
+    /**
+     * @return a Guava compatible view of this Option
+     */
+    public static <E> Option<E> fromJavaUtil(java.util.Optional<E> origin) {
+        return new Option<>(origin);
     }
 
     /**
