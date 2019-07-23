@@ -203,16 +203,16 @@ public final class ProtelisLoader {
             final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(realURI));
             final org.springframework.core.io.Resource protelisFile = RESOLVER.get().getResource(realURI);
             if (protelisFile.exists()) {
-                final InputStream is = protelisFile.getInputStream();
-                final String ss = IOUtils.toString(is, "UTF-8");
-                is.close();
-                final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
-                while (matcher.find()) {
-                    final int start = matcher.start(1);
-                    final int end = matcher.end(1);
-                    final String imp = ss.substring(start, end);
-                    final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
-                    loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+                try (InputStream is = protelisFile.getInputStream()) {
+                    final String ss = IOUtils.toString(is, "UTF-8");
+                    final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
+                    while (matcher.find()) {
+                        final int start = matcher.start(1);
+                        final int end = matcher.end(1);
+                        final String imp = ss.substring(start, end);
+                        final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
+                        loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+                    }
                 }
                 LOADED_RESOURCES.get().put(realURI, workAroundOpenJ9EMFBug(() -> target.getResource(uri, true)));
             } else {
