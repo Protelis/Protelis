@@ -131,7 +131,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                         if (keyToValue.size() == 2) {
                             final Object key = keyToValue.get(0);
                             final Object value = keyToValue.get(1);
-                            Map<DeviceUID, Object> targetField = keyToField.computeIfAbsent(key, k -> new LinkedHashMap<>());
+                            final Map<DeviceUID, Object> targetField = keyToField.computeIfAbsent(key, k -> new LinkedHashMap<>());
                             targetField.put(device, value);
                         } else {
                             throw new IllegalStateException(
