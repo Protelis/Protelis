@@ -203,16 +203,16 @@ public final class ProtelisLoader {
             final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(realURI));
             final org.springframework.core.io.Resource protelisFile = RESOLVER.get().getResource(realURI);
             if (protelisFile.exists()) {
-                final InputStream is = protelisFile.getInputStream();
-                final String ss = IOUtils.toString(is, "UTF-8");
-                is.close();
-                final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
-                while (matcher.find()) {
-                    final int start = matcher.start(1);
-                    final int end = matcher.end(1);
-                    final String imp = ss.substring(start, end);
-                    final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
-                    loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+                try (InputStream is = protelisFile.getInputStream()) {
+                    final String ss = IOUtils.toString(is, "UTF-8");
+                    final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
+                    while (matcher.find()) {
+                        final int start = matcher.start(1);
+                        final int end = matcher.end(1);
+                        final String imp = ss.substring(start, end);
+                        final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
+                        loadResourcesRecursively(target, classpathResource, alreadyInQueue);
+                    }
                 }
                 LOADED_RESOURCES.get().put(realURI, workAroundOpenJ9EMFBug(() -> target.getResource(uri, true)));
             } else {
@@ -537,7 +537,10 @@ public final class ProtelisLoader {
             }
             final List<AnnotatedTree<?>> statements = new LinkedList<>();
             for (Block b = (Block) block; b != null; b = b.getNext()) {
-                statements.add(block(b.getFirst(), state));
+                statements.add(statement(b.getFirst(), state));
+            }
+            if (statements.size() == 1) {
+                return statements.get(0);
             }
             return new All(metadataFor(block), statements);
         }
@@ -573,8 +576,8 @@ public final class ProtelisLoader {
             if (expression instanceof GenericHood) {
                 final GenericHood hood = (GenericHood) expression;
                 final boolean inclusive = hood.getName().length() > 4;
-                final AnnotatedTree<?> nullResult = expression(hood.getDefault(), state);
-                final AnnotatedTree<Field> field = expression(hood.getArg(), state);
+                final AnnotatedTree<Object> nullResult = expression(hood.getDefault(), state);
+                final AnnotatedTree<Field<Object>> field = expression(hood.getArg(), state);
                 final VarUse ref = hood.getReference();
                 if (ref == null) {
                     return new GenericHoodCall(meta, inclusive, lambda(hood.getOp(), state), nullResult, field);

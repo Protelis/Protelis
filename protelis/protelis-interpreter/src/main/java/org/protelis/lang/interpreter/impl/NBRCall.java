@@ -19,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Implementation of 'nbr' operator.
  */
-public final class NBRCall extends AbstractAnnotatedTree<Field> {
+public final class NBRCall extends AbstractAnnotatedTree<Field<?>> {
 
     private static final long serialVersionUID = 5255917527687990281L;
 
@@ -42,7 +42,7 @@ public final class NBRCall extends AbstractAnnotatedTree<Field> {
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
         final Object childVal = getBranch(0).getAnnotation();
-        final Field res = context.buildField(Function.identity(), childVal);
+        final Field<?> res = context.buildField(Function.identity(), childVal);
         setAnnotation(res);
     }
 

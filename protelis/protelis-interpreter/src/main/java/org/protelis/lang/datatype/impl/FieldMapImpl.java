@@ -8,87 +8,113 @@
  *******************************************************************************/
 package org.protelis.lang.datatype.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.apache.commons.math3.util.Pair;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.lang.datatype.Field;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /**
- * Field implementation based on neighbor/value pairs stored in a hash table.
+ * Field implementation based on neighbor/value pairs stored in an {@link ImmutableMap}.
+ *
+ * @param <T> field type
  */
-public final class FieldMapImpl extends AbstractField {
+public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builder is used
 
     private static final long serialVersionUID = -2947000086262191216L;
-    private final Map<DeviceUID, Object> fieldContents;
+    @Nonnull
+    private final DeviceUID local;
+    @Nonnull
+    private final ImmutableMap<DeviceUID, T> values;
 
-    /**
-     * @param size
-     *            The initial size of the hash table used internally to
-     *            implement the field.
-     * @param loadFactor
-     *            The load factor of the hash table used internally to implement
-     *            the field.
-     */
-    public FieldMapImpl(final int size, final float loadFactor) {
-        super();
-        fieldContents = new LinkedHashMap<>(size, loadFactor);
+    private FieldMapImpl(@Nonnull final DeviceUID local, @Nonnull final ImmutableMap<DeviceUID, T> values) {
+        this.local = local;
+        this.values = values;
     }
 
     @Override
-    public void addSample(final DeviceUID n, final Object v) {
-        fieldContents.put(n, v);
+    public boolean containsKey(final DeviceUID id) {
+        return values.containsKey(id);
     }
 
     @Override
-    public boolean containsNode(final DeviceUID n) {
-        return fieldContents.containsKey(n);
+    public DeviceUID getLocalDevice() {
+        return local;
     }
 
     @Override
-    public Iterable<Pair<DeviceUID, Object>> coupleIterator() {
-        return fieldContents.entrySet().stream()
-                .map(e -> new Pair<>(e.getKey(), e.getValue()))
-                .collect(() -> new ArrayList<>(size()), (a, e) -> a.add(e), (a1, a2) -> a1.addAll(a2));
+    public T getLocalValue() {
+        return get(getLocalDevice());
     }
 
     @Override
-    public Class<?> getExpectedType() {
-        if (fieldContents.isEmpty()) {
-            return null;
-        }
-        return fieldContents.values().iterator().next().getClass();
+    public ImmutableSet<? extends Map.Entry<DeviceUID, T>> iterable() {
+        return values.entrySet();
     }
 
     @Override
-    public Object getSample(final DeviceUID n) {
-        return fieldContents.get(n);
+    public ImmutableSet<DeviceUID> keys() {
+        return values.keySet();
     }
 
     @Override
-    public boolean isEmpty() {
-        return fieldContents.isEmpty();
-    }
-
-    @Override
-    public Iterable<DeviceUID> nodeIterator() {
-        return fieldContents.keySet();
-    }
-
-    @Override
-    public Object removeSample(final DeviceUID n) {
-        return fieldContents.remove(n);
+    public Stream<DeviceUID> keyStream() {
+        return values.keySet().stream();
     }
 
     @Override
     public int size() {
-        return fieldContents.size();
+        return values.size() - 1;
     }
 
     @Override
-    public Iterable<Object> valIterator() {
-        return fieldContents.values();
+    public Stream<? extends Map.Entry<DeviceUID, T>> stream() {
+        return values.entrySet().stream();
     }
 
+    @Override
+    public ImmutableMap<DeviceUID, T> toMap() {
+        return values;
+    }
+
+    @Override
+    public ImmutableCollection<T> values() {
+        return values.values();
+    }
+
+    @Override
+    public Stream<T> valueStream() {
+        return values.values().stream();
+    }
+
+    /**
+     * Builder for an immutable field.
+     * 
+     * @param <T>
+     */
+    public static final class Builder<T> implements Field.Builder<T> {
+
+        private final ImmutableMap.Builder<DeviceUID, T> mapBuilder = ImmutableMap.builder();
+        private boolean consumed;
+
+        @Override
+        public Field.Builder<T> add(final DeviceUID key, final T value) {
+            mapBuilder.put(key, value);
+            return this;
+        }
+
+        @Override
+        public Field<T> build(final DeviceUID localKey, final T localValue) {
+            if (consumed) {
+                throw new IllegalStateException("A field builder can build only one field");
+            }
+            consumed = true;
+            mapBuilder.put(localKey, localValue);
+            return new FieldMapImpl<>(localKey, mapBuilder.build());
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * EXPECTED_RESULT: 0
+ * EXPECTED_RESULT: 1
  */
 import java.lang.Math.min
 import org.protelis.test.infrastructure.DummyContext.makeTestField

@@ -14,12 +14,14 @@ import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 import org.apache.commons.math3.util.Pair;
 import org.nustaq.serialization.FSTConfiguration;
@@ -58,17 +60,15 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .build(new CacheLoader<Object, byte[]>() {
                 @Override
-                public byte[] load(final Object key) throws Exception {
+                public byte[] load(@Nonnull final Object key) {
                     return SERIALIZER.asByteArray(key);
                 }
             });
     static {
-        SERIALIZER.registerClass(new Class[] {
-            String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class,
-        });
+        SERIALIZER.registerClass(String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class);
     }
     private final AnnotatedTree<?> defVal;
-    private final AnnotatedTree<Field> fgen;
+    private final AnnotatedTree<Field<?>> fieldGenerator;
     private final AnnotatedTree<FunctionDefinition> filterOp;
 
     private final AnnotatedTree<FunctionDefinition> runOp;
@@ -85,10 +85,10 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
      * @param def
      *            default value
      */
-    public AlignedMap(final Metadata metadata, final AnnotatedTree<Field> arg, final AnnotatedTree<FunctionDefinition> filter,
+    public AlignedMap(final Metadata metadata, final AnnotatedTree<Field<?>> arg, final AnnotatedTree<FunctionDefinition> filter,
             final AnnotatedTree<FunctionDefinition> op, final AnnotatedTree<?> def) {
         super(metadata, arg, filter, op, def);
-        fgen = arg;
+        fieldGenerator = arg;
         filterOp = filter;
         runOp = op;
         defVal = def;
@@ -96,18 +96,13 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
 
     @Override
     public AnnotatedTree<Tuple> copy() {
-        return new AlignedMap(getMetadata(), fgen.copy(), filterOp.copy(), runOp.copy(), defVal.copy());
+        return new AlignedMap(getMetadata(), fieldGenerator.copy(), filterOp.copy(), runOp.copy(), defVal.copy());
     }
 
     @Override
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
-        final Object originObj = fgen.getAnnotation();
-        if (!(originObj instanceof Field)) {
-            throw new IllegalStateException(
-                    "The argument must be a field of tuples of tuples. It is a " + originObj.getClass() + " instead.");
-        }
-        final Field origin = (Field) originObj;
+        final Field<?> origin = fieldGenerator.getAnnotation();
         /*
          * Extract one field for each key.
          * 
@@ -121,37 +116,33 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
          * key2 : {ID0 : val2, ID2 : val4}
          * key3 : {ID2: val3}
          */
-        final Map<Object, Field> fieldKeys = new HashMap<>();
-        for (final Pair<DeviceUID, Object> pair : origin.coupleIterator()) {
-            final DeviceUID node = pair.getFirst();
-            final Object mapo = pair.getSecond();
+        final Map<Object, Map<DeviceUID, Object>> keyToField = new LinkedHashMap<>();
+        for (final Map.Entry<DeviceUID, ?> pair : origin.iterable()) {
+            final DeviceUID device = pair.getKey();
+            final Object originalTupleObject = pair.getValue();
             /*
              * Mappings are of the form: [[key1, value1][key2, value2]...]
              */
-            if (mapo instanceof Tuple) {
-                final Tuple map = (Tuple) mapo;
-                for (final Object mappingo : map) {
-                    if (mappingo instanceof Tuple) {
-                        final Tuple mapping = (Tuple) mappingo;
-                        if (mapping.size() == 2) {
-                            final Object key = mapping.get(0);
-                            final Object value = mapping.get(1);
-                            Field ref = fieldKeys.get(key);
-                            if (ref == null) {
-                                ref = DatatypeFactory.createField(map.size());
-                                fieldKeys.put(key, ref);
-                            }
-                            ref.addSample(node, value);
+            if (originalTupleObject instanceof Tuple) {
+                final Tuple originalTuple = (Tuple) originalTupleObject;
+                for (final Object keyToValueObject : originalTuple) {
+                    if (keyToValueObject instanceof Tuple) {
+                        final Tuple keyToValue = (Tuple) keyToValueObject;
+                        if (keyToValue.size() == 2) {
+                            final Object key = keyToValue.get(0);
+                            final Object value = keyToValue.get(1);
+                            final Map<DeviceUID, Object> targetField = keyToField.computeIfAbsent(key, k -> new LinkedHashMap<>());
+                            targetField.put(device, value);
                         } else {
                             throw new IllegalStateException(
-                                    "The tuple must have length 2, this has length " + mapping.size());
+                                    "The tuple must have length 2, " + keyToValue + " has length " + keyToValue.size());
                         }
                     } else {
-                        throw new IllegalStateException("Expected " + Tuple.class + ", got " + mappingo.getClass());
+                        throw new IllegalStateException("Expected " + Tuple.class + ", got " + keyToValueObject.getClass());
                     }
                 }
             } else {
-                throw new IllegalStateException("Expected " + Tuple.class + ", got " + mapo.getClass());
+                throw new IllegalStateException("Expected " + Tuple.class + ", got " + originalTupleObject.getClass() + ": " + originalTupleObject);
             }
         }
         /*
@@ -163,25 +154,25 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
         }
         final Map<Object, Pair<DotOperator, DotOperator>> newFunmap = new LinkedHashMap<>(funmap.size());
         setSuperscript(newFunmap);
-        final List<Tuple> resl = new ArrayList<>(fieldKeys.size());
-        for (final Entry<Object, Field> kf : fieldKeys.entrySet()) {
-            final Field value = kf.getValue();
-            final ExecutionContext restricted = context.restrictDomain(value);
-            final Object key = kf.getKey();
-            /*
-             * Make sure that self is present in each field
-             */
-            final DeviceUID sigma = context.getDeviceUID();
-            if (!value.containsNode(sigma)) {
-                value.addSample(sigma, defVal.getAnnotation());
+        final List<Tuple> resl = new ArrayList<>(keyToField.size());
+        for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
+            final Object key = keyFieldPair.getKey();
+            final Map<DeviceUID, Object> preField = keyFieldPair.getValue();
+            final DeviceUID localDeviceUID = context.getDeviceUID();
+            final Object localValue = Optional.ofNullable(preField.remove(localDeviceUID)).orElseGet(defVal::getAnnotation);
+            final Field.Builder<Object> builder = DatatypeFactory.createFieldBuilder();
+            for (final Entry<DeviceUID, Object> entry: preField.entrySet()) {
+                builder.add(entry.getKey(), entry.getValue());
             }
+            final Field<Object> reifiedField = builder.build(localDeviceUID, localValue);
+            final ExecutionContext restricted = context.restrictDomain(reifiedField);
             /*
              * Compute arguments
              */
             final List<AnnotatedTree<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(getMetadata(), key));
             args.add(new Variable(getMetadata(), CURFIELD));
-            restricted.putVariable(CURFIELD, value);
+            restricted.putVariable(CURFIELD, reifiedField);
             /*
              * Compute the code path: align on keys
              */

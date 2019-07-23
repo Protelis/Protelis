@@ -21,10 +21,11 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Reduce a field into a local value by reduction using a {@link HoodOp}.
  */
+@Deprecated
 public final class HoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
-    private final AnnotatedTree<Field> body;
+    private final AnnotatedTree<Field<Object>> body;
     private final HoodOp function;
     private final boolean inclusive;
 
@@ -38,7 +39,7 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
      * @param includeSelf
      *            if true, sigma won't be excluded
      */
-    public HoodCall(final Metadata metadata, final AnnotatedTree<Field> arg, final HoodOp func, final boolean includeSelf) {
+    public HoodCall(final Metadata metadata, final AnnotatedTree<Field<Object>> arg, final HoodOp func, final boolean includeSelf) {
         super(metadata, arg);
         body = arg;
         function = Objects.requireNonNull(func);
@@ -53,7 +54,7 @@ public final class HoodCall extends AbstractAnnotatedTree<Object> {
     @Override
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
-        setAnnotation(function.run(body.getAnnotation(), inclusive ? null : context.getDeviceUID()));
+        setAnnotation(function.run(body.getAnnotation(), inclusive));
     }
 
     @Override

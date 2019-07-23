@@ -27,12 +27,12 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.DatatypeFactory;
-import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.datatype.Tuples;
@@ -41,65 +41,55 @@ import org.protelis.lang.datatype.Tuples;
  * Collection of functions and helper methods for reducing fields into local
  * values.
  */
+@Deprecated
 public enum HoodOp implements WithBytecode {
 
     /**
      * Logical product.
      */
     ALL(HOOD_ALL, HoodOp::all,
-        HoodOp::no,
-        of(create(Boolean.class,
-        () -> true)), of()),
+        of(create(Boolean.class, () -> true)),
+        emptyList()),
     /**
      * Logical sum.
      */
     ANY(HOOD_ANY, HoodOp::any,
-        HoodOp::no,
-        of(create(Boolean.class,
-        () -> false)), of()),
+        of(create(Boolean.class, () -> false)),
+        emptyList()),
     /**
      * Pick local value.
      */
-    LOCAL(HOOD_LOCAL,
-        Field::getSample,
-        () -> {
-            throw new IllegalStateException("Local field pick operation must always work");
-        },
+    LOCAL(HOOD_LOCAL, HoodOp::local,
          emptyList(),
          emptyList()),
     /**
      * Maximum.
      */
     MAX(HOOD_MAX, HoodOp::max,
-        () -> NEGATIVE_INFINITY,
         of(create(Number.class, () -> NEGATIVE_INFINITY)),
         of(create(Tuple.class, t -> fillTuple(NEGATIVE_INFINITY, (Tuple) t)))),
     /**
      * Mean of values.
      */
     MEAN(HOOD_MEAN, HoodOp::mean,
-         () -> NaN,
          of(create(Number.class, () -> NaN)),
          of(create(Tuple.class, t -> fillTuple(NaN, (Tuple) t)))),
     /**
      * Minimum.
      */
     MIN(HOOD_MIN, HoodOp::min,
-        () -> POSITIVE_INFINITY,
         of(create(Number.class, () -> POSITIVE_INFINITY)),
         of(create(Tuple.class, t -> fillTuple(POSITIVE_INFINITY, (Tuple) t)))),
     /**
      * Sum of values.
      */
     SUM(HOOD_SUM, HoodOp::sum,
-        () -> 0d,
         of(create(Number.class, () -> 0d)),
         of(create(Tuple.class, t -> fillTuple(0d, (Tuple) t)))),
     /**
      * Union of values.
      */
     UNION(HOOD_UNION, HoodOp::union,
-          DatatypeFactory::createTuple,
           of(create(Object.class, DatatypeFactory::createTuple)),
           of(create(Object.class, DatatypeFactory::createTuple)));
 
@@ -109,8 +99,6 @@ public enum HoodOp implements WithBytecode {
 
     /**
      * @param fun the reduction function
-     * @param empty
-     *            function that generates a default in case of empty field
      * @param suppliers
      *            list of pairs mapping classes to 0-ary functions that provide
      *            a default
@@ -122,7 +110,6 @@ public enum HoodOp implements WithBytecode {
      */
     HoodOp(final Bytecode bytecode,
             final SerializableBifunction fun,
-            final Supplier<Object> empty,
             final List<Pair<Class<?>, Supplier<Object>>> suppliers,
             final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
         function = fun;
@@ -130,9 +117,6 @@ public enum HoodOp implements WithBytecode {
             /*
              * Field empty: generate a default.
              */
-            if (field.isEmpty()) {
-                return empty.get();
-            }
             final Class<?> type = field.getExpectedType();
             for (final Pair<Class<?>, Supplier<Object>> sup : suppliers) {
                 if (sup.getFirst().isAssignableFrom(type)) {
@@ -144,7 +128,7 @@ public enum HoodOp implements WithBytecode {
             }
             for (final Pair<Class<?>, Function<Object, Object>> cloner : cloners) {
                 if (cloner.getFirst().isAssignableFrom(type)) {
-                    return cloner.getSecond().apply(field.valIterator().iterator().next());
+                    return cloner.getSecond().apply(field.values().iterator().next());
                 }
             }
             return no(type);
@@ -162,22 +146,22 @@ public enum HoodOp implements WithBytecode {
     }
 
     /**
-     * @param o
+     * @param target
      *            the field
-     * @param n
-     *            the node on which the field is sampled
+     * @param inclusive
+     *            true if the local value should be considered
      * @return the Object resulting in the hood application
      */
-    public Object run(final Field o, final DeviceUID n) {
-        return function.apply(o, n);
+    public Object run(final Field<Object> target, final boolean inclusive) {
+        return function.apply(target, inclusive);
     }
 
-    private static Object all(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.AND.getFunction(), n, ALL.defs.apply(f));
+    private static Object all(final Field<Object> f, final boolean inclusive) {
+        return reduceFieldValues(f, inclusive, ALL.defs, Op2.AND);
     }
 
-    private static Object any(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.OR.getFunction(), n, ANY.defs.apply(f));
+    private static Object any(final Field<Object> f, final boolean inclusive) {
+        return reduceFieldValues(f, inclusive, ANY.defs, Op2.OR);
     }
 
     private static Tuple fillTuple(final Object defVal, final Tuple in) {
@@ -200,42 +184,62 @@ public enum HoodOp implements WithBytecode {
                 .orElseThrow(() -> new IllegalArgumentException("No built-in hood operation matches " + reducer));
     }
 
-    private static Object max(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.MAX.getFunction(), n, MAX.defs.apply(f));
+    private static Object local(final Field<Object> f, final boolean inclusive) {
+        return f.getLocalValue();
     }
 
-    private static Object mean(final Field f, final DeviceUID n) {
-        if (f.isEmpty()) {
-            return NaN;
+    private static Object max(final Field<Object> f, final boolean inclusive) {
+        return reduceFieldValues(f, inclusive, MAX.defs, Op2.MAX);
+    }
+
+    private static Object mean(final Field<Object> f, final boolean inclusive) {
+        final int size = f.size() + (inclusive ? 1 : 0);
+        if (size == 0) {
+            return MEAN.defs.apply(f);
         }
-        return Op2.DIVIDE.getFunction().apply(sum(f, n), f.size() - (n == null ? 0 : 1));
+        return Op2.DIVIDE.getFunction().apply(sum(f, inclusive), size);
     }
 
-    private static Object min(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.MIN.getFunction(), n, MIN.defs.apply(f));
+    private static Object min(final Field<Object> f, final boolean inclusive) {
+        return reduceFieldValues(f, inclusive, MIN.defs, Op2.MIN.getFunction());
     }
 
-    private static Object no() {
-        throw new UnsupportedOperationException("Unsupported operation on empty fields.");
+    private static Object reduceFieldValues(final Field<Object> f, final boolean inclusive, final SerializableFunction defs, final Op2 reducer) {
+        if (inclusive) {
+            return f.foldValuesIncludingLocal(reducer.getFunction());
+        } else {
+            return f.reduceValues(reducer.getFunction())
+                    .orElseGet(() -> defs.apply(f));
+        }
     }
 
-    private static Object sum(final Field f, final DeviceUID n) {
-        return f.reduceVals(Op2.PLUS.getFunction(), n, SUM.defs.apply(f));
+    @SuppressWarnings("unchecked")
+    private static <T> T reduceFieldValues(final Field<T> f, final boolean inclusive, final SerializableFunction defs, final BinaryOperator<T> reducer) {
+        if (inclusive) {
+            return f.foldValuesIncludingLocal(reducer);
+        } else {
+            return f.reduceValues(reducer)
+                .orElseGet(() -> (T) defs.apply(f));
+        }
     }
 
-    private static Tuple union(final Field f, final DeviceUID n) {
-        final Object reduced = f.reduceVals((a, b) -> {
+    private static Object sum(final Field<Object> f, final boolean inclusive) {
+        return reduceFieldValues(f, inclusive, SUM.defs, Op2.PLUS.getFunction());
+    }
+
+    private static Tuple union(final Field<Object> f, final boolean inclusive) {
+        final Object reduced = reduceFieldValues(f, inclusive, UNION.defs, (a, b) -> {
                 final Tuple at = a instanceof Tuple ? (Tuple) a : DatatypeFactory.createTuple(a);
                 final Tuple bt = b instanceof Tuple ? (Tuple) b : DatatypeFactory.createTuple(b);
                 return Tuples.union(at, bt);
-            }, n, UNION.defs.apply(f));
+            });
         return reduced instanceof Tuple ? (Tuple) reduced : DatatypeFactory.createTuple(reduced);
     }
 
     @FunctionalInterface
-    private interface SerializableBifunction extends BiFunction<Field, DeviceUID, Object>, Serializable { }
+    private interface SerializableBifunction extends BiFunction<Field<Object>, Boolean, Object>, Serializable { }
 
     @FunctionalInterface
-    private interface SerializableFunction extends Function<Field, Object>, Serializable { }
+    private interface SerializableFunction extends Function<Field<? extends Object>, Object>, Serializable { }
 
 }
