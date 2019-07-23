@@ -97,6 +97,9 @@ public final class ProtelisRuntimeException extends RuntimeException {
     }
 
     private static String computeMessage(final Throwable cause) {
+        if (cause.getMessage() == null) {
+            return "The cause exception did not provide any useful message.";
+        }
         final String original = Objects.requireNonNull(cause.getMessage());
         final String localized = Objects.requireNonNull(cause.getLocalizedMessage());
         if (original.equals(localized)) {
