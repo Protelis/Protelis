@@ -398,7 +398,7 @@ public final class ReflectionUtils {
                 final int numVarArgs = args.length - copiedArgCount;
                 // Make an array of the appropriate type, then fill it in
                 final Class<?> varargType = expectedArgs[copiedArgCount];
-                Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
+                final Object[] vararg = (Object[]) Array.newInstance(varargType.getComponentType(), numVarArgs);
                 if (numVarArgs >= 0) {
                     System.arraycopy(args, expectedArgs.length - 1, vararg, 0, numVarArgs);
                 }
