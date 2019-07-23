@@ -463,14 +463,18 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * @return a Guava compatible view of this Option
+     * @param <E> option type
+     * @param origin the guava Optional
+     * @return a Protelis view of the Guava Option
      */
     public static <E> Option<E> fromGuava(Optional<E> origin) {
         return new Option<>(origin);
     }
 
     /**
-     * @return a Guava compatible view of this Option
+     * @param <E> option type
+     * @param origin the Java Optional
+     * @return a Protelis view of the Java Option
      */
     public static <E> Option<E> fromJavaUtil(java.util.Optional<E> origin) {
         return new Option<>(origin);
