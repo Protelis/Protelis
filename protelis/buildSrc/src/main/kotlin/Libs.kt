@@ -36,7 +36,7 @@ object Libs {
     const val ktlint: String = "com.pinterest:ktlint:" + Versions.ktlint
 
     /**
-     * http://commons.apache.org/proper/commons-codec/ */
+     * https://commons.apache.org/proper/commons-codec/ */
     const val commons_codec: String = "commons-codec:commons-codec:" + Versions.commons_codec
 
     /**
