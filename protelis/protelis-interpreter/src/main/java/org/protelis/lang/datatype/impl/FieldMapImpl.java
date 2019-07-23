@@ -98,12 +98,12 @@ public final class FieldMapImpl<T> extends AbstractField<T> {
      */
     public static final class Builder<T> implements Field.Builder<T> {
 
-        private final ImmutableMap.Builder<DeviceUID, T> builder = ImmutableMap.builder();
+        private final ImmutableMap.Builder<DeviceUID, T> mapBuilder = ImmutableMap.builder();
         private boolean consumed;
 
         @Override
         public Field.Builder<T> add(final DeviceUID key, final T value) {
-            builder.put(key, value);
+            mapBuilder.put(key, value);
             return this;
         }
 
@@ -113,8 +113,8 @@ public final class FieldMapImpl<T> extends AbstractField<T> {
                 throw new IllegalStateException("A field builder can build only one field");
             }
             consumed = true;
-            builder.put(localKey, localValue);
-            return new FieldMapImpl<>(localKey, builder.build());
+            mapBuilder.put(localKey, localValue);
+            return new FieldMapImpl<>(localKey, mapBuilder.build());
         }
     }
 }
