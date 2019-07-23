@@ -288,6 +288,16 @@ public final class Option<E> implements Serializable {
         return flatMap(it -> of(mapper.apply(it)));
     }
 
+    /**
+     * If both options are present, the combiner function is executed on the Option
+     * contents. Otherwise, if an Option is present, it is returned. Finally, if
+     * both are empty, an empty Option is returned.
+     * 
+     * @param other    the other option
+     * @param combiner the combining (reduction) function
+     * @return Option.of(combiner(this.get(), other.get()) if both are present, the
+     *         only present option iff one is present, an empty option otherwise
+     */
     public Option<E> merge(final Option<E> other, final BinaryOperator<E> combiner) {
         if (isPresent()) {
             if (other.isPresent()) {
