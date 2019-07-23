@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  *
  * @param <T> field type
  */
-public final class FieldMapImpl<T> extends AbstractField<T> {
+public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builder is used
 
     private static final long serialVersionUID = -2947000086262191216L;
     @Nonnull
