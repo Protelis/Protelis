@@ -112,7 +112,7 @@ public final class ReflectionUtils {
         return Primitives.allWrapperTypes().contains(clazz);
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, int args, Class<?> firstArgType) {
+    private static boolean compatibleLength(@Nonnull final Method m, final int args, final Class<?> firstArgType) {
         final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
                 .getParameterTypes();
         final boolean requiresContext = paramTypes.length > 0
@@ -471,7 +471,7 @@ public final class ReflectionUtils {
         return shouldPushContext(expectedArgs, argClass.length, argClass.length == 0 ? null : argClass[0]);
     }
 
-    private static boolean shouldPushContext(Class<?>[] expectedArgs, final int argLength, final Class<?> firstArgClass) {
+    private static boolean shouldPushContext(final Class<?>[] expectedArgs, final int argLength, final Class<?> firstArgClass) {
         return expectedArgs.length == argLength + 1
                 && ExecutionContext.class.isAssignableFrom(expectedArgs[0])
                 && (firstArgClass == null || !ExecutionContext.class.isAssignableFrom(firstArgClass));
