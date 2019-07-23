@@ -288,7 +288,7 @@ public final class Option<E> implements Serializable {
         return flatMap(it -> of(mapper.apply(it)));
     }
 
-    public Option<E> merge(Option<E> other, final BinaryOperator<E> combiner) {
+    public Option<E> merge(final Option<E> other, final BinaryOperator<E> combiner) {
         if (isPresent()) {
             if (other.isPresent()) {
                 return map(it -> combiner.apply(it, other.get()));
@@ -467,7 +467,7 @@ public final class Option<E> implements Serializable {
      * @param origin the guava Optional
      * @return a Protelis view of the Guava Option
      */
-    public static <E> Option<E> fromGuava(Optional<E> origin) {
+    public static <E> Option<E> fromGuava(final Optional<E> origin) {
         return new Option<>(origin);
     }
 
@@ -476,7 +476,7 @@ public final class Option<E> implements Serializable {
      * @param origin the Java Optional
      * @return a Protelis view of the Java Option
      */
-    public static <E> Option<E> fromJavaUtil(java.util.Optional<E> origin) {
+    public static <E> Option<E> fromJavaUtil(final java.util.Optional<E> origin) {
         return new Option<>(origin);
     }
 
