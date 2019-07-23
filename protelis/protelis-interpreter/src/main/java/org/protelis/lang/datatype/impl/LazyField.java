@@ -68,7 +68,7 @@ public final class LazyField<T> extends AbstractField<T> {
     }
 
     private boolean isShortCircuited() {
-        boolean result = neighbors.size() == origin.size();
+        final boolean result = neighbors.size() == origin.size();
         if (result) {
             /*
              * If all the entries have been computed, evict the mapper and save memory
