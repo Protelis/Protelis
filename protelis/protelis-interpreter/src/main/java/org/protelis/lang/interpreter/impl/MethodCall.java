@@ -98,7 +98,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     private void extractMethod(final int parameterCount) {
-        Stream<Method> methods = Arrays.stream(clazz.getMethods());
+        Stream<Method> methods = Arrays.stream(clazz.getMethods()); // NOPMD: this is not an I/O stream
         if (ztatic) {
             methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
         } else {
