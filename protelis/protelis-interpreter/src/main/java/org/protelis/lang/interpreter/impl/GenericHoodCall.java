@@ -23,7 +23,6 @@ import java.util.function.BinaryOperator;
 /**
  * Reduce a field into a local value by reduction using a {@link org.protelis.lang.interpreter.util.HoodOp}.
  */
-@Deprecated
 public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -4925767634715581329L;
@@ -95,7 +94,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
 
     @Override
     public AnnotatedTree<Object> copy() {
-        return new GenericHoodCall(getMetadata(), inclusive, function.copy(), empty.copy(), body.copy());
+        return new GenericHoodCall(getMetadata(), inclusive, function == null ? null : function.copy(), empty.copy(), body.copy());
     }
 
     @Override
