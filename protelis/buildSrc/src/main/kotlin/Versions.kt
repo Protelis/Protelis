@@ -19,9 +19,9 @@ object Versions {
 
     const val com_jfrog_bintray_gradle_plugin: String = "1.8.4" 
 
-    const val ktlint: String = "0.33.0" 
+    const val ktlint: String = "0.33.0" // available: "0.34.2"
 
-    const val commons_codec: String = "1.12" 
+    const val commons_codec: String = "1.13" 
 
     const val commons_io: String = "2.6" 
 
@@ -51,11 +51,11 @@ object Versions {
 
     const val org_jetbrains_kotlin: String = "1.3.41" 
 
-    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.1.0" 
+    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.2.0" 
 
-    const val org_protelis_protelisdoc_gradle_plugin: String = "0.1.2" 
+    const val org_protelis_protelisdoc_gradle_plugin: String = "0.1.2" // available: "0.1.3"
 
-    const val protelis_parser: String = "9.1.2" 
+    const val protelis_parser: String = "9.1.2" // available: "9.2.0"
 
     const val slf4j_api: String = "1.7.26" 
 
@@ -71,7 +71,7 @@ object Versions {
 
         const val currentVersion: String = "5.5.1"
 
-        const val nightlyVersion: String = "5.6-20190712070717+0000"
+        const val nightlyVersion: String = "5.7-20190722220035+0000"
 
         const val releaseCandidate: String = ""
     }
