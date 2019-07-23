@@ -4,8 +4,10 @@ import org.protelis.lang.datatype.Field;
 
 /**
  * A time-aware device.
+ *
+ * @param <D> number type
  */
-public interface TimeAwareDevice extends ExecutionContext {
+public interface TimeAwareDevice<D extends Number> extends ExecutionContext {
 
     /**
      * Time forward view: expected time from the device computation to
@@ -17,7 +19,7 @@ public interface TimeAwareDevice extends ExecutionContext {
      * 
      * @return field of communication delays
      */
-    Field nbrDelay();
+    Field<D> nbrDelay();
 
     /**
      * Time backward view: how long ago information from neighbors was received.
@@ -28,5 +30,5 @@ public interface TimeAwareDevice extends ExecutionContext {
      * 
      * @return field of communication latencies
      */
-    Field nbrLag();
+    Field<D> nbrLag();
 }
