@@ -66,7 +66,7 @@ public final class Builtins {
     }
 
     @SuppressWarnings("unchecked")
-    public static <X, Y, R> R byReflection(final String name, final X a, final Y b) {
+    private static <X, Y, R> R byReflection(final String name, final X a, final Y b) {
         try {
             return (R) a.getClass().getMethod(name, b.getClass()).invoke(a, b);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
