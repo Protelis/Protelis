@@ -29,6 +29,8 @@ import com.google.common.collect.Sets;
  */
 public final class Builtins {
 
+    private static final String UNCHECKED = "unchecked";
+
     private Builtins() { }
 
     /**
@@ -65,7 +67,7 @@ public final class Builtins {
         return target.foldValuesExcludingLocal(false, Boolean::logicalOr);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(UNCHECKED)
     private static <X, Y, R> R byReflection(final String name, final X a, final Y b) {
         try {
             return (R) a.getClass().getMethod(name, b.getClass()).invoke(a, b);
@@ -84,7 +86,7 @@ public final class Builtins {
         throw new IllegalStateException("Impossible conversion between " + in + " and " + out);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(UNCHECKED)
     private static <I, O> O convert(final Class<O> out, final I in) {
         return conversionFunction((Class<I>) in.getClass(), out).apply(in);
     }
@@ -108,7 +110,7 @@ public final class Builtins {
             @Nonnull final T base,
             @Nonnull final Field<T> target,
             @Nonnull final FunctionDefinition reductionFunction) {
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED)
         final Class<? extends T> defaultType = (Class<? extends T>) Objects.requireNonNull(base).getClass();
         final Class<? extends T> fieldType = Objects.requireNonNull(target).getExpectedType();
         final Class<? extends T> expectedType;
@@ -436,7 +438,7 @@ public final class Builtins {
         return run(inClass, x, y, fun);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(UNCHECKED)
     private static <T> T sum(final T a, final T b) {
         if (a instanceof CharSequence || b instanceof CharSequence) {
             return (T) (a.toString() + b.toString());
@@ -471,7 +473,7 @@ public final class Builtins {
         return byReflection("plus", a, b);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(UNCHECKED)
     private static <T> T union(final T a, final T b) {
         if (a instanceof Tuple && b instanceof Tuple) {
             return (T) runBi(Tuple.class, a, b, Tuple::union);
