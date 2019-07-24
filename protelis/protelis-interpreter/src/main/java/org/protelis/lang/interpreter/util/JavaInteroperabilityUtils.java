@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
@@ -157,9 +159,9 @@ public final class JavaInteroperabilityUtils {
      * @return the result of the evaluation
      */
     public static Object runProtelisFunctionWithJavaArguments(
-            final ExecutionContext ctx,
-            final FunctionDefinition fd,
-            final List<?> args) {
+            @Nonnull final ExecutionContext ctx,
+            @Nonnull final FunctionDefinition fd,
+            @Nonnull final List<?> args) {
         final List<AnnotatedTree<?>> arguments = args.stream().map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
         return runProtelisFunction(ctx, new Constant<>(METADATA, fd), arguments);
     }
