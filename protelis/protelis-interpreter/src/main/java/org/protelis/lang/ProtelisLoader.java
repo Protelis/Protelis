@@ -122,6 +122,8 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Main entry-point class for loading/parsing Protelis programs.
  */
@@ -193,6 +195,7 @@ public final class ProtelisLoader {
         loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
     }
 
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", justification = "False positive")
     private static void loadResourcesRecursively(
             final XtextResourceSet target,
             final String programURI,
