@@ -75,7 +75,7 @@ public final class Builtins {
             throw new IllegalStateException("Unable to perform operation a." + name
                     + "(b) where a=" + a + " and b=" + b
                     + ", a of type " + a.getClass()
-                    + ", b of type " + b.getClass());
+                    + ", b of type " + b.getClass(), e);
         }
     }
 
