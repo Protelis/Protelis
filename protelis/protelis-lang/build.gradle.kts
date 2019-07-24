@@ -26,6 +26,6 @@ sourceSets {
 
 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
     setOf("configureGenerateProtelisDoc", "generateProtelisDoc", "generateKotlinFromProtelis").map {
-        tasks.getByName(it)?.enabled = false
+//        tasks.getByName(it)?.enabled = false
     }
 }
