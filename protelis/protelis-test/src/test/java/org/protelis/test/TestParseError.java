@@ -22,7 +22,7 @@ public class TestParseError {
      */
     @Test
     public void testCommentedJavaImports() {
-        testCommentedImportLine("import java.lang.Math.sin", "sin(0)", "sin");
+        testCommentedImportLine("import java.lang.Byte.parseByte", "parseByte(\"0\")", "parseByte");
     }
 
     /**
