@@ -56,6 +56,7 @@ import org.protelis.lang.interpreter.impl.BinaryOp;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
 import org.protelis.lang.interpreter.impl.Invoke;
+import org.protelis.lang.interpreter.impl.JvmConstant;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
 import org.protelis.lang.interpreter.impl.GenericHoodCall;
@@ -755,7 +756,7 @@ public final class ProtelisLoader {
                 /*
                  * JVMFeature is not serializable
                  */
-                return new Constant<>(meta, new JVMEntity((JvmFeature) ref));
+                return new JvmConstant(meta, new JVMEntity((JvmFeature) ref));
             }
             if (ref instanceof FunctionDef) {
                 final FunctionDef functionDefinition = (FunctionDef) ref;
