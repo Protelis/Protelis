@@ -108,10 +108,8 @@ public final class FunctionDefinition implements Serializable {
      *         are cleared. No side effects.
      */
     public AnnotatedTree<?> getBody() {
-        if (body == null) {
-            body = bodySupplier.get();
-        }
-        return body;
+        initBody();
+        return body.copy();
     }
 
     /**
@@ -163,8 +161,14 @@ public final class FunctionDefinition implements Serializable {
         return initializeIt;
     }
 
+    private void initBody() {
+        if (body == null) {
+            body = bodySupplier.get();
+        }
+    }
+
     private void writeObject(final ObjectOutputStream o) throws IOException {
-        getBody(); // Forces body initialization
+        initBody();
         o.defaultWriteObject();
     }
 
