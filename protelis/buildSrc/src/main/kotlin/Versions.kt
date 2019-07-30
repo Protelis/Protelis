@@ -55,7 +55,7 @@ object Versions {
 
     const val org_protelis_protelisdoc_gradle_plugin: String = "0.1.2" 
 
-    const val protelis_parser: String = "9.2.1" 
+    const val protelis_parser: String = "10.0.0" 
 
     const val slf4j_api: String = "1.7.26" 
 

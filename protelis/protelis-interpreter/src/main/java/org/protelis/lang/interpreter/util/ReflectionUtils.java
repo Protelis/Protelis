@@ -328,7 +328,7 @@ public final class ReflectionUtils {
             for (int i = 0; compatible && i < actualArgClass.length; i++) {
                 final Class<?> expected = nthArgumentType(m, i);
                 final Class<?> actual = actualArgClass[i];
-                if (expected.isAssignableFrom(actual)) {
+                if (actual == null && !classIsPrimitive(expected) || expected.isAssignableFrom(actual)) {
                     /*
                      * No downcast nor coercion required, there is compatibility
                      */
@@ -431,14 +431,19 @@ public final class ReflectionUtils {
         final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
         boolean atLeastOneField = false;
         for (final Object arg: args) {
-            final Class<?> argClass = arg.getClass();
-            if (arg instanceof Field) {
-                fieldedClasses.add(((Field<?>) arg).getExpectedType());
-                atLeastOneField = true;
+            if (arg == null) {
+                originalClasses.add(null);
+                fieldedClasses.add(null);
             } else {
-                fieldedClasses.add(argClass);
+                final Class<?> argClass = arg.getClass();
+                if (arg instanceof Field) {
+                    fieldedClasses.add(((Field<?>) arg).getExpectedType());
+                    atLeastOneField = true;
+                } else {
+                    fieldedClasses.add(argClass);
+                }
+                originalClasses.add(argClass);
             }
-            originalClasses.add(argClass);
         }
         try {
             return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, originalClasses));

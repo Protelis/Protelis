@@ -8,17 +8,28 @@
  *******************************************************************************/
 package org.protelis.lang.datatype;
 
-import gnu.trove.list.array.TByteArrayList;
-import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.interpreter.util.Reference;
-import org.protelis.parser.protelis.ProtelisModule;
-
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import org.protelis.lang.ProtelisLoadingUtilities;
+import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.util.Reference;
+import org.protelis.lang.interpreter.util.SerializableSupplier;
+import org.protelis.parser.protelis.FunctionDef;
+import org.protelis.parser.protelis.Lambda;
+import org.protelis.parser.protelis.ShortLambda;
+import org.protelis.parser.protelis.VarDef;
+
+import gnu.trove.list.array.TByteArrayList;
 
 /**
  * First-class Protelis function.
@@ -30,36 +41,65 @@ public final class FunctionDefinition implements Serializable {
     private final int argNumber;
     private final List<Reference> args;
     private final TByteArrayList stackCode;
-    private AnnotatedTree<?> functionBody;
+    private final transient Supplier<AnnotatedTree<?>> bodySupplier;
+    private final boolean initializeIt;
+    private AnnotatedTree<?> body;
 
     /**
-     * @param module the Protelis module of this function, if any
-     * @param name   function name
-     * @param args   arguments
+     * @param name         function name
+     * @param args         arguments
+     * @param bodySupplier function providing a body when needed
      */
-    public FunctionDefinition(final Optional<ProtelisModule> module, final String name, final List<Reference> args) {
-        argNumber = args.size();
+    private FunctionDefinition(final String name, final List<Reference> args, final SerializableSupplier<AnnotatedTree<?>> bodySupplier, final boolean maybeOneArgument) {
+        argNumber = Objects.requireNonNull(args).size();
+        if (maybeOneArgument && argNumber != 0) {
+            throw new IllegalArgumentException("Function has optional 'it' parameter bit requires arguments");
+        }
+        initializeIt = maybeOneArgument;
         if (argNumber > Byte.MAX_VALUE) {
             throw new IllegalArgumentException("Currently the maximum number of allowed parameters for a function is "
                     + Byte.MAX_VALUE
                     + " " + name + " has " + argNumber + " parameters.");
         }
-        final String moduleName = module
-            .map(ProtelisModule::getName)
-            .orElse("$anonymous-module$");
-        functionName = moduleName + ':' + Objects.requireNonNull(name);
+        functionName = Objects.requireNonNull(name);
         this.args = args;
         final byte[] asciibytes = functionName.getBytes(StandardCharsets.US_ASCII);
         final ByteBuffer bb = ByteBuffer.allocate(asciibytes.length + 1);
         bb.put((byte) argNumber);
         bb.put(asciibytes);
         stackCode = new TByteArrayList(bb.array());
+        this.bodySupplier = bodySupplier;
+    }
+
+    /**
+     * @param functionDefinition original parsed function
+     * @param bodyProvider body calculator
+     */
+    public FunctionDefinition(final FunctionDef functionDefinition, final SerializableSupplier<AnnotatedTree<?>> bodyProvider) {
+        this(ProtelisLoadingUtilities.qualifiedNameFor(functionDefinition),
+            Optional.ofNullable(functionDefinition.getArgs())
+                .<List<VarDef>>flatMap(it -> Optional.ofNullable(it.getArgs()))
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(Reference::new)
+                .collect(Collectors.toList()),
+            bodyProvider, false
+        );
+    }
+
+    /**
+     * @param lambda lambda expression
+     * @param args arguments for this lambda
+     * @param bodyProvider function providing a body when needed
+     */
+    public FunctionDefinition(final Lambda lambda, final List<Reference> args, final SerializableSupplier<AnnotatedTree<?>> bodyProvider) {
+        this(ProtelisLoadingUtilities.qualifiedNameFor(lambda), args, bodyProvider, lambda instanceof ShortLambda);
     }
 
     /**
      * @return number of arguments
      */
-    public int getArgNumber() {
+    public int getParameterCount() {
         return argNumber;
     }
 
@@ -68,15 +108,10 @@ public final class FunctionDefinition implements Serializable {
      *         are cleared. No side effects.
      */
     public AnnotatedTree<?> getBody() {
-        return functionBody.copy();
-    }
-
-    /**
-     * @param body
-     *            the body of this function
-     */
-    public void setBody(final AnnotatedTree<?> body) {
-        functionBody = body;
+        if (body == null) {
+            body = bodySupplier.get();
+        }
+        return body;
     }
 
     /**
@@ -109,8 +144,6 @@ public final class FunctionDefinition implements Serializable {
      * @return argument internal name
      */
     public Reference getArgumentByPosition(final int i) {
-        assert i >= 0;
-        assert i < args.size();
         return args.get(i);
     }
 
@@ -124,6 +157,15 @@ public final class FunctionDefinition implements Serializable {
      */
     public byte[] getStackCode() {
         return stackCode.toArray();
+    }
+
+    public boolean invokerShouldInitializeIt() {
+        return initializeIt;
+    }
+
+    private void writeObject(final ObjectOutputStream o) throws IOException {
+        getBody(); // Forces body initialization
+        o.defaultWriteObject();
     }
 
 }

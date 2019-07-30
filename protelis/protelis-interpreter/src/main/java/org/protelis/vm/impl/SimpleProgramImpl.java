@@ -11,12 +11,10 @@
  */
 package org.protelis.vm.impl;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
@@ -29,7 +27,6 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     private static final long serialVersionUID = -986976491484860840L;
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
     private final AnnotatedTree<?> prog;
-    private final Map<Reference, ?> funs;
     private final String name;
 
     /**
@@ -38,14 +35,11 @@ public final class SimpleProgramImpl implements ProtelisProgram {
      *            module name.
      * @param program
      *            evaluation tree
-     * @param functions
-     *            available functions
      */
     public SimpleProgramImpl(
             final ProtelisModule source,
-            final AnnotatedTree<?> program,
-            final Map<Reference, ?> functions) {
-        this(Optional.of(source).map(ProtelisModule::getName).orElse(DEFAULT_PROGRAM_NAME), program, functions);
+            final AnnotatedTree<?> program) {
+        this(Optional.ofNullable(source).map(ProtelisModule::getName).orElse(DEFAULT_PROGRAM_NAME), program);
     }
 
     /**
@@ -58,11 +52,9 @@ public final class SimpleProgramImpl implements ProtelisProgram {
      */
     public SimpleProgramImpl(
             final String pName,
-            final AnnotatedTree<?> program,
-            final Map<Reference, ?> functions) {
+            final AnnotatedTree<?> program) {
         name = Objects.requireNonNull(pName);
         prog = Objects.requireNonNull(program);
-        funs = Objects.requireNonNull(functions);
     }
 
     @Override
@@ -73,11 +65,6 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     @Override
     public void compute(final ExecutionContext context) {
         prog.eval(context);
-    }
-
-    @Override
-    public Map<Reference, ?> getGloballyAvailableReferences() {
-        return funs;
     }
 
     @Override

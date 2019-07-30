@@ -27,7 +27,10 @@ public final class Reference implements Serializable {
      * @param obj the object to refer to
      */
     public Reference(final Object obj) {
-        if (obj instanceof VarDef) {
+        if (obj instanceof String) {
+            strRep = obj.toString();
+            uid = strRep;
+        } else  if (obj instanceof VarDef) {
             final VarDef var = (VarDef) obj;
             final ITextRegionWithLineInformation node = NodeModelUtils.getNode(var).getTextRegionWithLineInformation();
             EObject container = var.eContainer();

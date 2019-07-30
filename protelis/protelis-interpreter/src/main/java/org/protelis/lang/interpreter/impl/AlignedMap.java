@@ -47,7 +47,7 @@ import com.google.common.primitives.Longs;
  * as a set of publish-subscribe streams. This allows devices with different
  * sets of keys to align the expressions that share keys together.
  */
-public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperator, DotOperator>>, Tuple> {
+public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, Invoke>>, Tuple> {
 
     private static final String APPLY = "apply";
     private static final Reference CURFIELD = new Reference(new Serializable() {
@@ -148,11 +148,11 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
         /*
          * Get or initialize the mapping between keys and functions
          */
-        Map<Object, Pair<DotOperator, DotOperator>> funmap = getSuperscript();
+        Map<Object, Pair<Invoke, Invoke>> funmap = getSuperscript();
         if (funmap == null) {
             funmap = new LinkedHashMap<>();
         }
-        final Map<Object, Pair<DotOperator, DotOperator>> newFunmap = new LinkedHashMap<>(funmap.size());
+        final Map<Object, Pair<Invoke, Invoke>> newFunmap = new LinkedHashMap<>(funmap.size());
         setSuperscript(newFunmap);
         final List<Tuple> resl = new ArrayList<>(keyToField.size());
         for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
@@ -189,14 +189,14 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
             /*
              * Compute functions if needed
              */
-            Pair<DotOperator, DotOperator> funs = funmap.get(key);
+            Pair<Invoke, Invoke> funs = funmap.get(key);
             if (funs == null) {
-                funs = new Pair<>(new DotOperator(getMetadata(), APPLY, filterOp, args), new DotOperator(getMetadata(), APPLY, runOp, args));
+                funs = new Pair<>(new Invoke(getMetadata(), APPLY, filterOp, args), new Invoke(getMetadata(), APPLY, runOp, args));
             }
             /*
              * Run the actual filtering and operation
              */
-            final DotOperator fop = funs.getFirst();
+            final Invoke fop = funs.getFirst();
             restricted.newCallStackFrame(ALIGNED_MAP_FILTER.getCode());
             fop.eval(restricted);
             restricted.returnFromCallFrame();
@@ -207,7 +207,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<DotOperato
                      * Filter passed, run operation.
                      */
                     restricted.newCallStackFrame(ALIGNED_MAP_EXECUTE.getCode());
-                    final DotOperator rop = funs.getSecond();
+                    final Invoke rop = funs.getSecond();
                     rop.eval(restricted);
                     restricted.returnFromCallFrame();
                     resl.add(DatatypeFactory.createTuple(key, rop.getAnnotation()));

@@ -18,8 +18,10 @@ import org.protelis.vm.ExecutionContext;
 
 /**
  * Implementation of 'nbr' operator.
+ *
+ * @param <T> field type
  */
-public final class NBRCall extends AbstractAnnotatedTree<Field<?>> {
+public final class NBRCall<T> extends AbstractAnnotatedTree<Field<T>> {
 
     private static final long serialVersionUID = 5255917527687990281L;
 
@@ -29,20 +31,22 @@ public final class NBRCall extends AbstractAnnotatedTree<Field<?>> {
      * @param body
      *            body of nbr
      */
-    public NBRCall(final Metadata metadata, final AnnotatedTree<?> body) {
+    public NBRCall(final Metadata metadata, final AnnotatedTree<T> body) {
         super(metadata, body);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public NBRCall copy() {
-        return new NBRCall(getMetadata(), deepCopyBranches().get(0));
+    public NBRCall<T> copy() {
+        return new NBRCall<>(getMetadata(), (AnnotatedTree<T>) deepCopyBranches().get(0));
     }
 
     @Override
     public void evaluate(final ExecutionContext context) {
         projectAndEval(context);
-        final Object childVal = getBranch(0).getAnnotation();
-        final Field<?> res = context.buildField(Function.identity(), childVal);
+        @SuppressWarnings("unchecked")
+        final T childVal = (T) getBranch(0).getAnnotation();
+        final Field<T> res = context.buildField(Function.identity(), childVal);
         setAnnotation(res);
     }
 

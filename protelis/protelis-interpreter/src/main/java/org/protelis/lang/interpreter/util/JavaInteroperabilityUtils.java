@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
-import org.protelis.lang.interpreter.impl.DotOperator;
+import org.protelis.lang.interpreter.impl.Invoke;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
@@ -127,7 +127,7 @@ public final class JavaInteroperabilityUtils {
             final ExecutionContext ctx,
             final AnnotatedTree<FunctionDefinition> fd,
             final List<AnnotatedTree<?>> args) {
-        final DotOperator dot = DotOperator.makeApply(fd, args);
+        final Invoke dot = Invoke.makeApply(fd, args);
         dot.eval(ctx);
         return dot.getAnnotation();
     }
