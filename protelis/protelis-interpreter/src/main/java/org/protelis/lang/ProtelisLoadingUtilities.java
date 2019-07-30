@@ -12,8 +12,10 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtend.lib.macro.declaration.Declaration;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.util.Reference;
+import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
 import org.protelis.parser.protelis.Expression;
 import org.protelis.parser.protelis.ExpressionList;
@@ -68,62 +70,49 @@ public final class ProtelisLoadingUtilities {
     }
 
     public static String qualifiedNameFor(final Lambda lambda) {
-        return qualifiedNameFor(Lambda.class, lambda, ":$anon", 0);
+        return qualifiedNameFor(Lambda.class, lambda, ":$anon");
     }
 
-    private static String qualifiedNameFor(final EObject origin, final String suffix, final int counted) {
-        return qualifiedNameFor(origin.getClass(), origin, suffix, counted);
+    private static String qualifiedNameFor(final EObject origin, final String suffix) {
+        return qualifiedNameFor(origin.getClass(), origin, suffix);
     }
 
-    private static String qualifiedNameFor(final Class<? extends EObject> clazz, final EObject origin, final String suffix, final int counted) {
+    private static String qualifiedNameFor(final Class<? extends EObject> clazz, final EObject origin, final String suffix) {
         final EObject container = origin.eContainer();
         if (container instanceof FunctionDef) {
-            return qualifiedNameFor((FunctionDef) container) + suffix + counted;
+            return qualifiedNameFor((FunctionDef) container) + suffix;
         }
         if (container instanceof ProtelisModule) {
-            return qualifiedNameFor((ProtelisModule) container) + suffix + counted;
+            return qualifiedNameFor((ProtelisModule) container) + suffix;
         }
-        if (container instanceof MethodCall) {
-            final MethodCall method = (MethodCall) container;
-            return qualifiedNameFor(container, ":$" + method.getName(), 0) + suffix + counted;
-        }
-        if (container instanceof Expression) {
-            final Expression expression = (Expression) container;
-            if (container instanceof Lambda) {
-                return qualifiedNameFor((Lambda) container) + suffix + counted;
-            }
-            if (expression.getName() != null) {
-                final String name = expression.getName().equals(".") ? "method" : expression.getName();
-                return qualifiedNameFor(container, ":$" + name, counted) + suffix + counted;
-            }
-            final List<EObject> elements = expression.getElements();
-            if (elements != null && elements.size() == 2 && elements.get(1) instanceof InvocationArguments) {
-                return qualifiedNameFor(Expression.class, container, ":$invoke", 0);
-            }
-            throw new IllegalStateException();
-        }
-        final Stream<? extends Statement> statements;
-        if (container instanceof InvocationArguments) {
-            statements = ProtelisLoadingUtilities.invocationArguments((InvocationArguments) container);
-        } else if (container instanceof Block) {
-            statements = ((Block) container).getStatements().stream();
-        } else if (container instanceof IfWithoutElse) {
-            statements = ((IfWithoutElse) container).getThen().stream();
-        } else {
-            statements = Stream.empty();
-        }
-        int myId = counted;
-        final Iterator<? extends Statement> iterator = statements.iterator();
+        int myId = 0;
+        final Iterator<EObject> iterator = container.eContents().iterator();
         while (iterator.hasNext()) {
-            final Statement statement = iterator.next();
+            final Object statement = iterator.next();
             if (statement.equals(origin)) {
-                return qualifiedNameFor(clazz, container, suffix, myId);
+                return qualifiedNameFor(container, ":$" + nameFor(container) + myId + suffix);
             }
-            if (clazz.isAssignableFrom(statement.getClass())) {
-                myId++;
-            }
+            myId++;
         }
-        return qualifiedNameFor(container.getClass(), container, suffix, counted);
+        throw new IllegalStateException();
+    }
+
+    private static String nameFor(EObject container) {
+        if (container instanceof Block) {
+            return "b";
+        }
+        if (container instanceof Declaration) {
+            return "let";
+        }
+        if (container instanceof Assignment) {
+            return "=";
+        }
+        if (container instanceof IfWithoutElse) {
+            return "ifwoe";
+        }
+        return container instanceof Expression
+                ? ((Expression) container).getName()
+                : container.getClass().getSimpleName();
     }
 
     public static List<Reference> referenceListFor(final List<?> l) {
