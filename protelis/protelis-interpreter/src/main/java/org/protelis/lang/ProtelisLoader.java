@@ -554,7 +554,7 @@ public final class ProtelisLoader {
                 return new GenericHoodCall(meta, inclusive, variableUnsafe(ref), nullResult, field);
             }
             if (expression instanceof It) {
-                return new Variable(meta, ProtelisLoadingUtilities.IT);
+                return new Variable(meta, IT);
             }
             if (expression instanceof Mux) {
                 final Mux mux = (Mux) expression;
