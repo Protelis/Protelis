@@ -157,6 +157,11 @@ public final class FunctionDefinition implements Serializable {
         }
     }
 
+    /**
+     * @return true if this function definition was originated from a Kotlin-style
+     *         lambda without explicit arguments, hence may be invoked with a single
+     *         parameter 'it'
+     */
     public boolean invokerShouldInitializeIt() {
         return initializeIt;
     }
