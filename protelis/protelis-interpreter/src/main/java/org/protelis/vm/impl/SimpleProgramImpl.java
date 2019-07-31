@@ -47,8 +47,6 @@ public final class SimpleProgramImpl implements ProtelisProgram {
      *            Program name
      * @param program
      *            evaluation tree
-     * @param functions
-     *            available functions
      */
     public SimpleProgramImpl(
             final String pName,
