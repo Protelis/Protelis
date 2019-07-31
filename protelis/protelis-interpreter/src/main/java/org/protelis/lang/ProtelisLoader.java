@@ -8,27 +8,27 @@
  *******************************************************************************/
 package org.protelis.lang;
 
+import static org.protelis.lang.ProtelisLoadingUtilities.IT;
+import static org.protelis.lang.ProtelisLoadingUtilities.argumentsToExpressionStream;
+import static org.protelis.lang.ProtelisLoadingUtilities.referenceFor;
+import static org.protelis.lang.ProtelisLoadingUtilities.referenceListFor;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,13 +55,13 @@ import org.protelis.lang.interpreter.impl.AssignmentOp;
 import org.protelis.lang.interpreter.impl.BinaryOp;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
-import org.protelis.lang.interpreter.impl.Invoke;
-import org.protelis.lang.interpreter.impl.JvmConstant;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
 import org.protelis.lang.interpreter.impl.GenericHoodCall;
 import org.protelis.lang.interpreter.impl.HoodCall;
 import org.protelis.lang.interpreter.impl.If;
+import org.protelis.lang.interpreter.impl.Invoke;
+import org.protelis.lang.interpreter.impl.JvmConstant;
 import org.protelis.lang.interpreter.impl.NBRCall;
 import org.protelis.lang.interpreter.impl.Self;
 import org.protelis.lang.interpreter.impl.ShareCall;
@@ -84,7 +84,6 @@ import org.protelis.parser.protelis.ExpressionList;
 import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.GenericHood;
 import org.protelis.parser.protelis.IfWithoutElse;
-import org.protelis.parser.protelis.ImportSection;
 import org.protelis.parser.protelis.InvocationArguments;
 import org.protelis.parser.protelis.It;
 import org.protelis.parser.protelis.Lambda;
@@ -94,7 +93,6 @@ import org.protelis.parser.protelis.Mux;
 import org.protelis.parser.protelis.NBR;
 import org.protelis.parser.protelis.OldLongLambda;
 import org.protelis.parser.protelis.OldShortLambda;
-import org.protelis.parser.protelis.ProtelisImport;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.Rep;
 import org.protelis.parser.protelis.RepInitialize;
@@ -117,15 +115,11 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import static org.protelis.lang.ProtelisLoadingUtilities.*;
 
 /**
  * Main entry-point class for loading/parsing Protelis programs.
