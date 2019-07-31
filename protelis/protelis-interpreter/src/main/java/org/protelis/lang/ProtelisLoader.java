@@ -168,10 +168,6 @@ public final class ProtelisLoader {
     private ProtelisLoader() {
     }
 
-    private static List<VarDef> extractArgs(final FunctionDef e) {
-        return e.getArgs() != null && e.getArgs().getArgs() != null ? e.getArgs().getArgs() : Collections.emptyList();
-    }
-
     private static void loadResourcesRecursively(final XtextResourceSet target, final String programURI)
             throws IOException {
         loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
