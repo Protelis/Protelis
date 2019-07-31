@@ -146,6 +146,10 @@ public final class ProtelisLoadingUtilities {
                 .orElse("anonymous-module");
     }
 
+    /**
+     * @param o an object
+     * @return the corrisponding {@link Reference} inside Protelis
+     */
     public static Reference referenceFor(final Object o) {
         try {
             return REFERENCES.get(o);
@@ -154,6 +158,10 @@ public final class ProtelisLoadingUtilities {
         }
     }
 
+    /**
+     * @param l a list of objects
+     * @return a list of the corresponding references inside Protelis
+     */
     public static List<Reference> referenceListFor(final List<?> l) {
         return l.stream().map(ProtelisLoadingUtilities::referenceFor).collect(Collectors.toList());
     }
