@@ -30,7 +30,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * Static utilities for parsing Protelis
+ * Static utilities for parsing Protelis.
  */
 public final class ProtelisLoadingUtilities {
 
@@ -50,6 +50,10 @@ public final class ProtelisLoadingUtilities {
 
     private ProtelisLoadingUtilities() { }
 
+    /**
+     * @param args invocation arguments
+     * @return a stream of expressions, one element per argument.
+     */
     public static Stream<Expression> argumentsToExpressionStream(@Nonnull final InvocationArguments args) {
         final Stream<KotlinStyleLambda> lastArgument = Optional.ofNullable(args.getLastArg())
             .map(Stream::of)
@@ -61,17 +65,29 @@ public final class ProtelisLoadingUtilities {
        return Stream.concat(inParenthesis, lastArgument);
     }
 
+    /**
+     * @param functionDefinition the function
+     * @return a qualified name
+     */
     public static String qualifiedNameFor(final FunctionDef functionDefinition) {
         return qualifiedNameFor((ProtelisModule) functionDefinition.eContainer())
                 + ':' + functionDefinition.getName();
     }
 
+    /**
+     * @param module the module
+     * @return a qualified name
+     */
     public static String qualifiedNameFor(final ProtelisModule module) {
         return Optional.ofNullable(module)
                 .map(ProtelisModule::getName)
                 .orElse("anonymous-module");
     }
 
+    /**
+     * @param lambda a lambda produced by the parser
+     * @return its qualified name
+     */
     public static String qualifiedNameFor(final Lambda lambda) {
         return qualifiedNameFor(Lambda.class, lambda, ":$anon");
     }
