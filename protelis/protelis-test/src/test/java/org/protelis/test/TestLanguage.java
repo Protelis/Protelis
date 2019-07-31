@@ -104,7 +104,7 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage02() {
-        runExpectingErrors("/errorMessage02.pt", IllegalArgumentException.class, "static", "parameters");
+        runExpectingErrors("/errorMessage02.pt", ProtelisRuntimeException.class, "static", "parameters");
     }
 
     /**
