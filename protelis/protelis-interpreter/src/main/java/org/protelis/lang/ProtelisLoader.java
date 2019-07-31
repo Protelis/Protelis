@@ -110,7 +110,6 @@ import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cglib.core.Local;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.cache.Cache;
@@ -426,7 +425,7 @@ public final class ProtelisLoader {
 
     private static class Dispatch {
 
-        private static final Cache<EObject, FunctionDefinition> FUNCTION_TABLE = CacheBuilder.newBuilder().weakKeys().build();
+        private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE = CacheBuilder.newBuilder().weakKeys().build();
         private static AnnotatedTree<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
             return new AlignedMap(
                     metadataFor(alMap),
@@ -685,7 +684,7 @@ public final class ProtelisLoader {
                 final FunctionDef functionDefinition = (FunctionDef) ref;
                 FunctionDefinition target;
                 try {
-                    target = FUNCTION_TABLE.get(functionDefinition,
+                    target = VIRTUAL_METHOD_TABLE.get(functionDefinition,
                             () -> new FunctionDefinition(functionDefinition, () -> block(functionDefinition.getBody())));
                     return new Constant<>(meta, target);
                 } catch (ExecutionException e) {
