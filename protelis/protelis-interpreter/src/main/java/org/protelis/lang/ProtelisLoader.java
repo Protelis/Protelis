@@ -490,6 +490,19 @@ public final class ProtelisLoader {
     private static class Dispatch {
 
         private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE = CacheBuilder.newBuilder().weakKeys().build();
+        private static AnnotatedTree<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
+            return new AlignedMap(
+                    metadataFor(alMap),
+                    expression(alMap.getArg()),
+                    expression(alMap.getCond()),
+                    expression(alMap.getOp()),
+                    expression(alMap.getDefault()));
+        }
+
+        private static AssignmentOp assignment(final Assignment assignment) {
+            return new AssignmentOp(metadataFor(assignment), referenceFor(assignment.getRefVar()), expression(assignment.getRight()));
+        }
+
         private static AnnotatedTree<?> block(@Nonnull final Block block) {
             final List<Statement> statements = block.getStatements();
             if (statements.size() == 1) {
@@ -501,15 +514,6 @@ public final class ProtelisLoader {
         @SuppressWarnings("unchecked")
         private static <T> AnnotatedTree<T> blockUnsafe(@Nonnull final Block block) {
             return (AnnotatedTree<T>) block(block);
-        }
-
-        private static AnnotatedTree<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
-            return new AlignedMap(
-                    metadataFor(alMap),
-                    expression(alMap.getArg()),
-                    expression(alMap.getCond()),
-                    expression(alMap.getOp()),
-                    expression(alMap.getDefault()));
         }
 
         private static AnnotatedTree<?> builtin(@Nonnull final Builtin expression) {
@@ -556,9 +560,23 @@ public final class ProtelisLoader {
             throw new IllegalStateException("Unknown builtin of type " + expression.getClass().getSimpleName());
         }
 
+        private static AssignmentOp declaration(final Declaration declaration) {
+            final VarDef name = declaration.getName();
+            return new AssignmentOp(metadataFor(declaration), referenceFor(name), expression(declaration.getRight()));
+        }
+
         @SuppressWarnings("unchecked")
         private static <T> AnnotatedTree<T> expression(final Expression expression) {
             return (AnnotatedTree<T>) expressionRaw(expression);
+        }
+
+        private static List<AnnotatedTree<?>> expressionList(@Nullable final ExpressionList list) {
+            return Optional.ofNullable(list)
+                .<List<Expression>>map(ExpressionList::getArgs)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(Dispatch::expression)
+                .collect(ImmutableList.toImmutableList());
         }
 
         private static AnnotatedTree<?> expressionRaw(final Expression expression) {
@@ -614,6 +632,23 @@ public final class ProtelisLoader {
             }
         }
 
+        private static AnnotatedTree<?> ifOp(final org.protelis.parser.protelis.If ifOp) {
+            return new If<>(metadataFor(ifOp), expression(ifOp.getCond()),
+                    blockUnsafe(ifOp.getThen()),
+                    block(ifOp.getElse()));
+        }
+
+        private static If<?> ifWithoutElse(final IfWithoutElse ifOp) {
+            final Metadata meta = metadataFor(ifOp);
+            final List<AnnotatedTree<?>> then = ifOp.getThen().stream()
+                    .map(it -> statement(it))
+                    .collect(Collectors.toList());
+            final AnnotatedTree<?> thenBranch = then.size() == 1
+                    ? then.get(0)
+                    : new All(meta, then);
+            return new If<>(meta, expression(ifOp.getCond()), thenBranch, null);
+        }
+
         private static List<AnnotatedTree<?>> invocationArguments(@Nonnull final InvocationArguments args) {
             return argumentsToExpressionStream(args)
                 .map(Dispatch::expression)
@@ -645,6 +680,10 @@ public final class ProtelisLoader {
             throw new IllegalStateException("Unknown local of type " + expression.getClass().getSimpleName());
         }
 
+        private static <T> NBRCall<T> nbr(final NBR nbr) {
+            return new NBRCall<>(metadataFor(nbr), expression(nbr.getArg()));
+        }
+
         private static ShareCall<?, ?> rep(final Rep rep) {
             final Metadata meta = metadataFor(rep);
             final RepInitialize init = rep.getInit();
@@ -653,26 +692,6 @@ public final class ProtelisLoader {
                     .map(Yield::getBody)
                     .map(it -> blockUnsafe(it));
             return new ShareCall<>(meta, local, Optional.empty(), expression(init.getW()), block(rep.getBody()), yield);
-        }
-
-        private static ShareCall<?, ?> share(final Share share) {
-            final ShareInitialize init = share.getInit();
-            final Optional<Reference> local = Optional.ofNullable(init.getLocal()).map(ProtelisLoadingUtilities::referenceFor);
-            final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoadingUtilities::referenceFor);
-            final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(share.getYields())
-                    .map(Yield::getBody)
-                    .map(it -> blockUnsafe(it));
-            return new ShareCall<>(metadataFor(share), local, field, expression(init.getW()), block(share.getBody()), yield);
-        }
-
-        private static <T> NBRCall<T> nbr(final NBR nbr) {
-            return new NBRCall<>(metadataFor(nbr), expression(nbr.getArg()));
-        }
-
-        private static AnnotatedTree<?> ifOp(final org.protelis.parser.protelis.If ifOp) {
-            return new If<>(metadataFor(ifOp), expression(ifOp.getCond()),
-                    blockUnsafe(ifOp.getThen()),
-                    block(ifOp.getElse()));
         }
 
         private static AnnotatedTree<?> scalar(@Nonnull final Scalar expression) {
@@ -692,13 +711,14 @@ public final class ProtelisLoader {
             throw new IllegalStateException("Unknown scalar of type " + expression.getClass().getSimpleName());
         }
 
-        private static List<AnnotatedTree<?>> expressionList(@Nullable final ExpressionList list) {
-            return Optional.ofNullable(list)
-                .<List<Expression>>map(ExpressionList::getArgs)
-                .orElseGet(Collections::emptyList)
-                .stream()
-                .map(Dispatch::expression)
-                .collect(ImmutableList.toImmutableList());
+        private static ShareCall<?, ?> share(final Share share) {
+            final ShareInitialize init = share.getInit();
+            final Optional<Reference> local = Optional.ofNullable(init.getLocal()).map(ProtelisLoadingUtilities::referenceFor);
+            final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoadingUtilities::referenceFor);
+            final Optional<AnnotatedTree<Object>> yield = Optional.ofNullable(share.getYields())
+                    .map(Yield::getBody)
+                    .map(it -> blockUnsafe(it));
+            return new ShareCall<>(metadataFor(share), local, field, expression(init.getW()), block(share.getBody()), yield);
         }
 
         private static AnnotatedTree<?> statement(@Nonnull final Statement statement) {
@@ -715,17 +735,6 @@ public final class ProtelisLoader {
                 return ifWithoutElse((IfWithoutElse) statement);
             }
             throw new IllegalStateException("Unknown statement of type " + statement.getClass().getSimpleName());
-        }
-
-        private static If<?> ifWithoutElse(final IfWithoutElse ifOp) {
-            final Metadata meta = metadataFor(ifOp);
-            final List<AnnotatedTree<?>> then = ifOp.getThen().stream()
-                    .map(it -> statement(it))
-                    .collect(Collectors.toList());
-            final AnnotatedTree<?> thenBranch = then.size() == 1
-                    ? then.get(0)
-                    : new All(meta, then);
-            return new If<>(meta, expression(ifOp.getCond()), thenBranch, null);
         }
 
         private static AnnotatedTree<?> variable(@Nonnull final VarUse expression) {
@@ -760,15 +769,6 @@ public final class ProtelisLoader {
                 }
             }
             return new Variable(meta, referenceFor(ref));
-        }
-
-        private static AssignmentOp assignment(final Assignment assignment) {
-            return new AssignmentOp(metadataFor(assignment), referenceFor(assignment.getRefVar()), expression(assignment.getRight()));
-        }
-
-        private static AssignmentOp declaration(final Declaration declaration) {
-            final VarDef name = declaration.getName();
-            return new AssignmentOp(metadataFor(declaration), referenceFor(name), expression(declaration.getRight()));
         }
 
         @SuppressWarnings("unchecked")
