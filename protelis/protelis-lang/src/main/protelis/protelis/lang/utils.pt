@@ -19,24 +19,6 @@ public def canSee(a) {
     anyHood(nbr(a))
 }
 
-///**
-// * Return type: (fun) -> fun.
-// * @param f function
-// * @return g(f(args))
-// */
-//public def composeF(f) {
-//    () -> { f.apply() }
-//}
-//
-///**
-// * Return type: (any) -> fun.
-// * @param a value to be composed as a function
-// * @return a function which returns a
-// */
-//public def composeV(a) {
-//    () -> { a }
-//}
-
 /**
  * @param x      num, value to be denormalized
  * @param oldmin num, oldmin
