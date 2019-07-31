@@ -272,36 +272,6 @@ public final class ProtelisLoader {
         final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
         Objects.requireNonNull(Objects.requireNonNull(root).getProgram(),
                 "The provided resource does not contain any main program, and can not be executed.");
-//        /*
-//         * Create the function headers.
-//         * 
-//         * 1) Take all the imports in reverse order (the first declared is the
-//         * one actually declared in case of name conflict), insert them with the
-//         * two possible names (fully qualified and short). This operation must
-//         * be recursive (for dealing with imports of imports).
-//         * 
-//         * 2) Override conflicting names with local names
-//         */
-//        final Map<FunctionDef, FunctionDefinition> nameToFun = new LinkedHashMap<>();
-//        recursivelyInitFunctions(root, nameToFun);
-//        /*
-//         * Function definitions are in place, now create function bodies.
-//         */
-//        final Map<Reference, FunctionDefinition> refToFun = nameToFun.keySet().stream()
-//                .collect(Collectors.toMap(ProtelisLoader::referenceFor, nameToFun::get, throwException(), LinkedHashMap::new));
-//        final ProgramState programState = new ProgramState(refToFun);
-//        // TODO: this deals with cyclic function calls. We can probably do better than this.
-//        nameToFun.forEach((fd, fun) -> fun.setBody(Dispatch.block(
-//                Objects.requireNonNull(
-//                    fd.getBody(),
-//                    "The program " + root.getName() + " cannot be created because the required function "
-//                    + ((ProtelisModule) fd.eContainer()).getName() + ":" + fd.getName() + " has errors in its body"),
-//                programState)
-//            )
-//        );
-//        /*
-//         * Create the main program
-//         */
         return new SimpleProgramImpl(root, Dispatch.block(root.getProgram()));
     }
 
@@ -403,39 +373,6 @@ public final class ProtelisLoader {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
-
-//    private static void recursivelyInitFunctions(final ProtelisModule module,
-//            final Map<FunctionDef, ? super FunctionDefinition> nameToFun) {
-//        recursivelyInitFunctions(module, nameToFun, new LinkedHashSet<>());
-//    }
-//
-//    private static void recursivelyInitFunctions(
-//            final ProtelisModule module,
-//            final Map<FunctionDef, ? super FunctionDefinition> nameToFun,
-//            final Set<ProtelisModule> completed) {
-//        if (!completed.contains(module)) {
-//            completed.add(module);
-//            /*
-//             * Init imports functions, in reverse order
-//             */
-//            final ImportSection imports = module.getImports();
-//            if (imports != null) {
-//                imports.getImportDeclarations().stream()
-//                    .filter(it -> it instanceof ProtelisImport)
-//                    .map(it -> (ProtelisImport) it)
-//                    .forEach(it -> recursivelyInitFunctions(it.getModule(), nameToFun, completed));
-//            }
-//            /*
-//             * Init local functions
-//             */
-//            nameToFun.putAll(module.getDefinitions().stream()
-//                .collect(Collectors.toMap(
-//                    Function.identity(),
-//                    fd -> new FunctionDefinition(Optional.of(module), fd.getName(), toR(extractArgs(fd)))
-//                ))
-//            );
-//        }
-//    }
 
     /**
      * @param program
