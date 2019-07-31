@@ -28,11 +28,14 @@ import org.protelis.parser.protelis.Lambda;
 import org.protelis.parser.protelis.ShortLambda;
 import org.protelis.parser.protelis.VarDef;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.list.array.TByteArrayList;
 
 /**
  * First-class Protelis function.
  */
+@SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+justification = "No need to recover the field, as the body is always generated before serialization")
 public final class FunctionDefinition implements Serializable {
 
     private static final long serialVersionUID = 1;
