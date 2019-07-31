@@ -34,6 +34,11 @@ import com.google.common.cache.LoadingCache;
  */
 public final class ProtelisLoadingUtilities {
 
+    /**
+     * A reference to the 'it' variable to be used in lambdas.
+     */
+    public static final Reference IT = new Reference("it");
+
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .build(new CacheLoader<Object, Reference>() {
@@ -42,11 +47,6 @@ public final class ProtelisLoadingUtilities {
                     return new Reference(key);
                 }
             });
-
-    /**
-     * A reference to the 'it' variable to be used in lambdas.
-     */
-    public static final Reference IT = new Reference("it");
 
     private ProtelisLoadingUtilities() { }
 
@@ -65,35 +65,22 @@ public final class ProtelisLoadingUtilities {
        return Stream.concat(inParenthesis, lastArgument);
     }
 
-    /**
-     * @param functionDefinition the function
-     * @return a qualified name
-     */
-    public static String qualifiedNameFor(final FunctionDef functionDefinition) {
-        return qualifiedNameFor((ProtelisModule) functionDefinition.eContainer())
-                + ':' + functionDefinition.getName();
-    }
-
-    /**
-     * @param module the module
-     * @return a qualified name
-     */
-    public static String qualifiedNameFor(final ProtelisModule module) {
-        return Optional.ofNullable(module)
-                .map(ProtelisModule::getName)
-                .orElse("anonymous-module");
-    }
-
-    /**
-     * @param lambda a lambda produced by the parser
-     * @return its qualified name
-     */
-    public static String qualifiedNameFor(final Lambda lambda) {
-        return qualifiedNameFor(Lambda.class, lambda, ":$anon");
-    }
-
-    private static String qualifiedNameFor(final EObject origin, final String suffix) {
-        return qualifiedNameFor(origin.getClass(), origin, suffix);
+    private static String nameFor(final EObject container) {
+        if (container instanceof Block) {
+            return "b";
+        }
+        if (container instanceof Declaration) {
+            return "let";
+        }
+        if (container instanceof Assignment) {
+            return "=";
+        }
+        if (container instanceof IfWithoutElse) {
+            return "ifwoe";
+        }
+        return container instanceof Expression
+                ? ((Expression) container).getName()
+                : container.getClass().getSimpleName();
     }
 
     private static String qualifiedNameFor(final Class<? extends EObject> clazz, final EObject origin, final String suffix) {
@@ -116,26 +103,35 @@ public final class ProtelisLoadingUtilities {
         throw new IllegalStateException();
     }
 
-    private static String nameFor(final EObject container) {
-        if (container instanceof Block) {
-            return "b";
-        }
-        if (container instanceof Declaration) {
-            return "let";
-        }
-        if (container instanceof Assignment) {
-            return "=";
-        }
-        if (container instanceof IfWithoutElse) {
-            return "ifwoe";
-        }
-        return container instanceof Expression
-                ? ((Expression) container).getName()
-                : container.getClass().getSimpleName();
+    private static String qualifiedNameFor(final EObject origin, final String suffix) {
+        return qualifiedNameFor(origin.getClass(), origin, suffix);
     }
 
-    public static List<Reference> referenceListFor(final List<?> l) {
-        return l.stream().map(ProtelisLoadingUtilities::referenceFor).collect(Collectors.toList());
+    /**
+     * @param functionDefinition the function
+     * @return a qualified name
+     */
+    public static String qualifiedNameFor(final FunctionDef functionDefinition) {
+        return qualifiedNameFor((ProtelisModule) functionDefinition.eContainer())
+                + ':' + functionDefinition.getName();
+    }
+
+    /**
+     * @param lambda a lambda produced by the parser
+     * @return its qualified name
+     */
+    public static String qualifiedNameFor(final Lambda lambda) {
+        return qualifiedNameFor(Lambda.class, lambda, ":$anon");
+    }
+
+    /**
+     * @param module the module
+     * @return a qualified name
+     */
+    public static String qualifiedNameFor(final ProtelisModule module) {
+        return Optional.ofNullable(module)
+                .map(ProtelisModule::getName)
+                .orElse("anonymous-module");
     }
 
     public static Reference referenceFor(final Object o) {
@@ -144,6 +140,10 @@ public final class ProtelisLoadingUtilities {
         } catch (ExecutionException e) {
             throw new IllegalStateException("Unable to create a reference for " + o, e);
         }
+    }
+
+    public static List<Reference> referenceListFor(final List<?> l) {
+        return l.stream().map(ProtelisLoadingUtilities::referenceFor).collect(Collectors.toList());
     }
 
 
