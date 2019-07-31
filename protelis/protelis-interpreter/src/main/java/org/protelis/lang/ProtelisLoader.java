@@ -523,10 +523,10 @@ public final class ProtelisLoader {
         }
 
         private static AnnotatedTree<?> builtin(@Nonnull final Builtin expression) {
-            final Metadata meta = metadataFor(expression);
             if (expression instanceof org.protelis.parser.protelis.AlignedMap) {
                 return alignedMap((org.protelis.parser.protelis.AlignedMap) expression);
             }
+            final Metadata meta = metadataFor(expression);
             if (expression instanceof org.protelis.parser.protelis.Env) {
                 return new Env(meta);
             }
