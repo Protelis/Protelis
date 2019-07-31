@@ -15,7 +15,6 @@ import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
-import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
