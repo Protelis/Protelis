@@ -36,39 +36,13 @@ import gnu.trove.list.array.TByteArrayList;
 public final class FunctionDefinition implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private final String functionName;
     private final int argNumber;
     private final List<Reference> args;
-    private final TByteArrayList stackCode;
-    private final transient Supplier<AnnotatedTree<?>> bodySupplier;
-    private final boolean initializeIt;
     private AnnotatedTree<?> body;
-
-    /**
-     * @param name         function name
-     * @param args         arguments
-     * @param bodySupplier function providing a body when needed
-     */
-    private FunctionDefinition(final String name, final List<Reference> args, final Supplier<AnnotatedTree<?>> bodySupplier, final boolean maybeOneArgument) {
-        argNumber = Objects.requireNonNull(args).size();
-        if (maybeOneArgument && argNumber != 0) {
-            throw new IllegalArgumentException("Function has optional 'it' parameter bit requires arguments");
-        }
-        initializeIt = maybeOneArgument;
-        if (argNumber > Byte.MAX_VALUE) {
-            throw new IllegalArgumentException("Currently the maximum number of allowed parameters for a function is "
-                    + Byte.MAX_VALUE
-                    + " " + name + " has " + argNumber + " parameters.");
-        }
-        functionName = Objects.requireNonNull(name);
-        this.args = args;
-        final byte[] asciibytes = functionName.getBytes(StandardCharsets.US_ASCII);
-        final ByteBuffer bb = ByteBuffer.allocate(asciibytes.length + 1);
-        bb.put((byte) argNumber);
-        bb.put(asciibytes);
-        stackCode = new TByteArrayList(bb.array());
-        this.bodySupplier = bodySupplier;
-    }
+    private final transient Supplier<AnnotatedTree<?>> bodySupplier;
+    private final String functionName;
+    private final boolean initializeIt;
+    private final TByteArrayList stackCode;
 
     /**
      * @param functionDefinition original parsed function
@@ -96,31 +70,29 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
-     * @return number of arguments
+     * @param name         function name
+     * @param args         arguments
+     * @param bodySupplier function providing a body when needed
      */
-    public int getParameterCount() {
-        return argNumber;
-    }
-
-    /**
-     * @return the body of the function as defined. All annotations for the body
-     *         are cleared. No side effects.
-     */
-    public AnnotatedTree<?> getBody() {
-        initBody();
-        return body.copy();
-    }
-
-    /**
-     * @return function name
-     */
-    public String getName() {
-        return functionName;
-    }
-
-    @Override
-    public String toString() {
-        return functionName + "/" + argNumber;
+    private FunctionDefinition(final String name, final List<Reference> args, final Supplier<AnnotatedTree<?>> bodySupplier, final boolean maybeOneArgument) {
+        argNumber = Objects.requireNonNull(args).size();
+        if (maybeOneArgument && argNumber != 0) {
+            throw new IllegalArgumentException("Function has optional 'it' parameter bit requires arguments");
+        }
+        initializeIt = maybeOneArgument;
+        if (argNumber > Byte.MAX_VALUE) {
+            throw new IllegalArgumentException("Currently the maximum number of allowed parameters for a function is "
+                    + Byte.MAX_VALUE
+                    + " " + name + " has " + argNumber + " parameters.");
+        }
+        functionName = Objects.requireNonNull(name);
+        this.args = args;
+        final byte[] asciibytes = functionName.getBytes(StandardCharsets.US_ASCII);
+        final ByteBuffer bb = ByteBuffer.allocate(asciibytes.length + 1);
+        bb.put((byte) argNumber);
+        bb.put(asciibytes);
+        stackCode = new TByteArrayList(bb.array());
+        this.bodySupplier = bodySupplier;
     }
 
     @Override
@@ -144,9 +116,27 @@ public final class FunctionDefinition implements Serializable {
         return args.get(i);
     }
 
-    @Override
-    public int hashCode() {
-        return functionName.hashCode() + argNumber;
+    /**
+     * @return the body of the function as defined. All annotations for the body
+     *         are cleared. No side effects.
+     */
+    public AnnotatedTree<?> getBody() {
+        initBody();
+        return body.copy();
+    }
+
+    /**
+     * @return function name
+     */
+    public String getName() {
+        return functionName;
+    }
+
+    /**
+     * @return number of arguments
+     */
+    public int getParameterCount() {
+        return argNumber;
     }
 
     /**
@@ -156,14 +146,24 @@ public final class FunctionDefinition implements Serializable {
         return stackCode.toArray();
     }
 
-    public boolean invokerShouldInitializeIt() {
-        return initializeIt;
+    @Override
+    public int hashCode() {
+        return functionName.hashCode() + argNumber;
     }
 
     private void initBody() {
         if (body == null) {
             body = bodySupplier.get();
         }
+    }
+
+    public boolean invokerShouldInitializeIt() {
+        return initializeIt;
+    }
+
+    @Override
+    public String toString() {
+        return functionName + "/" + argNumber;
     }
 
     private void writeObject(final ObjectOutputStream o) throws IOException {
