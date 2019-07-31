@@ -49,7 +49,7 @@ public final class ProtelisLoadingUtilities {
     /**
      * A reference to the 'it' variable to be used in lambdas.
      */
-    public static Reference IT = new Reference("it");
+    public static final Reference IT = new Reference("it");
 
     private ProtelisLoadingUtilities() { }
 
