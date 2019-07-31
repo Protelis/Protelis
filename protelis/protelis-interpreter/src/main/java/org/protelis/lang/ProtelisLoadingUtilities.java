@@ -32,6 +32,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+/**
+ * Static utilities for parsing Protelis
+ */
 public final class ProtelisLoadingUtilities {
 
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
@@ -43,6 +46,9 @@ public final class ProtelisLoadingUtilities {
                 }
             });
 
+    /**
+     * A reference to the 'it' variable to be used in lambdas.
+     */
     public static Reference IT = new Reference("it");
 
     private ProtelisLoadingUtilities() { }
@@ -97,7 +103,7 @@ public final class ProtelisLoadingUtilities {
         throw new IllegalStateException();
     }
 
-    private static String nameFor(EObject container) {
+    private static String nameFor(final EObject container) {
         if (container instanceof Block) {
             return "b";
         }
