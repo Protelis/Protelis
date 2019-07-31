@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 import java.util.Objects;
 
+import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -24,7 +25,6 @@ import org.protelis.vm.ExecutionContext;
 public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
 
     private static final long serialVersionUID = 4143090001260538814L;
-    private static final Reference IT = new Reference("it");
     private final FunctionDefinition fd;
     private final byte[] stackCode;
 
@@ -77,7 +77,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
          */
         context.newCallStackFrame(stackCode);
         if (fd.invokerShouldInitializeIt() && getBranchesNumber() == 1) {
-            context.putVariable(IT, getBranch(0).getAnnotation());
+            context.putVariable(ProtelisLoadingUtilities.IT, getBranch(0).getAnnotation());
         } else {
             forEachWithIndex((i, b) -> {
                 context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation());
