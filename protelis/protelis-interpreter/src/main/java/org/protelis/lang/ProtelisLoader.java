@@ -625,7 +625,7 @@ public final class ProtelisLoader {
         }
 
         private static List<AnnotatedTree<?>> invocationArguments(@Nonnull final InvocationArguments args) {
-            return ProtelisLoadingUtilities.invocationArguments(args)
+            return argumentsToExpressionStream(args)
                 .map(Dispatch::expression)
                 .collect(ImmutableList.toImmutableList());
         }

@@ -53,7 +53,7 @@ public final class ProtelisLoadingUtilities {
 
     private ProtelisLoadingUtilities() { }
 
-    public static Stream<Expression> invocationArguments(@Nonnull final InvocationArguments args) {
+    public static Stream<Expression> argumentsToExpressionStream(@Nonnull final InvocationArguments args) {
         final Stream<KotlinStyleLambda> lastArgument = Optional.ofNullable(args.getLastArg())
             .map(Stream::of)
             .orElseGet(Stream::empty);
