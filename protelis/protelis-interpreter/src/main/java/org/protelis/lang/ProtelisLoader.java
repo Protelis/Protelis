@@ -501,7 +501,7 @@ public final class ProtelisLoader {
 
         private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE = CacheBuilder.newBuilder().weakKeys().build();
         private static AnnotatedTree<?> block(@Nonnull final Block block) {
-            List<Statement> statements = block.getStatements();
+            final List<Statement> statements = block.getStatements();
             if (statements.size() == 1) {
                 return statement(statements.get(0));
             }
