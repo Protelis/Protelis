@@ -11,6 +11,7 @@ package org.protelis.lang.interpreter.impl;
 import java.util.List;
 import java.util.Objects;
 
+import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -39,8 +40,13 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
         super(metadata, args);
         Objects.requireNonNull(functionDefinition);
         fd = functionDefinition;
-        if (fd.getArgNumber() != args.size()) {
-            throw new IllegalArgumentException(fd + " must be invoked with " + fd.getArgNumber()
+        if (fd.invokerShouldInitializeIt()) {
+            if (args.size() > 1) {
+                throw new IllegalArgumentException(fd + " is a lambda expression invokable with none or one parameter (it)"
+                        + ", but was invoked with " + args + ", which are " + args.size());
+            }
+        } else if (fd.getParameterCount() != args.size()) {
+            throw new IllegalArgumentException(fd + " must be invoked with " + fd.getParameterCount()
                     + " arguments, but was invoked with " + args + ", which are " + args.size());
         }
         stackCode = fd.getStackCode();
@@ -69,9 +75,13 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
          * Inner gamma must hold param values
          */
         context.newCallStackFrame(stackCode);
-        forEachWithIndex((i, b) -> {
-            context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation());
-        });
+        if (fd.invokerShouldInitializeIt() && getBranchesNumber() == 1) {
+            context.putVariable(ProtelisLoadingUtilities.IT, getBranch(0).getAnnotation());
+        } else {
+            forEachWithIndex((i, b) -> {
+                context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation());
+            });
+        }
         /*
          * 2. Load a fresh body as superscript
          */

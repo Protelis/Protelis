@@ -1,5 +1,5 @@
 /*
  * EXPECTED_RESULT: 0
  */
-import java.lang.Math.min
-hood((a, b) -> {min(a, b)}, 0, nbr(true))
+//hood((a, b) -> {min(a, b)}, 0, nbr(true));
+foldHood(0, nbr(1), (a, b) -> { min(a, b) } )

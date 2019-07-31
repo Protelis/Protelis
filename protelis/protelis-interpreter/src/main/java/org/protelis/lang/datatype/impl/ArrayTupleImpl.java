@@ -161,7 +161,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
-        if (fun.getArgNumber() == 1) {
+        if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             return DatatypeFactory
                     .createTuple(Arrays.stream(arrayContents)
                         .map(it -> new Constant<>(JavaInteroperabilityUtils.METADATA, it))
@@ -265,7 +265,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
-        if (fun.getArgNumber() == 1) {
+        if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             return DatatypeFactory.createTuple(Arrays.stream(arrayContents)
                 .map(it -> new Constant<>(JavaInteroperabilityUtils.METADATA, it))
                 .map(elem -> {
@@ -315,7 +315,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
-        if (fun.getArgNumber() == 2) {
+        if (fun.getParameterCount() == 2) {
             return Arrays.stream(arrayContents).reduce((first, second) -> {
                 final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun,
                         Lists.newArrayList(new Constant<>(JavaInteroperabilityUtils.METADATA, first), new Constant<>(JavaInteroperabilityUtils.METADATA, second)));

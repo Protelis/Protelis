@@ -112,28 +112,31 @@ public final class ReflectionUtils {
         return Primitives.allWrapperTypes().contains(clazz);
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, final int args, final Class<?> firstArgType) {
+    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final Class<?> firstArgType) {
+        return compatibleLength(m, args, willBeInjected(m, firstArgType));
+    }
+
+    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final boolean toBeInjected) {
         final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
                 .getParameterTypes();
-        final boolean requiresContext = paramTypes.length > 0
-                && ExecutionContext.class.isAssignableFrom(paramTypes[0]);
-        final boolean providesContext = args > 0
-                && firstArgType != null
-                && ExecutionContext.class.isAssignableFrom(firstArgType);
         /*
          * The method must be invoked with enough arguments to match at least the count
          * of non-ExecutionContext parameters (except if varargs, in which case one less
          * argument is allowed), and at most the total number of parameters (unless it
          * is varargs, in which case there is no limit)
          */
-        final int toBeInjected = requiresContext && !providesContext ? 1 : 0;
-        final int actualArgsLength = toBeInjected + args;
+        final int actualArgsLength = (toBeInjected ? 1 : 0) + args;
         return m.isVarArgs() ? actualArgsLength >= paramTypes.length - 1 : actualArgsLength == paramTypes.length;
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, @Nonnull final Object[] args) {
-        Objects.requireNonNull(args, "Argument list cannot be null. Tried to invoke: " + m);
-        return compatibleLength(m, args.length, args.length > 0 && args[0] != null ? args[0].getClass() : null);
+    private static boolean willBeInjected(@Nonnull final Method m, @Nonnull final Object[] args) {
+        return willBeInjected(m, args.length > 0 && args[0] != null ? args[0].getClass() : null);
+    }
+
+    private static boolean willBeInjected(@Nonnull final Method m, @Nullable final Class<?> firstArgType) {
+        return m.getParameterTypes().length > 0
+                && ExecutionContext.class.isAssignableFrom(m.getParameterTypes()[0])
+                && (firstArgType == null || !ExecutionContext.class.isAssignableFrom(firstArgType));
     }
 
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
@@ -205,7 +208,8 @@ public final class ReflectionUtils {
             @Nonnull final Method toInvoke,
             @Nullable final Object target,
             @Nonnull final Object[] args) {
-        if (!compatibleLength(toInvoke, args)) {
+        final boolean toBeInjected = willBeInjected(toInvoke, args);
+        if (!compatibleLength(toInvoke, args.length, toBeInjected)) {
             throw new IllegalArgumentException("Number of parameters of " + toInvoke
                     + " does not match the provided array " + Arrays.toString(args));
         }
@@ -213,7 +217,7 @@ public final class ReflectionUtils {
         final TIntList fieldIndexes = new TIntArrayList(args.length);
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof Field
-                    && !Field.class.isAssignableFrom(nthArgumentType(toInvoke, i))) {
+                    && !Field.class.isAssignableFrom(nthArgumentType(toInvoke, toBeInjected ? i + 1 : i))) {
                 fieldIndexes.add(i);
             }
         }
@@ -324,7 +328,7 @@ public final class ReflectionUtils {
             for (int i = 0; compatible && i < actualArgClass.length; i++) {
                 final Class<?> expected = nthArgumentType(m, i);
                 final Class<?> actual = actualArgClass[i];
-                if (expected.isAssignableFrom(actual)) {
+                if (actual == null && !classIsPrimitive(expected) || expected.isAssignableFrom(actual)) {
                     /*
                      * No downcast nor coercion required, there is compatibility
                      */
@@ -427,14 +431,19 @@ public final class ReflectionUtils {
         final List<Class<?>> fieldedClasses = new ArrayList<>(args.size());
         boolean atLeastOneField = false;
         for (final Object arg: args) {
-            final Class<?> argClass = arg.getClass();
-            if (arg instanceof Field) {
-                fieldedClasses.add(((Field<?>) arg).getExpectedType());
-                atLeastOneField = true;
+            if (arg == null) {
+                originalClasses.add(null);
+                fieldedClasses.add(null);
             } else {
-                fieldedClasses.add(argClass);
+                final Class<?> argClass = arg.getClass();
+                if (arg instanceof Field) {
+                    fieldedClasses.add(((Field<?>) arg).getExpectedType());
+                    atLeastOneField = true;
+                } else {
+                    fieldedClasses.add(argClass);
+                }
+                originalClasses.add(argClass);
             }
-            originalClasses.add(argClass);
         }
         try {
             return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, originalClasses));

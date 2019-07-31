@@ -1,3 +1,2 @@
 // EXPECTED_RESULT: "exception with a clear message"
-import java.lang.Math.log
 log(1, 2)

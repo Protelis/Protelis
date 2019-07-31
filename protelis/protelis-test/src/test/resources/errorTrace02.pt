@@ -1,9 +1,8 @@
 // Expected: runtime error
 module errorTrace02
-import java.lang.Math.sin
 def rootError() {
     rep(x <- 1) {
-        minHood(
+        foldMin(NEGATIVE_INFINITY, 
             nbr(
                 sin("I'm definitely not a number.")
             )

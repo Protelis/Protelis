@@ -58,7 +58,8 @@ public final class Eval extends AbstractSATree<ProtelisProgram, Object> {
         }
         final ProtelisProgram result = getSuperscript();
         context.newCallStackFrame(DYN_CODE_INDEX);
-        context.putMultipleVariables(result.getGloballyAvailableReferences());
+        // TODO: figure out which references to pass down... and how to.
+//        context.putMultipleVariables(result.getGloballyAvailableReferences());
         result.compute(context);
         setAnnotation(result.getCurrentValue());
         context.returnFromCallFrame();

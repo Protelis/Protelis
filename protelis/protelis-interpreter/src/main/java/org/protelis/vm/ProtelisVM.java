@@ -29,7 +29,6 @@ public class ProtelisVM {
     public ProtelisVM(final ProtelisProgram program, final ExecutionContext context) {
         prog = program;
         ctx = context;
-        ctx.setGloballyAvailableReferences(program.getGloballyAvailableReferences());
     }
 
     /**

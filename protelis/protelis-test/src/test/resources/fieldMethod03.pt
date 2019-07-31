@@ -2,4 +2,4 @@
  * Exercise method-calls on field arguments
  * EXPECTED_RESULT: 2
  */
-maxHood PlusSelf([1, 2, 3].get(nbr(1)))
+foldMax([1, 2, 3].get(nbr(1)))

@@ -361,7 +361,7 @@ public final class Option<E> implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public E orElseGet(final ExecutionContext ctx, final FunctionDefinition other) {
-        if (other.getArgNumber() == 0) {
+        if (other.getParameterCount() == 0) {
             return internal.or(() -> (E) JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, other, ImmutableList.of()));
         }
         throw new IllegalArgumentException("Optional supplier function must be 0-ary. Illegal function: " + other);
@@ -396,14 +396,14 @@ public final class Option<E> implements Serializable {
     }
 
     private <X> Option<X> runProtelis(final ExecutionContext ctx, final FunctionDefinition fun, final Function<Object, Option<X>> converter) {
-        if (fun.getArgNumber() == 1) {
+        if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             if (isPresent()) {
                 final Object value = JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, fun, ImmutableList.of(get()));
                 return converter.apply(value);
             }
             return empty();
         }
-        throw new IllegalArgumentException("Protelis function over Option take a single argument. Illegal: " + fun);
+        throw new IllegalArgumentException("Protelis function over Option takes a single argument. Illegal: " + fun);
     }
 
     /**

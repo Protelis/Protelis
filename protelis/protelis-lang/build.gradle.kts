@@ -1,7 +1,7 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-    id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
+//    id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
 }
 
 dependencies {
@@ -26,6 +26,6 @@ sourceSets {
 
 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
     setOf("configureGenerateProtelisDoc", "generateProtelisDoc", "generateKotlinFromProtelis").map {
-        tasks.getByName(it)?.enabled = false
+//        tasks.getByName(it)?.enabled = false
     }
 }
