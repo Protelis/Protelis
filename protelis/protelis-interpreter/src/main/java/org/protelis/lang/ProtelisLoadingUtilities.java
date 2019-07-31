@@ -137,7 +137,6 @@ public final class ProtelisLoadingUtilities {
      * @return its qualified name
      */
     public static String qualifiedNameFor(final Lambda lambda) {
-        System.out.println(qualifiedNameFor(lambda, ":$anon"));
         return qualifiedNameFor(lambda, ":$anon");
     }
 
