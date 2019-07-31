@@ -12,10 +12,10 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtend.lib.macro.declaration.Declaration;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
+import org.protelis.parser.protelis.Declaration;
 import org.protelis.parser.protelis.Expression;
 import org.protelis.parser.protelis.ExpressionList;
 import org.protelis.parser.protelis.FunctionDef;
@@ -23,7 +23,9 @@ import org.protelis.parser.protelis.IfWithoutElse;
 import org.protelis.parser.protelis.InvocationArguments;
 import org.protelis.parser.protelis.KotlinStyleLambda;
 import org.protelis.parser.protelis.Lambda;
+import org.protelis.parser.protelis.MethodCall;
 import org.protelis.parser.protelis.ProtelisModule;
+import org.protelis.parser.protelis.VarUse;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -78,9 +80,23 @@ public final class ProtelisLoadingUtilities {
         if (container instanceof IfWithoutElse) {
             return "ifwoe";
         }
-        return container instanceof Expression
-                ? ((Expression) container).getName()
-                : container.getClass().getSimpleName();
+        if (container instanceof ExpressionList) {
+            return "";
+        }
+        if (container instanceof InvocationArguments) {
+            return "invoke";
+        }
+        if (container instanceof MethodCall) {
+            return ((MethodCall) container).getName();
+        }
+        if (container instanceof Expression) {
+            final Expression exp = (Expression) container;
+            if (exp.getName() == null && exp.getElements().size() == 2) {
+                return qualifiedNameFor(((VarUse) exp.getElements().get(0)).getReference(), "");
+            }
+            return exp.getName();
+        }
+        return container.getClass().getSimpleName();
     }
 
     private static String qualifiedNameFor(final EObject origin, final String suffix) {
@@ -96,11 +112,11 @@ public final class ProtelisLoadingUtilities {
         while (iterator.hasNext()) {
             final Object statement = iterator.next();
             if (statement.equals(origin)) {
-                return qualifiedNameFor(container, ":$" + nameFor(container) + myId + suffix);
+                return qualifiedNameFor(container, ":$" + nameFor(container)) + suffix + myId;
             }
             myId++;
         }
-        throw new IllegalStateException();
+        throw new IllegalStateException("Bug in Protelis qualified name computation");
     }
 
     /**
@@ -117,7 +133,7 @@ public final class ProtelisLoadingUtilities {
      * @return its qualified name
      */
     public static String qualifiedNameFor(final Lambda lambda) {
-        return qualifiedNameFor(Lambda.class, lambda, ":$anon");
+        return qualifiedNameFor(lambda, ":$anon");
     }
 
     /**
