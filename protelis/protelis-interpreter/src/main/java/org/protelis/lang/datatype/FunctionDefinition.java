@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.util.Reference;
-import org.protelis.lang.interpreter.util.SerializableSupplier;
 import org.protelis.parser.protelis.FunctionDef;
 import org.protelis.parser.protelis.Lambda;
 import org.protelis.parser.protelis.ShortLambda;
@@ -50,7 +49,7 @@ public final class FunctionDefinition implements Serializable {
      * @param args         arguments
      * @param bodySupplier function providing a body when needed
      */
-    private FunctionDefinition(final String name, final List<Reference> args, final SerializableSupplier<AnnotatedTree<?>> bodySupplier, final boolean maybeOneArgument) {
+    private FunctionDefinition(final String name, final List<Reference> args, final Supplier<AnnotatedTree<?>> bodySupplier, final boolean maybeOneArgument) {
         argNumber = Objects.requireNonNull(args).size();
         if (maybeOneArgument && argNumber != 0) {
             throw new IllegalArgumentException("Function has optional 'it' parameter bit requires arguments");
@@ -75,7 +74,7 @@ public final class FunctionDefinition implements Serializable {
      * @param functionDefinition original parsed function
      * @param bodyProvider body calculator
      */
-    public FunctionDefinition(final FunctionDef functionDefinition, final SerializableSupplier<AnnotatedTree<?>> bodyProvider) {
+    public FunctionDefinition(final FunctionDef functionDefinition, final Supplier<AnnotatedTree<?>> bodyProvider) {
         this(ProtelisLoadingUtilities.qualifiedNameFor(functionDefinition),
             Optional.ofNullable(functionDefinition.getArgs())
                 .<List<VarDef>>flatMap(it -> Optional.ofNullable(it.getArgs()))
@@ -92,7 +91,7 @@ public final class FunctionDefinition implements Serializable {
      * @param args arguments for this lambda
      * @param bodyProvider function providing a body when needed
      */
-    public FunctionDefinition(final Lambda lambda, final List<Reference> args, final SerializableSupplier<AnnotatedTree<?>> bodyProvider) {
+    public FunctionDefinition(final Lambda lambda, final List<Reference> args, final Supplier<AnnotatedTree<?>> bodyProvider) {
         this(ProtelisLoadingUtilities.qualifiedNameFor(lambda), args, bodyProvider, lambda instanceof ShortLambda);
     }
 
