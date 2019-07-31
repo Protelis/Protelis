@@ -404,6 +404,7 @@ public final class Builtins {
         return target.reduceValues(Builtins::union);
     }
 
+    @Nonnull
     private static <T> BinaryOperator<T> reductionFunction(
             @Nonnull final ExecutionContext context,
             @Nonnull final Class<? extends T> expectedType,
