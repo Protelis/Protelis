@@ -667,19 +667,6 @@ public final class ProtelisLoader {
             return new Constant<>(metadataFor(expression), lambda);
         }
 
-        private static AnnotatedTree<?> local(@Nonnull final Local expression) {
-            if (expression instanceof Lambda) {
-                return lambda((Lambda) expression);
-            }
-            if (expression instanceof Builtin) {
-                return builtin((Builtin) expression);
-            }
-            if (expression instanceof Scalar) {
-                return scalar((Scalar) expression);
-            }
-            throw new IllegalStateException("Unknown local of type " + expression.getClass().getSimpleName());
-        }
-
         private static <T> NBRCall<T> nbr(final NBR nbr) {
             return new NBRCall<>(metadataFor(nbr), expression(nbr.getArg()));
         }
