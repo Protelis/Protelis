@@ -426,7 +426,7 @@ public final class ProtelisLoader {
 
     private static class Dispatch {
 
-        private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE = CacheBuilder.newBuilder().weakKeys().build();
+        private static final Cache<EObject, FunctionDefinition> FUNCTION_TABLE = CacheBuilder.newBuilder().weakKeys().build();
         private static AnnotatedTree<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
             return new AlignedMap(
                     metadataFor(alMap),
@@ -685,7 +685,7 @@ public final class ProtelisLoader {
                 final FunctionDef functionDefinition = (FunctionDef) ref;
                 FunctionDefinition target;
                 try {
-                    target = VIRTUAL_METHOD_TABLE.get(functionDefinition,
+                    target = FUNCTION_TABLE.get(functionDefinition,
                             () -> new FunctionDefinition(functionDefinition, () -> block(functionDefinition.getBody())));
                     return new Constant<>(meta, target);
                 } catch (ExecutionException e) {
