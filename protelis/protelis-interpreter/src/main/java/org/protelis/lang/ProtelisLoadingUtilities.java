@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.common.types.JvmIdentifiableElement;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
@@ -100,6 +101,9 @@ public final class ProtelisLoadingUtilities {
     }
 
     private static String qualifiedNameFor(final EObject origin, final String suffix) {
+        if (origin instanceof JvmIdentifiableElement) {
+            return ((JvmIdentifiableElement) origin).getQualifiedName();
+        }
         final EObject container = origin.eContainer();
         if (container instanceof FunctionDef) {
             return qualifiedNameFor((FunctionDef) container) + suffix;
@@ -133,6 +137,7 @@ public final class ProtelisLoadingUtilities {
      * @return its qualified name
      */
     public static String qualifiedNameFor(final Lambda lambda) {
+        System.out.println(qualifiedNameFor(lambda, ":$anon"));
         return qualifiedNameFor(lambda, ":$anon");
     }
 
