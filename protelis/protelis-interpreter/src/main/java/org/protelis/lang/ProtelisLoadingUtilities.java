@@ -83,7 +83,7 @@ public final class ProtelisLoadingUtilities {
                 : container.getClass().getSimpleName();
     }
 
-    private static String qualifiedNameFor(final Class<? extends EObject> clazz, final EObject origin, final String suffix) {
+    private static String qualifiedNameFor(final EObject origin, final String suffix) {
         final EObject container = origin.eContainer();
         if (container instanceof FunctionDef) {
             return qualifiedNameFor((FunctionDef) container) + suffix;
@@ -101,10 +101,6 @@ public final class ProtelisLoadingUtilities {
             myId++;
         }
         throw new IllegalStateException();
-    }
-
-    private static String qualifiedNameFor(final EObject origin, final String suffix) {
-        return qualifiedNameFor(origin.getClass(), origin, suffix);
     }
 
     /**
