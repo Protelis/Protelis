@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend.lib.macro.declaration.Declaration;
-import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
@@ -24,9 +23,7 @@ import org.protelis.parser.protelis.IfWithoutElse;
 import org.protelis.parser.protelis.InvocationArguments;
 import org.protelis.parser.protelis.KotlinStyleLambda;
 import org.protelis.parser.protelis.Lambda;
-import org.protelis.parser.protelis.MethodCall;
 import org.protelis.parser.protelis.ProtelisModule;
-import org.protelis.parser.protelis.Statement;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
