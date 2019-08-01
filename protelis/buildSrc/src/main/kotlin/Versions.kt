@@ -45,6 +45,8 @@ object Versions {
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1" 
 
+    const val thread_inheritable_resource_loader: String = "0.3.0" 
+
     const val apiviz: String = "1.3.2.GA" 
 
     const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.41" 
@@ -55,11 +57,11 @@ object Versions {
 
     const val org_protelis_protelisdoc_gradle_plugin: String = "0.2.0" 
 
+    const val protelis_interpreter: String = "12.2.0" 
+
     const val protelis_parser: String = "10.0.0" 
 
     const val slf4j_api: String = "1.7.26" 
-
-    const val spring_core: String = "5.1.8.RELEASE" 
 
     /**
      *
@@ -71,8 +73,8 @@ object Versions {
 
         const val currentVersion: String = "5.5.1"
 
-        const val nightlyVersion: String = "5.7-20190722220035+0000"
+        const val nightlyVersion: String = "5.7-20190731220046+0000"
 
-        const val releaseCandidate: String = ""
+        const val releaseCandidate: String = "5.6-rc-1"
     }
 }
