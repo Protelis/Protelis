@@ -29,6 +29,12 @@ Protelis2KotlinDoc {
     debug.set(false)
 }
 
+ktlint {
+    filter {
+        exclude("**/protelis/**")
+    }
+}
+
 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
     setOf("configureGenerateProtelisDoc", "generateProtelisDoc", "generateKotlinFromProtelis").map {
 //        tasks.getByName(it)?.enabled = false
