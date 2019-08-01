@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -86,8 +88,8 @@ allprojects {
 
     tasks.withType<SpotBugsTask> {
         reports {
-            xml.setEnabled(false)
-            html.setEnabled(true)
+            xml.isEnabled = false
+            html.isEnabled = true
         }
     }
 
@@ -229,9 +231,21 @@ tasks.register<Jar>("fatJar") {
         exclude("gradlew.bat")
     }
     with(tasks.jar.get() as CopySpec)
+    dependsOn(subprojects.flatMap { it.tasks.withType<Jar>() })
 }
 
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
 }
+
+/*
+ * Work around for:
+
+* What went wrong:
+Execution failed for task ':buildDashboard'.
+> Could not create task ':ktlintKotlinScriptCheck'.
+   > Cannot change dependencies of configuration ':ktlint' after it has been resolved.
+
+ */
+tasks.withType<GenerateBuildDashboard>().forEach { it.dependsOn(tasks.ktlintKotlinScriptCheck) }

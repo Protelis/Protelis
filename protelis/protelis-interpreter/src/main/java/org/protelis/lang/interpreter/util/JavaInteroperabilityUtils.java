@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.AnnotatedTree;
 import org.protelis.lang.interpreter.impl.Constant;
-import org.protelis.lang.interpreter.impl.DotOperator;
+import org.protelis.lang.interpreter.impl.Invoke;
 import org.protelis.lang.interpreter.impl.MethodCall;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
@@ -125,7 +127,7 @@ public final class JavaInteroperabilityUtils {
             final ExecutionContext ctx,
             final AnnotatedTree<FunctionDefinition> fd,
             final List<AnnotatedTree<?>> args) {
-        final DotOperator dot = DotOperator.makeApply(fd, args);
+        final Invoke dot = Invoke.makeApply(fd, args);
         dot.eval(ctx);
         return dot.getAnnotation();
     }
@@ -157,9 +159,9 @@ public final class JavaInteroperabilityUtils {
      * @return the result of the evaluation
      */
     public static Object runProtelisFunctionWithJavaArguments(
-            final ExecutionContext ctx,
-            final FunctionDefinition fd,
-            final List<?> args) {
+            @Nonnull final ExecutionContext ctx,
+            @Nonnull final FunctionDefinition fd,
+            @Nonnull final List<?> args) {
         final List<AnnotatedTree<?>> arguments = args.stream().map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
         return runProtelisFunction(ctx, new Constant<>(METADATA, fd), arguments);
     }

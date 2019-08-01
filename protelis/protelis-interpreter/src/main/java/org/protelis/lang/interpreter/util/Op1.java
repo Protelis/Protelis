@@ -35,7 +35,7 @@ public enum Op1 implements WithBytecode {
      */
     NOT(UNARY_NOT, "!", Op1::not);
 
-    private static final int[] FIELDS = new int[] { 0 };
+    private static final int[] FIELDS = { 0 };
     private static final Map<String, Op1> MAP = new ConcurrentHashMap<>();
     private final Bytecode bytecode;
     private final UnaryOperation fun;

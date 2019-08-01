@@ -6,14 +6,13 @@ java {
 dependencies {
     api(Libs.trove4j)
     api(Libs.commons_math3)
-    api(Libs.org_eclipse_emf_ecore)
     api(Libs.guava)
     api(Libs.protelis_parser)
     implementation(Libs.commons_codec)
     implementation(Libs.commons_io)
     implementation(Libs.fst)
     implementation(Libs.commons_lang3)
-    implementation(Libs.spring_core)
+    implementation(Libs.slf4j_api)
 }
 
 eclipse {

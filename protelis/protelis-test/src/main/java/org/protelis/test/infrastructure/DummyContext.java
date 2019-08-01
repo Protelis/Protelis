@@ -13,6 +13,7 @@ import java.util.Random;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
+import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.impl.AbstractExecutionContext;
 import org.protelis.vm.impl.SimpleExecutionEnvironment;
@@ -26,11 +27,10 @@ import java8.util.stream.IntStreams;
  *
  */
 @SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
-public final class DummyContext extends AbstractExecutionContext {
+public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
     private static final DeviceUID DUMMYUID = new DeviceUID() {
-        private static final long serialVersionUID = 2306021805006825289L;
-
+        private static final long serialVersionUID = 1L;
         @Override
         public String toString() {
             return "DummyUID";
@@ -78,7 +78,7 @@ public final class DummyContext extends AbstractExecutionContext {
     }
 
     @Override
-    protected AbstractExecutionContext instance() {
+    protected DummyContext instance() {
         return new DummyContext();
     }
 
@@ -90,10 +90,12 @@ public final class DummyContext extends AbstractExecutionContext {
      * @return a field with populated with numbers from 0 to 99
      */
     @SuppressWarnings("serial")
-    public Field makeTestField(final int entries) {
-        final Field res = DatatypeFactory.createField(entries);
-        IntStreams.range(0, entries).forEach(n -> res.addSample(new DeviceUID() { }, (double) n));
-        return res;
+    public Field<Double> makeTestField(final int entries) {
+        final Field.Builder<Double> res = DatatypeFactory.createFieldBuilder();
+        IntStreams.range(1, entries)
+            .mapToDouble(it -> it)
+            .forEach(n -> res.add(new DeviceUID() { }, n));
+        return res.build(getDeviceUID(), 0.0);
     }
 
     @Override
@@ -109,14 +111,15 @@ public final class DummyContext extends AbstractExecutionContext {
     /**
      * Test utility.
      * 
+     * @param self the current Context
      * @return a field with populated with numbers from 0 to 99
      */
-    public static Field makeTestField() {
-        final Field res = DatatypeFactory.createField(100);
-        IntStreams.range(0, 100).forEach(n -> res.addSample(new DeviceUID() {
-            private static final long serialVersionUID = 1L;
-        }, (double) n));
-        return res;
+    public static Field<Double> makeTestField(final ExecutionContext self) {
+        final Field.Builder<Double> res = DatatypeFactory.createFieldBuilder();
+        IntStreams.range(1, 100)
+                .mapToDouble(it -> it)
+                .forEach(n -> res.add(new DeviceUID() { private static final long serialVersionUID = 1L; }, n));
+        return res.build(self.getDeviceUID(), 0.0);
     }
 
 }

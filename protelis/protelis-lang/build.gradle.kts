@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id("org.protelis.protelisdoc") version Versions.org_protelis_protelisdoc_gradle_plugin
 }
@@ -19,5 +21,22 @@ sourceSets {
             srcDir("src/main/protelis")
             srcDir("src/test/resources")
         }
+    }
+}
+Protelis2KotlinDoc {
+    baseDir.set("$projectDir/src/main/protelis") // base dir from which recursively looking for .pt files
+    outputFormat.set("javadoc") // Dokka's output format (alternative: 'html')
+    debug.set(false)
+}
+
+ktlint {
+    filter {
+        exclude("**/protelis/**")
+    }
+}
+
+if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    setOf("configureGenerateProtelisDoc", "generateProtelisDoc", "generateKotlinFromProtelis").map {
+//        tasks.getByName(it)?.enabled = false
     }
 }

@@ -7,7 +7,7 @@ import org.protelis.lang.datatype.Option.none
 import org.protelis.lang.datatype.Option.fromNullable
 
 fromNullable(maybeNull())
-    .map(it -> { it.length() })
-    .filter(it -> { it > 0 })
-    .filterNot(it -> { it > 10 })
-    .orElseGet(() -> { "notNull".length() })
+    .map { it.length() }
+    .filter { it > 0 }
+    .filterNot { it > 10 }
+    .orElseGet { "notNull".length() }

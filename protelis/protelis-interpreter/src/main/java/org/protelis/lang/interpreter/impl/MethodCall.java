@@ -19,6 +19,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Call an external Java static method.
  */
+@Deprecated
 public final class MethodCall extends AbstractAnnotatedTree<Object> {
 
     private static final long serialVersionUID = -2299070628855971997L;
@@ -98,7 +99,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     }
 
     private void extractMethod(final int parameterCount) {
-        Stream<Method> methods = Arrays.stream(clazz.getMethods());
+        Stream<Method> methods = Arrays.stream(clazz.getMethods()); // NOPMD: this is not an I/O stream
         if (ztatic) {
             methods = methods.filter(m -> Modifier.isStatic(m.getModifiers()));
         } else {
@@ -108,8 +109,7 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
          * Filter to same name and same number of arguments (or compatible, for varargs)
          */
         final List<Method> matches = methods
-                .filter(m -> m.getParameterTypes().length == parameterCount
-                      || m.isVarArgs() && m.getParameterTypes().length <= parameterCount)
+                .filter(m -> minArgCount(m) <= parameterCount && parameterCount <= maxArgCount(m))
                 .filter(m -> m.getName().equals(methodName))
                 .collect(Collectors.toList());
         if (matches.isEmpty()) {
@@ -119,6 +119,9 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
                     + " parameters is available in " + clazz);
         }
         if (matches.size() == 1) {
+            /*
+             * Only take it if there are no overloads
+             */
             method = matches.get(0);
         }
     }
@@ -131,6 +134,11 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
     @Override
     public String getName() {
         return methodName;
+    }
+
+    @Override
+    protected boolean isNullable() {
+        return true;
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -148,9 +156,19 @@ public final class MethodCall extends AbstractAnnotatedTree<Object> {
                 .collect(Collectors.joining(", ", "(", ")"));
     }
 
-    @Override
-    protected boolean isNullable() {
-        return true;
+    private static boolean isInjectable(final Method m) {
+        return m.getParameterCount() > 0 && ExecutionContext.class.isAssignableFrom(m.getParameterTypes()[0]);
+    }
+
+    private static int maxArgCount(final Method m) {
+        if (m.isVarArgs()) {
+            return Integer.MAX_VALUE;
+        }
+        return m.getParameterCount();
+    }
+
+    private static int minArgCount(final Method m) {
+        return m.getParameterCount() - (m.isVarArgs() ? 1 : 0) - (isInjectable(m) ? 1 : 0);
     }
 
 }

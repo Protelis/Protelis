@@ -82,10 +82,10 @@ public enum Op2 implements WithBytecode {
     TIMES(BINARY_TIMES, "*", Op2::times);
 
     private static final String UNCHECKED = "unchecked";
-    private static final int[] BOTH = new int[] { 0, 1 };
-    private static final int[] LEFT = new int[] { 0 };
-    private static final int[] RIGHT = new int[] { 1 };
-    private static final int[] NONE = new int[] {};
+    private static final int[] BOTH = { 0, 1 };
+    private static final int[] LEFT = { 0 };
+    private static final int[] RIGHT = { 1 };
+    private static final int[] NONE = {};
     private static final Map<String, Op2> MAP = new ConcurrentHashMap<>();
     private final BinaryOperation fun;
     private final String opName;

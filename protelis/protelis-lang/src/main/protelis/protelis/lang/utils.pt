@@ -1,5 +1,4 @@
 module protelis:lang:utils
-import java.lang.Math.pow
 
 /**
  * @param a bool, first condition
@@ -10,17 +9,6 @@ public def and(a, b) {
     a && b
 }
 
-///**
-// * Build a field from a value.
-// *
-// * Return type: (any) -> any.
-// * @param value value to be fielded
-// * @return field of the given value
-// */
-//public def field(v) {
-//    nbr(v)
-//}
-
 /**
  * Line-of-sight detector.
  *
@@ -30,24 +18,6 @@ public def and(a, b) {
 public def canSee(a) {
     anyHood(nbr(a))
 }
-
-///**
-// * Return type: (fun) -> fun.
-// * @param f function
-// * @return g(f(args))
-// */
-//public def composeF(f) {
-//    () -> { f.apply() }
-//}
-//
-///**
-// * Return type: (any) -> fun.
-// * @param a value to be composed as a function
-// * @return a function which returns a
-// */
-//public def composeV(a) {
-//    () -> { a }
-//}
 
 /**
  * @param x      num, value to be denormalized

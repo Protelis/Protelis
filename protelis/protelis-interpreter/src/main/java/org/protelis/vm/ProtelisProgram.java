@@ -9,9 +9,6 @@
 package org.protelis.vm;
 
 import java.io.Serializable;
-import java.util.Map;
-
-import org.protelis.lang.interpreter.util.Reference;
 
 /**
  * Executable representation of a Protelis program.
@@ -32,11 +29,6 @@ public interface ProtelisProgram extends Serializable {
      *            place.
      */
     void compute(ExecutionContext context);
-
-    /**
-     * @return Set of named functions defined in this program
-     */
-    Map<Reference, ?> getGloballyAvailableReferences();
 
     /**
      * @return Name of the program, or some default name if no specific name is

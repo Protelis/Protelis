@@ -1,9 +1,6 @@
 /*
  * EXPECTED_RESULT: $CYCLE % 10 == 0
  */
-import java.lang.Math.min
-import java.lang.Math.max
-
 public def T(initial, zero, decay) {
 	rep(v <- initial) {
 		min(initial, max(zero, decay.apply(v)))

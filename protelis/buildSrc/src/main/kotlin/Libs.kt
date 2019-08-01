@@ -36,7 +36,7 @@ object Libs {
     const val ktlint: String = "com.pinterest:ktlint:" + Versions.ktlint
 
     /**
-     * http://commons.apache.org/proper/commons-codec/ */
+     * https://commons.apache.org/proper/commons-codec/ */
     const val commons_codec: String = "commons-codec:commons-codec:" + Versions.commons_codec
 
     /**
@@ -56,12 +56,12 @@ object Libs {
     const val classgraph: String = "io.github.classgraph:classgraph:" + Versions.classgraph
 
     /**
-     * https://github.com/AlchemistSimulator/alchemist-interfaces */
+     * https://github.com/DanySK/alchemist-interfaces */
     const val alchemist_interfaces: String = "it.unibo.alchemist:alchemist-interfaces:" +
             Versions.it_unibo_alchemist
 
     /**
-     * https://github.com/AlchemistSimulator/alchemist-loading */
+     * https://github.com/DanySK/alchemist-loading */
     const val alchemist_loading: String = "it.unibo.alchemist:alchemist-loading:" +
             Versions.it_unibo_alchemist
 
@@ -88,11 +88,6 @@ object Libs {
     const val org_danilopianini_publish_on_central_gradle_plugin: String =
             "org.danilopianini.publish-on-central:org.danilopianini.publish-on-central.gradle.plugin:" +
             Versions.org_danilopianini_publish_on_central_gradle_plugin
-
-    /**
-     * http://www.eclipse.org/emf */
-    const val org_eclipse_emf_ecore: String = "org.eclipse.emf:org.eclipse.emf.ecore:" +
-            Versions.org_eclipse_emf_ecore
 
     /**
      * http://www.jboss.org/apiviz/ */

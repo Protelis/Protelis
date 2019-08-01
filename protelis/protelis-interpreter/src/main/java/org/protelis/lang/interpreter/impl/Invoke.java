@@ -27,11 +27,11 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Call an external Java non-static method.
  */
-public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
+public final class Invoke extends AbstractSATree<FunctionCall, Object> {
 
     /**
      * Special method name, that causes a Protelis function invocation if the
-     * left hand side of the {@link DotOperator} is a {@link FunctionDefinition}.
+     * left hand side of the {@link Invoke} is a {@link FunctionDefinition}.
      */
     public static final String APPLY = "apply";
     private static final long serialVersionUID = -9128116355271771986L;
@@ -39,7 +39,7 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
     private final AnnotatedTree<?> left;
     private final String methodName;
 
-    private DotOperator(final Metadata metadata, final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+    private Invoke(final Metadata metadata, final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         super(metadata, args);
         Objects.requireNonNull(target);
         isApply = apply;
@@ -58,13 +58,13 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
      * @param args
      *            arguments of the function
      */
-    public DotOperator(final Metadata metadata, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+    public Invoke(final Metadata metadata, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
         this(metadata, name.equals(APPLY), name, target, args);
     }
 
     @Override
     public AnnotatedTree<Object> copy() {
-        final DotOperator res = new DotOperator(getMetadata(), methodName, left.copy(), deepCopyBranches());
+        final Invoke res = new Invoke(getMetadata(), methodName, left.copy(), deepCopyBranches());
         res.setSuperscript(getSuperscript());
         return res;
     }
@@ -139,10 +139,10 @@ public final class DotOperator extends AbstractSATree<FunctionCall, Object> {
      * 
      * @param target the target of the invocation
      * @param args the arguments
-     * @return a new {@link #APPLY} {@link DotOperator}.
+     * @return a new {@link #APPLY} {@link Invoke}.
      */
-    public static DotOperator makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
-        return new DotOperator(target.getMetadata(), true, null, target, args);
+    public static Invoke makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
+        return new Invoke(target.getMetadata(), true, null, target, args);
     }
 
     @Override

@@ -4,8 +4,10 @@ import org.protelis.lang.datatype.Field;
 
 /**
  * A device embedded in space.
+ *
+ * @param <D> number type
  */
-public interface SpatiallyEmbeddedDevice extends ExecutionContext {
+public interface SpatiallyEmbeddedDevice<D extends Number> extends ExecutionContext {
 
     /**
      * Get the distance between the current device and its neighbors. Distance
@@ -13,5 +15,5 @@ public interface SpatiallyEmbeddedDevice extends ExecutionContext {
      * 
      * @return field of distances
      */
-    Field nbrRange();
+    Field<D> nbrRange();
 }
