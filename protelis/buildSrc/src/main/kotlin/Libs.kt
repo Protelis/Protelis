@@ -90,6 +90,12 @@ object Libs {
             Versions.org_danilopianini_publish_on_central_gradle_plugin
 
     /**
+     * https://github.com/DanySK/thread-inheritable-resource-loader */
+    const val thread_inheritable_resource_loader: String =
+            "org.danilopianini:thread-inheritable-resource-loader:" +
+            Versions.thread_inheritable_resource_loader
+
+    /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
 
@@ -117,14 +123,15 @@ object Libs {
             Versions.org_protelis_protelisdoc_gradle_plugin
 
     /**
+     * http://www.protelis.org */
+    const val protelis_interpreter: String = "org.protelis:protelis-interpreter:" +
+            Versions.protelis_interpreter
+
+    /**
      * http://protelis.org */
     const val protelis_parser: String = "org.protelis:protelis.parser:" + Versions.protelis_parser
 
     /**
      * http://www.slf4j.org */
     const val slf4j_api: String = "org.slf4j:slf4j-api:" + Versions.slf4j_api
-
-    /**
-     * https://github.com/spring-projects/spring-framework */
-    const val spring_core: String = "org.springframework:spring-core:" + Versions.spring_core
 }

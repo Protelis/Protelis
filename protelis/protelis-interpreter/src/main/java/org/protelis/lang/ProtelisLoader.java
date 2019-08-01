@@ -45,6 +45,7 @@ import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
+import org.kaikikm.threadresloader.ResourceLoader;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.JVMEntity;
@@ -703,10 +704,10 @@ public final class ProtelisLoader {
             classpathURL = realURI.startsWith(CLASSPATH_PROTOCOL) ? realURI.substring(CLASSPATH_PROTOCOL.length() + 1) : realURI;
         }
         private boolean exists() {
-            return ClassLoader.getSystemResource(classpathURL) != null;
+            return ResourceLoader.getResource(classpathURL) != null;
         }
         private InputStream openStream() {
-            return ClassLoader.getSystemResourceAsStream(classpathURL);
+            return ResourceLoader.getResourceAsStream(classpathURL);
         }
         @Override
         public String toString() {
