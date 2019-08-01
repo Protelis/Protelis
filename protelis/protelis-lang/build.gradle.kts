@@ -24,9 +24,9 @@ sourceSets {
     }
 }
 Protelis2KotlinDoc {
-  baseDir.set("$projectDir/src/main/protelis") // base dir from which recursively looking for .pt files
-  outputFormat.set("javadoc") // Dokka's output format (alternative: 'html')
-  debug.set(false)
+    baseDir.set("$projectDir/src/main/protelis") // base dir from which recursively looking for .pt files
+    outputFormat.set("javadoc") // Dokka's output format (alternative: 'html')
+    debug.set(false)
 }
 
 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
