@@ -694,11 +694,11 @@ public final class ProtelisLoader {
 
     }
 
-    private static class ResolvedResource {
+    private static final class ResolvedResource {
         private static final String CLASSPATH_PROTOCOL = "classpath:";
         private final String classpathURL;
         private final String realURI;
-        ResolvedResource(final String programURI) {
+        private ResolvedResource(final String programURI) {
             realURI = (programURI.startsWith("/") ? CLASSPATH_PROTOCOL : "") + programURI;
             classpathURL = realURI.startsWith(CLASSPATH_PROTOCOL) ? realURI.substring(CLASSPATH_PROTOCOL.length() + 1) : realURI;
         }
