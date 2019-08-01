@@ -53,7 +53,7 @@ object Versions {
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.2.0" 
 
-    const val org_protelis_protelisdoc_gradle_plugin: String = "0.1.2" 
+    const val org_protelis_protelisdoc_gradle_plugin: String = "0.2.0" 
 
     const val protelis_parser: String = "10.0.0" 
 
