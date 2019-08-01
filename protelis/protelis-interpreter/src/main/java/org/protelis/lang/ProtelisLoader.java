@@ -110,7 +110,7 @@ import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+//import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -141,12 +141,6 @@ public final class ProtelisLoader {
     private static final String PROTELIS_FILE_EXTENSION = "pt";
     private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("^\\s*import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.MULTILINE);
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
-    private static final ThreadLocal<PathMatchingResourcePatternResolver> RESOLVER = new ThreadLocal<PathMatchingResourcePatternResolver>() {
-        @Override
-        protected PathMatchingResourcePatternResolver initialValue() {
-            return new PathMatchingResourcePatternResolver();
-        }
-    };
 
     private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
         @Override
@@ -171,13 +165,12 @@ public final class ProtelisLoader {
             final XtextResourceSet target,
             final String programURI,
             final Set<String> alreadyInQueue) throws IOException {
-        final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
-        if (LOADED_RESOURCES.get().getIfPresent(realURI) == null && !alreadyInQueue.contains(realURI)) {
-            alreadyInQueue.add(realURI);
-            final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(realURI));
-            final org.springframework.core.io.Resource protelisFile = RESOLVER.get().getResource(realURI);
-            if (protelisFile.exists()) {
-                try (InputStream is = protelisFile.getInputStream()) {
+        final ResolvedResource resource = new ResolvedResource(programURI);
+        if (LOADED_RESOURCES.get().getIfPresent(programURI) == null && !alreadyInQueue.contains(programURI)) {
+            alreadyInQueue.add(programURI);
+            final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(resource.realURI));
+            if (resource.exists()) {
+                try (InputStream is = resource.openStream()) {
                     final String ss = IOUtils.toString(is, "UTF-8");
                     final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
                     while (matcher.find()) {
@@ -188,9 +181,9 @@ public final class ProtelisLoader {
                         loadResourcesRecursively(target, classpathResource, alreadyInQueue);
                     }
                 }
-                LOADED_RESOURCES.get().put(realURI, workAroundOpenJ9EMFBug(() -> target.getResource(uri, true)));
+                LOADED_RESOURCES.get().put(programURI, workAroundOpenJ9EMFBug(() -> target.getResource(uri, true)));
             } else {
-                throw new IllegalStateException("expected resource " + realURI + " was not found");
+                throw new IllegalStateException("expected resource " + resource + " was not found");
             }
         }
     }
@@ -404,10 +397,10 @@ public final class ProtelisLoader {
     }
 
     private static Optional<Resource> resourceFromURIString(final String programURI) throws IOException {
-        final String realURI = (programURI.startsWith("/") ? "classpath:" : "") + programURI;
-        if (RESOLVER.get().getResource(realURI).exists()) {
+        final ResolvedResource resource = new ResolvedResource(programURI);
+        if (resource.exists()) {
             loadResourcesRecursively(XTEXT.get(), programURI);
-            final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(realURI));
+            final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(resource.realURI));
             return Optional.of(XTEXT.get().getResource(uri, true));
         } else {
             return Optional.empty();
@@ -699,6 +692,26 @@ public final class ProtelisLoader {
             return (AnnotatedTree<T>) variable(expression);
         }
 
+    }
+
+    private static class ResolvedResource {
+        private static final String CLASSPATH_PROTOCOL = "classpath:";
+        private final String classpathURL;
+        private final String realURI;
+        ResolvedResource(final String programURI) {
+            realURI = (programURI.startsWith("/") ? CLASSPATH_PROTOCOL : "") + programURI;
+            classpathURL = realURI.startsWith(CLASSPATH_PROTOCOL) ? realURI.substring(CLASSPATH_PROTOCOL.length() + 1) : realURI;
+        }
+        private boolean exists() {
+            return ClassLoader.getSystemResource(classpathURL) != null;
+        }
+        private InputStream openStream() {
+            return ClassLoader.getSystemResourceAsStream(classpathURL);
+        }
+        @Override
+        public String toString() {
+            return "From classpath: " + classpathURL + ", complete URI: " + realURI;
+        }
     }
 
 }
