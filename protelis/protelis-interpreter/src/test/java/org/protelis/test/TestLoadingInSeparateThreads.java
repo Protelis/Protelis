@@ -10,7 +10,6 @@ import java.util.concurrent.FutureTask;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.kaikikm.threadresloader.ResourceLoader;
 import org.protelis.lang.ProtelisLoader;
 
 import com.google.common.io.Files;
@@ -47,7 +46,7 @@ public class TestLoadingInSeparateThreads {
 
     private File createDependenciesDirectory() throws IOException, URISyntaxException {
         final File d = Files.createTempDir();
-        FileUtils.copyDirectory(new File(ResourceLoader.getResource("orgoriginal").toURI()), new File(d, "org"));
+        FileUtils.copyDirectory(new File(Thread.currentThread().getContextClassLoader().getResource("orgoriginal").toURI()), new File(d, "org"));
         return d;
     }
 
