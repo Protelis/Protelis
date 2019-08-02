@@ -35,11 +35,11 @@ env:
     - OFFICIAL_REPO_SLUG="Protelis/Protelis"
   matrix:
     - *reference_jdk
-    - JDK="adopt-openj9@1.8.212-04"
-    - JDK="adopt@1.11.28-0"
-    - JDK="adopt-openj9@1.11.0-3"
-    - JDK="adopt@1.12.33-0"
-    - JDK="adopt-openj9@1.12.33-0"
+    - JDK="adopt-openj9@1.8"
+    - JDK="adopt@1.11"
+    - JDK="adopt-openj9@1.11"
+    - JDK="adopt@1.12"
+    - JDK="adopt-openj9@1.12"
 matrix:
   exclude:
     - os: *reference_os
