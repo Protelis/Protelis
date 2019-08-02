@@ -13,7 +13,6 @@ dependencies {
     implementation(Libs.fst)
     implementation(Libs.commons_lang3)
     implementation(Libs.slf4j_api)
-    implementation(Libs.thread_inheritable_resource_loader)
 }
 
 eclipse {
