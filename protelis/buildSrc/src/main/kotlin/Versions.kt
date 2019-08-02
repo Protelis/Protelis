@@ -45,8 +45,6 @@ object Versions {
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1" 
 
-    const val thread_inheritable_resource_loader: String = "0.3.0" 
-
     const val apiviz: String = "1.3.2.GA" 
 
     const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.41" 
@@ -73,7 +71,7 @@ object Versions {
 
         const val currentVersion: String = "5.5.1"
 
-        const val nightlyVersion: String = "5.7-20190731220046+0000"
+        const val nightlyVersion: String = "5.7-20190801220042+0000"
 
         const val releaseCandidate: String = "5.6-rc-1"
     }

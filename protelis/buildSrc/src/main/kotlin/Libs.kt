@@ -90,12 +90,6 @@ object Libs {
             Versions.org_danilopianini_publish_on_central_gradle_plugin
 
     /**
-     * https://github.com/DanySK/thread-inheritable-resource-loader */
-    const val thread_inheritable_resource_loader: String =
-            "org.danilopianini:thread-inheritable-resource-loader:" +
-            Versions.thread_inheritable_resource_loader
-
-    /**
      * http://www.jboss.org/apiviz/ */
     const val apiviz: String = "org.jboss.apiviz:apiviz:" + Versions.apiviz
 
