@@ -307,8 +307,6 @@ public final class ProtelisLoader {
                         .map(ProtelisLoader::parse);
                 if (programResource.isPresent()) {
                     return programResource.get();
-                } else {
-                    throw new IllegalArgumentException(program + " looks like a module, but no resource " + programURI + " is available in the classpath.");
                 }
             }
             return resourceFromURIString(program)
