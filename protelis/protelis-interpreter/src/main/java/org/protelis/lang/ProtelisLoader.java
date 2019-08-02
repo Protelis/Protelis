@@ -308,6 +308,8 @@ public final class ProtelisLoader {
                         .map(ProtelisLoader::parse);
                 if (programResource.isPresent()) {
                     return programResource.get();
+                } else {
+                    throw new IllegalArgumentException(program + " looks like a module, but no resource " + programURI + " is available in the classpath.");
                 }
             }
             return resourceFromURIString(program)
@@ -704,10 +706,10 @@ public final class ProtelisLoader {
             classpathURL = realURI.startsWith(CLASSPATH_PROTOCOL) ? realURI.substring(CLASSPATH_PROTOCOL.length() + 1) : realURI;
         }
         private boolean exists() {
-            return ResourceLoader.getResource(classpathURL) != null;
+            return Thread.currentThread().getContextClassLoader().getResource(classpathURL) != null;
         }
         private InputStream openStream() {
-            return ResourceLoader.getResourceAsStream(classpathURL);
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(classpathURL);
         }
         @Override
         public String toString() {
