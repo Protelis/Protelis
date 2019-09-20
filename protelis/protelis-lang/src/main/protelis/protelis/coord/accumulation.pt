@@ -3,8 +3,6 @@ import protelis:coord:meta
 import protelis:coord:spreading
 import protelis:lang:utils
 import protelis:state:time
-import java.lang.Double.POSITIVE_INFINITY
-import java.lang.Double.NaN
 
 /**
  * Aggregation of local information.
@@ -14,7 +12,7 @@ import java.lang.Double.NaN
  * @param        T, aggregated information
  */
 public def aggregation(local, reduce) {
-    hood((a, b) -> { reduce.apply(a, b) }, local, nbr(local))
+    hood({ a, b -> reduce(a, b) }, local, nbr(local))
 }
 
 /**

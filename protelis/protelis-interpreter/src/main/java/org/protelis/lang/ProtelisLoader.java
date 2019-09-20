@@ -678,7 +678,7 @@ public final class ProtelisLoader {
                 FunctionDefinition target;
                 try {
                     target = VIRTUAL_METHOD_TABLE.get(functionDefinition,
-                            () -> new FunctionDefinition(functionDefinition, () -> block(functionDefinition.getBody())));
+                            () -> new FunctionDefinition(functionDefinition, functionBody(functionDefinition)));
                     return new Constant<>(meta, target);
                 } catch (ExecutionException e) {
                     throw new IllegalStateException(e);
@@ -690,6 +690,14 @@ public final class ProtelisLoader {
         @SuppressWarnings("unchecked")
         private static <T> AnnotatedTree<T> variableUnsafe(final VarUse expression) {
             return (AnnotatedTree<T>) variable(expression);
+        }
+
+        private static Supplier<AnnotatedTree<?>> functionBody(final FunctionDef fun) {
+            if (fun.getSingleExpression() == null) {
+                return () -> block(fun.getBody());
+            } else {
+                return () -> expression(fun.getSingleExpression());
+            }
         }
 
     }

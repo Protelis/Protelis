@@ -29,6 +29,11 @@ compile 'org.protelis:protelis:VERSION_YOU_WANT_TO_USE'
 
 Alternatively, you can download the latest jar and place it in your classpath. In this case, be sure to include the dependencies of this project in your classpath.
 
+#### Generating documentation for Protelis code
+
+The Gradle plugin [org.protelis.protelisdoc](https://plugins.gradle.org/plugin/org.protelis.protelisdoc)
+ can be used for generating documentation from Protelis code.
+
 ### Eclipse plug-in
 
 An Eclipse plug-in is available for easing the code writing. To install it, select the "Install new software" option of Eclipse, and paste as repository URL the following address: `http://efesto.apice.unibo.it/protelis-build/protelis-parser/protelis.parser.repository/target/repository/`. Install the proposed software and restart the IDE. When asked if you want to add the "Xtext nature" to your project, answer "Yes". You should be now able to use code highlighting and auto-completion on any `.pt` file.
