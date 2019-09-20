@@ -1,5 +1,5 @@
 reference_jdk: &reference_jdk
-  'JDK="adopt@1.8.212-04"'
+  'JDK="adopt@1.8"'
 reference_os: &reference_os
   'linux'
 official_repo: &official_repo
