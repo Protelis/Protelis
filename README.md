@@ -6,8 +6,7 @@ Java-hosted execution of Protelis programs.
 
 ### Prerequisites
 
-Protelis requires Java 7+ in order to run.
-
+Protelis requires Java 8+ in order to run.
 
 ### Using Protelis in your project
 
@@ -36,7 +35,11 @@ The Gradle plugin [org.protelis.protelisdoc](https://plugins.gradle.org/plugin/o
 
 ### Eclipse plug-in
 
-An Eclipse plug-in is available for easing the code writing. To install it, select the "Install new software" option of Eclipse, and paste as repository URL the following address: `http://efesto.apice.unibo.it/protelis-build/protelis-parser/protelis.parser.repository/target/repository/`. Install the proposed software and restart the IDE. When asked if you want to add the "Xtext nature" to your project, answer "Yes". You should be now able to use code highlighting and auto-completion on any `.pt` file.
+An Eclipse plug-in is available for easing the code writing. To install it, open the marketplace and search for "Protelis".
+You will be proposed four versions.
+Two of them are legacy, Java 7 compatible versions.
+One is the development version which may be unstable.
+We recommend using the stable version, whose name is just "Protelis" with no other specification.
 
 ### Javadoc
 
