@@ -60,9 +60,9 @@ The project has been developed using Eclipse, and can be easily imported in such
 
 
 #### Recommended configuration
-* Download [the latest Eclipse for Java SE developers][eclipse]. Arch Linux users can use the package extra/eclipse-java, which is rather up-to-date.
-  * The minimum version required for a smooth import is Eclipse Mars.1, which integrates Gradle Buildship
-  * Previous Eclipse versions are okay, provided that the Gradle Buildship plugin is installed
+* Download [the latest Eclipse for Java SE developers][eclipse]. Arch Linux users can use the package `extra/eclipse-java`, which is rather up-to-date.
+  * The minimum version required for a smooth import is Eclipse 2019-06, which integrates Gradle Buildship
+  * Previous Eclipse versions might be okay, provided that the Gradle Buildship plugin is installed
 * Install the code quality plugins:
   * In Eclipse, click Help -> Eclipse Marketplace...
   * In the search form enter "findbugs", then press Enter
