@@ -52,6 +52,9 @@ Latest build documentation (for working builds) is available for both [the Prote
 ## Build Status
 [![Build Status](https://travis-ci.org/Protelis/Protelis.svg?branch=master)](https://travis-ci.org/Protelis/Protelis)
 
+* [Last stable version reports](http://protelis-reports.surge.sh/build/reports/buildDashboard/)
+* [Last development version reports](http://protelis-unstable-reports.surge.sh/build/reports/buildDashboard/)
+
 ## Notes for Developers
 
 
