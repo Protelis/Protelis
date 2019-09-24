@@ -125,7 +125,7 @@ While developing, you can rely on Eclipse to build the project, it will generall
 If you want to generate the artifacts, you can rely on Gradle. Just point a terminal on the project's root and issue
 
 ```bash
-./gradlew
+./gradlew build
 ```
 
 This will trigger the creation of the artifacts the executions of the tests, the generation of the documentation and of the project reports.
