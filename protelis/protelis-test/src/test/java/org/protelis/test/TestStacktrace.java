@@ -68,7 +68,6 @@ public final class TestStacktrace {
     public void testRuntimeErrorOnNonExistingSelfMethod() {
         ProgramTester.runExpectingErrors("self.getDcopInfoProvider()", ProtelisRuntimeException.class, e -> {
             assertNotNull(e.getMessage());
-            e.printStackTrace();
             final String fullTrace = e.toString();
             assertTrue("Exception does not Protelis stacktrace\n" + fullTrace,
                     fullTrace.contains("Fully detailed interpreter trace"));
