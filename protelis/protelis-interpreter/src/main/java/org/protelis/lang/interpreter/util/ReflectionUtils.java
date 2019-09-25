@@ -457,8 +457,12 @@ public final class ReflectionUtils {
                             + ".\nYou tried to invoke it with arguments " + args, e);
                 }
             }
-            throw new UnsupportedOperationException(methodName + originalClasses + " does not exist in " + clazz
-                    + ".\nYou tried to invoke it with arguments " + args, outerException);
+            final StringBuilder paramClasses = new StringBuilder(originalClasses.toString());
+            paramClasses.setCharAt(0, '(');
+            paramClasses.setCharAt(paramClasses.length() - 1, ')');
+            throw new UnsupportedOperationException(methodName + paramClasses + " does not exist in " + clazz
+                    + ".\nYou tried to invoke it with arguments"
+                    + args, outerException);
         }
     }
 
