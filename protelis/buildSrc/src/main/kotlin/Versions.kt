@@ -24,7 +24,7 @@ object Versions {
 
     const val org_protelis_protelisdoc_gradle_plugin: String = "0.2.0"
 
-    const val com_gradle_build_scan_gradle_plugin: String = "2.3" // available: "2.4.2"
+    const val com_gradle_build_scan_gradle_plugin: String = "2.4.2"
 
     const val com_github_spotbugs_gradle_plugin: String = "1.6.9" // available: "2.0.0"
 
