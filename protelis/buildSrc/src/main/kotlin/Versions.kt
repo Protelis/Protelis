@@ -59,7 +59,7 @@ object Versions {
 
     const val protelis_interpreter: String = "13.0.3" 
 
-    const val protelis_parser: String = "10.0.0" // available: "10.0.1"
+    const val protelis_parser: String = "10.0.1" // available: "10.0.1"
 
     const val slf4j_api: String = "1.7.26" // available: "1.7.28"
 
