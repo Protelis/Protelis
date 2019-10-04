@@ -48,7 +48,7 @@ object Versions {
 
     const val commons_math3: String = "3.6.1"
 
-    const val classgraph: String = "4.8.43" // available: "4.8.47"
+    const val classgraph: String = "4.8.47"
 
     const val commons_io: String = "2.6"
 
