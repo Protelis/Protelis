@@ -101,12 +101,12 @@ object Libs {
      * https://kotlinlang.org/ */
     const val kotlin_scripting_compiler_embeddable: String =
             "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
-            Versions.kotlin_scripting_compiler_embeddable
+            Versions.org_jetbrains_kotlin
 
     /**
      * https://kotlinlang.org/ */
-    const val org_jetbrains_kotlin_kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
-            Versions.org_jetbrains_kotlin_kotlin_stdlib
+    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
+            Versions.org_jetbrains_kotlin
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String =
             "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin:" +

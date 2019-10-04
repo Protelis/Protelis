@@ -47,11 +47,9 @@ object Versions {
 
     const val apiviz: String = "1.3.2.GA" 
 
-    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.41" // available: "1.3.50"
+    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.50" 
 
-    const val kotlin_scripting_compiler_embeddable: String = "1.3.41" // available: "1.3.50"
-
-    const val org_jetbrains_kotlin_kotlin_stdlib: String = "1.3.41" // available: "1.3.50"
+    const val org_jetbrains_kotlin: String = "1.3.50" 
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.2.0" // available: "9.0.0"
 
