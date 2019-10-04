@@ -39,7 +39,7 @@ public final class Builtins {
      * This variable is used by the interpreter for providing compatibility hints in the Eclipse plugin.
      * See https://github.com/Protelis/Protelis/issues/245.
      */
-    public static final ImmutableList<Integer> MAXIMUM_PARSER_VERSION = ImmutableList.of(10, 0, 0);
+    public static final ImmutableList<Integer> MAXIMUM_PARSER_VERSION = ImmutableList.of(10, 0, 1);
 
     private Builtins() { }
 
