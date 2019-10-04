@@ -16,7 +16,7 @@ object Versions {
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1"
 
-    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.2.0" // available: "9.0.0"
+    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "9.0.0"
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.6.4"
 
@@ -58,7 +58,7 @@ object Versions {
 
     const val apiviz: String = "1.3.2.GA"
 
-    const val ktlint: String = "0.33.0" // available: "0.34.2"
+    const val ktlint: String = "0.34.2"
 
     const val guava: String = "28.0-jre"
 
