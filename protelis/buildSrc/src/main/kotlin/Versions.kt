@@ -13,9 +13,9 @@ object Versions {
 
     const val spotbugs_annotations: String = "3.1.12" 
 
-    const val guava: String = "28.0-jre" 
+    const val guava: String = "28.0-jre" // available: "28.1-jre"
 
-    const val com_gradle_build_scan_gradle_plugin: String = "2.3" 
+    const val com_gradle_build_scan_gradle_plugin: String = "2.3" // available: "2.4.2"
 
     const val com_jfrog_bintray_gradle_plugin: String = "1.8.4" 
 
@@ -25,13 +25,13 @@ object Versions {
 
     const val commons_io: String = "2.6" 
 
-    const val de_fayard_buildsrcversions_gradle_plugin: String = "0.3.2" 
+    const val de_fayard_buildsrcversions_gradle_plugin: String = "0.3.2" // available: "0.6.4"
 
     const val fst: String = "2.57" 
 
-    const val classgraph: String = "4.8.43" 
+    const val classgraph: String = "4.8.43" // available: "4.8.47"
 
-    const val it_unibo_alchemist: String = "4.0.0" // available: "8.2.2"
+    const val it_unibo_alchemist: String = "4.0.0" // available: "9.1.0"
 
     const val junit: String = "4.13-beta-3" 
 
@@ -47,19 +47,21 @@ object Versions {
 
     const val apiviz: String = "1.3.2.GA" 
 
-    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.41" 
+    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.41" // available: "1.3.50"
 
-    const val org_jetbrains_kotlin: String = "1.3.41" 
+    const val kotlin_scripting_compiler_embeddable: String = "1.3.41" // available: "1.3.50"
 
-    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.2.0" 
+    const val org_jetbrains_kotlin_kotlin_stdlib: String = "1.3.41" // available: "1.3.50"
+
+    const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "8.2.0" // available: "9.0.0"
 
     const val org_protelis_protelisdoc_gradle_plugin: String = "0.2.0" 
 
-    const val protelis_interpreter: String = "12.2.0" 
+    const val protelis_interpreter: String = "13.0.3" 
 
-    const val protelis_parser: String = "10.0.0" 
+    const val protelis_parser: String = "10.0.0" // available: "10.0.1"
 
-    const val slf4j_api: String = "1.7.26" 
+    const val slf4j_api: String = "1.7.26" // available: "1.7.28"
 
     /**
      *
@@ -69,10 +71,10 @@ object Versions {
     object Gradle {
         const val runningVersion: String = "5.4.1"
 
-        const val currentVersion: String = "5.5.1"
+        const val currentVersion: String = "5.6.2"
 
-        const val nightlyVersion: String = "5.7-20190801220042+0000"
+        const val nightlyVersion: String = "6.1-20191004133052+0000"
 
-        const val releaseCandidate: String = "5.6-rc-1"
+        const val releaseCandidate: String = ""
     }
 }
