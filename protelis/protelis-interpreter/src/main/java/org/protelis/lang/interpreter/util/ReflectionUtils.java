@@ -113,10 +113,6 @@ public final class ReflectionUtils {
         return Primitives.allWrapperTypes().contains(clazz);
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final Class<?> firstArgType) {
-        return compatibleLength(m, args, willBeInjected(m, firstArgType));
-    }
-
     private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final boolean toBeInjected) {
         final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
                 .getParameterTypes();
@@ -130,14 +126,8 @@ public final class ReflectionUtils {
         return m.isVarArgs() ? actualArgsLength >= paramTypes.length - 1 : actualArgsLength == paramTypes.length;
     }
 
-    private static boolean willBeInjected(@Nonnull final Method m, @Nonnull final Object[] args) {
-        return willBeInjected(m, args.length > 0 && args[0] != null ? args[0].getClass() : null);
-    }
-
-    private static boolean willBeInjected(@Nonnull final Method m, @Nullable final Class<?> firstArgType) {
-        return m.getParameterTypes().length > 0
-                && ExecutionContext.class.isAssignableFrom(m.getParameterTypes()[0])
-                && (firstArgType == null || !ExecutionContext.class.isAssignableFrom(firstArgType));
+    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final Class<?> firstArgType) {
+        return compatibleLength(m, args, willBeInjected(m, firstArgType));
     }
 
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
@@ -233,17 +223,6 @@ public final class ReflectionUtils {
         return ReflectionUtils.invokeMethod(context, toInvoke, target, args);
     }
 
-    private static Object invokePossiblyVoidMethod(
-            @Nonnull final Method method,
-            @Nullable final Object target,
-            @Nonnull final Object[] args) throws IllegalAccessException, InvocationTargetException {
-        final Object result = method.invoke(target, args);
-        if (result == null && method.getReturnType().equals(Void.TYPE)) {
-            return Unit.UNIT;
-        }
-        return result;
-    }
-
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "we need to intercept all runtime events")
     private static Object invokeMethod(
             @Nonnull final ExecutionContext context,
@@ -293,6 +272,17 @@ public final class ReflectionUtils {
                 throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
             }
         }
+    }
+
+    private static Object invokePossiblyVoidMethod(
+            @Nonnull final Method method,
+            @Nullable final Object target,
+            @Nonnull final Object[] args) throws IllegalAccessException, InvocationTargetException {
+        final Object result = method.invoke(target, args);
+        if (result == null && method.getReturnType().equals(Void.TYPE)) {
+            return Unit.UNIT;
+        }
+        return result;
     }
 
     private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
@@ -506,5 +496,15 @@ public final class ReflectionUtils {
         return shouldPushContext(expectedArgs,
                 args.length,
                 args.length == 0 || args[0] == null ? null : args[0].getClass());
+    }
+
+    private static boolean willBeInjected(@Nonnull final Method m, @Nullable final Class<?> firstArgType) {
+        return m.getParameterTypes().length > 0
+                && ExecutionContext.class.isAssignableFrom(m.getParameterTypes()[0])
+                && (firstArgType == null || !ExecutionContext.class.isAssignableFrom(firstArgType));
+    }
+
+    private static boolean willBeInjected(@Nonnull final Method m, @Nonnull final Object[] args) {
+        return willBeInjected(m, args.length > 0 && args[0] != null ? args[0].getClass() : null);
     }
 }
