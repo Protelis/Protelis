@@ -37,6 +37,11 @@ import com.google.common.collect.ImmutableMap;
  */
 public final class Option<E> implements Serializable {
 
+    /**
+     * Returns the Java null value. To be used ONLY for interacting with Java.
+     * Protelis is null-intolerant.
+     */
+    public static final Object JAVA_NULL = null;
     private static final Option<Object> EMPTY_OPTION = new Option<>(Optional.absent());
     private static final long serialVersionUID = 1L;
     private static final ImmutableMap<String, Boolean> TESTERS = ImmutableMap.of(
@@ -501,15 +506,6 @@ public final class Option<E> implements Serializable {
      */
     public static <E> Option<E> fromNullable(final E value) {
         return ofNullable(value);
-    }
-
-    /**
-     * Null-factory: this method returns null and it is designed to be used as null factory by Protelis code.
-     * 
-     * @return null
-     */
-    public static Object none() {
-        return null;
     }
 
     /**
