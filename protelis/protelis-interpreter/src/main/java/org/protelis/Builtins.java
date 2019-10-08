@@ -345,6 +345,20 @@ public final class Builtins {
     }
 
     /**
+     * Produces an Option value. If the passed object is null, then an empty option
+     * is returned. Otherwise, an Option enclosing the value is returned.
+     * Recommended way to interact with Java method that may return null.
+     * 
+     * @param <T>    Object type
+     * @param object the nullable object
+     * @return If the passed object is null, then an empty option is returned.
+     *         Otherwise, an Option enclosing the value is returned.
+     */
+    public static <T> Option<T> optionally(@Nullable final T object) {
+        return Option.fromNullable(object);
+    }
+
+    /**
      * Reduces a field, <b>excluding the local value</b>, by picking the maximum
      * value. This method wraps the result in an {@link Option}. If the field only
      * contains the local value, then an empty {@link Option} is returned.

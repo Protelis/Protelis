@@ -5,4 +5,4 @@ import org.protelis.test.TestJavaNull.expectsNull
 import org.protelis.lang.datatype.Option.none
 import org.protelis.lang.datatype.Option.fromNullable
 
-fromNullable(expectsNull(none())).isEmpty()
+optionally(expectsNull(none())).isEmpty()
