@@ -114,7 +114,7 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
             .forEach(n -> res.add(new DeviceUID() { }, DatatypeFactory.createTuple(n)));
         return res.build(getDeviceUID(), DatatypeFactory.createTuple(0));
     }
-    
+
     @Override
     public double nextRandomDouble() {
         return rng.nextDouble();
