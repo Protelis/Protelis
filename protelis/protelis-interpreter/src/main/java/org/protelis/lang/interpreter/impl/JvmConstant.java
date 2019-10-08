@@ -52,8 +52,12 @@ public final class JvmConstant extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
+    protected boolean isNullable() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return javaFeature.toString();
     }
-
 }
