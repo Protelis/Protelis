@@ -1,2 +1,2 @@
 // EXPECTED_RESULT: [1]
-unionHood(self.makeTestField(2))
+foldUnion([], self.makeTupleTestField(2))

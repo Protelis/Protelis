@@ -13,6 +13,7 @@ import java.util.Random;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Tuple;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.impl.AbstractExecutionContext;
@@ -98,6 +99,22 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
         return res.build(getDeviceUID(), 0.0);
     }
 
+    /**
+     * Test utility.
+     * 
+     * @param entries
+     *            how many entries for the field
+     * @return a field with populated with tuples of numbers from 0 to 99
+     */
+    @SuppressWarnings("serial")
+    public Field<Tuple> makeTupleTestField(final int entries) {
+        final Field.Builder<Tuple> res = DatatypeFactory.createFieldBuilder();
+        IntStreams.range(1, entries)
+            .mapToDouble(it -> it)
+            .forEach(n -> res.add(new DeviceUID() { }, DatatypeFactory.createTuple(n)));
+        return res.build(getDeviceUID(), DatatypeFactory.createTuple(0));
+    }
+    
     @Override
     public double nextRandomDouble() {
         return rng.nextDouble();

@@ -1,2 +1,2 @@
 // EXPECTED_RESULT: [] 
-unionHood(nbr(1))
+foldUnion([], nbr(1))
