@@ -1,5 +1,5 @@
 /*
- * EXPECTED_RESULT: true
+ * EXPECTED_RESULT: false
  */
 module protelis:option:sideeffects
 import org.protelis.test.TestJavaNull.returnsVoid

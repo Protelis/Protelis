@@ -33,6 +33,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
+import org.protelis.lang.datatype.Unit;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.cache.CacheBuilder;
@@ -232,6 +233,17 @@ public final class ReflectionUtils {
         return ReflectionUtils.invokeMethod(context, toInvoke, target, args);
     }
 
+    private static Object invokePossiblyVoidMethod(
+            @Nonnull final Method method,
+            @Nullable final Object target,
+            @Nonnull final Object[] args) throws IllegalAccessException, InvocationTargetException {
+        final Object result = method.invoke(target, args);
+        if (result == null && method.getReturnType().equals(Void.TYPE)) {
+            return Unit.UNIT;
+        }
+        return result;
+    }
+
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "we need to intercept all runtime events")
     private static Object invokeMethod(
             @Nonnull final ExecutionContext context,
@@ -240,7 +252,7 @@ public final class ReflectionUtils {
             @Nonnull final Object[] args) {
         final Object[] useArgs = repackageIfRequired(context, method, args);
         try {
-            return method.invoke(target, useArgs);
+            return invokePossiblyVoidMethod(method, target, useArgs);
         } catch (Exception exc) { // NOPMD: Generic exception caught by purpose
             /*
              * Failure: maybe some cast was required?
@@ -256,7 +268,7 @@ public final class ReflectionUtils {
                 }
             }
             try {
-                return method.invoke(target, useArgs);
+                return invokePossiblyVoidMethod(method, target, useArgs);
             } catch (IllegalAccessException e) {
                 throw new UnsupportedOperationException("Method " + method // NOPMD: false positive
                         + " cannot get invoked because it is not accessible.", e); 

@@ -29,9 +29,11 @@ public final class TestJavaNull {
 
     /**
      * @param o must be null
+     * @return null
      */
-    public static void expectsNull(final Object o) {
+    public static Object expectsNull(final Object o) {
         assertNull(o);
+        return o;
     }
 
     /**
