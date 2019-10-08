@@ -1,3 +1,2 @@
 // EXPECTED_RESULT: import java.lang.Double.POSITIVE_INFINITY let Infinity = POSITIVE_INFINITY; [Infinity, Infinity]
-
-minHood(nbr([0, 0]))
+foldMin([POSITIVE_INFINITY, POSITIVE_INFINITY], nbr([0, 0]))
