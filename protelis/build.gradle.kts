@@ -2,8 +2,8 @@
 
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import java.net.URL
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     id("de.fayard.buildSrcVersions") version

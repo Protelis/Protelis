@@ -885,7 +885,7 @@ public final class YamlLoader implements Loader, Serializable {
             final Node<?> node,
             final TimeDistribution<?> timedist,
             final Reaction<?> reaction) {
-        final Deque<?> paramsLeft = Lists.newLinkedList(params);
+        final Deque<?> paramsLeft = (Deque<?>) Lists.newLinkedList(params);
         final Object[] actualArgs = Arrays.stream(constructor.getParameterTypes()).map(expectedClass -> {
             if (Incarnation.class.isAssignableFrom(expectedClass)) {
                 return incarnation;
