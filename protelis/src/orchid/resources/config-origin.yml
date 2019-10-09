@@ -1,0 +1,17 @@
+site:
+  about:
+    siteName: "Protelis: aggregate programming"
+    siteDescription: Practical language for aggregate programming.
+allPages:
+  components:
+    - type: 'pageContent'
+    - type: "prism"
+      githubTheme: 'ghcolors'
+      languages:
+        - kotlin
+        - java
+        - groovy
+        - yaml
+        - asciidoc
+        - markdown
+        - python

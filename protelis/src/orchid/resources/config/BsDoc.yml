@@ -1,0 +1,16 @@
+showVersion: true
+bannerColor: "#2299d8"
+linkColor: "#2299d8"
+primaryColor: "#2299d8"
+secondaryColor: "#000000"
+menu:
+  - type: link
+    title: Home
+    url: '/'
+  - type: 'wiki'
+social:
+  github: 'Protelis/Protelis'
+trianglifyOptions: {}
+useSidebarSearch: false
+extraCss:
+  - 'assets/css/pygments.scss'

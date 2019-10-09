@@ -1,0 +1,27 @@
+site:
+  about:
+    siteName: "Protelis: aggregate programming"
+    siteDescription: Practical language for aggregate programming.
+allPages:
+  components:
+    - type: 'pageContent'
+    - type: "prism"
+      githubTheme: 'ghcolors'
+      languages:
+        - kotlin
+        - java
+        - groovy
+        - yaml
+        - asciidoc
+        - markdown
+        - python
+services:
+  publications:
+    stages:
+      - type: githubPages
+        username: 'DanySK'
+        commitUsername: Danilo Pianini
+        commitEmail: danilo.pianini@gmail.com
+        repo: 'Protelis/wiki-beta'
+        branch: master
+        publishType: CleanBranchMaintainHistory

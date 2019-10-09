@@ -15,6 +15,7 @@ object Versions {
     const val org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin: String = "0.2.2"
 
     const val org_danilopianini_publish_on_central_gradle_plugin: String = "0.1.1"
+             // available: "0.2.2"
 
     const val org_jlleitschuh_gradle_ktlint_gradle_plugin: String = "9.0.0"
 
@@ -24,11 +25,15 @@ object Versions {
 
     const val org_protelis_protelisdoc_gradle_plugin: String = "0.2.0"
 
+    const val com_eden_orchidplugin_gradle_plugin: String = "0.17.5"
+
     const val com_gradle_build_scan_gradle_plugin: String = "2.4.2"
 
     const val com_github_spotbugs_gradle_plugin: String = "1.6.9" // available: "2.0.0"
 
     const val com_jfrog_bintray_gradle_plugin: String = "1.8.4"
+
+    const val orchidsyntaxhighlighter: String = "0.17.5"
 
     const val org_jetbrains_kotlin: String = "1.3.50"
 
@@ -38,7 +43,11 @@ object Versions {
 
     const val it_unibo_alchemist: String = "4.0.0" // available: "9.1.0"
 
+    const val orchidplugindocs: String = "0.17.5"
+
     const val logback_classic: String = "1.3.0-alpha4"
+
+    const val orchidkotlindoc: String = "0.17.5"
 
     const val protelis_parser: String = "10.0.1"
 
@@ -48,9 +57,17 @@ object Versions {
 
     const val commons_math3: String = "3.6.1"
 
+    const val orchidgithub: String = "0.17.5"
+
+    const val orchidsearch: String = "0.17.5"
+
+    const val orchidbsdoc: String = "0.17.5" // available: "0.17.5"
+
     const val classgraph: String = "4.8.47"
 
     const val commons_io: String = "2.6"
+
+    const val orchidwiki: String = "0.17.5"
 
     const val slf4j_api: String = "1.7.28"
 

@@ -3,6 +3,7 @@
 import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import java.net.URL
 
 plugins {
     id("de.fayard.buildSrcVersions") version
@@ -22,11 +23,12 @@ plugins {
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
     id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
     id("org.jetbrains.kotlin.jvm") version Versions.org_jetbrains_kotlin_jvm_gradle_plugin
+    id("com.eden.orchidPlugin") version Versions.com_eden_orchidplugin_gradle_plugin
 }
 
 apply(plugin = "com.gradle.build-scan")
 apply(plugin = "com.jfrog.bintray")
-apply(plugin = "com.gradle.build-scan")
+apply(plugin = "com.eden.orchidPlugin")
 
 val scmUrl = "git:git@github.com:Protelis/Protelis"
 
@@ -54,6 +56,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven(url = "https://dl.bintray.com/kotlin/dokka/")
     }
 
     val doclet by configurations.creating
@@ -204,10 +207,92 @@ allprojects {
 
 subprojects.forEach { subproject -> rootProject.evaluationDependsOn(subproject.path) }
 
+repositories {
+    mavenCentral()
+    jcenter {
+        content {
+            includeGroupByRegex("""io\.github\.javaeden.*""")
+            includeGroupByRegex("""com\.eden.*""")
+            includeModuleByRegex("""org\.jetbrains\.kotlinx""", """kotlinx-serialization.*""")
+        }
+    }
+}
+
 dependencies {
     api(project(":protelis-interpreter"))
     api(project(":protelis-lang"))
+    orchidRuntime("io.github.javaeden.orchid:OrchidEditorial:+")
+    orchidRuntime(Libs.orchidbsdoc)
+    orchidRuntime(Libs.orchidplugindocs)
+    orchidRuntime(Libs.orchidsearch)
+    orchidRuntime(Libs.orchidsyntaxhighlighter)
+    orchidRuntime(Libs.orchidwiki)
+    orchidRuntime(Libs.orchidgithub)
 }
+
+val isMarkedStable by lazy { """\d+(\.\d+){2}""".toRegex().matches(rootProject.version.toString()) }
+orchid {
+    theme = "BsDoc"
+    // Determine whether it's a deployment or a dry run
+    baseUrl = "https://protelis.github.io/wiki${ "-beta".takeUnless { isMarkedStable } ?: "" }'"
+    // Fetch the latest version of the website, if this one is more recent enable deploy
+    val versionRegex = """.*Currently\s*(.+)\.\s*Created""".toRegex()
+    println("asdsdasdas")
+    val matchedVersions: List<String> = try {
+        URL(baseUrl).openConnection().getInputStream().use { stream ->
+            listOf("")
+            stream.bufferedReader().lineSequence()
+                .flatMap { line -> versionRegex.find(line)?.groupValues?.last()?.let { sequenceOf(it) } ?: emptySequence() }
+                .toList()
+        }
+    } catch (e: Exception) { emptyList() }
+    val shouldDeploy = matchedVersions
+        .takeIf { it.size == 1 }
+        ?.first()
+        ?.let { rootProject.version.toString() > it }
+        ?: false
+    dryDeploy = shouldDeploy.not().toString()
+    println(
+        when (matchedVersions.size) {
+            0 -> "Unable to fetch the current site version from $baseUrl"
+            1 -> "Website $baseUrl is at version ${matchedVersions.first()}"
+            else -> "Multiple site versions fetched from $baseUrl: $matchedVersions"
+        } + ". Orchid deployment ${if (shouldDeploy) "enabled" else "set as dry run"}."
+    )
+}
+
+val orchidSeedConfiguration = "orchidSeedConfiguration"
+tasks.register(orchidSeedConfiguration) {
+    doLast {
+        /*
+         * Detect files
+         */
+        val configFolder = listOf(projectDir.toString(), "src", "orchid", "resources")
+            .joinToString(separator = File.separator)
+        val baseConfig = file("$configFolder${File.separator}config-origin.yml").readText()
+        val finalConfig = file("$configFolder${File.separator}config.yml")
+        /*
+         * Compute Kdoc targets
+         */
+        val deploymentConfiguration = if (!baseConfig.contains("services:")) {
+            """
+                services:
+                  publications:
+                    stages:
+                      - type: githubPages
+                        username: 'DanySK'
+                        commitUsername: Danilo Pianini
+                        commitEmail: danilo.pianini@gmail.com
+                        repo: 'Protelis/wiki${ "-beta".takeUnless { isMarkedStable } ?: "" }'
+                        branch: master
+                        publishType: CleanBranchMaintainHistory
+            """.trimIndent()
+        } else ""
+        finalConfig.writeText(baseConfig + deploymentConfiguration)
+    }
+}
+tasks.orchidClasses.orNull!!.dependsOn(tasks.getByName(orchidSeedConfiguration))
+
 
 tasks.withType<Javadoc> {
     dependsOn(subprojects.map { it.tasks.javadoc })
