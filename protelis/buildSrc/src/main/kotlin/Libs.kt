@@ -50,8 +50,45 @@ object Libs {
     /**
      * https://javaeden.github.io/Orchid/latest/core/
      */
+    const val orchidbsdoc: String = "io.github.javaeden.orchid:OrchidBsDoc:" +
+            Versions.io_github_javaeden_orchid
+
+    /**
+     * https://javaeden.github.io/Orchid/latest/core/
+     */
+    const val orchideditorial: String = "io.github.javaeden.orchid:OrchidEditorial:" +
+            Versions.io_github_javaeden_orchid
+
+    /**
+     * https://javaeden.github.io/Orchid/latest/core/
+     */
+    const val orchidgithub: String = "io.github.javaeden.orchid:OrchidGithub:" +
+            Versions.io_github_javaeden_orchid
+
+    /**
+     * https://javaeden.github.io/Orchid/latest/core/
+     */
+    const val orchidplugindocs: String = "io.github.javaeden.orchid:OrchidPluginDocs:" +
+            Versions.io_github_javaeden_orchid
+
+    /**
+     * https://javaeden.github.io/Orchid/latest/core/
+     */
+    const val orchidsearch: String = "io.github.javaeden.orchid:OrchidSearch:" +
+            Versions.io_github_javaeden_orchid
+
+    /**
+     * https://javaeden.github.io/Orchid/latest/core/
+     */
     const val orchidsyntaxhighlighter: String =
-            "io.github.javaeden.orchid:OrchidSyntaxHighlighter:" + Versions.orchidsyntaxhighlighter
+            "io.github.javaeden.orchid:OrchidSyntaxHighlighter:" +
+            Versions.io_github_javaeden_orchid
+
+    /**
+     * https://javaeden.github.io/Orchid/latest/core/
+     */
+    const val orchidwiki: String = "io.github.javaeden.orchid:OrchidWiki:" +
+            Versions.io_github_javaeden_orchid
 
     /**
      * https://kotlinlang.org/
@@ -91,21 +128,9 @@ object Libs {
             Versions.it_unibo_alchemist
 
     /**
-     * https://javaeden.github.io/Orchid/latest/core/
-     */
-    const val orchidplugindocs: String = "io.github.javaeden.orchid:OrchidPluginDocs:" +
-            Versions.orchidplugindocs
-
-    /**
      * http://logback.qos.ch
      */
     const val logback_classic: String = "ch.qos.logback:logback-classic:" + Versions.logback_classic
-
-    /**
-     * https://javaeden.github.io/Orchid/latest/core/
-     */
-    const val orchidkotlindoc: String = "io.github.javaeden.orchid:OrchidKotlindoc:" +
-            Versions.orchidkotlindoc
 
     /**
      * http://protelis.org
@@ -128,23 +153,6 @@ object Libs {
     const val commons_math3: String = "org.apache.commons:commons-math3:" + Versions.commons_math3
 
     /**
-     * https://javaeden.github.io/Orchid/latest/core/
-     */
-    const val orchidgithub: String = "io.github.javaeden.orchid:OrchidGithub:" +
-            Versions.orchidgithub
-
-    /**
-     * https://javaeden.github.io/Orchid/latest/core/
-     */
-    const val orchidsearch: String = "io.github.javaeden.orchid:OrchidSearch:" +
-            Versions.orchidsearch
-
-    /**
-     * https://javaeden.github.io/Orchid/latest/core/
-     */
-    const val orchidbsdoc: String = "io.github.javaeden.orchid:OrchidBsDoc:" + Versions.orchidbsdoc
-
-    /**
      * https://github.com/classgraph/classgraph
      */
     const val classgraph: String = "io.github.classgraph:classgraph:" + Versions.classgraph
@@ -153,11 +161,6 @@ object Libs {
      * http://commons.apache.org/proper/commons-io/
      */
     const val commons_io: String = "commons-io:commons-io:" + Versions.commons_io
-
-    /**
-     * https://javaeden.github.io/Orchid/latest/core/
-     */
-    const val orchidwiki: String = "io.github.javaeden.orchid:OrchidWiki:" + Versions.orchidwiki
 
     /**
      * http://www.slf4j.org
