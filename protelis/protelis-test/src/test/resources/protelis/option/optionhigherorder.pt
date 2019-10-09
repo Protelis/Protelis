@@ -3,10 +3,8 @@
  */
 module protelis:option:sideeffects
 import org.protelis.test.TestJavaNull.maybeNull
-import org.protelis.lang.datatype.Option.none
-import org.protelis.lang.datatype.Option.fromNullable
 
-fromNullable(maybeNull())
+optionally(maybeNull())
     .map { it.length() }
     .filter { it > 0 }
     .filterNot { it > 10 }
