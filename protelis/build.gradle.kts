@@ -301,7 +301,6 @@ tasks.register(orchidSeedConfiguration) {
 }
 tasks.orchidClasses.orNull!!.dependsOn(tasks.getByName(orchidSeedConfiguration))
 
-
 tasks.withType<Javadoc> {
     dependsOn(subprojects.map { it.tasks.javadoc })
     source(subprojects.map { it.tasks.javadoc.get().source })
