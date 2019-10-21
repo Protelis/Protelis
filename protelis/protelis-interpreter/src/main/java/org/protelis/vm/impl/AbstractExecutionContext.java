@@ -21,7 +21,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.google.common.collect.ImmutableMap;
+import javax.annotation.Nonnull;
+
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -31,15 +32,16 @@ import org.protelis.vm.CodePathFactory;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
-
-import javax.annotation.Nonnull;
 
 /**
  * Partial implementation of ExecutionContext, containing functionality expected
@@ -57,6 +59,7 @@ import javax.annotation.Nonnull;
 public abstract class AbstractExecutionContext<S extends AbstractExecutionContext<S>> implements ExecutionContext {
 
     private static final int MASK = 0xFF;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContext.class);
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final TIntList callStack = new TIntArrayList(10, -1);
     private final CodePathFactory codePathFactory;
@@ -130,7 +133,6 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
                 builder.add(e.getKey(), computeValue.apply((T) received));
             }
         }
-        final Field<R> result = builder.build(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
         /*
          * If a field is computed locally, the local value should get echoed to
          * neighbors. However, such operation must be performed *after* the build
@@ -145,7 +147,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
                             + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
             );
         }
-        return result;
+        return builder.build(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
     }
 
     @Override
@@ -347,6 +349,20 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         gamma = newLinkedHashMapWithExpectedSize(variablesSize);
         gamma.putAll(functions.orElseGet(Collections::emptyMap));
         theta = Collections.unmodifiableMap(nm.getNeighborState());
+        if (theta.containsKey(getDeviceUID())) {
+            LOGGER.warn("Local device UID {} was included in the set of received messages, "
+                    + "indicating that an auto-arc was present in your network configuration. "
+                    + "This is being worked around by not considering such information, "
+                    + "however, you should fix your logical netowrk.", getDeviceUID());
+            final ImmutableMap.Builder<DeviceUID, Map<CodePath, Object>> immutableMap = ImmutableMap
+                    .builderWithExpectedSize(theta.size() - 1);
+            theta.forEach((id, object) -> {
+                if (!id.equals(getDeviceUID())) {
+                    immutableMap.put(id, object);
+                }
+            });
+            theta = immutableMap.build();
+        }
         newCallStackFrame(-1);
     }
 
