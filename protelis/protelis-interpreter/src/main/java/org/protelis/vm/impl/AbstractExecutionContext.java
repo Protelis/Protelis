@@ -123,13 +123,6 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
          * If there is a request to build a field, then it means this is a
          * nbr-like operation
          */
-        if (destination.putIfAbsent(codePath, toBeSent) != null) {
-            throw new IllegalStateException(
-                    "This program has attempted to build a field twice with the same code path. "
-                            + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
-                            + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
-            );
-        }
         final Field.Builder<R> builder = DatatypeFactory.createFieldBuilder();
         for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
             final Object received = e.getValue().get(codePath);
@@ -137,7 +130,22 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
                 builder.add(e.getKey(), computeValue.apply((T) received));
             }
         }
-        return builder.build(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
+        final Field<R> result = builder.build(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
+        /*
+         * If a field is computed locally, the local value should get echoed to
+         * neighbors. However, such operation must be performed *after* the build
+         * construction has been proved successful, in order to prevent errors due to a
+         * bugged NetworkManager to propagate within the intepreter, giving rise to very
+         * unclear exception messages.
+         */
+        if (destination.putIfAbsent(codePath, toBeSent) != null) {
+            throw new IllegalStateException(
+                    "This program has attempted to build a field twice with the same code path. "
+                            + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
+                            + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
+            );
+        }
+        return result;
     }
 
     @Override
