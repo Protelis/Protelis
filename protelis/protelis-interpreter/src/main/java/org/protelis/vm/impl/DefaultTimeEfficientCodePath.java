@@ -20,6 +20,7 @@ import org.protelis.vm.CodePath;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.list.TIntList;
 
 /**
@@ -31,9 +32,10 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     private static final long serialVersionUID = 2L;
     private static final Map<Integer, Bytecode> REVERSE_LOOKUP_BYTECODE = Arrays.stream(Bytecode.values())
           .collect(Collectors.toMap(Bytecode::getCode, Function.identity()));
-
     private final int[] repr;
+    @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient int lazyHash;
+    @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient String lazyString;
 
     /**
