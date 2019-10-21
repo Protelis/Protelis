@@ -9,7 +9,12 @@
 package org.protelis.vm.impl;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.vm.CodePath;
 
 import com.google.common.hash.Hasher;
@@ -23,9 +28,13 @@ import gnu.trove.list.TIntList;
  */
 public final class DefaultTimeEfficientCodePath implements CodePath {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
+    private static final Map<Integer, Bytecode> REVERSE_LOOKUP_BYTECODE = Arrays.stream(Bytecode.values())
+          .collect(Collectors.toMap(Bytecode::getCode, Function.identity()));
+
     private final int[] repr;
-    private int lazyHash;
+    private transient int lazyHash;
+    private transient String lazyString;
 
     /**
      * @param source the current stack frames identifiers
@@ -54,7 +63,14 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
 
     @Override
     public String toString() {
-        return "CodePath" + Arrays.toString(repr);
+        if (lazyString == null) {
+            lazyString = "CodePath" + Arrays.stream(repr)
+                .mapToObj(it -> Optional.ofNullable(REVERSE_LOOKUP_BYTECODE.get(it))
+                        .map(Object::toString)
+                        .orElse(Integer.toString(it)))
+                .collect(Collectors.joining("->", "[", "]"));
+        }
+        return lazyString;
     }
 
 }
