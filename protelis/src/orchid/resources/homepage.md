@@ -5,7 +5,7 @@ components:
 
 # Why you should use Protelis? [Maybe]
 
-A reasonable introduction, nice pictures.
+A reasonable introduction, nice pictures. [{{ site.version }} ]()
 
 # The [Protelis README.md file](https://github.com/Protelis/Protelis)
 
