@@ -13,7 +13,9 @@ allPages:
         - groovy
         - yaml
         - asciidoc
+        - dart
         - markdown
         - python
+        - javascript
         - xml
         - scala
