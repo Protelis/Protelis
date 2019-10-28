@@ -242,15 +242,14 @@ val isMarkedStable by lazy { """\d+(\.\d+){2}""".toRegex().matches(rootProject.v
 orchid {
     theme = "BsDoc"
     // Determine whether it's a deployment or a dry run
-    baseUrl = "https://protelis.github.io/wiki${ "-beta".takeUnless { isMarkedStable } ?: "" }'"
+    baseUrl = "https://protelis.github.io/wiki${ "-beta".takeUnless { isMarkedStable } ?: "" }/"
     // Fetch the latest version of the website, if this one is more recent enable deploy
-    val versionRegex = """.*Currently\s*(.+)\.\s*Created""".toRegex()
-    println("asdsdasdas")
+    val versionRegex = """.*<.*>\s*Currently\s*(.+)\s*(<\/.*>)""".toRegex()
     val matchedVersions: List<String> = try {
         URL(baseUrl).openConnection().getInputStream().use { stream ->
             listOf("")
             stream.bufferedReader().lineSequence()
-                .flatMap { line -> versionRegex.find(line)?.groupValues?.last()?.let { sequenceOf(it) } ?: emptySequence() }
+                .flatMap { line -> versionRegex.find(line)?.groupValues?.get(1)?.let { sequenceOf(it) } ?: emptySequence() }
                 .toList()
         }
     } catch (e: Exception) { emptyList() }
