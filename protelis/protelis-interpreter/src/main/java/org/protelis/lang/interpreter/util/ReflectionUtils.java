@@ -234,8 +234,11 @@ public final class ReflectionUtils {
             return invokePossiblyVoidMethod(method, target, useArgs);
         } catch (Exception exc) { // NOPMD: Generic exception caught by purpose
             /*
-             * Failure: maybe some cast was required?
+             * Failure: maybe some cast was required, if arguments were actually passed?
              */
+            if (useArgs.length == 0) {
+                throw new IllegalStateException(exc);
+            }
             final Class<?>[] params = method.getParameterTypes();
             for (int i = 0; i < params.length; i++) {
                 final Class<?> expected = params[i];
