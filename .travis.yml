@@ -81,6 +81,7 @@ jobs:
         - ./gradlew javadoc buildDashboard projectReport fatJar -x test --scan
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
+        - ./gradlew orchidDeploy
       after_success:
         - ./gradlew publishAll
 before_install:
