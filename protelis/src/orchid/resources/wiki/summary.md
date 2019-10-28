@@ -11,6 +11,7 @@
   - [Prerequisites](use/installation.md)
   - [Tutorial: simulation with Alchemist](use/alchemist.md)
   - [Tutorial: demo projects](use/demo.md)
+  - [Example: Protelis with NASA WorldWind](use/worldwind.md)
 - [Develop](develop.md)
   - [Project structure](develop/structure.md)
   - [Creating Releases](develop/releases.md)

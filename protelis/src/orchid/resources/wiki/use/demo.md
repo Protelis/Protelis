@@ -32,7 +32,7 @@ Include Protelis among your dependencies, with:
 <dependency>
   <groupId>org.protelis</groupId>
   <artifactId>protelis</artifactId>
-  <version>13.1.0</version>
+  <version>{{ site.version }}</version>
 </dependency>
 ``` 
 
@@ -41,7 +41,7 @@ Include Protelis among your dependencies, with:
 Declare Protelis as a dependency by:
 
 ```scala
-libraryDependencies += "org.protelis" % "protelis" % "13.1.0"
+libraryDependencies += "org.protelis" % "protelis" % "{{ site.version }}"
 ```
 
 ### Importing manually
