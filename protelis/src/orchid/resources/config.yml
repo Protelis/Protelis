@@ -15,6 +15,8 @@ allPages:
         - asciidoc
         - markdown
         - python
+        - xml
+        - scala
 services:
   publications:
     stages:

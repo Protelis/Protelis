@@ -15,3 +15,5 @@ allPages:
         - asciidoc
         - markdown
         - python
+        - xml
+        - scala
