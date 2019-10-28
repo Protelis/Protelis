@@ -27,15 +27,38 @@ That's hard to do, but Protelis helps!
 
 # What is it **not**?
 
-## **Not** an agent-based modeling framework
+### **Not** an agent-based modeling framework
 
 Although agent-based modeling (ABM) and aggregate programming both concern phenomena that occur when many individuals interact, they approach these phenomena in different ways.
 In ABM, you usually specify an individual’s behavior and interaction rules, and then simulate a collection of individuals to see what large-scale phenomena occur.
 In aggregate programming, you specify the desired collective action, which is then transformed into a distributed implementation for individual machines.
 
-## **Not** a simulation platform
+### **Not** a simulation platform
 
 Protelis is a programming language which can be used *within* simulation frameworks, but that per-se ships no simulation platform.
 One of the nice things you get out of it is that, if the simulation implementation respects the reference,
 the code written for a simulation can be reused as-is inside a deployed system.
 
+# Who uses it? The Protelis community
+
+### Alma Mater Studiorum—Università di Bologna (Italy)
+
+Protelis is used in a variety of experiments and demos by the research group led by [prof. Mirko Viroli](https://www.unibo.it/sitoweb/mirko.viroli/en).
+The team includes [Danilo Pianini](https://www.unibo.it/sitoweb/danilo.pianini/en), chief architect and main developer of Protelis,
+and [Roberto Casadei](https://www.unibo.it/sitoweb/roby.casadei/en), lead developer of [Scafi](https://scafi.github.io/),
+a Scala internal DSL for aggregate programming.
+
+### Raytheon BBN Technologies (USA)
+
+* [Jacob Beal](https://jakebeal.github.io/)
+* [Shane Clark](https://scholar.google.com/citations?user=oBq3jv0AAAAJ&hl=en)
+* [Kyle Usbeck](http://kyle.usbeck.us/)
+
+### Università di Torino (Italy)
+
+* [Ferruccio Damiani](http://www.di.unito.it/~damiani/)
+* [Giorgio Audrito](http://giorgio.audrito.info/#!/research)
+
+### Fondazione Bruno Kessler (Italy)
+
+* [Antonio Bucchiarone](https://das.fbk.eu/people/profile/bucchiarone)
