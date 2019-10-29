@@ -16,7 +16,8 @@
   - [Project structure](develop/structure.md)
   - [Creating Releases](develop/releases.md)
 - [Examples and demos](examples.md)
-  - [[{{ site.version }}] Crowd danger estimation and warning](examples/quanticol2016.md)
-  - [[0.1.0] Peer-to-peer route planning](examples/sac2015p2pplanning.md)
-  - [[0.1.0] Network services management](examples/sac2015networkmanagement.md)
+  - [Crowd danger estimation and warning](examples/ieeecomputer2015crowdtracking.md)
+  - [Crowd dispersal service](examples/ecas2016crowddispersal.md)
+  - [Peer-to-peer route planning](examples/sac2015p2pplanning.md)
+  - [Network services management](examples/sac2015networkmanagement.md)
 

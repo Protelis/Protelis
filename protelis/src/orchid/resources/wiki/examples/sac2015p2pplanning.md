@@ -1,12 +1,20 @@
 ---
+title: Peer-to-peer route planning
+protelis_version: 0.1.0
+paper_title: "Protelis: Practical Aggregate Programming"
+paper_authors: "Danilo Pianini, Mirko Viroli, and Jacob Beal"
+paper_venue: "the Proceedings of the 30th Annual ACM Symposium on Applied Computing, April 2015"
+doi: "10.1145/2695664.2695913"
 ---
-**Note:** This example uses an old version of Protelis. As such, the provided code might not work with newer releases.
 
-# Peer-to-peer route planning
+**Note:** This example uses Protelis version {{ protelis_version }}, while current version is {{ site.version }}.
+As such, the provided code might not work with newer releases.
 
 This example has been presented in the paper:
 
-[**Protelis: Practical Aggregate Programming** *by Danilo Pianini, Mirko Viroli, Jacob Beal; published in the Proceedings of the 30th Annual ACM Symposium on Applied Computing, April 2015*](https://doi.org/10.1145/2695664.2695913)
+[**{{ paper_title }}** *by {{ paper_authors }}; published in {{ paper_venue }}*](https://doi.org/{{ doi }})
+
+# Peer-to-peer route planning
 
 When two people want to meet up at a large event, they may be hampered when a pre-arranged rendezvous point turns out to be inconvenient,
 while any centralized services for real-time coordination are overwhelmed by demand.

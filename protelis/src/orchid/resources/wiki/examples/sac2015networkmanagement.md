@@ -1,13 +1,20 @@
 ---
+title: Network services management
+protelis_version: 0.1.0
+paper_title: "Protelis: Practical Aggregate Programming"
+paper_authors: "Danilo Pianini, Mirko Viroli, and Jacob Beal"
+paper_venue: "the Proceedings of the 30th Annual ACM Symposium on Applied Computing, April 2015"
+doi: "10.1145/2695664.2695913"
 ---
 
-**Note:** This example uses an old version of Protelis. As such, the provided code might not work with newer releases.
-
-# Network services management
+**Note:** This example uses Protelis version {{ protelis_version }}, while current version is {{ site.version }}.
+As such, the provided code might not work with newer releases.
 
 This example has been presented in the paper:
 
-[**Protelis: Practical Aggregate Programming** *by Danilo Pianini, Mirko Viroli, Jacob Beal; published in the Proceedings of the 30th Annual ACM Symposium on Applied Computing, April 2015*](https://doi.org/10.1145/2695664.2695913)
+[**{{ paper_title }}** *by {{ paper_authors }}; published in {{ paper_venue }}*](https://doi.org/{{ doi }})
+
+# Network services management
 
 A common problem in managing enterprise services is a failure in one or more services can cause the overall system to get wedged,
 due to many dependences between different services and server.
