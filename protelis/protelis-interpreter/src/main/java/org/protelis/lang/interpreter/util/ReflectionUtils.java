@@ -33,6 +33,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
+import org.protelis.lang.datatype.Unit;
 import org.protelis.vm.ExecutionContext;
 
 import com.google.common.cache.CacheBuilder;
@@ -112,10 +113,6 @@ public final class ReflectionUtils {
         return Primitives.allWrapperTypes().contains(clazz);
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final Class<?> firstArgType) {
-        return compatibleLength(m, args, willBeInjected(m, firstArgType));
-    }
-
     private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final boolean toBeInjected) {
         final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
                 .getParameterTypes();
@@ -129,14 +126,8 @@ public final class ReflectionUtils {
         return m.isVarArgs() ? actualArgsLength >= paramTypes.length - 1 : actualArgsLength == paramTypes.length;
     }
 
-    private static boolean willBeInjected(@Nonnull final Method m, @Nonnull final Object[] args) {
-        return willBeInjected(m, args.length > 0 && args[0] != null ? args[0].getClass() : null);
-    }
-
-    private static boolean willBeInjected(@Nonnull final Method m, @Nullable final Class<?> firstArgType) {
-        return m.getParameterTypes().length > 0
-                && ExecutionContext.class.isAssignableFrom(m.getParameterTypes()[0])
-                && (firstArgType == null || !ExecutionContext.class.isAssignableFrom(firstArgType));
+    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final Class<?> firstArgType) {
+        return compatibleLength(m, args, willBeInjected(m, firstArgType));
     }
 
     private static int computePointsForWrapper(final Class<?> primitive, final Class<?> wrapper) {
@@ -240,11 +231,14 @@ public final class ReflectionUtils {
             @Nonnull final Object[] args) {
         final Object[] useArgs = repackageIfRequired(context, method, args);
         try {
-            return method.invoke(target, useArgs);
+            return invokePossiblyVoidMethod(method, target, useArgs);
         } catch (Exception exc) { // NOPMD: Generic exception caught by purpose
             /*
-             * Failure: maybe some cast was required?
+             * Failure: maybe some cast was required, if arguments were actually passed?
              */
+            if (useArgs.length == 0) {
+                throw new IllegalStateException(exc);
+            }
             final Class<?>[] params = method.getParameterTypes();
             for (int i = 0; i < params.length; i++) {
                 final Class<?> expected = params[i];
@@ -256,7 +250,7 @@ public final class ReflectionUtils {
                 }
             }
             try {
-                return method.invoke(target, useArgs);
+                return invokePossiblyVoidMethod(method, target, useArgs);
             } catch (IllegalAccessException e) {
                 throw new UnsupportedOperationException("Method " + method // NOPMD: false positive
                         + " cannot get invoked because it is not accessible.", e); 
@@ -281,6 +275,17 @@ public final class ReflectionUtils {
                 throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
             }
         }
+    }
+
+    private static Object invokePossiblyVoidMethod(
+            @Nonnull final Method method,
+            @Nullable final Object target,
+            @Nonnull final Object[] args) throws IllegalAccessException, InvocationTargetException {
+        final Object result = method.invoke(target, args);
+        if (result == null && method.getReturnType().equals(Void.TYPE)) {
+            return Unit.UNIT;
+        }
+        return result;
     }
 
     private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
@@ -457,8 +462,12 @@ public final class ReflectionUtils {
                             + ".\nYou tried to invoke it with arguments " + args, e);
                 }
             }
-            throw new UnsupportedOperationException(methodName + originalClasses + " does not exist in " + clazz
-                    + ".\nYou tried to invoke it with arguments " + args, outerException);
+            final StringBuilder paramClasses = new StringBuilder(originalClasses.toString());
+            paramClasses.setCharAt(0, '(');
+            paramClasses.setCharAt(paramClasses.length() - 1, ')');
+            throw new UnsupportedOperationException(methodName + paramClasses + " does not exist in " + clazz
+                    + ".\nYou tried to invoke it with arguments"
+                    + args, outerException);
         }
     }
 
@@ -490,5 +499,15 @@ public final class ReflectionUtils {
         return shouldPushContext(expectedArgs,
                 args.length,
                 args.length == 0 || args[0] == null ? null : args[0].getClass());
+    }
+
+    private static boolean willBeInjected(@Nonnull final Method m, @Nullable final Class<?> firstArgType) {
+        return m.getParameterTypes().length > 0
+                && ExecutionContext.class.isAssignableFrom(m.getParameterTypes()[0])
+                && (firstArgType == null || !ExecutionContext.class.isAssignableFrom(firstArgType));
+    }
+
+    private static boolean willBeInjected(@Nonnull final Method m, @Nonnull final Object[] args) {
+        return willBeInjected(m, args.length > 0 && args[0] != null ? args[0].getClass() : null);
     }
 }

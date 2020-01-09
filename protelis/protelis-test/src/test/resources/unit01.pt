@@ -1,0 +1,8 @@
+// EXPECTED_RESULT: import org.protelis.test.TestVoid.main main()
+module unit01
+import org.protelis.test.TestVoid.main
+import java.util.Collections.sort
+import java.util.Collections.emptyList
+
+main() // Should return Unit
+sort(emptyList()) // Again, unit
