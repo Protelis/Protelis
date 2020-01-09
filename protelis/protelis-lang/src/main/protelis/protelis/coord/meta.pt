@@ -63,7 +63,7 @@ public def findSourcesWithId(source, id, d, k) {
 public def multiInstance(sources, f, null) {
     alignedMap(
         nbr(sources.map(self, id -> {[id, null]})),
-        (key, field) -> { true },
+        (key, field) -> { sources.contains(key) },
         (key, field) -> { f.apply(key) },
         null
     )
