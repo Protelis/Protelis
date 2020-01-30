@@ -84,7 +84,7 @@ jobs:
       after_success:
         - ./gradlew publishAll
 before_install:
-  - travis_retry dig +short myip.opendns.com @resolver1.opendns.com
+  - dig +short myip.opendns.com @resolver1.opendns.com || true
   - curl "${GRAVIS}.disable-windows-defender.sh" --output .disable-windows-defender.sh
   - source .disable-windows-defender.sh
   - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
