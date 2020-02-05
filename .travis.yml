@@ -86,8 +86,8 @@ jobs:
         - ./gradlew publishAll
 before_install:
   - dig +short myip.opendns.com @resolver1.opendns.com || true
-  - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-  - bash .install-jdk-travis.sh && source ~/.jdk_config
+  - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
+  - source $GRAVIS/install-jdk
 script:
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - cd "$TRAVIS_BUILD_DIR"/protelis
