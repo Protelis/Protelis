@@ -85,6 +85,7 @@ jobs:
       after_success:
         - ./gradlew publishAll
 before_install:
+  - dig +short myip.opendns.com @resolver1.opendns.com || true
   - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
   - bash .install-jdk-travis.sh && source ~/.jdk_config
 script:
