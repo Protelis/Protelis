@@ -29,12 +29,12 @@ _surge_deploy_reports_base: &surge_deploy_reports_base
   <<: *surge_deploy_base
   project: "./protelis/report"
 
-_surge_deploy_only_develop: *surge_deploy_only_develop
+_surge_deploy_only_develop: &surge_deploy_only_develop
   on:
     <<: *surge_deploy_filter_base
     branch: develop
 
-_surge_deploy_only_tags: *surge_deploy_only_tags
+_surge_deploy_only_tags: &surge_deploy_only_tags
   on:
     <<: *surge_deploy_filter_base
     tags: true
