@@ -2,10 +2,42 @@
 
 _reference_jdk: &reference_jdk
   'JDK="adopt@1.8"'
+
 _reference_os: &reference_os
   'linux'
+
 _official_repo: &official_repo
   'Protelis/Protelis'
+
+_surge_deploy_filter_base: &surge_deploy_filter_base
+  repo: *official_repo
+  condition: $PUBLISH = "true"
+
+_surge_deploy_base: &surge_deploy_base
+  provider: surge
+  skip_cleanup: true
+
+_surge_deploy_javadoc_base: &surge_deploy_javadoc_base
+  <<: *surge_deploy_base
+  project: "./protelis/build/docs/javadoc/"
+
+_surge_deploy_protelis_lang_javadoc_base: &surge_deploy_protelis_lang_javadoc_base
+  <<: *surge_deploy_base
+  project: "./protelis/protelis-lang/build/protelis-docs/"
+
+_surge_deploy_reports_base: &surge_deploy_reports_base
+  <<: *surge_deploy_base
+  project: "./protelis/report"
+
+_surge_deploy_only_develop: *surge_deploy_only_develop
+  on:
+    <<: *surge_deploy_filter_base
+    branch: develop
+
+_surge_deploy_only_tags: *surge_deploy_only_tags
+  on:
+    <<: *surge_deploy_filter_base
+    tags: true
 
 # Environment  
 
@@ -113,54 +145,30 @@ deploy:
       repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/build/docs/javadoc/"
+  # Development Javadoc
+  - <<: *surge_deploy_javadoc_base
     domain: protelis-unstable-doc.surge.sh
-    on:
-      repo: *official_repo
-      branch: develop
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/report"
-    domain: protelis-unstable-reports.surge.sh
-    on:
-      repo: *official_repo
-      branch: develop
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/protelis-lang/build/protelis-docs/"
+    <<: *surge_deploy_only_develop
+  # Development build reports
+  - <<: *surge_deploy_reports_base
+    domain:  protelis-unstable-reports.surge.sh
+    <<: *surge_deploy_only_develop
+  # Development Protelis-Lang Javadoc 
+  - <<: *surge_deploy_protelis_lang_javadoc_base
     domain: protelis-lang-unstable-doc.surge.sh
-    on:
-      repo: *official_repo
-      branch: develop
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/build/docs/javadoc/"
+    <<: *surge_deploy_only_develop
+  # Stable Javadoc
+  - <<: *surge_deploy_javadoc_base
     domain: protelis-doc.surge.sh
-    on:
-      repo: *official_repo
-      tags: true
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/report"
-    domain: protelis-reports.surge.sh
-    on:
-      repo: *official_repo
-      tags: true
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/protelis-lang/build/protelis-docs/"
+    <<: *surge_deploy_only_tags
+  # Development build reports
+  - <<: *surge_deploy_reports_base
+    domain:  protelis-reports.surge.sh
+    <<: *surge_deploy_only_tags
+  # Development Protelis-Lang Javadoc 
+  - <<: *surge_deploy_protelis_lang_javadoc_base
     domain: protelis-lang-doc.surge.sh
-    on:
-      repo: *official_repo
-      tags: true
-      condition: $PUBLISH = "true"
+    <<: *surge_deploy_only_tags
 
 notifications:
   email:
