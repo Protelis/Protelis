@@ -89,7 +89,6 @@ before_install:
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - source $GRAVIS/install-jdk
 script:
-  - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - cd "$TRAVIS_BUILD_DIR"/protelis
   - ./gradlew clean test --parallel --scan
 before_cache:
