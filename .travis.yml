@@ -1,9 +1,46 @@
-reference_jdk: &reference_jdk
+# Utilities
+
+_reference_jdk: &reference_jdk
   'JDK="adopt@1.8"'
-reference_os: &reference_os
+
+_reference_os: &reference_os
   'linux'
-official_repo: &official_repo
+
+_official_repo: &official_repo
   'Protelis/Protelis'
+
+_surge_deploy_filter_base: &surge_deploy_filter_base
+  repo: *official_repo
+  condition: $PUBLISH = "true"
+
+_surge_deploy_base: &surge_deploy_base
+  provider: surge
+  skip_cleanup: true
+
+_surge_deploy_javadoc_base: &surge_deploy_javadoc_base
+  <<: *surge_deploy_base
+  project: "./protelis/build/docs/javadoc/"
+
+_surge_deploy_protelis_lang_javadoc_base: &surge_deploy_protelis_lang_javadoc_base
+  <<: *surge_deploy_base
+  project: "./protelis/protelis-lang/build/protelis-docs/"
+
+_surge_deploy_reports_base: &surge_deploy_reports_base
+  <<: *surge_deploy_base
+  project: "./protelis/report"
+
+_surge_deploy_only_develop: &surge_deploy_only_develop
+  on:
+    <<: *surge_deploy_filter_base
+    branch: develop
+
+_surge_deploy_only_tags: &surge_deploy_only_tags
+  on:
+    <<: *surge_deploy_filter_base
+    tags: true
+
+# Environment  
+
 language: bash
 git:
   depth: false
@@ -23,7 +60,8 @@ stages:
 env:
   global:
     - TERM=dumb
-    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
+    - GRAVIS_REPO="https://github.com/DanySK/Gravis-CI.git"
+    - GRAVIS="$HOME/gravis"
     - PUBLISH="false"
     - OFFICIAL_REPO_SLUG="Protelis/Protelis"
   matrix:
@@ -36,11 +74,11 @@ env:
     # Disabled until gradle/gradle#8681 is solved, likely with Gradle 6+
 #    - JDK="adopt@1.13"
 #    - JDK="adopt-openj9@1.13"
-matrix:
+jobs:
   exclude:
     - os: *reference_os
       env: *reference_jdk
-jobs:
+      stage: test
   include:
     - stage: check
       name: "Deep check on reference OS and JDK"
@@ -85,16 +123,13 @@ jobs:
         - ./gradlew publishAll
 before_install:
   - dig +short myip.opendns.com @resolver1.opendns.com || true
-  - curl "${GRAVIS}.disable-windows-defender.sh" --output .disable-windows-defender.sh
-  - source .disable-windows-defender.sh
-  - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-  - bash .install-jdk-travis.sh && source ~/.jdk_config
+  - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
+  - source $GRAVIS/install-jdk
 script:
   - cd "$TRAVIS_BUILD_DIR"/protelis
   - ./gradlew clean test --parallel --scan
 before_cache:
-  - curl "${GRAVIS}.clean_gradle_cache.sh" --output .clean_gradle_cache.sh
-  - bash .clean_gradle_cache.sh
+  - $GRAVIS/clean-gradle-cache
 cache:
   directories:
     - $HOME/.gradle/caches/
@@ -110,54 +145,30 @@ deploy:
       repo: *official_repo
       tags: true
       condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/build/docs/javadoc/"
+  # Development Javadoc
+  - <<: *surge_deploy_javadoc_base
     domain: protelis-unstable-doc.surge.sh
-    on:
-      repo: *official_repo
-      branch: develop
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/report"
-    domain: protelis-unstable-reports.surge.sh
-    on:
-      repo: *official_repo
-      branch: develop
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/protelis-lang/build/protelis-docs/"
+    <<: *surge_deploy_only_develop
+  # Development build reports
+  - <<: *surge_deploy_reports_base
+    domain:  protelis-unstable-reports.surge.sh
+    <<: *surge_deploy_only_develop
+  # Development Protelis-Lang Javadoc 
+  - <<: *surge_deploy_protelis_lang_javadoc_base
     domain: protelis-lang-unstable-doc.surge.sh
-    on:
-      repo: *official_repo
-      branch: develop
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/build/docs/javadoc/"
+    <<: *surge_deploy_only_develop
+  # Stable Javadoc
+  - <<: *surge_deploy_javadoc_base
     domain: protelis-doc.surge.sh
-    on:
-      repo: *official_repo
-      tags: true
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/report"
-    domain: protelis-reports.surge.sh
-    on:
-      repo: *official_repo
-      tags: true
-      condition: $PUBLISH = "true"
-  - provider: surge
-    skip_cleanup: true
-    project: "./protelis/protelis-lang/build/protelis-docs/"
+    <<: *surge_deploy_only_tags
+  # Development build reports
+  - <<: *surge_deploy_reports_base
+    domain:  protelis-reports.surge.sh
+    <<: *surge_deploy_only_tags
+  # Development Protelis-Lang Javadoc 
+  - <<: *surge_deploy_protelis_lang_javadoc_base
     domain: protelis-lang-doc.surge.sh
-    on:
-      repo: *official_repo
-      tags: true
-      condition: $PUBLISH = "true"
+    <<: *surge_deploy_only_tags
 
 notifications:
   email:
