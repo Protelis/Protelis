@@ -4,22 +4,19 @@ import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    id("de.fayard.buildSrcVersions") version
-        Versions.de_fayard_buildsrcversions_gradle_plugin
-    id("org.danilopianini.git-sensitive-semantic-versioning") version
-        Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
+    id("org.danilopianini.git-sensitive-semantic-versioning")
     eclipse
     `java-library`
     jacoco
-    id("com.github.spotbugs") version Versions.com_github_spotbugs_gradle_plugin
+    id("com.github.spotbugs")
     pmd
     checkstyle
-    id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+    id("org.jlleitschuh.gradle.ktlint")
     signing
     `maven-publish`
-    id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
-    id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
-    id("org.jetbrains.kotlin.jvm") version Versions.org_jetbrains_kotlin_jvm_gradle_plugin
+    id("org.danilopianini.publish-on-central")
+    id("com.jfrog.bintray")
+    kotlin("jvm")
 }
 
 apply(plugin = "com.jfrog.bintray")
