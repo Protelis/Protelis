@@ -1,32 +1,25 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    id("de.fayard.buildSrcVersions") version
-        Versions.de_fayard_buildsrcversions_gradle_plugin
-    id("org.danilopianini.git-sensitive-semantic-versioning") version
-        Versions.org_danilopianini_git_sensitive_semantic_versioning_gradle_plugin
+    id("org.danilopianini.git-sensitive-semantic-versioning")
     eclipse
     `java-library`
     jacoco
-    id("com.github.spotbugs") version Versions.com_github_spotbugs_gradle_plugin
+    id("com.github.spotbugs")
     pmd
     checkstyle
-    id("org.jlleitschuh.gradle.ktlint") version Versions.org_jlleitschuh_gradle_ktlint_gradle_plugin
+    id("org.jlleitschuh.gradle.ktlint")
     signing
     `maven-publish`
-    id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
-    id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
-    id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
-    id("org.jetbrains.kotlin.jvm") version Versions.org_jetbrains_kotlin_jvm_gradle_plugin
+    id("org.danilopianini.publish-on-central")
+    id("com.jfrog.bintray")
+    kotlin("jvm")
 }
 
-apply(plugin = "com.gradle.build-scan")
 apply(plugin = "com.jfrog.bintray")
-apply(plugin = "com.gradle.build-scan")
 
 val scmUrl = "git:git@github.com:Protelis/Protelis"
 
@@ -78,18 +71,16 @@ allprojects {
     }
 
     spotbugs {
-        effort = "max"
-        reportLevel = "low"
-        val excludeFile = File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
-        if (excludeFile.exists()) {
-            excludeFilterConfig = project.resources.text.fromFile(excludeFile)
-        }
+        setEffort("max")
+        setReportLevel("low")
+        File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
+            .takeIf { it.exists() }
+            ?.also { excludeFilter.set(it) }
     }
 
-    tasks.withType<SpotBugsTask> {
-        reports {
-            xml.isEnabled = false
-            html.isEnabled = true
+    tasks.spotbugsMain {
+        reports.create("html") {
+            isEnabled = true
         }
     }
 
@@ -240,11 +231,6 @@ tasks.register<Jar>("fatJar") {
     }
     with(tasks.jar.get() as CopySpec)
     dependsOn(subprojects.flatMap { it.tasks.withType<Jar>() })
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
 }
 
 /*
