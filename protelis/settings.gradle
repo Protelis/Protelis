@@ -4,4 +4,3 @@ include(
     'protelis-test'
 )
 rootProject.name = "${artifactId}"
-enableFeaturePreview('STABLE_PUBLISHING')
