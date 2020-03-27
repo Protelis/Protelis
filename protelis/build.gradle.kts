@@ -20,13 +20,10 @@ plugins {
     `maven-publish`
     id("org.danilopianini.publish-on-central") version Versions.org_danilopianini_publish_on_central_gradle_plugin
     id("com.jfrog.bintray") version Versions.com_jfrog_bintray_gradle_plugin
-    id("com.gradle.build-scan") version Versions.com_gradle_build_scan_gradle_plugin
     id("org.jetbrains.kotlin.jvm") version Versions.org_jetbrains_kotlin_jvm_gradle_plugin
 }
 
-apply(plugin = "com.gradle.build-scan")
 apply(plugin = "com.jfrog.bintray")
-apply(plugin = "com.gradle.build-scan")
 
 val scmUrl = "git:git@github.com:Protelis/Protelis"
 
@@ -240,11 +237,6 @@ tasks.register<Jar>("fatJar") {
     }
     with(tasks.jar.get() as CopySpec)
     dependsOn(subprojects.flatMap { it.tasks.withType<Jar>() })
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
 }
 
 /*

@@ -87,7 +87,7 @@ jobs:
         - *reference_jdk
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - ./gradlew clean check fatJar --scan --parallel
+        - ./gradlew clean check fatJar --parallel
     - stage: deploy
       name: "Reports and deployment"
       if: repo = env(OFFICIAL_REPO_SLUG) AND type != pull_request
@@ -115,8 +115,8 @@ jobs:
         - sudo npm install --global surge
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - ./gradlew generateProtelisDoc -x test --scan
-        - ./gradlew javadoc buildDashboard projectReport fatJar -x test --scan
+        - ./gradlew generateProtelisDoc -x test
+        - ./gradlew javadoc buildDashboard projectReport fatJar -x test
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
       after_success:
@@ -127,7 +127,7 @@ before_install:
   - source $GRAVIS/install-jdk
 script:
   - cd "$TRAVIS_BUILD_DIR"/protelis
-  - ./gradlew clean test --parallel --scan
+  - ./gradlew clean test --parallel
 before_cache:
   - $GRAVIS/clean-gradle-cache
 cache:
