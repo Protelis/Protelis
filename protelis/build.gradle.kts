@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.github.spotbugs.SpotBugsTask
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
@@ -75,18 +74,16 @@ allprojects {
     }
 
     spotbugs {
-        effort = "max"
-        reportLevel = "low"
-        val excludeFile = File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
-        if (excludeFile.exists()) {
-            excludeFilterConfig = project.resources.text.fromFile(excludeFile)
-        }
+        setEffort("max")
+        setReportLevel("low")
+        File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
+            .takeIf { it.exists() }
+            ?.also { excludeFilter.set(it) }
     }
 
-    tasks.withType<SpotBugsTask> {
-        reports {
-            xml.isEnabled = false
-            html.isEnabled = true
+    tasks.spotbugsMain {
+        reports.create("html") {
+            isEnabled = true
         }
     }
 
