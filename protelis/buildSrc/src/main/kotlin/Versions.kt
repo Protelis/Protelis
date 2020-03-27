@@ -40,7 +40,7 @@ object Versions {
 
     const val logback_classic: String = "1.3.0-alpha4"
 
-    const val protelis_parser: String = "10.0.1"
+    const val protelis_parser: String = "10.0.2"
 
     const val commons_codec: String = "1.13"
 
