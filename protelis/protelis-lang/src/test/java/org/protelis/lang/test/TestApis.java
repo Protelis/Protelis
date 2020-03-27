@@ -1031,7 +1031,6 @@ public class TestApis {
      */
     @Test
     public void testSummarize() {
-        System.out.println(System.getProperty("java.version"));
         test("summarize");
     }
 
