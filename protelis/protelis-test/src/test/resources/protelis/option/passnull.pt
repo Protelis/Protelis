@@ -2,7 +2,7 @@
  * EXPECTED_RESULT: true
  */
 import org.protelis.test.TestJavaNull.expectsNull
-import org.protelis.lang.datatype.Option.none
+import org.protelis.lang.datatype.Option.JAVA_NULL
 import org.protelis.lang.datatype.Option.fromNullable
 
-fromNullable(expectsNull(none())).isEmpty()
+optionally(expectsNull(JAVA_NULL)).isEmpty()

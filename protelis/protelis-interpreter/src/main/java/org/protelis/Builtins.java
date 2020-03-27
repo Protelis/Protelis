@@ -30,6 +30,16 @@ import com.google.common.collect.Sets;
 public final class Builtins {
 
     private static final String UNCHECKED = "unchecked";
+    /**
+     * This variable is used by the interpreter for providing compatibility hints in the Eclipse plugin.
+     * See https://github.com/Protelis/Protelis/issues/245.
+     */
+    public static final ImmutableList<Integer> MINIMUM_PARSER_VERSION = ImmutableList.of(10, 0, 0);
+    /**
+     * This variable is used by the interpreter for providing compatibility hints in the Eclipse plugin.
+     * See https://github.com/Protelis/Protelis/issues/245.
+     */
+    public static final ImmutableList<Integer> MAXIMUM_PARSER_VERSION = ImmutableList.of(10, 0, 1);
 
     private Builtins() { }
 
@@ -332,6 +342,20 @@ public final class Builtins {
             @Nonnull final Field<T> target,
             @Nonnull final FunctionDefinition reductionFunction) {
         return target.reduceValues(reductionFunction(context, target.getExpectedType(), target, reductionFunction));
+    }
+
+    /**
+     * Produces an Option value. If the passed object is null, then an empty option
+     * is returned. Otherwise, an Option enclosing the value is returned.
+     * Recommended way to interact with Java method that may return null.
+     * 
+     * @param <T>    Object type
+     * @param object the nullable object
+     * @return If the passed object is null, then an empty option is returned.
+     *         Otherwise, an Option enclosing the value is returned.
+     */
+    public static <T> Option<T> optionally(@Nullable final T object) {
+        return Option.fromNullable(object);
     }
 
     /**

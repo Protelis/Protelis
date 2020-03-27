@@ -1,7 +1,0 @@
-include(
-    'protelis-interpreter',
-    'protelis-lang',
-    'protelis-test'
-)
-rootProject.name = "${artifactId}"
-enableFeaturePreview('STABLE_PUBLISHING')

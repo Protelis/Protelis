@@ -38,6 +38,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
+import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.xtext.common.types.JvmFeature;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.nodemodel.INode;
@@ -264,6 +265,8 @@ public final class ProtelisLoader {
         final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
         Objects.requireNonNull(Objects.requireNonNull(root).getProgram(),
                 "The provided resource does not contain any main program, and can not be executed.");
+        Diagnostician.INSTANCE.validate(root).getChildren()
+            .forEach(it -> LOGGER.warn("severity {}: {}", it.getSeverity(), it.getMessage()));
         return new SimpleProgramImpl(root, Dispatch.block(root.getProgram()));
     }
 

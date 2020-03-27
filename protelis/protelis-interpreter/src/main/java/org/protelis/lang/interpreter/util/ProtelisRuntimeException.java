@@ -3,10 +3,9 @@
  */
 package org.protelis.lang.interpreter.util;
 
-import java.io.PrintStream;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -34,7 +33,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      *                  exception was thrown
      */
     public ProtelisRuntimeException(@Nonnull final Throwable javaCause, final AnnotatedTree<?> origin) {
-        super(computeMessage(javaCause), javaCause);
+        super(javaCause);
         protelisStackTrace.add(origin);
     }
 
@@ -47,25 +46,17 @@ public final class ProtelisRuntimeException extends RuntimeException {
         protelisStackTrace.add(element);
     }
 
-    private StringBuilder header() {
-        return new StringBuilder(1000)
-            .append(getClass().getName())
-            .append(": ")
-            .append(getCause().getMessage());
-    }
-
     @Override
-    public void printStackTrace(final PrintStream s) {
-        s.println(toString());
-        getCause().printStackTrace(s);
+    public String getMessage() {
+        return Optional.ofNullable(getCause().getMessage())
+                .orElse("The cause exception did not provide any useful message")
+            + '\n' + getProtelisStacktrace();
     }
 
-    private Stream<AnnotatedTree<?>> stream() {
-        return protelisStackTrace.stream();
-    }
-
-    @Override
-    public String toString() {
+    /**
+     * @return A stringyfied version of the Protelis stack trace that caused the issue
+     */
+    public String getProtelisStacktrace() {
         final StringBuilder trace = header();
         if (stream().noneMatch(it -> it instanceof FunctionCall)) {
             trace.append("\n\tin main script ")
@@ -96,16 +87,15 @@ public final class ProtelisRuntimeException extends RuntimeException {
         return trace.toString();
     }
 
-    private static String computeMessage(final Throwable cause) {
-        if (cause.getMessage() == null) {
-            return "The cause exception did not provide any useful message.";
-        }
-        final String original = Objects.requireNonNull(cause.getMessage());
-        final String localized = Objects.requireNonNull(cause.getLocalizedMessage());
-        if (original.equals(localized)) {
-            return original;
-        }
-        return localized + "(non-localized: " + original + ")";
+    private StringBuilder header() {
+        return new StringBuilder(1000)
+            .append(getClass().getName())
+            .append(": ")
+            .append(getCause().getMessage());
+    }
+
+    private Stream<AnnotatedTree<?>> stream() {
+        return protelisStackTrace.stream();
     }
 
     private static String extractLines(@Nonnull final AnnotatedTree<?> origin) {

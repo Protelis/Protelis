@@ -923,4 +923,12 @@ public class TestLanguage {
         runFile("/unionhood02.pt");
     }
 
+    /**
+     * Test calling a void method.
+     */
+    @Test
+    public void testUnit01() {
+        runFile("/unit01.pt");
+    }
+
 }

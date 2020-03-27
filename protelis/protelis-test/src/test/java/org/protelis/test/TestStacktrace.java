@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
@@ -17,6 +19,7 @@ import com.google.common.collect.ImmutableList;
  */
 public final class TestStacktrace {
     private static final Logger LOGGER = LoggerFactory.getLogger("Protelis Test");
+    private static final Pattern EXCEPTION_FORMAT_OPENJ9 = Pattern.compile(".*Tuple.*incompatible\\swith.*Field.*");
     /**
      * Test error in main script.
      */
@@ -46,17 +49,33 @@ public final class TestStacktrace {
             }
         });
     }
+
     /**
      * Test issue #231.
      */
     @Test
     public void testRuntimeErrorOnClassCastFailure() {
         ProgramTester.runExpectingErrors("minHood([])", ProtelisRuntimeException.class, e -> {
+            final String message = e.getMessage();
+            assertNotNull(message);
+            final Matcher openJ9Exception = EXCEPTION_FORMAT_OPENJ9.matcher(message);
+            assertTrue("Exception does not include type cast failure indication\n" + message,
+                    message.contains("cannot be cast")
+                    || openJ9Exception.find());
+        });
+    }
+
+    /**
+     * Test issue #257.
+     */
+    @Test
+    public void testRuntimeErrorOnNonExistingSelfMethod() {
+        ProgramTester.runExpectingErrors("self.getDcopInfoProvider()", ProtelisRuntimeException.class, e -> {
             assertNotNull(e.getMessage());
             final String fullTrace = e.toString();
-            assertTrue("Exception does not include type cast failure indication\n" + fullTrace,
-                    e.getMessage().contains("cannot be cast")
-                    || e.getMessage().matches(".*Tuple.*incompatible\\swith.*Field.*"));
+            assertTrue("Exception does not Protelis stacktrace\n" + fullTrace,
+                    fullTrace.contains("Fully detailed interpreter trace"));
         });
     }
 }
+

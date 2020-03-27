@@ -4,7 +4,6 @@
 module protelis:option:passnullthrough
 import org.protelis.test.TestJavaNull.returnsNull
 import org.protelis.test.TestJavaNull.expectsNull
-import org.protelis.lang.datatype.Option.none
 import org.protelis.lang.datatype.Option.fromNullable
 
-fromNullable(expectsNull(expectsNull(returnsNull()))).isEmpty()
+optionally(expectsNull(expectsNull(returnsNull()))).isEmpty()
