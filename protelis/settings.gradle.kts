@@ -4,7 +4,7 @@ rootProject.name = "protelis"
 
 buildscript {
     repositories { gradlePluginPortal() }
-    dependencies.classpath("de.fayard:dependencies:+")
+    dependencies.classpath("de.fayard:dependencies:0.5.7")
 }
 
 bootstrapRefreshVersionsAndDependencies()
