@@ -116,15 +116,21 @@ jobs:
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
         - travis_retry ./gradlew publishAll
+
 before_install:
-  - dig +short myip.opendns.com @resolver1.opendns.com || true
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - source $GRAVIS/install-jdk
+
 script:
   - cd "$TRAVIS_BUILD_DIR"/protelis
   - travis_retry ./gradlew clean test --parallel
+
+after_failure:
+  - dig +short myip.opendns.com @resolver1.opendns.com || true
+
 before_cache:
   - $GRAVIS/clean-gradle-cache
+
 cache:
   directories:
     - $HOME/.gradle/caches/
