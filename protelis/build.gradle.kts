@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
@@ -15,6 +13,7 @@ plugins {
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central")
+    id("org.protelis.protelisdoc")
     id("com.jfrog.bintray")
     kotlin("jvm")
 }
@@ -40,6 +39,7 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "org.danilopianini.publish-on-central")
     apply(plugin = "com.jfrog.bintray")
+    apply(plugin = "org.protelis.protelisdoc")
 
     gitSemVer {
         version = computeGitSemVer()
@@ -47,6 +47,12 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/dokka")
+            content {
+                includeGroup("org.jetbrains.dokka")
+            }
+        }
     }
 
     val doclet by configurations.creating
