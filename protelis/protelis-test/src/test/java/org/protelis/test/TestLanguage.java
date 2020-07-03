@@ -884,6 +884,14 @@ public class TestLanguage {
     }
 
     /**
+     * Tests that the Tuple.map method can retain state.
+     */
+    @Test
+    public void testTupleMapRetainsState() {
+        runFile("/tupleMapRetainsState.pt");
+    }
+
+    /**
      * Test the Tuple.reduce method.
      */
     @Test
