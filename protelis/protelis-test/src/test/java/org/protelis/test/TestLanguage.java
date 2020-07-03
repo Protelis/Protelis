@@ -876,6 +876,14 @@ public class TestLanguage {
     }
 
     /**
+     * Test the Tuple.map method.
+     */
+    @Test
+    public void testTupleMap02() {
+        runFile("/TupleMap02.pt");
+    }
+
+    /**
      * Test the Tuple.reduce method.
      */
     @Test
