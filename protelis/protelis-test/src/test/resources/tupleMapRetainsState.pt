@@ -1,2 +1,2 @@
-// EXPECTED_RESULT: [$CYCLE + 1]
+// EXPECTED_RESULT: [$CYCLE]
 [0].map { rep(local <- it) { local + 1 } }

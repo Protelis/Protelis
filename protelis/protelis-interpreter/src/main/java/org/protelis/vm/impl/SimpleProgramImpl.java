@@ -14,7 +14,7 @@ package org.protelis.vm.impl;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
@@ -26,8 +26,9 @@ public final class SimpleProgramImpl implements ProtelisProgram {
 
     private static final long serialVersionUID = -986976491484860840L;
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
-    private final AnnotatedTree<?> prog;
+    private final ProtelisAST<?> prog;
     private final String name;
+    private Object result;
 
     /**
      * @param source
@@ -38,7 +39,7 @@ public final class SimpleProgramImpl implements ProtelisProgram {
      */
     public SimpleProgramImpl(
             final ProtelisModule source,
-            final AnnotatedTree<?> program) {
+            final ProtelisAST<?> program) {
         this(Optional.ofNullable(source).map(ProtelisModule::getName).orElse(DEFAULT_PROGRAM_NAME), program);
     }
 
@@ -50,19 +51,19 @@ public final class SimpleProgramImpl implements ProtelisProgram {
      */
     public SimpleProgramImpl(
             final String pName,
-            final AnnotatedTree<?> program) {
+            final ProtelisAST<?> program) {
         name = Objects.requireNonNull(pName);
         prog = Objects.requireNonNull(program);
     }
 
     @Override
     public Object getCurrentValue() {
-        return prog.getAnnotation();
+        return result;
     }
 
     @Override
     public void compute(final ExecutionContext context) {
-        prog.eval(context);
+        result = prog.eval(context);
     }
 
     @Override

@@ -8,12 +8,15 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
@@ -21,7 +24,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Call a Protelis function.
  */
-public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object> {
+public final class FunctionCall extends AbstractPersistedTree<ProtelisAST<?>, Object> {
 
     private static final long serialVersionUID = 4143090001260538814L;
     private final FunctionDefinition fd;
@@ -36,7 +39,7 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
      *            the arguments. Must be in the same number of the
      *            {@link FunctionDefinition}'s expected arguments
      */
-    public FunctionCall(final Metadata metadata, final FunctionDefinition functionDefinition, final List<AnnotatedTree<?>> args) {
+    public FunctionCall(final Metadata metadata, final FunctionDefinition functionDefinition, final List<ProtelisAST<?>> args) {
         super(metadata, args);
         Objects.requireNonNull(functionDefinition);
         fd = functionDefinition;
@@ -53,54 +56,36 @@ public final class FunctionCall extends AbstractSATree<AnnotatedTree<?>, Object>
     }
 
     @Override
-    public FunctionCall copy() {
-        /*
-         * Deep copy the arguments
-         */
-        final FunctionCall res = new FunctionCall(getMetadata(), fd, deepCopyBranches());
-        if (!isErased()) {
-            res.setAnnotation(null);
-            res.setSuperscript(getSuperscript().copy());
-        }
-        return res;
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
+    public Object evaluate(final ExecutionContext context) {
         /*
          * 1. Evaluate all the arguments
-         */
-        projectAndEval(context);
-        /*
          * Inner gamma must hold param values
          */
         context.newCallStackFrame(stackCode);
         if (fd.invokerShouldInitializeIt() && getBranchesNumber() == 1) {
-            context.putVariable(ProtelisLoadingUtilities.IT, getBranch(0).getAnnotation());
+            context.putVariable(ProtelisLoadingUtilities.IT, context.runInNewStackFrame(0, getBranch(0)::eval));
         } else {
-            forEachWithIndex((i, b) -> {
-                context.putVariable(fd.getArgumentByPosition(i), b.getAnnotation());
-            });
+            /**
+             * All branches must get evaluated **before** their result are pushed to the variables map.
+             * Otherwise, subsequent branch evaluation may overwrite previous variable assignments.
+             */
+            context.putMultipleVariables(
+                IntStream.range(0, getBranchesNumber())
+                    .collect(
+                        LinkedHashMap::new,
+                        (map, i) -> map.put(fd.getArgumentByPosition(i), context.runInNewStackFrame(i, getBranch(i)::eval)),
+                        Map::putAll
+                    )
+            );
         }
         /*
-         * 2. Load a fresh body as superscript
+         * Evaluate the body and copy return its result
          */
-        if (isErased()) {
-            setSuperscript(getBody());
-        }
-        /*
-         * Evaluate the body and copy its result in the annotation
-         */
-        getSuperscript().eval(context);
+        final ProtelisAST<?> superscript = loadState(context, fd::getBody);
+        final Object result = superscript.eval(context);
+        saveState(context, superscript);
         context.returnFromCallFrame();
-        setAnnotation(getSuperscript().getAnnotation());
-    }
-
-    /**
-     * @return the function body
-     */
-    protected AnnotatedTree<?> getBody() {
-        return fd.getBody();
+        return result;
     }
 
     @Override

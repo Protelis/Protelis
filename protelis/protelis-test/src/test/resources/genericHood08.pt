@@ -1,0 +1,6 @@
+/*
+ * EXPECTED_RESULT: 2
+ */
+import org.protelis.test.infrastructure.DummyContext.hoodFailureField
+
+hood({a, b -> a + b}, 0, hoodFailureField())

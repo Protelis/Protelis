@@ -8,8 +8,17 @@
  *******************************************************************************/
 package org.protelis.lang.datatype;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import gnu.trove.list.array.TByteArrayList;
+import org.protelis.lang.ProtelisLoadingUtilities;
+import org.protelis.lang.interpreter.ProtelisAST;
+import org.protelis.lang.interpreter.util.Reference;
+import org.protelis.parser.protelis.FunctionDef;
+import org.protelis.parser.protelis.Lambda;
+import org.protelis.parser.protelis.ShortLambda;
+import org.protelis.parser.protelis.VarDef;
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -19,17 +28,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import org.protelis.lang.ProtelisLoadingUtilities;
-import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.interpreter.util.Reference;
-import org.protelis.parser.protelis.FunctionDef;
-import org.protelis.parser.protelis.Lambda;
-import org.protelis.parser.protelis.ShortLambda;
-import org.protelis.parser.protelis.VarDef;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gnu.trove.list.array.TByteArrayList;
 
 /**
  * First-class Protelis function.
@@ -41,17 +39,17 @@ public final class FunctionDefinition implements Serializable {
     private static final long serialVersionUID = 1;
     private final int argNumber;
     private final List<Reference> args;
-    private AnnotatedTree<?> body;
-    private final transient Supplier<AnnotatedTree<?>> bodySupplier;
     private final String functionName;
     private final boolean initializeIt;
     private final TByteArrayList stackCode;
+    private final transient Supplier<ProtelisAST<?>> bodySupplier;
+    private ProtelisAST<?> cleanBody;
 
     /**
      * @param functionDefinition original parsed function
-     * @param bodyProvider body calculator
+     * @param bodySupplier body calculator
      */
-    public FunctionDefinition(final FunctionDef functionDefinition, final Supplier<AnnotatedTree<?>> bodyProvider) {
+    public FunctionDefinition(final FunctionDef functionDefinition, final Supplier<ProtelisAST<?>> bodySupplier) {
         this(ProtelisLoadingUtilities.qualifiedNameFor(functionDefinition),
             Optional.ofNullable(functionDefinition.getArgs())
                 .<List<VarDef>>flatMap(it -> Optional.ofNullable(it.getArgs()))
@@ -59,17 +57,17 @@ public final class FunctionDefinition implements Serializable {
                 .stream()
                 .map(Reference::new)
                 .collect(Collectors.toList()),
-            bodyProvider, false
+            bodySupplier, false
         );
     }
 
     /**
      * @param lambda lambda expression
      * @param args arguments for this lambda
-     * @param bodyProvider function providing a body when needed
+     * @param body the function body
      */
-    public FunctionDefinition(final Lambda lambda, final List<Reference> args, final Supplier<AnnotatedTree<?>> bodyProvider) {
-        this(ProtelisLoadingUtilities.qualifiedNameFor(lambda), args, bodyProvider, lambda instanceof ShortLambda);
+    public FunctionDefinition(final Lambda lambda, final List<Reference> args, final ProtelisAST<?> body) {
+        this(ProtelisLoadingUtilities.qualifiedNameFor(lambda), args, () -> body, lambda instanceof ShortLambda);
     }
 
     /**
@@ -77,7 +75,12 @@ public final class FunctionDefinition implements Serializable {
      * @param args         arguments
      * @param bodySupplier function providing a body when needed
      */
-    private FunctionDefinition(final String name, final List<Reference> args, final Supplier<AnnotatedTree<?>> bodySupplier, final boolean maybeOneArgument) {
+    private FunctionDefinition(
+            final String name,
+            final List<Reference> args,
+            final Supplier<ProtelisAST<?>> bodySupplier,
+            final boolean maybeOneArgument
+    ) {
         argNumber = Objects.requireNonNull(args).size();
         if (maybeOneArgument && argNumber != 0) {
             throw new IllegalArgumentException("Function has optional 'it' parameter bit requires arguments");
@@ -123,9 +126,11 @@ public final class FunctionDefinition implements Serializable {
      * @return the body of the function as defined. All annotations for the body
      *         are cleared. No side effects.
      */
-    public AnnotatedTree<?> getBody() {
-        initBody();
-        return body.copy();
+    public ProtelisAST<?> getBody() {
+        if (cleanBody == null) {
+            cleanBody = bodySupplier.get();
+        }
+        return cleanBody;
     }
 
     /**
@@ -154,12 +159,6 @@ public final class FunctionDefinition implements Serializable {
         return functionName.hashCode() + argNumber;
     }
 
-    private void initBody() {
-        if (body == null) {
-            body = bodySupplier.get();
-        }
-    }
-
     /**
      * @return true if this function definition was originated from a Kotlin-style
      *         lambda without explicit arguments, hence may be invoked with a single
@@ -174,9 +173,8 @@ public final class FunctionDefinition implements Serializable {
         return functionName + "/" + argNumber;
     }
 
-    private void writeObject(final ObjectOutputStream o) throws IOException {
-        initBody();
-        o.defaultWriteObject();
+    private void writeObject(final java.io.ObjectOutputStream stream) throws IOException {
+        getBody();
+        stream.defaultWriteObject();
     }
-
 }

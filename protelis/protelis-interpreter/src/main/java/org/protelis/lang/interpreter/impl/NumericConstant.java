@@ -37,9 +37,4 @@ public final class NumericConstant extends Constant<Double> {
         super(metadata, number);
     }
 
-    @Override
-    public NumericConstant copy() {
-        return new NumericConstant(getMetadata(), getInternalObject());
-    }
-
 }

@@ -18,7 +18,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Access a variable.
  */
-public final class Variable extends AbstractAnnotatedTree<Object> {
+public final class Variable extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 1L;
     private final Reference name;
@@ -35,12 +35,7 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public Variable copy() {
-        return new Variable(getMetadata(), name);
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
+    public Object evaluate(final ExecutionContext context) {
         Object val = context.getVariable(name);
         if (val == null) {
             /*
@@ -61,7 +56,7 @@ public final class Variable extends AbstractAnnotatedTree<Object> {
             final Field<Byte> restricted = context.buildField(it -> it, (byte) 0);
             val = unrestricted.projectOn(restricted);
         }
-        setAnnotation(val);
+        return val;
     }
 
     @Override

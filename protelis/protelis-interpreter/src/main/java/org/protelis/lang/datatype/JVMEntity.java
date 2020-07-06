@@ -1,6 +1,7 @@
 package org.protelis.lang.datatype;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.eclipse.xtext.common.types.JvmFeature;
@@ -38,6 +39,12 @@ public final class JVMEntity implements Serializable {
         } else {
             throw new IllegalArgumentException("Unknown JvmFeature type " + feature.getClass() + " (" + feature + ')');
         }
+    }
+
+    public JVMEntity(final Method method) {
+        typeName = method.getDeclaringClass().getName();
+        memberName = method.getName();
+        memberType = SupportedEntityTypes.METHOD;
     }
 
     /**

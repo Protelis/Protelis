@@ -139,7 +139,7 @@ public enum Op2 implements WithBytecode {
     public static Op2 getOp(final String name) {
         Op2 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).parallel().filter(o -> o.opName.equals(name)).findFirst().get();
+            op = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst().get();
             MAP.put(name, op);
         }
         return op;

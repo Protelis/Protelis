@@ -60,15 +60,15 @@ public def boundAverage(sink, local, range, null) {
  */
 public def C(potential, reduce, local, null) {
     share (v <- local) {
-        reduce.apply(local,
+        reduce(local,
             /*
              * TODO: switch to accumulateHood
              */
             hood(
-                (a, b) -> { reduce.apply(a, b) },
+                reduce,
                 // expression that will be evaluated if the field is empty
                 null,
-                mux (nbr(getParent(potential, x -> { x.getDeviceUID() })) == self.getDeviceUID()) { 
+                mux (nbr(getParent(potential, { it.getDeviceUID() })) == self.getDeviceUID()) {
                     v
                 } else { null }
             )

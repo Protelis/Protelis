@@ -8,10 +8,9 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java.util.List;
 import java.util.Objects;
 
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Op3;
 import org.protelis.lang.loading.Metadata;
@@ -20,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Three-argument syntactic operator such as multiplexing (mux).
  */
-public final class TernaryOp extends AbstractAnnotatedTree<Object> {
+public final class TernaryOp extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op3 op;
@@ -40,18 +39,18 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
     public TernaryOp(
             final Metadata metadata,
             final String name,
-            final AnnotatedTree<?> branch1,
-            final AnnotatedTree<?> branch2,
-            final AnnotatedTree<?> branch3) {
+            final ProtelisAST<?> branch1,
+            final ProtelisAST<?> branch2,
+            final ProtelisAST<?> branch3) {
         this(metadata, Op3.getOp(name), branch1, branch2, branch3);
     }
 
     private TernaryOp(
             final Metadata metadata, 
             final Op3 operator,
-            final AnnotatedTree<?> branch1,
-            final AnnotatedTree<?> branch2,
-            final AnnotatedTree<?> branch3) {
+            final ProtelisAST<?> branch1,
+            final ProtelisAST<?> branch2,
+            final ProtelisAST<?> branch3) {
         super(metadata, branch1, branch2, branch3);
         Objects.requireNonNull(branch1);
         Objects.requireNonNull(branch2);
@@ -60,15 +59,16 @@ public final class TernaryOp extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public AnnotatedTree<Object> copy() {
-        final List<AnnotatedTree<?>> branches = deepCopyBranches();
-        return new TernaryOp(getMetadata(), op, branches.get(0), branches.get(1), branches.get(2));
+    public Object evaluate(final ExecutionContext context) {
+        return op.run(
+            evalBranch(context, 0),
+            evalBranch(context, 1),
+            evalBranch(context, 2)
+        );
     }
 
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        setAnnotation(op.run(getBranch(0).getAnnotation(), getBranch(1).getAnnotation(), getBranch(2).getAnnotation()));
+    private Object evalBranch(final ExecutionContext context, final int i) {
+        return context.runInNewStackFrame(i, getBranch(i)::eval);
     }
 
     @Override

@@ -13,6 +13,7 @@ import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -74,6 +75,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
     private Map<CodePath, Object> toSend;
+    private Map<CodePath, Object> toStore;
+    private Map<CodePath, Object> lastStored = new LinkedHashMap<>();
     private int variablesSize;
 
     /**
@@ -191,6 +194,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         Objects.requireNonNull(gamma);
         Objects.requireNonNull(theta);
         Objects.requireNonNull(toSend);
+        Objects.requireNonNull(toStore);
         Objects.requireNonNull(tobeComputedBeforeSending);
         Objects.requireNonNull(functions);
         previousRoundTime = getCurrentTime();
@@ -198,6 +202,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         gamma = null;
         theta = null;
         toSend = null;
+        lastStored = toStore;
+        toStore = null;
         tobeComputedBeforeSending = null;
         for (final AbstractExecutionContext<S> rctx: restrictedContexts) {
             rctx.commitRecursively();
@@ -242,6 +248,13 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      */
     protected final NetworkManager getNetworkManager() {
         return nm;
+    }
+
+    @Override
+    public final <S> S getPersistent(final Supplier<S> ifAbsent) {
+        final CodePath path = codePathFactory.createCodePath(callStack, callFrameSizes);
+        final S last = (S) lastStored.get(path);
+        return last == null ? ifAbsent.get() : last;
     }
 
     @Override
@@ -317,6 +330,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         restrictedInstance.exportsSize = exportsSize;
         restrictedInstance.variablesSize = variablesSize;
         restrictedInstance.previousRoundTime = previousRoundTime;
+        restrictedInstance.toStore = toStore;
+        restrictedInstance.lastStored = lastStored;
         restrictedContexts.add(restrictedInstance);
         return correctlyTypedInstance;
     }
@@ -328,11 +343,36 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     }
 
     @Override
+    public final <T> T runInNewStackFrame(final int id, final Function<ExecutionContext, T> operation) {
+        newCallStackFrame(id);
+        final T result = operation.apply(this);
+        returnFromCallFrame();
+        return result;
+    }
+
+    @Override
     public final void setGloballyAvailableReferences(final Map<Reference, ?> knownFunctions) {
         if (functions.isPresent()) {
             throw new IllegalStateException("Globally available references cannot be set twice");
         } else {
             functions = Optional.of(knownFunctions);
+        }
+    }
+
+    @Override
+    public final void setPersistent(final Object o) {
+        final CodePath path = codePathFactory.createCodePath(callStack, callFrameSizes);
+        if (o == null) {
+            toStore.remove(path);
+        } else {
+            final Object previous = toStore.put(path, o);
+            if (previous != null) {
+                throw new IllegalStateException("This program tried to persist two objects "
+                    + "within the same code path.\n Previously inserted "
+                    + previous + ": " + previous.getClass().getName() + "\n and then "
+                    + o + ": " + o.getClass().getName()
+                );
+            }
         }
     }
 
@@ -346,6 +386,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         env.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
+        toStore = newLinkedHashMapWithExpectedSize(lastStored.size());
         gamma = newLinkedHashMapWithExpectedSize(variablesSize);
         gamma.putAll(functions.orElseGet(Collections::emptyMap));
         theta = Collections.unmodifiableMap(nm.getNeighborState());
