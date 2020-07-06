@@ -9,10 +9,11 @@
 package org.protelis.lang.interpreter.impl;
 
 import java.util.List;
+import java.util.function.Supplier;
 
-import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.interpreter.SuperscriptedAnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.loading.Metadata;
+import org.protelis.vm.ExecutionContext;
 
 /**
  * Basic implementation of a {@link SuperscriptedAnnotatedTree}.
@@ -22,19 +23,18 @@ import org.protelis.lang.loading.Metadata;
  * @param <T>
  *            Annotation type
  */
-public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
-        implements SuperscriptedAnnotatedTree<S, T> {
+public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T> {
 
     private static final long serialVersionUID = 457607604000217166L;
-    private S superscript;
+    private transient S superscript;
 
     /**
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
-     *            branches of this {@link AbstractSATree}
+     *            branches of this {@link AbstractPersistedTree}
      */
-    protected AbstractSATree(final Metadata metadata, final AnnotatedTree<?>... branches) {
+    protected AbstractPersistedTree(final Metadata metadata, final ProtelisAST<?>... branches) {
         super(metadata, branches);
     }
 
@@ -42,28 +42,32 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
-     *            branches of this {@link AbstractSATree}
+     *            branches of this {@link AbstractPersistedTree}
      */
-    protected AbstractSATree(final Metadata metadata, final List<AnnotatedTree<?>> branches) {
+    protected AbstractPersistedTree(final Metadata metadata, final List<ProtelisAST<?>> branches) {
         super(metadata, branches);
     }
 
-    @Override
-    public final void erase() {
-        setSuperscript(null);
-        super.erase();
-    }
-
-    @Override
-    public final S getSuperscript() {
+    /**
+     * Retrieves the function state from last round, or produces a new state otherwise.
+     *
+     * @param context the {@link ExecutionContext}
+     * @param ifAbsent a 0-ary function producing the value if none is stored
+     * @return the previous state, if present, or the state computed by ifAbsent otherwise
+     */
+    protected final S loadState(final ExecutionContext context, final Supplier<S> ifAbsent) {
+        superscript = context.getPersistent(ifAbsent);
         return superscript;
     }
 
     /**
-     * @param obj
-     *            the new superscript
+     * Stores the function state for the next round.
+     *
+     * @param context the {@link ExecutionContext}
+     * @param obj the state
      */
-    protected final void setSuperscript(final S obj) {
+    protected final void saveState(final ExecutionContext context, final S obj) {
+        context.setPersistent(obj);
         superscript = obj;
     }
 
@@ -73,7 +77,9 @@ public abstract class AbstractSATree<S, T> extends AbstractAnnotatedTree<T>
     @Override
     public String toString() {
         return super.toString() + "{ "
-            + (superscript instanceof AnnotatedTree ? stringFor((AnnotatedTree<?>) superscript) : superscript)
+            + (superscript instanceof ProtelisAST
+                ? stringFor((ProtelisAST<?>) superscript)
+                : superscript == null ? "..." : superscript)
             + " }";
     }
 

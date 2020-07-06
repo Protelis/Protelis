@@ -1,18 +1,9 @@
 package org.protelis.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import java8.util.Objects;
+import java8.util.function.Consumer;
+import java8.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 import org.apache.commons.io.IOUtils;
 import org.danilopianini.io.FileUtilities;
 import org.danilopianini.lang.LangUtils;
@@ -23,10 +14,18 @@ import org.protelis.vm.ProtelisVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java8.util.Objects;
-import java8.util.function.Consumer;
-import java8.util.stream.IntStream;
-import java8.util.stream.IntStreams;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Test a protelis program.
@@ -227,7 +226,12 @@ public final class ProgramTester {
      */
     public static Object runProgram(final String s, final int runs) {
         final ProtelisProgram program = ProtelisLoader.parse(s);
-        FileUtilities.serializeObject(program);
+        try {
+            FileUtilities.serializeObject(program);
+        } catch (Exception e) { // NOPMD: Done by purpose
+            LOGGER.error(e.getMessage(), e);
+            fail(e.getMessage());
+        }
         final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
         for (int i = 0; i < runs; i++) {
             vm.runCycle();

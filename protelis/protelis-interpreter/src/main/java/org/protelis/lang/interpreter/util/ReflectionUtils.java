@@ -28,9 +28,10 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.commons.math3.util.Pair;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
 import org.protelis.lang.datatype.Unit;
@@ -361,15 +362,15 @@ public final class ReflectionUtils {
                 if (candidates.length == 1) {
                     return m;
                 }
-                lm.add(new Pair<>(p, m));
+                lm.add(new ImmutablePair<>(p, m));
             }
         }
         /*
          * Find best
          */
         return lm.stream()
-                .max(Comparator.comparing(Pair::getFirst))
-                .map(Pair::getSecond)
+                .max(Comparator.comparing(Pair::getKey))
+                .map(Pair::getValue)
                 .orElseThrow(() -> new IllegalStateException("Method selection for " + methodName
                     + " inside " + clazz
                     + " has been restricted to " + Arrays.toString(candidates)

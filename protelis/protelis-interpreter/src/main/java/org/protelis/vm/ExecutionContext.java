@@ -110,6 +110,8 @@ public interface ExecutionContext {
      */
     ExecutionEnvironment getExecutionEnvironment();
 
+    <S> S getPersistent(Supplier<S> ifAbsent);
+
     /**
      * Look up the value of a variable from the local environment.
      * 
@@ -130,6 +132,15 @@ public interface ExecutionContext {
      *            stack frame type
      */
     void newCallStackFrame(int... id);
+
+    /**
+     * @param id
+     *            stack frame type
+     * @param operation the operation to run in the new context
+     * @param <T> the return type
+     * @return the result of the evaluation
+     */
+    <T> T runInNewStackFrame(int id, Function<ExecutionContext, T> operation);
 
     /**
      * Obtain a system-independent (pseudo)random number.
@@ -179,10 +190,11 @@ public interface ExecutionContext {
      */
     void setGloballyAvailableReferences(Map<Reference, ?> knownFunctions);
 
+    void setPersistent(Object o);
+
     /**
      * Called just before the VM is executed, to enable and preparations needed
      * in the environment.
      */
     void setup();
-
 }

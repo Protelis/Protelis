@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Unit;
 import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
@@ -16,21 +16,17 @@ import org.protelis.vm.ExecutionContext;
 
 import javax.annotation.Nonnull;
 
-import static org.protelis.lang.interpreter.util.Bytecode.IF_ELSE;
 import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
 
 /**
- * Branch, restricting domain of true and false branches into their own aligned
- * subspaces.
+ * Branch with side effects, returns {@link Unit}.
  *
- * @param <T>
  */
-public final class If<T> extends AbstractProtelisAST<T> {
+public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
 
-    private static final long serialVersionUID = -4830593657731078743L;
+    private static final long serialVersionUID = 1L;
     private final ProtelisAST<Boolean> conditionExpression;
-    private final ProtelisAST<T> elseExpression;
-    private final ProtelisAST<T> thenExpression;
+    private final ProtelisAST<?> thenExpression;
 
     /**
      * @param metadata
@@ -39,35 +35,23 @@ public final class If<T> extends AbstractProtelisAST<T> {
      *            condition
      * @param then
      *            branch to execute if condition is true (erase otherwise)
-     * @param otherwise
-     *            branch to execute if condition is false (erase otherwise)
      */
-    public If(
+    public ConditionalSideEffect(
             @Nonnull final Metadata metadata,
             @Nonnull final ProtelisAST<Boolean> cond,
-            @Nonnull final ProtelisAST<T> then,
-            @Nonnull final ProtelisAST<T> otherwise) {
+            @Nonnull final ProtelisAST<?> then) {
         super(metadata);
         conditionExpression = cond;
         thenExpression = then;
-        elseExpression = otherwise;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public T evaluate(final ExecutionContext context) {
-        return ensureNotAField(
-            conditionExpression.eval(context)
-                ? context.runInNewStackFrame(IF_THEN.getCode(), thenExpression::eval)
-                : context.runInNewStackFrame(IF_ELSE.getCode(), elseExpression::eval)
-        );
-    }
-
-    private static <T> T ensureNotAField(final T in) {
-        if (in instanceof Field) {
-            throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + in);
+    public Unit evaluate(final ExecutionContext context) {
+        if (conditionExpression.eval(context)) {
+            context.runInNewStackFrame(IF_THEN.getCode(), thenExpression::eval);
         }
-        return in;
+        return Unit.UNIT;
     }
 
     @Override
@@ -80,13 +64,6 @@ public final class If<T> extends AbstractProtelisAST<T> {
      */
     @Override
     public String toString() {
-        return getName() + " (" + stringFor(conditionExpression) + ") { "
-                + stringFor(thenExpression) + " } else { " + stringFor(thenExpression) + '}';
+        return "if (" + stringFor(conditionExpression) + ") { " + stringFor(thenExpression) + '}';
     }
-
-    @Override
-    protected boolean isNullable() {
-        return elseExpression == null;
-    }
-
 }

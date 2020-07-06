@@ -8,7 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
@@ -17,10 +17,11 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Declare a variable from a "let" expression.
  */
-public final class AssignmentOp extends AbstractAnnotatedTree<Object> {
+public final class AssignmentOp extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
     private final Reference var;
+    private final ProtelisAST<?> computeValue;
 
     /**
      * @param metadata
@@ -30,24 +31,17 @@ public final class AssignmentOp extends AbstractAnnotatedTree<Object> {
      * @param value
      *            program to evaluate to compute the value
      */
-    public AssignmentOp(final Metadata metadata, final Reference name, final AnnotatedTree<?> value) {
-        super(metadata, value);
+    public AssignmentOp(final Metadata metadata, final Reference name, final ProtelisAST<?> value) {
+        super(metadata);
         var = name;
+        computeValue = value;
     }
 
     @Override
-    public AnnotatedTree<Object> copy() {
-        return new AssignmentOp(getMetadata(), var, deepCopyBranches().get(0));
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        final Object res = getBranch(0).getAnnotation();
-        context.returnFromCallFrame();
+    public Object evaluate(final ExecutionContext context) {
+        final Object res = computeValue.eval(context);
         context.putVariable(var, res);
-        context.newCallStackFrame(getBytecode().getCode());
-        setAnnotation(res);
+        return res;
     }
 
     /**
@@ -63,7 +57,7 @@ public final class AssignmentOp extends AbstractAnnotatedTree<Object> {
      */
     @Override
     public String toString() {
-        return getName() + ' ' + var + " = " + stringFor(getBranch(0));
+        return getName() + ' ' + var + " = " + stringFor(computeValue);
     }
 
     @Override

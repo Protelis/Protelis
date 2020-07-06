@@ -8,21 +8,22 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java.util.Optional;
-
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.protelis.lang.ProtelisLoader;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ProtelisProgram;
 
+import static org.protelis.lang.interpreter.util.Bytecode.EVAL_DYNAMIC_CODE;
+
 /**
  * Evaluate a Protelis sub-program.
  */
-public final class Eval extends AbstractSATree<ProtelisProgram, Object> {
+public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgram>, Object> {
 
-    private static final byte DYN_CODE_INDEX = -1;
     private static final long serialVersionUID = 8811510896686579514L;
 
     /**
@@ -32,42 +33,40 @@ public final class Eval extends AbstractSATree<ProtelisProgram, Object> {
      *            argument whose annotation will be used as a string
      *            representing a program
      */
-    public Eval(final Metadata metadata, final AnnotatedTree<?> arg) {
+    public Eval(final Metadata metadata, final ProtelisAST<?> arg) {
         super(metadata, arg);
     }
 
     @Override
-    public Eval copy() {
-        return new Eval(getMetadata(), deepCopyBranches().get(0));
+    public Object evaluate(final ExecutionContext context) {
+        final String currentProgram = getBranch(0).eval(context).toString();
+        final Pair<String, ProtelisProgram> previous = loadState(context, () -> createState(currentProgram));
+        /*
+         * Preserve state if program is constant
+         */
+        final Pair<String, ProtelisProgram> actualState = currentProgram.equals(previous.getKey())
+                ? previous
+                : createState(currentProgram);
+        saveState(context, actualState);
+        return context.runInNewStackFrame(EVAL_DYNAMIC_CODE.getCode(), ctx -> {
+            actualState.getRight().compute(ctx);
+        // TODO: figure out which references to pass down... and how to.
+//          context.putMultipleVariables(result.getGloballyAvailableReferences());
+            return actualState.getRight().getCurrentValue();
+        });
     }
 
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        final Object previous = Optional.ofNullable(getBranch(0).getAnnotation())
-            .map(Object::toString)
-            .orElse(null);
-        projectAndEval(context);
-        final String program = getBranch(0).getAnnotation().toString();
-        if (isErased() || !program.equals(previous)) {
-            try {
-                final ProtelisProgram result = ProtelisLoader.parseAnonymousModule(program);
-                setSuperscript(result);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
-            }
+    private Pair<String, ProtelisProgram> createState(final String program) {
+        try {
+            return new ImmutablePair<>(program, ProtelisLoader.parseAnonymousModule(program));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
         }
-        final ProtelisProgram result = getSuperscript();
-        context.newCallStackFrame(DYN_CODE_INDEX);
-        // TODO: figure out which references to pass down... and how to.
-//        context.putMultipleVariables(result.getGloballyAvailableReferences());
-        result.compute(context);
-        setAnnotation(result.getCurrentValue());
-        context.returnFromCallFrame();
     }
 
     @Override
     public Bytecode getBytecode() {
-        return Bytecode.ENV;
+        return Bytecode.EVAL;
     }
 
 }

@@ -20,42 +20,28 @@ import org.protelis.vm.ExecutionContext;
  * 
  * @param <T>
  */
-public interface AnnotatedTree<T> extends Serializable {
-
-    /**
-     * @return a copy of this program.
-     */
-    AnnotatedTree<T> copy();
-
-    /**
-     * |e| operation.
-     */
-    void erase();
+public interface ProtelisAST<T> extends Serializable {
 
     /**
      * Evaluates the program using the passed {@link ExecutionContext}.
      * 
      * @param context
      *            the execution context
+     * @return the AST evaluation
      */
-    void eval(ExecutionContext context);
-
-    /**
-     * @return the current value of this program
-     */
-    T getAnnotation();
+    T eval(ExecutionContext context);
 
     /**
      * @param i
      *            the index
      * @return the i-th branch of the evaluation tree
      */
-    AnnotatedTree<?> getBranch(int i);
+    ProtelisAST<?> getBranch(int i);
 
     /**
      * @return a view of the branches of the tree
      */
-    List<AnnotatedTree<?>> getBranches();
+    List<ProtelisAST<?>> getBranches();
 
     /**
      * @return A {@link Metadata} object containing information about the code that generated this AST node.
@@ -66,15 +52,5 @@ public interface AnnotatedTree<T> extends Serializable {
      * @return The name of the operation
      */
     String getName();
-
-    /**
-     * @return true if this program has been erased
-     */
-    boolean isErased();
-
-    /**
-     * Recursively deletes any existing annotation.
-     */
-    void reset();
 
 }

@@ -1,0 +1,10 @@
+/*
+ * EXPECTED_RESULT: 0
+ */
+import java.lang.Math.max
+import org.protelis.test.infrastructure.DummyContext.makeTestField
+
+def minF(a, b) {
+    java::lang::Math::min(a, b)
+}
+hoodPlusSelf(minF, 0, makeTestField())

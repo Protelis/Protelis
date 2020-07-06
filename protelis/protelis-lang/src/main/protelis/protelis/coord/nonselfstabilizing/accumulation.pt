@@ -11,7 +11,7 @@ import protelis:coord:accumulation
  */
 public def gossip(value, f) {
     share (v <- value) {
-        f.apply(value, hood((a, b) -> { f.apply(a, b) }, value, v))
+        f(value, hood(f, value, v))
     }
 }
 

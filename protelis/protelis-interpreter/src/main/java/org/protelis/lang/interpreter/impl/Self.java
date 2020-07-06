@@ -17,7 +17,7 @@ import org.protelis.vm.ExecutionContext;
  * actuators, and the rest of the external non-static programmatic environment
  * outside of Protelis.
  */
-public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
+public final class Self extends AbstractProtelisAST<ExecutionContext> {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,13 +30,8 @@ public final class Self extends AbstractAnnotatedTree<ExecutionContext> {
     }
 
     @Override
-    public Self copy() {
-        return new Self(getMetadata());
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        setAnnotation(context);
+    public ExecutionContext evaluate(final ExecutionContext context) {
+        return context;
     }
 
     @Override

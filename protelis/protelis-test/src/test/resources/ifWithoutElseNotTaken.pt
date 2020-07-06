@@ -1,0 +1,8 @@
+/*
+ * EXPECTED_RESULT: 0
+ */
+env.put("a", 0)
+if(false){
+    env.put("a", 1)
+}
+env.get("a")
