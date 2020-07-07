@@ -21,7 +21,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public class Constant<T> extends AbstractProtelisAST<T> {
 
-    private static final long serialVersionUID = 2101316473738120102L;
+    private static final long serialVersionUID = 1L;
     private final T constantValue;
 
     /**
@@ -60,6 +60,13 @@ public class Constant<T> extends AbstractProtelisAST<T> {
     @Override
     public String toString() {
         return getName();
+    }
+
+    /**
+     * @return the value associated to this constant
+     */
+    public final T getConstantValue() {
+        return constantValue;
     }
 
 }
