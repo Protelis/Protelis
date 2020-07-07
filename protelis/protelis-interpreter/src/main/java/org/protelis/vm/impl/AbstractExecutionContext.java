@@ -9,6 +9,7 @@
 package org.protelis.vm.impl;
 
 import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
+import static org.protelis.lang.interpreter.util.Bytecode.INIT;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -250,6 +251,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         return nm;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final <S> S getPersistent(final Supplier<S> ifAbsent) {
         final CodePath path = codePathFactory.createCodePath(callStack, callFrameSizes);
@@ -404,7 +406,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
             });
             theta = immutableMap.build();
         }
-        newCallStackFrame(-1);
+        newCallStackFrame(INIT.getCode());
     }
 
 }
