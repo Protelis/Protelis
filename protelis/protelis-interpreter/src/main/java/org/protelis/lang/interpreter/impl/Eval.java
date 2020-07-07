@@ -39,7 +39,7 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
 
     @Override
     public Object evaluate(final ExecutionContext context) {
-        final String currentProgram = getBranch(0).eval(context).toString();
+        final String currentProgram = programText().eval(context).toString();
         final Pair<String, ProtelisProgram> previous = loadState(context, () -> createState(currentProgram));
         /*
          * Preserve state if program is constant
@@ -69,4 +69,7 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
         return Bytecode.EVAL;
     }
 
+    private ProtelisAST<?> programText() {
+        return getBranch(0);
+    }
 }
