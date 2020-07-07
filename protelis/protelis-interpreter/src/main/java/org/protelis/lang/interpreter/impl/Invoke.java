@@ -9,13 +9,6 @@
 package org.protelis.lang.interpreter.impl;
 
 
-import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR;
-import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_ARGUMENTS;
-import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_TARGET;
-
-import java.util.List;
-import java.util.Objects;
-
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.ProtelisAST;
@@ -24,10 +17,17 @@ import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.util.List;
+import java.util.Objects;
+
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR;
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_ARGUMENTS;
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_TARGET;
+
 /**
  * Call an external Java non-static method.
  */
-public final class Invoke extends AbstractPersistedTree<FunctionCall, Object> {
+public final class Invoke extends AbstractProtelisAST<Object> {
 
     /**
      * Special method name, that causes a Protelis function invocation if the
@@ -85,14 +85,7 @@ public final class Invoke extends AbstractPersistedTree<FunctionCall, Object> {
              * Currently, there is no change in the codepath when superscript is
              * executed: f.apply(...) is exactly equivalent to f(...).
              */
-            final FunctionCall previousCall = loadState(
-                    context,
-                    () -> new FunctionCall(getMetadata(), fd, getBranches()));
-            final FunctionCall functionCall = fd.equals(previousCall.getFunctionDefinition())
-                ? previousCall
-                : new FunctionCall(getMetadata(), fd, getBranches());
-            saveState(context, functionCall);
-            return functionCall.eval(context);
+            return makeFunctionCall(fd).eval(context);
         } else {
             /*
              * Otherwise, evaluate branches and proceed to call Java
@@ -113,6 +106,10 @@ public final class Invoke extends AbstractPersistedTree<FunctionCall, Object> {
                 return ReflectionUtils.invokeFieldable(context, target.getClass(), methodName, target, args);
             }
         }
+    }
+
+    private FunctionCall makeFunctionCall(final FunctionDefinition functionDefinition) {
+        return new FunctionCall(getMetadata(), functionDefinition, getBranches());
     }
 
     @Override
@@ -140,5 +137,4 @@ public final class Invoke extends AbstractPersistedTree<FunctionCall, Object> {
     protected boolean isNullable() {
         return true;
     }
-
 }
