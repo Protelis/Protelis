@@ -85,7 +85,7 @@ public final class ProtelisLoadingUtilities {
             return "";
         }
         if (container instanceof InvocationArguments) {
-            return "invoke";
+            return "()";
         }
         if (container instanceof MethodCall) {
             return ((MethodCall) container).getName();
@@ -147,6 +147,20 @@ public final class ProtelisLoadingUtilities {
     public static String qualifiedNameFor(final ProtelisModule module) {
         return Optional.ofNullable(module)
                 .map(ProtelisModule::getName)
+                .map(it -> it
+                        .replace("protelis:state:time", "⏱")
+                        .replace("protelis:state:nonselfstabilizing:time", "⍼⏱")
+                        .replace("protelis:lang:utils", "⚒")
+                        .replace("protelis:coord:meta:timereplication", "⎇⏳")
+                        .replace("protelis:coord:nonselfstabilizing:accumulation", "⍼⍖")
+                        .replace("protelis:coord:accumulation", "⍖")
+                        .replace("protelis:coord:graph", "⏧")
+                        .replace("protelis:coord:meta", "⎇")
+                        .replace("protelis:coord:sharedtimer", "⛖⏱")
+                        .replace("protelis:coord:sparsechoice", "⌘")
+                        .replace("protelis:coord:spreading", "⍏")
+                        .replace("protelis:coord:tree", "⏉")
+                )
                 .orElse("?");
     }
 
