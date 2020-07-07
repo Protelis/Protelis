@@ -85,7 +85,7 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     private String intToAscii(final int i) {
         final ByteBuffer b = ByteBuffer.allocate(4);
         b.putInt(i);
-        return new String(b.array(), StandardCharsets.US_ASCII);
+        return new String(b.array(), StandardCharsets.UTF_8);
     }
 
 }

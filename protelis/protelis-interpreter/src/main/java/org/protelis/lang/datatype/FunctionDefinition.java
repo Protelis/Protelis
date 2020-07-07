@@ -93,7 +93,7 @@ public final class FunctionDefinition implements Serializable {
         }
         functionName = Objects.requireNonNull(name);
         this.args = args;
-        final byte[] asciibytes = functionName.getBytes(StandardCharsets.US_ASCII);
+        final byte[] asciibytes = functionName.getBytes(StandardCharsets.UTF_8);
         final ByteBuffer bb = ByteBuffer.allocate(asciibytes.length + 1);
         bb.put((byte) argNumber);
         bb.put(asciibytes);
