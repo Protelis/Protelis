@@ -137,7 +137,7 @@ public final class ProtelisLoadingUtilities {
      * @return its qualified name
      */
     public static String qualifiedNameFor(final Lambda lambda) {
-        return qualifiedNameFor(lambda, ":$anon");
+        return qualifiedNameFor(lambda, ":$l");
     }
 
     /**
@@ -147,7 +147,7 @@ public final class ProtelisLoadingUtilities {
     public static String qualifiedNameFor(final ProtelisModule module) {
         return Optional.ofNullable(module)
                 .map(ProtelisModule::getName)
-                .orElse("anonymous-module");
+                .orElse("?");
     }
 
     /**
@@ -169,6 +169,4 @@ public final class ProtelisLoadingUtilities {
     public static List<Reference> referenceListFor(final List<?> l) {
         return l.stream().map(ProtelisLoadingUtilities::referenceFor).collect(Collectors.toList());
     }
-
-
 }
