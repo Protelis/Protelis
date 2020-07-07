@@ -48,7 +48,6 @@ import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_GENERATOR;
  */
 public final class AlignedMap extends AbstractProtelisAST<Tuple> {
 
-    private static final String APPLY = "apply";
     private static final Reference CURFIELD = new Reference(new Serializable() {
         private static final long serialVersionUID = 1L;
     });
@@ -177,16 +176,15 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             /*
              * Run the actual filtering and operation
              */
-            final Invoke filterOperation = new Invoke(getMetadata(), APPLY, filterOp, args);
-            final Object condition = restricted.runInNewStackFrame(ALIGNED_MAP_FILTER.getCode(), filterOperation::eval);
+            final Object condition = callFunctionInSubContext(ALIGNED_MAP_FILTER.getCode(), restricted, filterOp, args);
             if (condition instanceof Boolean) {
                 if ((Boolean) condition) {
                     /*
                      * Filter passed, run operation.
                      */
-                    final Invoke runOperation = new Invoke(getMetadata(), APPLY, runOp, args);
-                    resultList.add(DatatypeFactory.createTuple(key, restricted
-                            .runInNewStackFrame(ALIGNED_MAP_EXECUTE.getCode(), runOperation::eval)));
+                    resultList.add(DatatypeFactory.createTuple(
+                            key,
+                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, runOp, args)));
                 }
             } else {
                 throw new IllegalStateException("Filter must return a Boolean, got " + condition.getClass());
@@ -195,6 +193,18 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
         return DatatypeFactory.createTuple(resultList);
+    }
+
+    private Object callFunctionInSubContext(
+            final int code,
+            final ExecutionContext context,
+            final ProtelisAST<FunctionDefinition> def,
+            final List<ProtelisAST<?>> parameters
+    ) {
+        return context.runInNewStackFrame(code, ctx -> {
+                final FunctionDefinition function = def.eval(ctx);
+                return new FunctionCall(getMetadata(), function, parameters).eval(ctx);
+            });
     }
 
     @Override
