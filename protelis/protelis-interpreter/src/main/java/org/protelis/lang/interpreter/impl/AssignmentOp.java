@@ -21,7 +21,6 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
     private final Reference var;
-    private final ProtelisAST<?> computeValue;
 
     /**
      * @param metadata
@@ -32,14 +31,13 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
      *            program to evaluate to compute the value
      */
     public AssignmentOp(final Metadata metadata, final Reference name, final ProtelisAST<?> value) {
-        super(metadata);
+        super(metadata, value);
         var = name;
-        computeValue = value;
     }
 
     @Override
     public Object evaluate(final ExecutionContext context) {
-        final Object res = computeValue.eval(context);
+        final Object res = getValue().eval(context);
         context.putVariable(var, res);
         return res;
     }
@@ -57,12 +55,16 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
      */
     @Override
     public String toString() {
-        return getName() + ' ' + var + " = " + stringFor(computeValue);
+        return getName() + ' ' + var + " = " + stringFor(getValue());
     }
 
     @Override
     public Bytecode getBytecode() {
         return Bytecode.CREATE_VARIABLE;
+    }
+
+    private ProtelisAST<?> getValue() {
+        return getBranch(0);
     }
 
 }
