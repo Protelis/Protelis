@@ -55,6 +55,7 @@ public enum Bytecode {
     IF,
     IF_ELSE,
     IF_THEN,
+    INIT,
     METHOD_CALL,
     NBR,
     REP,
