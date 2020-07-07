@@ -18,7 +18,6 @@ import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 
 import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_DEFAULT;
@@ -44,7 +43,7 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
      * @param includeSelf
      *            if true, sigma won't be excluded
      * @param fun
-     *            the {@link HoodOp} to apply
+     *            the {@link FunctionDefinition} to apply
      * @param nullResult
      *            the expression that will be evaluated if the field is empty
      * @param arg
@@ -71,7 +70,7 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
      * @param includeSelf
      *            if true, sigma won't be excluded
      * @param fun
-     *            the {@link HoodOp} to apply
+     *            the {@link FunctionDefinition} to apply
      * @param nullResult
      *            the expression that will be evaluated if the field is empty
      * @param arg
@@ -109,14 +108,7 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
             merger = (a, b) -> ReflectionUtils
                     .invokeFieldable(context, clazz, methodName, null, new Object[] { a, b });
         } else {
-            final FunctionDefinition reducer = context.runInNewStackFrame(GENERIC_HOOD_CALL_FUNCTION.getCode(), function::eval);
-            final AtomicInteger counter = new AtomicInteger();
-            merger = (a, b) -> context.runInNewStackFrame(
-                    counter.getAndIncrement(),
-                    new FunctionCall(function.getMetadata(), reducer, ImmutableList.of(
-                        new Constant<>(function.getMetadata(), a), new Constant<>(function.getMetadata(), b)
-                    ))::eval
-            );
+            merger = (a, b) -> makeCall(context, a, b).eval(context);
         }
         return inclusive
             ? targetField.foldValuesIncludingLocal(merger)
@@ -134,6 +126,16 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
     @Override
     public String getName() {
         return "hood" + (inclusive ? "PlusSelf" : "");
+    }
+
+    private FunctionCall makeCall(final ExecutionContext context, final Object a, final Object b) {
+        final FunctionDefinition reducer = context.runInNewStackFrame(GENERIC_HOOD_CALL_FUNCTION.getCode(), function::eval);
+        return new FunctionCall(
+                    function.getMetadata(),
+                    reducer,
+                    ImmutableList.of(
+                        new Constant<>(function.getMetadata(), a),
+                        new Constant<>(function.getMetadata(), b)));
     }
 
 }
