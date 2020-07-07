@@ -59,6 +59,7 @@ import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.CreateTuple;
 import org.protelis.lang.interpreter.impl.Env;
 import org.protelis.lang.interpreter.impl.Eval;
+import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.impl.GenericHoodCall;
 import org.protelis.lang.interpreter.impl.HoodCall;
 import org.protelis.lang.interpreter.impl.If;
@@ -545,23 +546,30 @@ public final class ProtelisLoader {
             switch (elements.size()) {
                 case 1: return new UnaryOp(meta, expression.getName(), expression((Expression) elements.get(0)));
                 case 2: 
-                final ProtelisAST<?> first = expression((Expression) expression.getElements().get(0));
-                final EObject second = expression.getElements().get(1);
-                if (expression.getName() == null && second instanceof InvocationArguments) {
-                    // Invoke
-                    final InvocationArguments invokeArgs = (InvocationArguments) second;
-                    // TODO: Drop "apply", and allow only standard invocations with better system
-                    return new Invoke(meta, "apply", first, invocationArguments(invokeArgs));
-                }
-                if (".".equals(expression.getName()) && second instanceof MethodCall) {
-                    // Method call
-                    final MethodCall method = (MethodCall) second;
-                    return new Invoke(meta, method.getName(), first, invocationArguments(method.getArguments()));
-                }
-                if (expression.getName() != null) {
-                    return new BinaryOp(meta, expression.getName(), first, expression((Expression) second));
-                }
-            default: throw new IllegalStateException("Unknown AST node " + expression);
+                    final ProtelisAST<?> first = expression((Expression) expression.getElements().get(0));
+                    final EObject second = expression.getElements().get(1);
+                    if (expression.getName() == null && second instanceof InvocationArguments) {
+                        // Invoke
+                        final InvocationArguments invokeArgs = (InvocationArguments) second;
+                        if (first instanceof Constant) {
+                           final Object constant = ((Constant) first).getConstantValue();
+                           if (constant instanceof FunctionDefinition) {
+                               // It's a plain function call, possibly on a lambda, don't go through Invoke
+                               return new FunctionCall(meta, (FunctionDefinition) constant, invocationArguments(invokeArgs));
+                           }
+                        }
+                        // TODO: Drop "apply", and allow only standard invocations with better system
+                        return new Invoke(meta, "apply", first, invocationArguments(invokeArgs));
+                    }
+                    if (".".equals(expression.getName()) && second instanceof MethodCall) {
+                        // Method call
+                        final MethodCall method = (MethodCall) second;
+                        return new Invoke(meta, method.getName(), first, invocationArguments(method.getArguments()));
+                    }
+                    if (expression.getName() != null) {
+                        return new BinaryOp(meta, expression.getName(), first, expression((Expression) second));
+                    }
+                default: throw new IllegalStateException("Unknown AST node " + expression);
             }
         }
 
