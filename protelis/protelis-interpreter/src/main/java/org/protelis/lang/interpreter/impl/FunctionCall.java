@@ -8,23 +8,24 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.IntStream;
-
 import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+
+import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
 
 /**
  * Call a Protelis function.
  */
-public final class FunctionCall extends AbstractPersistedTree<ProtelisAST<?>, Object> {
+public final class FunctionCall extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 4143090001260538814L;
     private final FunctionDefinition fd;
@@ -65,25 +66,20 @@ public final class FunctionCall extends AbstractPersistedTree<ProtelisAST<?>, Ob
         if (fd.invokerShouldInitializeIt() && getBranchesNumber() == 1) {
             context.putVariable(ProtelisLoadingUtilities.IT, context.runInNewStackFrame(0, getBranch(0)::eval));
         } else {
-            /**
+            /*
              * All branches must get evaluated **before** their result are pushed to the variables map.
              * Otherwise, subsequent branch evaluation may overwrite previous variable assignments.
              */
-            context.putMultipleVariables(
-                IntStream.range(0, getBranchesNumber())
-                    .collect(
-                        LinkedHashMap::new,
-                        (map, i) -> map.put(fd.getArgumentByPosition(i), context.runInNewStackFrame(i, getBranch(i)::eval)),
-                        Map::putAll
-                    )
-            );
+            final HashMap<Reference, Object> arguments = newLinkedHashMapWithExpectedSize(getBranchesNumber());
+            for (int i = 0; i < getBranchesNumber(); i++) {
+                arguments.put(fd.getArgumentByPosition(i), context.runInNewStackFrame(i, getBranch(i)::eval));
+            }
+            context.putMultipleVariables(arguments);
         }
         /*
          * Evaluate the body and copy return its result
          */
-        final ProtelisAST<?> superscript = loadState(context, fd::getBody);
-        final Object result = superscript.eval(context);
-        saveState(context, superscript);
+        final Object result = fd.getBody().eval(context);
         context.returnFromCallFrame();
         return result;
     }
@@ -104,5 +100,4 @@ public final class FunctionCall extends AbstractPersistedTree<ProtelisAST<?>, Ob
     public String getName() {
         return fd.getName();
     }
-
 }
