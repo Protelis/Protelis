@@ -25,8 +25,6 @@ import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
 public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
 
     private static final long serialVersionUID = 1L;
-    private final ProtelisAST<Boolean> conditionExpression;
-    private final ProtelisAST<?> thenExpression;
 
     /**
      * @param metadata
@@ -40,16 +38,14 @@ public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
             @Nonnull final Metadata metadata,
             @Nonnull final ProtelisAST<Boolean> cond,
             @Nonnull final ProtelisAST<?> then) {
-        super(metadata);
-        conditionExpression = cond;
-        thenExpression = then;
+        super(metadata, cond, then);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Unit evaluate(final ExecutionContext context) {
-        if (conditionExpression.eval(context)) {
-            context.runInNewStackFrame(IF_THEN.getCode(), thenExpression::eval);
+        if (condition().eval(context)) {
+            context.runInNewStackFrame(IF_THEN.getCode(), then()::eval);
         }
         return Unit.UNIT;
     }
@@ -64,6 +60,15 @@ public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
      */
     @Override
     public String toString() {
-        return "if (" + stringFor(conditionExpression) + ") { " + stringFor(thenExpression) + '}';
+        return "if (" + stringFor(condition()) + ") { " + stringFor(then()) + '}';
+    }
+
+    @SuppressWarnings("unchecked")
+    private ProtelisAST<Boolean> condition() {
+        return (ProtelisAST<Boolean>) getBranch(0);
+    }
+
+    private ProtelisAST<?> then() {
+        return getBranch(1);
     }
 }
