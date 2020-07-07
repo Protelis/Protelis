@@ -8,25 +8,10 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_DEFAULT;
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_GENERATOR;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.primitives.Longs;
 import org.nustaq.serialization.FSTConfiguration;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
@@ -40,17 +25,28 @@ import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.primitives.Longs;
+import javax.annotation.Nonnull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_DEFAULT;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_GENERATOR;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
  * as a set of publish-subscribe streams. This allows devices with different
  * sets of keys to align the expressions that share keys together.
  */
-public final class AlignedMap extends AbstractPersistedTree<Map<Object, Pair<Invoke, Invoke>>, Tuple> {
+public final class AlignedMap extends AbstractProtelisAST<Tuple> {
 
     private static final String APPLY = "apply";
     private static final Reference CURFIELD = new Reference(new Serializable() {
@@ -145,9 +141,6 @@ public final class AlignedMap extends AbstractPersistedTree<Map<Object, Pair<Inv
         /*
          * Get or initialize the mapping between keys and functions
          */
-        final Map<Object, Pair<Invoke, Invoke>> funmap = loadState(context, LinkedHashMap::new);
-        final Map<Object, Pair<Invoke, Invoke>> newFunmap = new LinkedHashMap<>(funmap.size());
-        saveState(context, newFunmap);
         final List<Tuple> resultList = new ArrayList<>(keyToField.size());
         final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), defVal::eval);
         for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
@@ -182,33 +175,18 @@ public final class AlignedMap extends AbstractPersistedTree<Map<Object, Pair<Inv
                 throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());
             }
             /*
-             * Compute functions if needed
-             */
-            Pair<Invoke, Invoke> funs = funmap.get(key);
-            if (funs == null) {
-                funs = new ImmutablePair<>(
-                        new Invoke(getMetadata(), APPLY, filterOp, args),
-                        new Invoke(getMetadata(), APPLY, runOp, args)
-                );
-            }
-            /*
              * Run the actual filtering and operation
              */
-            final Invoke filterOperation = funs.getLeft();
+            final Invoke filterOperation = new Invoke(getMetadata(), APPLY, filterOp, args);
             final Object condition = restricted.runInNewStackFrame(ALIGNED_MAP_FILTER.getCode(), filterOperation::eval);
             if (condition instanceof Boolean) {
                 if ((Boolean) condition) {
                     /*
                      * Filter passed, run operation.
                      */
-                    final Invoke runOperation = funs.getRight();
+                    final Invoke runOperation = new Invoke(getMetadata(), APPLY, runOp, args);
                     resultList.add(DatatypeFactory.createTuple(key, restricted
                             .runInNewStackFrame(ALIGNED_MAP_EXECUTE.getCode(), runOperation::eval)));
-                    /*
-                     * If both the key exists and the filter passes, save the
-                     * state.
-                     */
-                    newFunmap.put(key, funs);
                 }
             } else {
                 throw new IllegalStateException("Filter must return a Boolean, got " + condition.getClass());
