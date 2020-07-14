@@ -16,7 +16,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Access a variable.
  */
-public final class JvmConstant extends AbstractAnnotatedTree<Object> {
+public final class JvmConstant extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 1L;
     private final JVMEntity javaFeature;
@@ -32,13 +32,8 @@ public final class JvmConstant extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public JvmConstant copy() {
-        return new JvmConstant(getMetadata(), javaFeature);
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        setAnnotation(javaFeature.getValue());
+    public Object evaluate(final ExecutionContext context) {
+        return javaFeature.getValue();
     }
 
     @Override

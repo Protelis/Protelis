@@ -9,11 +9,15 @@
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.Option;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
+
+import javax.annotation.Nonnull;
+
+import static org.protelis.lang.interpreter.util.Bytecode.IF_ELSE;
+import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
 
 /**
  * Branch, restricting domain of true and false branches into their own aligned
@@ -21,12 +25,12 @@ import org.protelis.vm.ExecutionContext;
  *
  * @param <T>
  */
-public final class If<T> extends AbstractAnnotatedTree<T> {
+public final class If<T> extends AbstractProtelisAST<T> {
 
     private static final long serialVersionUID = -4830593657731078743L;
-    private final AnnotatedTree<Boolean> conditionExpression;
-    private final AnnotatedTree<T> elseExpression;
-    private final AnnotatedTree<T> thenExpression;
+    private final ProtelisAST<Boolean> conditionExpression;
+    private final ProtelisAST<T> elseExpression;
+    private final ProtelisAST<T> thenExpression;
 
     /**
      * @param metadata
@@ -38,48 +42,32 @@ public final class If<T> extends AbstractAnnotatedTree<T> {
      * @param otherwise
      *            branch to execute if condition is false (erase otherwise)
      */
-    public If(final Metadata metadata, final AnnotatedTree<Boolean> cond, final AnnotatedTree<T> then, final AnnotatedTree<T> otherwise) {
-        super(metadata, cond);
+    public If(
+            @Nonnull final Metadata metadata,
+            @Nonnull final ProtelisAST<Boolean> cond,
+            @Nonnull final ProtelisAST<T> then,
+            @Nonnull final ProtelisAST<T> otherwise) {
+        super(metadata);
         conditionExpression = cond;
         thenExpression = then;
         elseExpression = otherwise;
     }
 
-    @Override
-    public AnnotatedTree<T> copy() {
-        return new If<>(getMetadata(),
-                conditionExpression.copy(),
-                thenExpression.copy(),
-                elseExpression == null ? null : elseExpression.copy());
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        final boolean isTrue = conditionExpression.getAnnotation();
-        if (elseExpression == null) {
-            if (isTrue) {
-                evalInNewStackFrame(thenExpression, context, Bytecode.IF_THEN);
-                setAnnotation(thenExpression.getAnnotation());
-            } else {
-                thenExpression.erase();
-                setAnnotation((T) Option.empty());
-            }
-        } else {
-            final AnnotatedTree<T> selected = isTrue ? thenExpression : elseExpression;
-            final AnnotatedTree<T> erased = isTrue ? elseExpression : thenExpression;
-            final Bytecode opCode = isTrue ? Bytecode.IF_THEN : Bytecode.IF_ELSE;
-            if (!erased.isErased()) {
-                erased.erase();
-            }
-            evalInNewStackFrame(selected, context, opCode);
-            final T result = selected.getAnnotation();
-            if (result instanceof Field) {
-                throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + result);
-            }
-            setAnnotation(result);
+    public T evaluate(final ExecutionContext context) {
+        return ensureNotAField(
+            conditionExpression.eval(context)
+                ? context.runInNewStackFrame(IF_THEN.getCode(), thenExpression::eval)
+                : context.runInNewStackFrame(IF_ELSE.getCode(), elseExpression::eval)
+        );
+    }
+
+    private static <T> T ensureNotAField(final T in) {
+        if (in instanceof Field) {
+            throw new IllegalStateException("if statements cannot return a Field, consider using mux: " + in);
         }
+        return in;
     }
 
     @Override

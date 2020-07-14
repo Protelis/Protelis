@@ -19,9 +19,9 @@ import org.protelis.vm.ExecutionContext;
  *
  * @param <T>
  */
-public class Constant<T> extends AbstractAnnotatedTree<T> {
+public class Constant<T> extends AbstractProtelisAST<T> {
 
-    private static final long serialVersionUID = 2101316473738120102L;
+    private static final long serialVersionUID = 1L;
     private final T constantValue;
 
     /**
@@ -36,31 +36,14 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
         constantValue = obj;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Constant<T> copy() {
-        return new Constant<>(getMetadata(), constantValue);
-    }
-
-    @Override
-    public final void evaluate(final ExecutionContext context) {
-        if (isErased()) {
-            setAnnotation(constantValue);
-        }
+    public final T evaluate(final ExecutionContext context) {
+        return constantValue;
     }
 
     @Override
     public final Bytecode getBytecode() {
         return Bytecode.CONSTANT;
-    }
-
-    /**
-     * @return the constant value
-     */
-    protected final T getInternalObject() {
-        return constantValue;
     }
 
     /**
@@ -77,6 +60,13 @@ public class Constant<T> extends AbstractAnnotatedTree<T> {
     @Override
     public String toString() {
         return getName();
+    }
+
+    /**
+     * @return the value associated to this constant
+     */
+    public final T getConstantValue() {
+        return constantValue;
     }
 
 }

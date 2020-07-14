@@ -8,24 +8,22 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import java.util.List;
-
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Fields;
-import org.protelis.lang.datatype.Tuple;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
+import java.util.List;
 
 /**
  * Construct a Tuple.
  */
-public final class CreateTuple extends AbstractAnnotatedTree<Object> {
+public final class CreateTuple extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = -5018807023306859866L;
 
@@ -35,42 +33,25 @@ public final class CreateTuple extends AbstractAnnotatedTree<Object> {
      * @param args
      *            tuple arguments
      */
-    public CreateTuple(final Metadata metadata, final AnnotatedTree<?>... args) {
-        super(metadata, args);
-    }
-
-    /**
-     * @param metadata
-     *            A {@link Metadata} object containing information about the code that generated this AST node.
-     * @param args
-     *            tuple arguments
-     */
-    public CreateTuple(final Metadata metadata, final List<AnnotatedTree<?>> args) {
+    public CreateTuple(final Metadata metadata, final List<ProtelisAST<?>> args) {
         super(metadata, args);
     }
 
     @Override
-    public AnnotatedTree<Object> copy() {
-        return new CreateTuple(getMetadata(), deepCopyBranches());
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        final Object[] a = new Object[getBranchesNumber()];
-        final TIntList fieldIndexes = new TIntArrayList(getBranchesNumber());
+    public Object evaluate(final ExecutionContext context) {
+        final Object[] evaluationResults = new Object[getBranchesNumber()];
+        final TIntList fieldIndices = new TIntArrayList(getBranchesNumber());
         forEachWithIndex((i, branch) -> {
-            final Object elem = branch.getAnnotation();
-            a[i] = elem;
+            final Object elem = context.runInNewStackFrame(i, branch::eval);
+            evaluationResults[i] = elem;
             if (elem instanceof Field) {
-                fieldIndexes.add(i);
+                fieldIndices.add(i);
             }
         });
-        if (fieldIndexes.isEmpty()) {
-            setAnnotation(DatatypeFactory.createTuple(a));
+        if (fieldIndices.isEmpty()) {
+            return DatatypeFactory.createTuple(evaluationResults);
         } else {
-            final Field<Tuple> res = Fields.apply(DatatypeFactory::createTuple, fieldIndexes.toArray(), a);
-            setAnnotation(res);
+            return Fields.apply(DatatypeFactory::createTuple, fieldIndices.toArray(), evaluationResults);
         }
     }
 

@@ -14,6 +14,7 @@ import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.datatype.impl.IntegerUID;
 import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.impl.AbstractExecutionContext;
@@ -137,6 +138,24 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
                 .mapToDouble(it -> it)
                 .forEach(n -> res.add(new DeviceUID() { private static final long serialVersionUID = 1L; }, n));
         return res.build(self.getDeviceUID(), 0.0);
+    }
+
+    /**
+     * Test utility.
+     *
+     * @param self the current Context
+     * @return a field with populated with numbers from 0 to 99
+     */
+    public static Field<Double> hoodFailureField(final ExecutionContext self) {
+        return DatatypeFactory.<Double>createFieldBuilder()
+            .add(new IntegerUID(1), 0.0)
+            .add(new IntegerUID(2), 1.0)
+            .add(new IntegerUID(4), 0.0)
+            // CHECKSTYLE: MagicNumber OFF
+            .add(new IntegerUID(5), 0.0)
+            .add(new IntegerUID(6), 1.0)
+            // CHECKSTYLE: MagicNumber ON
+            .build(self.getDeviceUID(), 0.0);
     }
 
 }

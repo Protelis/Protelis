@@ -8,10 +8,24 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
-import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.primitives.Longs;
+import org.nustaq.serialization.FSTConfiguration;
+import org.protelis.lang.datatype.DatatypeFactory;
+import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.JVMEntity;
+import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.interpreter.ProtelisAST;
+import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.Reference;
+import org.protelis.lang.loading.Metadata;
+import org.protelis.vm.ExecutionContext;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,35 +35,19 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
-import org.apache.commons.math3.util.Pair;
-import org.nustaq.serialization.FSTConfiguration;
-import org.protelis.lang.datatype.DatatypeFactory;
-import org.protelis.lang.datatype.DeviceUID;
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.datatype.JVMEntity;
-import org.protelis.lang.datatype.Tuple;
-import org.protelis.lang.interpreter.AnnotatedTree;
-import org.protelis.lang.interpreter.util.Bytecode;
-import org.protelis.lang.interpreter.util.Reference;
-import org.protelis.lang.loading.Metadata;
-import org.protelis.vm.ExecutionContext;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.primitives.Longs;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_DEFAULT;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_EXECUTE;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_FILTER;
+import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_GENERATOR;
 
 /**
  * Operation evaluating a collection of expressions associated with keys, such
  * as a set of publish-subscribe streams. This allows devices with different
  * sets of keys to align the expressions that share keys together.
  */
-public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, Invoke>>, Tuple> {
+public final class AlignedMap extends AbstractProtelisAST<Tuple> {
 
-    private static final String APPLY = "apply";
     private static final Reference CURFIELD = new Reference(new Serializable() {
         private static final long serialVersionUID = 1L;
     });
@@ -67,11 +65,11 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, In
     static {
         SERIALIZER.registerClass(String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class);
     }
-    private final AnnotatedTree<?> defVal;
-    private final AnnotatedTree<Field<?>> fieldGenerator;
-    private final AnnotatedTree<FunctionDefinition> filterOp;
+    private final ProtelisAST<?> defVal;
+    private final ProtelisAST<Field<?>> fieldGenerator;
+    private final ProtelisAST<FunctionDefinition> filterOp;
 
-    private final AnnotatedTree<FunctionDefinition> runOp;
+    private final ProtelisAST<FunctionDefinition> runOp;
 
     /**
      * @param metadata
@@ -85,8 +83,8 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, In
      * @param def
      *            default value
      */
-    public AlignedMap(final Metadata metadata, final AnnotatedTree<Field<?>> arg, final AnnotatedTree<FunctionDefinition> filter,
-            final AnnotatedTree<FunctionDefinition> op, final AnnotatedTree<?> def) {
+    public AlignedMap(final Metadata metadata, final ProtelisAST<Field<?>> arg, final ProtelisAST<FunctionDefinition> filter,
+                      final ProtelisAST<FunctionDefinition> op, final ProtelisAST<?> def) {
         super(metadata, arg, filter, op, def);
         fieldGenerator = arg;
         filterOp = filter;
@@ -95,14 +93,8 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, In
     }
 
     @Override
-    public AnnotatedTree<Tuple> copy() {
-        return new AlignedMap(getMetadata(), fieldGenerator.copy(), filterOp.copy(), runOp.copy(), defVal.copy());
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        final Field<?> origin = fieldGenerator.getAnnotation();
+    public Tuple evaluate(final ExecutionContext context) {
+        final Field<?> origin = context.runInNewStackFrame(ALIGNED_MAP_GENERATOR.getCode(), fieldGenerator::eval);
         /*
          * Extract one field for each key.
          * 
@@ -148,18 +140,13 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, In
         /*
          * Get or initialize the mapping between keys and functions
          */
-        Map<Object, Pair<Invoke, Invoke>> funmap = getSuperscript();
-        if (funmap == null) {
-            funmap = new LinkedHashMap<>();
-        }
-        final Map<Object, Pair<Invoke, Invoke>> newFunmap = new LinkedHashMap<>(funmap.size());
-        setSuperscript(newFunmap);
-        final List<Tuple> resl = new ArrayList<>(keyToField.size());
+        final List<Tuple> resultList = new ArrayList<>(keyToField.size());
+        final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), defVal::eval);
         for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
             final Object key = keyFieldPair.getKey();
             final Map<DeviceUID, Object> preField = keyFieldPair.getValue();
             final DeviceUID localDeviceUID = context.getDeviceUID();
-            final Object localValue = Optional.ofNullable(preField.remove(localDeviceUID)).orElseGet(defVal::getAnnotation);
+            final Object localValue = Optional.ofNullable(preField.remove(localDeviceUID)).orElse(defaultValue);
             final Field.Builder<Object> builder = DatatypeFactory.createFieldBuilder();
             for (final Entry<DeviceUID, Object> entry: preField.entrySet()) {
                 builder.add(entry.getKey(), entry.getValue());
@@ -169,7 +156,7 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, In
             /*
              * Compute arguments
              */
-            final List<AnnotatedTree<?>> args = new ArrayList<>(2);
+            final List<ProtelisAST<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(getMetadata(), key));
             args.add(new Variable(getMetadata(), CURFIELD));
             restricted.putVariable(CURFIELD, reifiedField);
@@ -187,43 +174,37 @@ public final class AlignedMap extends AbstractSATree<Map<Object, Pair<Invoke, In
                 throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());
             }
             /*
-             * Compute functions if needed
-             */
-            Pair<Invoke, Invoke> funs = funmap.get(key);
-            if (funs == null) {
-                funs = new Pair<>(new Invoke(getMetadata(), APPLY, filterOp, args), new Invoke(getMetadata(), APPLY, runOp, args));
-            }
-            /*
              * Run the actual filtering and operation
              */
-            final Invoke fop = funs.getFirst();
-            restricted.newCallStackFrame(ALIGNED_MAP_FILTER.getCode());
-            fop.eval(restricted);
-            restricted.returnFromCallFrame();
-            final Object cond = fop.getAnnotation();
-            if (cond instanceof Boolean) {
-                if ((Boolean) cond) {
+            final Object condition = callFunctionInSubContext(ALIGNED_MAP_FILTER.getCode(), restricted, filterOp, args);
+            if (condition instanceof Boolean) {
+                if ((Boolean) condition) {
                     /*
                      * Filter passed, run operation.
                      */
-                    restricted.newCallStackFrame(ALIGNED_MAP_EXECUTE.getCode());
-                    final Invoke rop = funs.getSecond();
-                    rop.eval(restricted);
-                    restricted.returnFromCallFrame();
-                    resl.add(DatatypeFactory.createTuple(key, rop.getAnnotation()));
-                    /*
-                     * If both the key exists and the filter passes, save the
-                     * state.
-                     */
-                    newFunmap.put(key, funs);
+                    resultList.add(DatatypeFactory.createTuple(
+                            key,
+                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, runOp, args)));
                 }
             } else {
-                throw new IllegalStateException("Filter must return a Boolean, got " + cond.getClass());
+                throw new IllegalStateException("Filter must return a Boolean, got " + condition.getClass());
             }
             restricted.returnFromCallFrame();
         }
         // return type: [[key0, compval0], [key1, compval1], [key2, compval2]]
-        setAnnotation(DatatypeFactory.createTuple(resl));
+        return DatatypeFactory.createTuple(resultList);
+    }
+
+    private Object callFunctionInSubContext(
+            final int code,
+            final ExecutionContext context,
+            final ProtelisAST<FunctionDefinition> def,
+            final List<ProtelisAST<?>> parameters
+    ) {
+        return context.runInNewStackFrame(code, ctx -> {
+                final FunctionDefinition function = def.eval(ctx);
+                return new FunctionCall(getMetadata(), function, parameters).eval(ctx);
+            });
     }
 
     @Override

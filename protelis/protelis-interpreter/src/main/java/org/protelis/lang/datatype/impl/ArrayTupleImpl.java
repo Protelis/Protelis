@@ -8,30 +8,31 @@
  *******************************************************************************/
 package org.protelis.lang.datatype.impl;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Sets;
+import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.ArrayUtils;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.Tuple;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.impl.Constant;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.hash.Hashing;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Implementation of a Tuple using an array data structure.
@@ -162,20 +163,20 @@ public final class ArrayTupleImpl implements Tuple {
     public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
+            final AtomicInteger counter = new AtomicInteger();
             return DatatypeFactory
                     .createTuple(Arrays.stream(arrayContents)
-                        .map(it -> new Constant<>(JavaInteroperabilityUtils.METADATA, it))
                         .filter(elem -> {
-                            final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, Lists.newArrayList(elem));
-                            fc.eval(ctx);
-                            final Object outcome = fc.getAnnotation();
+                            final List<ProtelisAST<?>> arguments = elementAsArguments(elem);
+                            final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
+                            final Object outcome = ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
                             if (outcome instanceof Boolean) {
                                 return (Boolean) outcome;
                             } else {
-                                throw new IllegalArgumentException("Filtering function must return a boolean.");
+                                throw new IllegalArgumentException("Filtering functions must return boolean.");
                             }
                         })
-                        .map(AnnotatedTree::getAnnotation).toArray());
+                        .toArray());
         }
         throw new IllegalArgumentException("Filtering function must take one parameter.");
     }
@@ -266,12 +267,11 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
+            final AtomicInteger counter = new AtomicInteger();
             return DatatypeFactory.createTuple(Arrays.stream(arrayContents)
-                .map(it -> new Constant<>(JavaInteroperabilityUtils.METADATA, it))
                 .map(elem -> {
-                    final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, Lists.newArrayList(elem));
-                    fc.eval(ctx);
-                    return fc.getAnnotation();
+                    final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, elementAsArguments(elem));
+                    return ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
                 })
                 .toArray());
         }
@@ -316,12 +316,17 @@ public final class ArrayTupleImpl implements Tuple {
     public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getParameterCount() == 2) {
-            return Arrays.stream(arrayContents).reduce((first, second) -> {
-                final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun,
-                        Lists.newArrayList(new Constant<>(JavaInteroperabilityUtils.METADATA, first), new Constant<>(JavaInteroperabilityUtils.METADATA, second)));
-                fc.eval(ctx);
-                return fc.getAnnotation();
-            }).orElse(defVal);
+            final AtomicInteger counter = new AtomicInteger();
+            return Arrays.stream(arrayContents)
+                .reduce((first, second) -> {
+                    final List<ProtelisAST<?>> arguments = ImmutableList.of(
+                            new Constant<>(JavaInteroperabilityUtils.METADATA, first),
+                            new Constant<>(JavaInteroperabilityUtils.METADATA, second)
+                    );
+                    final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
+                    return ctx.runInNewStackFrame(counter.getAndIncrement(), call::eval);
+                })
+                .orElse(defVal);
         }
         throw new IllegalArgumentException("Reducing function must take two parameters.");
     }
@@ -433,6 +438,10 @@ public final class ArrayTupleImpl implements Tuple {
 
     private static int compareLexicographically(final Object a, final Object b) {
         return a.toString().compareTo(b.toString());
+    }
+
+    private static List<ProtelisAST<?>> elementAsArguments(final Object element) {
+        return ImmutableList.of(new Constant<>(JavaInteroperabilityUtils.METADATA, element));
     }
 
 }

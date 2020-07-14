@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 
 import org.protelis.lang.datatype.Field;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
@@ -27,13 +27,13 @@ import com.google.common.base.Optional;
  * @param <S> superscript / export type
  * @param <T> returned type
  */
-public final class ShareCall<S, T> extends AbstractSATree<S, T> {
+public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     private static final long serialVersionUID = 8643287734245198408L;
     private final Optional<Reference> fieldName;
     private final Optional<Reference> localName;
-    private final Optional<AbstractAnnotatedTree<T>> yield;
-    private final AnnotatedTree<?> init;
-    private final AnnotatedTree<S> body;
+    private final Optional<AbstractProtelisAST<T>> yield;
+    private final ProtelisAST<S> init;
+    private final ProtelisAST<S> body;
 
     /**
      * Convenience constructor with {@link java8.util.Optional}.
@@ -55,9 +55,9 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
             @Nonnull final Metadata metadata,
             @Nonnull final java.util.Optional<Reference> localName,
             @Nonnull final java.util.Optional<Reference> fieldName,
-            @Nonnull final AnnotatedTree<?> init,
-            @Nonnull final AnnotatedTree<S> body,
-            @Nonnull final java.util.Optional<AnnotatedTree<T>> yield) {
+            @Nonnull final ProtelisAST<S> init,
+            @Nonnull final ProtelisAST<S> body,
+            @Nonnull final java.util.Optional<ProtelisAST<T>> yield) {
         this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
     }
 
@@ -79,9 +79,9 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
             @Nonnull final Metadata metadata,
             @Nonnull final Optional<Reference> localName,
             @Nonnull final Optional<Reference> fieldName,
-            @Nonnull final AnnotatedTree<?> init,
-            @Nonnull final AnnotatedTree<S> body,
-            @Nonnull final Optional<AnnotatedTree<T>> yield) {
+            @Nonnull final ProtelisAST<S> init,
+            @Nonnull final ProtelisAST<S> body,
+            @Nonnull final Optional<ProtelisAST<T>> yield) {
         super(metadata, init, body);
         if (!(localName.isPresent() || fieldName.isPresent())) {
             throw new IllegalArgumentException("Share cannot get initialized without at least a variable bind.");
@@ -91,22 +91,11 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
         this.init = init;
         this.body = body;
         this.yield = yield.transform(it ->  {
-            if (it instanceof AbstractAnnotatedTree) {
-                return (AbstractAnnotatedTree<T>) it;
+            if (it instanceof AbstractProtelisAST) {
+                return (AbstractProtelisAST<T>) it;
             }
             throw new IllegalStateException("class type " + it.getClass().getName() + " unkown and unsupported");
         });
-    }
-
-    @Override
-    public ShareCall<S, T> copy() {
-        return new ShareCall<>(
-                getMetadata(),
-                localName,
-                fieldName,
-                init.copy(),
-                body.copy(),
-                yield.transform(AbstractAnnotatedTree::copy));
     }
 
     @SuppressWarnings("unchecked")
@@ -119,30 +108,34 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void evaluate(final ExecutionContext context) {
-        evalInNewStackFrame(init, context, SHARE_INIT);
-        final S localValue = ensureType(isErased() ? init.getAnnotation() : getSuperscript());
+    public T evaluate(final ExecutionContext context) {
+        final S initValue = context.runInNewStackFrame(SHARE_INIT.getCode(), init::eval);
+        final S localValue = ensureType(loadState(context, () -> initValue));
         ifPresent(localName, it -> context.putVariable(it, localValue));
-        ifPresent(fieldName, it -> context.putVariable(it, context.buildFieldDeferred(i -> i, localValue, body::getAnnotation)));
+        final BodyResult<S> bodyResult = new BodyResult<>();
+        ifPresent(fieldName, it -> context
+                .putVariable(it, context.buildFieldDeferred(i -> i, localValue, bodyResult::getResult)));
         context.newCallStackFrame(SHARE_BODY.getCode());
-        final Runnable yieldEvaluation = () -> ifPresent(yield, it -> evalInNewStackFrame(it, context, SHARE_YIELD)); // NOPMD: this is not a thread.
+        final Optional<T> yieldResult;
         if (body instanceof All) {
             final All multilineBody = (All) body;
             multilineBody.forEachWithIndex((i, b) -> {
                 context.newCallStackFrame(i);
-                b.eval(context);
-                multilineBody.setAnnotation(b.getAnnotation());
+                bodyResult.result = (S) b.eval(context);
             });
-            yieldEvaluation.run();
+            yieldResult = evaluateYield(context);
             multilineBody.forEach(it -> context.returnFromCallFrame());
         } else {
-            body.eval(context);
-            yieldEvaluation.run();
+            bodyResult.result = body.eval(context);
+            yieldResult = evaluateYield(context);
         }
         context.returnFromCallFrame();
-        final S result = ensureType(body.getAnnotation());
-        setSuperscript(result);
-        setAnnotation(yield.isPresent() ? yield.get().getAnnotation() : (T) result);
+        saveState(context, ensureType(bodyResult.result));
+        return yieldResult.or((T) bodyResult.result);
+    }
+
+    private Optional<T> evaluateYield(final ExecutionContext context) {
+        return yield.transform(it -> context.runInNewStackFrame(SHARE_YIELD.getCode(), it::eval));
     }
 
     @Override
@@ -178,6 +171,13 @@ public final class ShareCall<S, T> extends AbstractSATree<S, T> {
 
     private static <T> Optional<T> toGuava(final java.util.Optional<T> origin) {
         return Optional.fromNullable(origin.orElse(null));
+    }
+
+    private static class BodyResult<S> {
+        private S result;
+        private S getResult() {
+            return result;
+        }
     }
 
 }

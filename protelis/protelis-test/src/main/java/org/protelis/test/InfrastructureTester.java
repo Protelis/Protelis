@@ -1,21 +1,17 @@
 package org.protelis.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unibo.alchemist.boundary.interfaces.OutputMonitor;
+import it.unibo.alchemist.core.implementations.Engine;
+import it.unibo.alchemist.core.implementations.Engine.StateCommand;
+import it.unibo.alchemist.loader.YamlLoader;
+import it.unibo.alchemist.model.interfaces.Environment;
+import it.unibo.alchemist.model.interfaces.Reaction;
+import it.unibo.alchemist.model.interfaces.Time;
+import java8.util.function.BiConsumer;
+import java8.util.function.Function;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.protelis.test.infrastructure.ProtelisNode;
@@ -27,19 +23,21 @@ import org.protelis.test.observer.SimpleExceptionObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import it.unibo.alchemist.boundary.interfaces.OutputMonitor;
-import it.unibo.alchemist.core.implementations.Engine;
-import it.unibo.alchemist.core.implementations.Engine.StateCommand;
-import it.unibo.alchemist.core.interfaces.Simulation;
-import it.unibo.alchemist.loader.YamlLoader;
-import it.unibo.alchemist.model.interfaces.Environment;
-import it.unibo.alchemist.model.interfaces.Reaction;
-import it.unibo.alchemist.model.interfaces.Time;
-import java8.util.function.BiConsumer;
-import java8.util.function.Function;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 /**
  * Test protelis simulations.
  */
@@ -347,11 +345,14 @@ public final class InfrastructureTester {
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This is not going to get serialized")
     private static void testSingleRun(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
                     final Environment<Object> env, final List<Pair<String, String>> expectedResult, final Object f) {
-        final Simulation<Object> sim = new Engine<>(env, totalSimulationSteps + stabilitySteps);
+        final Engine<Object> sim = new Engine<>(env, totalSimulationSteps + stabilitySteps);
         sim.addOutputMonitor(new OutputMonitor<Object>() {
             private static final long serialVersionUID = 1L;
             @Override
             public void finished(final Environment<Object> env, final Time time, final long step) {
+                if (sim.getError() != null) {
+                    throw new IllegalStateException(sim.getError());
+                }
                 assertEquals(totalSimulationSteps + stabilitySteps, step);
             }
             @Override

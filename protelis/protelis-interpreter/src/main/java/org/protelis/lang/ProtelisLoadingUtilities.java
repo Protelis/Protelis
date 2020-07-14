@@ -85,7 +85,7 @@ public final class ProtelisLoadingUtilities {
             return "";
         }
         if (container instanceof InvocationArguments) {
-            return "invoke";
+            return "()";
         }
         if (container instanceof MethodCall) {
             return ((MethodCall) container).getName();
@@ -137,7 +137,7 @@ public final class ProtelisLoadingUtilities {
      * @return its qualified name
      */
     public static String qualifiedNameFor(final Lambda lambda) {
-        return qualifiedNameFor(lambda, ":$anon");
+        return qualifiedNameFor(lambda, ":$l");
     }
 
     /**
@@ -147,7 +147,21 @@ public final class ProtelisLoadingUtilities {
     public static String qualifiedNameFor(final ProtelisModule module) {
         return Optional.ofNullable(module)
                 .map(ProtelisModule::getName)
-                .orElse("anonymous-module");
+                .map(it -> it
+                        .replace("protelis:state:time", "⏱")
+                        .replace("protelis:state:nonselfstabilizing:time", "⍼⏱")
+                        .replace("protelis:lang:utils", "⚒")
+                        .replace("protelis:coord:meta:timereplication", "⎇⏳")
+                        .replace("protelis:coord:nonselfstabilizing:accumulation", "⍼⍖")
+                        .replace("protelis:coord:accumulation", "⍖")
+                        .replace("protelis:coord:graph", "⏧")
+                        .replace("protelis:coord:meta", "⎇")
+                        .replace("protelis:coord:sharedtimer", "⛖⏱")
+                        .replace("protelis:coord:sparsechoice", "⌘")
+                        .replace("protelis:coord:spreading", "⍏")
+                        .replace("protelis:coord:tree", "⏉")
+                )
+                .orElse("?");
     }
 
     /**
@@ -169,6 +183,4 @@ public final class ProtelisLoadingUtilities {
     public static List<Reference> referenceListFor(final List<?> l) {
         return l.stream().map(ProtelisLoadingUtilities::referenceFor).collect(Collectors.toList());
     }
-
-
 }

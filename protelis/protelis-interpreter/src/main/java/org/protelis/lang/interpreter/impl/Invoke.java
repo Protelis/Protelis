@@ -9,37 +9,37 @@
 package org.protelis.lang.interpreter.impl;
 
 
-import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR;
-import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_ARGUMENTS;
-import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_TARGET;
-
-import java.util.List;
-import java.util.Objects;
-
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.JVMEntity;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.util.List;
+import java.util.Objects;
+
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR;
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_ARGUMENTS;
+import static org.protelis.lang.interpreter.util.Bytecode.DOT_OPERATOR_TARGET;
+
 /**
  * Call an external Java non-static method.
  */
-public final class Invoke extends AbstractSATree<FunctionCall, Object> {
+public final class Invoke extends AbstractProtelisAST<Object> {
 
     /**
      * Special method name, that causes a Protelis function invocation if the
      * left hand side of the {@link Invoke} is a {@link FunctionDefinition}.
      */
     public static final String APPLY = "apply";
-    private static final long serialVersionUID = -9128116355271771986L;
+    private static final long serialVersionUID = 1L;
     private final boolean isApply;
-    private final AnnotatedTree<?> left;
+    private final ProtelisAST<?> left;
     private final String methodName;
 
-    private Invoke(final Metadata metadata, final boolean apply, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+    private Invoke(final Metadata metadata, final boolean apply, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
         super(metadata, args);
         Objects.requireNonNull(target);
         isApply = apply;
@@ -58,59 +58,58 @@ public final class Invoke extends AbstractSATree<FunctionCall, Object> {
      * @param args
      *            arguments of the function
      */
-    public Invoke(final Metadata metadata, final String name, final AnnotatedTree<?> target, final List<AnnotatedTree<?>> args) {
+    public Invoke(final Metadata metadata, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
         this(metadata, name.equals(APPLY), name, target, args);
     }
 
-    @Override
-    public AnnotatedTree<Object> copy() {
-        final Invoke res = new Invoke(getMetadata(), methodName, left.copy(), deepCopyBranches());
-        res.setSuperscript(getSuperscript());
-        return res;
+    /**
+     * Builds a new {@link #APPLY}.
+     *
+     * @param target the target of the invocation, must evaluate to either a {@link FunctionDefinition}
+     *               or a @{@link JVMEntity} of type Method.
+     * @param args the arguments
+     */
+    public Invoke(final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
+        this(target.getMetadata(), true, null, target, args);
     }
 
     @Override
-    public void evaluate(final ExecutionContext context) {
-        /*
-         * Eval left
-         */
-        evalInNewStackFrame(left, context, DOT_OPERATOR_TARGET);
+    public Object evaluate(final ExecutionContext context) {
         /*
          * If it is a function pointer, then create a new function call
          */
-        final Object target = left.getAnnotation();
-        context.newCallStackFrame(DOT_OPERATOR_ARGUMENTS.getCode());
+        final Object target = context.runInNewStackFrame(DOT_OPERATOR_TARGET.getCode(), left::eval);
         if (isApply && target instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) target;
             /*
              * Currently, there is no change in the codepath when superscript is
              * executed: f.apply(...) is exactly equivalent to f(...).
              */
-            final boolean hasCall = getSuperscript() instanceof FunctionCall;
-            final FunctionCall prevFC = hasCall ? (FunctionCall) getSuperscript() : null;
-            final FunctionCall fc = hasCall && fd.equals(prevFC.getFunctionDefinition())
-                ? prevFC
-                : new FunctionCall(getMetadata(), fd, deepCopyBranches());
-            setSuperscript(fc);
-            fc.eval(context);
-            setAnnotation(fc.getAnnotation());
+            return makeFunctionCall(fd).eval(context);
         } else {
             /*
-             * Otherwise, evaluate branches and proceed to evaluation
+             * Otherwise, evaluate branches and proceed to call Java
              */
-            projectAndEval(context);
             /*
              * Check everything for fields
              */
-            final Object[] args = getBranchesAnnotations();
+            final Object[] args = new Object[getBranchesNumber()];
+            context.newCallStackFrame(DOT_OPERATOR_ARGUMENTS.getCode());
+            for (int i = 0; i < getBranchesNumber(); i++) {
+                args[i] = context.runInNewStackFrame(i, getBranch(i)::eval);
+            }
+            context.returnFromCallFrame();
             if (isApply && target instanceof JVMEntity) {
                 final JVMEntity jvmEntity = (JVMEntity) target;
-                setAnnotation(ReflectionUtils.invokeFieldable(context, jvmEntity.getType(), jvmEntity.getMemberName(), null, args));
+                return ReflectionUtils.invokeFieldable(context, jvmEntity.getType(), jvmEntity.getMemberName(), null, args);
             } else {
-                setAnnotation(ReflectionUtils.invokeFieldable(context, target.getClass(), methodName, target, args));
+                return ReflectionUtils.invokeFieldable(context, target.getClass(), methodName, target, args);
             }
         }
-        context.returnFromCallFrame();
+    }
+
+    private FunctionCall makeFunctionCall(final FunctionDefinition functionDefinition) {
+        return new FunctionCall(getMetadata(), functionDefinition, getBranches());
     }
 
     @Override
@@ -134,20 +133,8 @@ public final class Invoke extends AbstractSATree<FunctionCall, Object> {
         return stringFor(left) + '.' + methodName + branchesToString();
     }
 
-    /**
-     * Builds a new {@link #APPLY}.
-     * 
-     * @param target the target of the invocation
-     * @param args the arguments
-     * @return a new {@link #APPLY} {@link Invoke}.
-     */
-    public static Invoke makeApply(final AnnotatedTree<FunctionDefinition> target, final List<AnnotatedTree<?>> args) {
-        return new Invoke(target.getMetadata(), true, null, target, args);
-    }
-
     @Override
     protected boolean isNullable() {
         return true;
     }
-
 }

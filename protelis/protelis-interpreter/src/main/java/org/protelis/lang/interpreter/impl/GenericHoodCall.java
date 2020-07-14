@@ -8,28 +8,32 @@
  *******************************************************************************/
 package org.protelis.lang.interpreter.impl;
 
+import com.google.common.collect.ImmutableList;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
-import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import java.util.function.BinaryOperator;
 
+import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_DEFAULT;
+import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_FIELD;
+import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_FUNCTION;
+
 /**
  * Reduce a field into a local value by reduction using a {@link org.protelis.lang.interpreter.util.HoodOp}.
  */
-public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
+public final class GenericHoodCall extends AbstractProtelisAST<Object> {
 
-    private static final long serialVersionUID = -4925767634715581329L;
-    private final AnnotatedTree<Field<Object>> body;
+    private static final long serialVersionUID = 1L;
+    private final ProtelisAST<Field<Object>> body;
     private final Class<?> clazz;
-    private final AnnotatedTree<?> empty;
-    private final AnnotatedTree<FunctionDefinition> function;
+    private final ProtelisAST<?> empty;
+    private final ProtelisAST<FunctionDefinition> function;
     private final boolean inclusive;
     private final String methodName;
 
@@ -39,7 +43,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
      * @param includeSelf
      *            if true, sigma won't be excluded
      * @param fun
-     *            the {@link HoodOp} to apply
+     *            the {@link FunctionDefinition} to apply
      * @param nullResult
      *            the expression that will be evaluated if the field is empty
      * @param arg
@@ -48,10 +52,10 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     public GenericHoodCall(
             final Metadata metadata,
             final boolean includeSelf,
-            final AnnotatedTree<FunctionDefinition> fun,
-            final AnnotatedTree<?> nullResult,
-            final AnnotatedTree<Field<Object>> arg) {
-        super(metadata, fun, nullResult, arg);
+            final ProtelisAST<FunctionDefinition> fun,
+            final ProtelisAST<?> nullResult,
+            final ProtelisAST<Field<Object>> arg) {
+        super(metadata);
         body = arg;
         function = fun;
         empty = nullResult;
@@ -66,7 +70,7 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
      * @param includeSelf
      *            if true, sigma won't be excluded
      * @param fun
-     *            the {@link HoodOp} to apply
+     *            the {@link FunctionDefinition} to apply
      * @param nullResult
      *            the expression that will be evaluated if the field is empty
      * @param arg
@@ -77,8 +81,8 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
             final Metadata metadata, 
             final boolean includeSelf,
             final JvmOperation fun,
-            final AnnotatedTree<?> nullResult,
-            final AnnotatedTree<Field<Object>> arg) {
+            final ProtelisAST<?> nullResult,
+            final ProtelisAST<Field<Object>> arg) {
         super(metadata, nullResult, arg);
         body = arg;
         empty = nullResult;
@@ -93,23 +97,22 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     }
 
     @Override
-    public AnnotatedTree<Object> copy() {
-        return new GenericHoodCall(getMetadata(), inclusive, function == null ? null : function.copy(), empty.copy(), body.copy());
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
+    public Object evaluate(final ExecutionContext context) {
         /*
          * Evaluate the function, the nullResult, and the argument
          */
-        projectAndEval(context);
-        final BinaryOperator<Object> merger = (a, b) -> function == null
-                ? ReflectionUtils.invokeFieldable(context, clazz, methodName, null, new Object[] { a, b })
-                : JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(context, function, a, b);
-        final Object result = inclusive
-            ? body.getAnnotation().foldValuesIncludingLocal(merger)
-            : body.getAnnotation().reduceValues(merger).orElse(empty.getAnnotation());
-        setAnnotation(result);
+        final Field<Object> targetField = context.runInNewStackFrame(GENERIC_HOOD_CALL_FIELD.getCode(), body::eval);
+        final Object emptyResult = context.runInNewStackFrame(GENERIC_HOOD_CALL_DEFAULT.getCode(), empty::eval);
+        final BinaryOperator<Object> merger;
+        if (function == null) {
+            merger = (a, b) -> ReflectionUtils
+                    .invokeFieldable(context, clazz, methodName, null, new Object[] { a, b });
+        } else {
+            merger = (a, b) -> makeCall(context, a, b).eval(context);
+        }
+        return inclusive
+            ? targetField.foldValuesIncludingLocal(merger)
+            : targetField.reduceValues(merger).orElse(emptyResult);
     }
 
     @Override
@@ -123,6 +126,16 @@ public final class GenericHoodCall extends AbstractAnnotatedTree<Object> {
     @Override
     public String getName() {
         return "hood" + (inclusive ? "PlusSelf" : "");
+    }
+
+    private FunctionCall makeCall(final ExecutionContext context, final Object a, final Object b) {
+        final FunctionDefinition reducer = context.runInNewStackFrame(GENERIC_HOOD_CALL_FUNCTION.getCode(), function::eval);
+        return new FunctionCall(
+                    function.getMetadata(),
+                    reducer,
+                    ImmutableList.of(
+                        new Constant<>(function.getMetadata(), a),
+                        new Constant<>(function.getMetadata(), b)));
     }
 
 }

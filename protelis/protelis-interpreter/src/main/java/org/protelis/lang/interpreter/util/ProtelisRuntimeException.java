@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.impl.All;
 import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.loading.Metadata;
@@ -22,7 +22,7 @@ import org.protelis.lang.loading.Metadata;
 public final class ProtelisRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
-    private final Deque<AnnotatedTree<?>> protelisStackTrace = new LinkedList<>();
+    private final Deque<ProtelisAST<?>> protelisStackTrace = new LinkedList<>();
 
     /**
      * Builds a new {@link ProtelisRuntimeException}, happening due to the specified
@@ -32,7 +32,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      * @param origin    the point in the Protelis program in which the Java
      *                  exception was thrown
      */
-    public ProtelisRuntimeException(@Nonnull final Throwable javaCause, final AnnotatedTree<?> origin) {
+    public ProtelisRuntimeException(@Nonnull final Throwable javaCause, final ProtelisAST<?> origin) {
         super(javaCause);
         protelisStackTrace.add(origin);
     }
@@ -42,7 +42,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      * 
      * @param element the Protelis node which called the failing one
      */
-    public void fillInStackFrame(final AnnotatedTree<?> element) {
+    public void fillInStackFrame(final ProtelisAST<?> element) {
         protelisStackTrace.add(element);
     }
 
@@ -63,9 +63,9 @@ public final class ProtelisRuntimeException extends RuntimeException {
                 .append(extractLines(protelisStackTrace.getFirst()));
         }
         final StringBuilder longTrace = header();
-        AnnotatedTree<?> origin = protelisStackTrace.getFirst();
+        ProtelisAST<?> origin = protelisStackTrace.getFirst();
         boolean wasFunction = true;
-        for (final AnnotatedTree<?> current: protelisStackTrace) {
+        for (final ProtelisAST<?> current: protelisStackTrace) {
             if (!(current instanceof All)) {
                 longTrace.append("\n\tat: ")
                     .append(current + extractLines(current));
@@ -94,11 +94,11 @@ public final class ProtelisRuntimeException extends RuntimeException {
             .append(getCause().getMessage());
     }
 
-    private Stream<AnnotatedTree<?>> stream() {
+    private Stream<ProtelisAST<?>> stream() {
         return protelisStackTrace.stream();
     }
 
-    private static String extractLines(@Nonnull final AnnotatedTree<?> origin) {
+    private static String extractLines(@Nonnull final ProtelisAST<?> origin) {
         final Metadata meta = origin.getMetadata();
         final int start = meta.getStartLine();
         final int end = meta.getEndLine();

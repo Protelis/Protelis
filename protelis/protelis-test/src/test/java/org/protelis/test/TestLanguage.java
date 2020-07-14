@@ -239,6 +239,22 @@ public class TestLanguage {
     }
 
     /**
+     * Reverse of test 04.
+     */
+    @Test
+    public void testGenericHood07() {
+        runFile("/genericHood07.pt");
+    }
+
+    /**
+     * Attempt at reproducing a bug.
+     */
+    @Test
+    public void testGenericHood08() {
+        runFile("/genericHood08.pt");
+    }
+
+    /**
      * Test simple use of apply.
      */
     @Test
@@ -328,11 +344,19 @@ public class TestLanguage {
     }
 
     /**
-     * Test operation of "if" restrictive branching.
+     * Test operation of "if" without else.
      */
     @Test
     public void testIf03() {
         runFile("/if03.pt");
+    }
+
+    /**
+     * Test operation of "if" without else, ensuring the then intructions are discarded.
+     */
+    @Test
+    public void testifWithoutElseNotTaken() {
+        runFile("/ifWithoutElseNotTaken.pt");
     }
 
     /**
@@ -873,6 +897,22 @@ public class TestLanguage {
     @Test
     public void testTupleMap01() {
         runFile("/TupleMap01.pt");
+    }
+
+    /**
+     * Test the Tuple.map method.
+     */
+    @Test
+    public void testTupleMap02() {
+        runFile("/TupleMap02.pt");
+    }
+
+    /**
+     * Tests that the Tuple.map method can retain state.
+     */
+    @Test
+    public void testTupleMapRetainsState() {
+        runFile("/tupleMapRetainsState.pt");
     }
 
     /**

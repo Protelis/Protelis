@@ -1,13 +1,16 @@
 import de.fayard.dependencies.bootstrapRefreshVersionsAndDependencies
-
-rootProject.name = "protelis"
-
+import org.danilopianini.VersionAliases.justAdditionalAliases
 buildscript {
-    repositories { gradlePluginPortal() }
-    dependencies.classpath("de.fayard:dependencies:0.5.7")
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("de.fayard:dependencies:0.5.7")
+        classpath("org.danilopianini:refreshversions-aliases:+")
+    }
 }
-
-bootstrapRefreshVersionsAndDependencies()
+bootstrapRefreshVersionsAndDependencies(justAdditionalAliases)
 
 include(
         "protelis-interpreter",
@@ -25,3 +28,5 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
+
+rootProject.name = "protelis"

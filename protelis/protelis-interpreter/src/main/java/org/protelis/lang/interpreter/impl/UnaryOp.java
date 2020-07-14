@@ -10,7 +10,7 @@ package org.protelis.lang.interpreter.impl;
 
 import java.util.Objects;
 
-import org.protelis.lang.interpreter.AnnotatedTree;
+import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.Op1;
 import org.protelis.lang.loading.Metadata;
@@ -20,7 +20,7 @@ import org.protelis.vm.ExecutionContext;
  * Unary (prefix) operator, such as negation.
  *
  */
-public final class UnaryOp extends AbstractAnnotatedTree<Object> {
+public final class UnaryOp extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op1 op;
@@ -33,25 +33,19 @@ public final class UnaryOp extends AbstractAnnotatedTree<Object> {
      * @param branch
      *            the operand
      */
-    public UnaryOp(final Metadata metadata, final String name, final AnnotatedTree<?> branch) {
+    public UnaryOp(final Metadata metadata, final String name, final ProtelisAST<?> branch) {
         this(metadata, Op1.getOp(name), branch);
     }
 
-    private UnaryOp(final Metadata metadata, final Op1 operator, final AnnotatedTree<?> branch) {
+    private UnaryOp(final Metadata metadata, final Op1 operator, final ProtelisAST<?> branch) {
         super(metadata, branch);
         Objects.requireNonNull(branch);
         op = operator;
     }
 
     @Override
-    public UnaryOp copy() {
-        return new UnaryOp(getMetadata(), op, getBranch(0).copy());
-    }
-
-    @Override
-    public void evaluate(final ExecutionContext context) {
-        projectAndEval(context);
-        setAnnotation(op.run(getBranch(0).getAnnotation()));
+    public Object evaluate(final ExecutionContext context) {
+        return op.run(getBranch(0).eval(context));
     }
 
     @Override

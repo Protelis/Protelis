@@ -8,6 +8,8 @@
  *******************************************************************************/
 package org.protelis.vm.impl;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -67,12 +69,23 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     public String toString() {
         if (lazyString == null) {
             lazyString = "CodePath" + Arrays.stream(repr)
-                .mapToObj(it -> Optional.ofNullable(REVERSE_LOOKUP_BYTECODE.get(it))
-                        .map(Object::toString)
-                        .orElse(Integer.toString(it)))
-                .collect(Collectors.joining("->", "[", "]"));
+                .mapToObj(code ->
+                    Optional.ofNullable(REVERSE_LOOKUP_BYTECODE.get(code))
+                        .map(it -> "->" + it.toString() + "->")
+                        .orElse(intToAscii(code))
+                )
+                .collect(Collectors.joining("", "[", "]"))
+                .replace("->->", "->")
+                .replaceFirst("^\\[->", "[")
+                .replaceFirst("->]$", "]");
         }
         return lazyString;
+    }
+
+    private String intToAscii(final int i) {
+        final ByteBuffer b = ByteBuffer.allocate(4);
+        b.putInt(i);
+        return new String(b.array(), StandardCharsets.UTF_8);
     }
 
 }

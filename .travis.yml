@@ -173,6 +173,7 @@ deploy:
 
 notifications:
   email:
+    on_success: never
     recipients:
       - danilo.pianini@unibo.it
       - jakebeal@gmail.com
