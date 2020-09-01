@@ -47,10 +47,12 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven {
-            url = uri("https://dl.bintray.com/kotlin/dokka")
+        jcenter {
             content {
-                includeGroup("org.jetbrains.dokka")
+                onlyForConfigurations(
+                    "generateProtelisDocPlugin",
+                    "generateProtelisDocRuntime"
+                )
             }
         }
     }
