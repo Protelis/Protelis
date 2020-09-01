@@ -27,3 +27,7 @@ tasks.withType<org.danilopianini.gradle.mavencentral.JavadocJar> {
     dependsOn(tasks.generateProtelisDoc)
     from(tasks.generateProtelisDoc.get().outputDirectory)
 }
+
+tasks.generateProtelisDoc {
+    dependsOn(project(":protelis-interpreter").tasks.jar)
+}
