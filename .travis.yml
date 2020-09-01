@@ -83,11 +83,19 @@ jobs:
         - *reference_jdk
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - travis_retry ./gradlew clean check fatJar --parallel
+        - travis_retry ./gradlew check fatJar javadoc generateProtelisDoc projectReport buildDashboard --parallel
+      workspaces:
+        create:
+          name: linux-reference-build
+          paths:
+            - "${TRAVIS_BUILD_DIR}/protelis"
     - stage: deploy
       name: "Reports and deployment"
       if: repo = env(OFFICIAL_REPO_SLUG) AND type != pull_request
       os: *reference_os
+      workspaces:
+        use:
+          - linux-reference-build
       env:
         # Surge
         - secure: "z32+XowmfQf2x9UnfuXA1TxhnQlYDBoNkPTlHxsQBAj3bpt6GeFyJsDdx76BL/+iId2nPkO/aoDa1/gMar2TVMl0BZrmnsPr9Az+PLIQI2d+VvCfLw9DI1rb+7UFNc9KfBfBNJaU2soQdj/gWyf7M3AL5gCocZkgsZxKsqUbRv5zwz2dItqon5TcDzM3Mry1DiSN/E1QJ/YIxICfcgbi3qs9zXdlhCuWZHaBZ7ePW65TJATToxWqH2TnzhOD1UKT/FumTyvTXe33R+knqNdzHiL6GS2LkmT7oXnN7VYAIN5kfNDjv3JcMH6Gd4y+tkFwTERMuZoLyFu8/SPqlVlzc/UncChn3wWs2E9h1h1bxK/ClUQVIXsWFEuA5DLPgQ0P2t1N+2ypwarMWs+/tLkmR08Ol1rB8uObnx3VPu48vppAHwZyz8pnHVWEAK9wQlak84Y9Uplts1IAU7FQV6/2IQS3Oh/m0JR+quHL8td4elU6OGrMhWskS2D863wURe8Tmh9/a145LAK13kkXm4nIAiOj6QzJeWWDcz1fMRGReKRgYz+cG0dQ5PS7nZ0kNPJmcnN1GWYF5UZLJPaDe/ZzJS8s6FnpqwdpppPYE4trMzqgLYx64fwizI4sPWqYf9OB0E/cw1pHFAygsHiUsE45S/lnr4x3Ux0aeY6x/Os+ajg="
@@ -111,8 +119,6 @@ jobs:
         - sudo npm install --global surge
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - travis_retry ./gradlew generateProtelisDoc -x test
-        - travis_retry ./gradlew javadoc buildDashboard projectReport fatJar -x test
         - mkdir -p report
         - cp --parent */build/reports build/reports report -R
         - travis_retry ./gradlew publishAll
