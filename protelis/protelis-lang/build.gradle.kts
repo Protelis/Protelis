@@ -20,6 +20,10 @@ sourceSets {
 
 protelisdoc {
     baseDir.set("$projectDir/src/main/protelis")
-    outputFormat.set("javadoc")
     debug.set(false)
+}
+
+tasks.withType<org.danilopianini.gradle.mavencentral.JavadocJar> {
+    dependsOn(tasks.generateProtelisDoc)
+    from(tasks.generateProtelisDoc.get().outputDirectory)
 }
