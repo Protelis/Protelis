@@ -1,3 +1,8 @@
+plugins {
+    id("org.protelis.protelisdoc")
+}
+apply(plugin = "org.protelis.protelisdoc")
+
 dependencies {
     implementation(project(":protelis-interpreter"))
     testImplementation(project(":protelis-test"))
