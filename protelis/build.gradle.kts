@@ -13,9 +13,8 @@ plugins {
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central")
-    id("org.protelis.protelisdoc")
+    id("org.protelis.protelisdoc") apply false
     id("com.jfrog.bintray")
-    kotlin("jvm")
 }
 
 apply(plugin = "com.jfrog.bintray")
@@ -39,7 +38,6 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "org.danilopianini.publish-on-central")
     apply(plugin = "com.jfrog.bintray")
-    apply(plugin = "org.protelis.protelisdoc")
 
     gitSemVer {
         version = computeGitSemVer()
