@@ -129,14 +129,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class ProtelisLoader {
 
     private static final String HOOD_END = "Hood";
-    private static final ThreadLocal<Cache<String, Resource>> LOADED_RESOURCES = new ThreadLocal<Cache<String, Resource>>() {
-        @Override
-        protected Cache<String, Resource> initialValue() {
-            return CacheBuilder.newBuilder()
-                    .expireAfterAccess(1, TimeUnit.MINUTES)
-                    .build();
-        }
-    };
+    private static final ThreadLocal<Cache<String, Resource>> LOADED_RESOURCES = ThreadLocal.withInitial(() ->
+            CacheBuilder.newBuilder()
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .build()
+    );
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtelisLoader.class);
     private static final String OPEN_J9_EMF_WORKED_AROUND = "Working around OpenJ9 + Eclipse EMF bug."
             + "See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=549084"
