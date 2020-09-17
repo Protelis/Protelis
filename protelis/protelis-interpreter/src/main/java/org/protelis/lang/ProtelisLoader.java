@@ -294,7 +294,6 @@ public final class ProtelisLoader {
      *            Xtext transparently. {@link URI}s of type "platform:/" are
      *            supported, for those who work within an Eclipse environment.
      * @return an {@link ProtelisProgram} comprising the constructed program
-     * @throws IOException 
      * @throws IllegalArgumentException
      *             when the program has errors
      */
