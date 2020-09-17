@@ -145,15 +145,12 @@ public final class ProtelisLoader {
     private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("^\\s*import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.MULTILINE);
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 
-    private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
-        @Override
-        protected XtextResourceSet initialValue() {
-            final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
-            final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
-            xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-            return xtext;
-        }
-    };
+    private static final ThreadLocal<XtextResourceSet> XTEXT = ThreadLocal.withInitial(() -> {
+        final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
+        final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
+        xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+        return xtext;
+    });
 
     private ProtelisLoader() {
     }
