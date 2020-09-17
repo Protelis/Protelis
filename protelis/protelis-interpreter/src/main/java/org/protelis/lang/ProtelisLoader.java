@@ -549,7 +549,7 @@ public final class ProtelisLoader {
                         // Invoke
                         final InvocationArguments invokeArgs = (InvocationArguments) second;
                         if (first instanceof Constant) {
-                           final Object constant = ((Constant) first).getConstantValue();
+                           final Object constant = ((Constant<?>) first).getConstantValue();
                            if (constant instanceof FunctionDefinition) {
                                // It's a plain function call, possibly on a lambda, don't go through Invoke
                                return new FunctionCall(meta, (FunctionDefinition) constant, invocationArguments(invokeArgs));
