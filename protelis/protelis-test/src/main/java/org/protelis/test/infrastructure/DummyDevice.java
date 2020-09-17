@@ -18,10 +18,10 @@ import it.unibo.alchemist.model.interfaces.Reaction;
 
 /**
  * A simple implementation of a Protelis-based device, encapsulating a
- * ProtelisVM and a network interface.
+ * {@link org.protelis.vm.ProtelisVM} and a network interface.
  */
 public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
-                implements SpatiallyEmbeddedDevice, LocalizedDevice, TimeAwareDevice {
+                implements SpatiallyEmbeddedDevice<Double>, LocalizedDevice, TimeAwareDevice<Double> {
     private final RandomGenerator r;
     private final ProtelisNode node;
     private final Environment<Object> env;
@@ -93,17 +93,17 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
     }
 
     @Override
-    public Field nbrRange() {
-        return buildField(otherNode -> this.env.getDistanceBetweenNodes(node, (ProtelisNode) otherNode), node);
+    public Field<Double> nbrRange() {
+        return buildField(otherNode -> this.env.getDistanceBetweenNodes(node, otherNode), node);
     }
 
     @Override
-    public Field nbrDelay() {
+    public Field<Double> nbrDelay() {
         return buildField(otherNode -> 1.0, node);
     }
 
     @Override
-    public Field nbrLag() {
+    public Field<Double> nbrLag() {
         return buildField(otherNode -> 1.0, node);
     }
 
@@ -118,7 +118,7 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
     }
 
     @Override
-    public Field nbrVector() {
+    public Field<Tuple> nbrVector() {
         return buildField(device -> this.getVectorToNeigh(getCoordinates(), device), this);
     }
 

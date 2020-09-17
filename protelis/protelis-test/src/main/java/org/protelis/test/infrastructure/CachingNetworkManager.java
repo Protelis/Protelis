@@ -58,13 +58,13 @@ public class CachingNetworkManager implements NetworkManager {
     }
 
     /**
-     * Called by {@link ProtelisVM} during execution to collect the most recent
+     * Called by {@link org.protelis.vm.ProtelisVM} during execution to collect the most recent
      * information available from neighbors. The call is serial within the
      * execution, so this should probably poll state maintained by a separate
      * thread, rather than gathering state during this call.
      * 
      * @return A map associating each neighbor with its shared state. The object
-     *         returned should not be modified, and {@link ProtelisVM} will not
+     *         returned should not be modified, and {@link org.protelis.vm.ProtelisVM} will not
      *         change it either.
      */
     @Override
@@ -73,7 +73,7 @@ public class CachingNetworkManager implements NetworkManager {
     }
 
     /**
-     * Called by {@link ProtelisVM} during execution to send its current shared
+     * Called by {@link org.protelis.vm.ProtelisVM} during execution to send its current shared
      * state to neighbors. The call is serial within the execution, so this
      * should probably queue up a message to be sent, rather than actually
      * carrying out a lengthy operations during this call.
