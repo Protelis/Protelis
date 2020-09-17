@@ -439,7 +439,7 @@ public final class ProtelisLoader {
             if (statements.size() == 1) {
                 return statement(statements.get(0));
             }
-            return new All(metadataFor(block), statements.stream().map(it -> statement(it)).collect(Collectors.toList()));
+            return new All(metadataFor(block), statements.stream().map(Dispatch::statement).collect(Collectors.toList()));
         }
 
         @SuppressWarnings("unchecked")
