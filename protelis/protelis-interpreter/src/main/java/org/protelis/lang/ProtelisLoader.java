@@ -579,7 +579,7 @@ public final class ProtelisLoader {
         private static ConditionalSideEffect ifWithoutElse(final IfWithoutElse ifOp) {
             final Metadata meta = metadataFor(ifOp);
             final List<ProtelisAST<?>> then = ifOp.getThen().stream()
-                    .map(it -> statement(it))
+                    .map(Dispatch::statement)
                     .collect(Collectors.toList());
             final ProtelisAST<?> thenBranch = then.size() == 1
                     ? then.get(0)
