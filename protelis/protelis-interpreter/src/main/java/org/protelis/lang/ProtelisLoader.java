@@ -615,7 +615,7 @@ public final class ProtelisLoader {
             final Optional<Reference> local = Optional.of(referenceFor(init.getX()));
             final Optional<ProtelisAST<Object>> yield = Optional.ofNullable(rep.getYields())
                     .map(Yield::getBody)
-                    .map(it -> blockUnsafe(it));
+                    .map(Dispatch::blockUnsafe);
             return new ShareCall<>(meta, local, Optional.empty(), expression(init.getW()), block(rep.getBody()), yield);
         }
 
