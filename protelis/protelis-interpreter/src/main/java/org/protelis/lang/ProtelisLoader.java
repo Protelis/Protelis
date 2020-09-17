@@ -642,7 +642,7 @@ public final class ProtelisLoader {
             final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoadingUtilities::referenceFor);
             final Optional<ProtelisAST<Object>> yield = Optional.ofNullable(share.getYields())
                     .map(Yield::getBody)
-                    .map(it -> blockUnsafe(it));
+                    .map(Dispatch::blockUnsafe);
             return new ShareCall<>(metadataFor(share), local, field, expression(init.getW()), block(share.getBody()), yield);
         }
 
