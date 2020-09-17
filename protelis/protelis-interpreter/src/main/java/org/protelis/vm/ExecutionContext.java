@@ -72,7 +72,7 @@ public interface ExecutionContext {
      * @param currentLocal
      *            the value to be used as local for this field
      * @param toBeSent
-     *            a {@link java8.util.function.Supplier} which will be used to compute the local
+     *            a {@link java.util.function.Supplier} which will be used to compute the local
      *            value for this field that will get exported at the end of the round
      * @param <T>
      *            the type of the input
