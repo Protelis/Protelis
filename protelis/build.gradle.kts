@@ -32,7 +32,6 @@ allprojects {
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
