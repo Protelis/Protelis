@@ -168,7 +168,7 @@ public final class ProtelisLoader {
             final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(resource.realURI));
             if (resource.exists()) {
                 try (InputStream is = resource.openStream()) {
-                    final String ss = IOUtils.toString(is, "UTF-8");
+                    final String ss = IOUtils.toString(is, StandardCharsets.UTF_8);
                     final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
                     while (matcher.find()) {
                         final int start = matcher.start(1);
@@ -187,7 +187,7 @@ public final class ProtelisLoader {
 
     private static void loadStringResources(final XtextResourceSet target, final InputStream is) throws IOException {
         final Set<String> alreadyInQueue = new LinkedHashSet<>();
-        final String ss = IOUtils.toString(is, "UTF-8");
+        final String ss = IOUtils.toString(is, StandardCharsets.UTF_8);
         final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
         while (matcher.find()) {
             final int start = matcher.start(1);
