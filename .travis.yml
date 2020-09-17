@@ -87,7 +87,7 @@ jobs:
         - *reference_jdk
       script:
         - cd "$TRAVIS_BUILD_DIR"/protelis
-        - travis_retry ./gradlew check fatJar javadoc generateProtelisDoc projectReport buildDashboard --parallel
+        - travis_retry ./gradlew check fatJar javadoc generateProtelisDoc buildDashboard --parallel
       workspaces:
         create:
           name: linux-reference-build
