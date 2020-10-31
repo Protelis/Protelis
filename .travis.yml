@@ -138,13 +138,6 @@ script:
 after_failure:
   - dig +short myip.opendns.com @resolver1.opendns.com || true
 
-before_cache:
-  - $GRAVIS/clean-gradle-cache
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
 deploy:
   - provider: releases
     skip_cleanup: true
