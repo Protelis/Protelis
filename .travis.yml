@@ -70,7 +70,10 @@ env:
   matrix:
     - *reference_jdk
     - JDK="adopt@1.11"
-    - JDK="adopt@"
+    - JDK="adopt
+    - JDK="adopt-openj9@1.8"
+    - JDK="adopt-openj9@1.11"
+    - JDK="adopt-openj9@"
 jobs:
   exclude:
     - os: *reference_os
