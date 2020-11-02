@@ -1,4 +1,3 @@
-
 # Do not double-build branches and PRs from this repo, as PRs won't get merged if they are not up to date
 if: repo != head_repo
 
@@ -73,11 +72,13 @@ env:
     - JDK="adopt@1.11"
     - JDK="adopt@"
 jobs:
+  exclude:
+    - os: *reference_os
+      env: *reference_jdk
+      stage: test
   include:
     - stage: check
       name: "Deep check on reference OS and JDK"
-      arch: arm64-graviton2
-      virt: lxd
       os: *reference_os
       env:
         - *reference_jdk
@@ -93,8 +94,6 @@ jobs:
       name: "Reports and deployment"
       if: repo = env(OFFICIAL_REPO_SLUG) AND type != pull_request
       os: *reference_os
-      arch: arm64-graviton2
-      virt: lxd
       workspaces:
         use:
           - linux-reference-build
