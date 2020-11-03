@@ -1,18 +1,11 @@
 package org.protelis.lang;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
+import org.jetbrains.annotations.NotNull;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
@@ -28,9 +21,14 @@ import org.protelis.parser.protelis.MethodCall;
 import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.VarUse;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Static utilities for parsing Protelis.
@@ -46,7 +44,7 @@ public final class ProtelisLoadingUtilities {
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .build(new CacheLoader<Object, Reference>() {
                 @Override
-                public Reference load(final Object key) {
+                public Reference load(@NotNull final Object key) {
                     return new Reference(key);
                 }
             });
@@ -112,9 +110,7 @@ public final class ProtelisLoadingUtilities {
             return qualifiedNameFor((ProtelisModule) container) + suffix;
         }
         int myId = 0;
-        final Iterator<EObject> iterator = container.eContents().iterator();
-        while (iterator.hasNext()) {
-            final Object statement = iterator.next();
+        for (final Object statement : container.eContents()) {
             if (statement.equals(origin)) {
                 return qualifiedNameFor(container, ":$" + nameFor(container)) + suffix + myId;
             }
@@ -148,8 +144,8 @@ public final class ProtelisLoadingUtilities {
         return Optional.ofNullable(module)
                 .map(ProtelisModule::getName)
                 .map(it -> it
-                        .replace("protelis:state:time", "⏱")
-                        .replace("protelis:state:nonselfstabilizing:time", "⍼⏱")
+                        .replace("protelis:state:time", "⏱") // NOPMD: false positive
+                        .replace("protelis:state:nonselfstabilizing:time", "⍼⏱") // NOPMD: false positive
                         .replace("protelis:lang:utils", "⚒")
                         .replace("protelis:coord:meta:timereplication", "⎇⏳")
                         .replace("protelis:coord:nonselfstabilizing:accumulation", "⍼⍖")

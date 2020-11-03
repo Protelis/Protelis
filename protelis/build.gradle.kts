@@ -75,6 +75,17 @@ allprojects {
         }
     }
 
+    jacoco {
+        val match =
+            """(\d+)\.(\d+)\.(\d+).*""".toRegex().matchEntire(toolVersion)
+        if (match != null) {
+            val (major, minor, patch) = match.destructured
+            if (major.toInt() == 0 && minor.toInt() <= 8 && patch.toInt() <= 5) {
+                toolVersion = "0.8.6"
+            }
+        }
+    }
+
     spotbugs {
         setEffort("max")
         setReportLevel("low")
