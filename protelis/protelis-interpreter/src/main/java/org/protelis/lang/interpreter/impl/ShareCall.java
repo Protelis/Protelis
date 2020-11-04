@@ -27,6 +27,7 @@ import com.google.common.base.Optional;
  * @param <S> superscript / export type
  * @param <T> returned type
  */
+@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "Guava"})
 public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     private static final long serialVersionUID = 8643287734245198408L;
     private final Optional<Reference> fieldName;
@@ -36,7 +37,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     private final ProtelisAST<S> body;
 
     /**
-     * Convenience constructor with {@link java8.util.Optional}.
+     * Convenience constructor with {@link java.util.Optional}.
      * 
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
@@ -94,7 +95,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
             if (it instanceof AbstractProtelisAST) {
                 return (AbstractProtelisAST<T>) it;
             }
-            throw new IllegalStateException("class type " + it.getClass().getName() + " unkown and unsupported");
+            throw new IllegalStateException("class type " + it.getClass().getName() + " unknown and unsupported");
         });
     }
 

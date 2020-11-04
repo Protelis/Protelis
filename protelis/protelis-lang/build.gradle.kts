@@ -1,3 +1,8 @@
+plugins {
+    id("org.protelis.protelisdoc")
+}
+apply(plugin = "org.protelis.protelisdoc")
+
 dependencies {
     implementation(project(":protelis-interpreter"))
     testImplementation(project(":protelis-test"))
@@ -20,6 +25,14 @@ sourceSets {
 
 protelisdoc {
     baseDir.set("$projectDir/src/main/protelis")
-    outputFormat.set("javadoc")
     debug.set(false)
+}
+
+tasks.withType<org.danilopianini.gradle.mavencentral.JavadocJar> {
+    dependsOn(tasks.generateProtelisDoc)
+    from(tasks.generateProtelisDoc.get().outputDirectory)
+}
+
+tasks.generateProtelisDoc {
+    dependsOn(project(":protelis-interpreter").tasks.jar)
 }

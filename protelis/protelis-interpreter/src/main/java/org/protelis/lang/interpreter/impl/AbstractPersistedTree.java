@@ -16,7 +16,7 @@ import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 /**
- * Basic implementation of a {@link SuperscriptedAnnotatedTree}.
+ * Basic implementation of a persisted tree.
  *
  * @param <S>
  *            Superscript type

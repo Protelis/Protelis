@@ -13,9 +13,8 @@ plugins {
     signing
     `maven-publish`
     id("org.danilopianini.publish-on-central")
-    id("org.protelis.protelisdoc")
+    id("org.protelis.protelisdoc") apply false
     id("com.jfrog.bintray")
-    kotlin("jvm")
 }
 
 apply(plugin = "com.jfrog.bintray")
@@ -33,13 +32,11 @@ allprojects {
     apply(plugin = "pmd")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "project-report")
     apply(plugin = "build-dashboard")
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
     apply(plugin = "org.danilopianini.publish-on-central")
     apply(plugin = "com.jfrog.bintray")
-    apply(plugin = "org.protelis.protelisdoc")
 
     gitSemVer {
         version = computeGitSemVer()
@@ -47,10 +44,12 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven {
-            url = uri("https://dl.bintray.com/kotlin/dokka")
+        jcenter {
             content {
-                includeGroup("org.jetbrains.dokka")
+                onlyForConfigurations(
+                    "generateProtelisDocPlugin",
+                    "generateProtelisDocRuntime"
+                )
             }
         }
     }
@@ -73,6 +72,17 @@ allprojects {
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
             events("passed", "skipped", "failed", "standardError")
+        }
+    }
+
+    jacoco {
+        val match =
+            """(\d+)\.(\d+)\.(\d+).*""".toRegex().matchEntire(toolVersion)
+        if (match != null) {
+            val (major, minor, patch) = match.destructured
+            if (major.toInt() == 0 && minor.toInt() <= 8 && patch.toInt() <= 5) {
+                toolVersion = "0.8.6"
+            }
         }
     }
 

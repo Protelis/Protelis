@@ -13,9 +13,9 @@ buildscript {
 bootstrapRefreshVersionsAndDependencies(justAdditionalAliases)
 
 include(
-        "protelis-interpreter",
-        "protelis-lang",
-        "protelis-test"
+    "protelis-interpreter",
+    "protelis-lang",
+    "protelis-test"
 )
 
 plugins {

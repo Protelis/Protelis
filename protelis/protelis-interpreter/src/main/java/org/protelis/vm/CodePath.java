@@ -9,7 +9,7 @@ import java.io.Serializable;
  * 
  * It MUST be immutable.
  * 
- * {@link #equals(Object)} and {@link #hashCode()} must be correctly
+ * equals and hashCode must be correctly
  * implemented.
  * 
  * The specific implementation of this class is critical for the Protelis

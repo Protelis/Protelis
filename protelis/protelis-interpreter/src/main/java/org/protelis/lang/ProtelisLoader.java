@@ -129,14 +129,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class ProtelisLoader {
 
     private static final String HOOD_END = "Hood";
-    private static final ThreadLocal<Cache<String, Resource>> LOADED_RESOURCES = new ThreadLocal<Cache<String, Resource>>() {
-        @Override
-        protected Cache<String, Resource> initialValue() {
-            return CacheBuilder.newBuilder()
-                    .expireAfterAccess(1, TimeUnit.MINUTES)
-                    .build();
-        }
-    };
+    private static final ThreadLocal<Cache<String, Resource>> LOADED_RESOURCES = ThreadLocal.withInitial(() ->
+            CacheBuilder.newBuilder()
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .build()
+    );
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtelisLoader.class);
     private static final String OPEN_J9_EMF_WORKED_AROUND = "Working around OpenJ9 + Eclipse EMF bug."
             + "See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=549084"
@@ -145,15 +142,12 @@ public final class ProtelisLoader {
     private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("^\\s*import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.MULTILINE);
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 
-    private static final ThreadLocal<XtextResourceSet> XTEXT = new ThreadLocal<XtextResourceSet>() {
-        @Override
-        protected XtextResourceSet initialValue() {
-            final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
-            final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
-            xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-            return xtext;
-        }
-    };
+    private static final ThreadLocal<XtextResourceSet> XTEXT = ThreadLocal.withInitial(() -> {
+        final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
+        final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
+        xtext.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+        return xtext;
+    });
 
     private ProtelisLoader() {
     }
@@ -174,7 +168,7 @@ public final class ProtelisLoader {
             final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(resource.realURI));
             if (resource.exists()) {
                 try (InputStream is = resource.openStream()) {
-                    final String ss = IOUtils.toString(is, "UTF-8");
+                    final String ss = IOUtils.toString(is, StandardCharsets.UTF_8);
                     final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
                     while (matcher.find()) {
                         final int start = matcher.start(1);
@@ -193,7 +187,7 @@ public final class ProtelisLoader {
 
     private static void loadStringResources(final XtextResourceSet target, final InputStream is) throws IOException {
         final Set<String> alreadyInQueue = new LinkedHashSet<>();
-        final String ss = IOUtils.toString(is, "UTF-8");
+        final String ss = IOUtils.toString(is, StandardCharsets.UTF_8);
         final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
         while (matcher.find()) {
             final int start = matcher.start(1);
@@ -297,7 +291,6 @@ public final class ProtelisLoader {
      *            Xtext transparently. {@link URI}s of type "platform:/" are
      *            supported, for those who work within an Eclipse environment.
      * @return an {@link ProtelisProgram} comprising the constructed program
-     * @throws IOException 
      * @throws IllegalArgumentException
      *             when the program has errors
      */
@@ -376,6 +369,7 @@ public final class ProtelisLoader {
      *            the program in String format
      * @return a dummy:/ resource that can be used to interpret the program
      */
+    @SuppressWarnings("UnstableApiUsage")
     public static Resource resourceFromString(final String program) {
         final String programId = "dummy:/protelis-generated-program-"
             + Hashing.sha512().hashString(program, StandardCharsets.UTF_8)
@@ -442,7 +436,7 @@ public final class ProtelisLoader {
             if (statements.size() == 1) {
                 return statement(statements.get(0));
             }
-            return new All(metadataFor(block), statements.stream().map(it -> statement(it)).collect(Collectors.toList()));
+            return new All(metadataFor(block), statements.stream().map(Dispatch::statement).collect(Collectors.toList()));
         }
 
         @SuppressWarnings("unchecked")
@@ -552,7 +546,7 @@ public final class ProtelisLoader {
                         // Invoke
                         final InvocationArguments invokeArgs = (InvocationArguments) second;
                         if (first instanceof Constant) {
-                           final Object constant = ((Constant) first).getConstantValue();
+                           final Object constant = ((Constant<?>) first).getConstantValue();
                            if (constant instanceof FunctionDefinition) {
                                // It's a plain function call, possibly on a lambda, don't go through Invoke
                                return new FunctionCall(meta, (FunctionDefinition) constant, invocationArguments(invokeArgs));
@@ -582,7 +576,7 @@ public final class ProtelisLoader {
         private static ConditionalSideEffect ifWithoutElse(final IfWithoutElse ifOp) {
             final Metadata meta = metadataFor(ifOp);
             final List<ProtelisAST<?>> then = ifOp.getThen().stream()
-                    .map(it -> statement(it))
+                    .map(Dispatch::statement)
                     .collect(Collectors.toList());
             final ProtelisAST<?> thenBranch = then.size() == 1
                     ? then.get(0)
@@ -618,7 +612,7 @@ public final class ProtelisLoader {
             final Optional<Reference> local = Optional.of(referenceFor(init.getX()));
             final Optional<ProtelisAST<Object>> yield = Optional.ofNullable(rep.getYields())
                     .map(Yield::getBody)
-                    .map(it -> blockUnsafe(it));
+                    .map(Dispatch::blockUnsafe);
             return new ShareCall<>(meta, local, Optional.empty(), expression(init.getW()), block(rep.getBody()), yield);
         }
 
@@ -645,7 +639,7 @@ public final class ProtelisLoader {
             final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoadingUtilities::referenceFor);
             final Optional<ProtelisAST<Object>> yield = Optional.ofNullable(share.getYields())
                     .map(Yield::getBody)
-                    .map(it -> blockUnsafe(it));
+                    .map(Dispatch::blockUnsafe);
             return new ShareCall<>(metadataFor(share), local, field, expression(init.getW()), block(share.getBody()), yield);
         }
 
