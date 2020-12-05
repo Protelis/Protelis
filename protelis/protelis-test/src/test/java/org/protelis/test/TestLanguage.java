@@ -94,8 +94,20 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage01() {
-        runExpectingErrors("/errorMessage01.pt", ProtelisRuntimeException.class, "static");
-        runExpectingErrors("/errorMessage01.pt", ProtelisRuntimeException.class, true, "type");
+        runExpectingErrors(
+            "/errorMessage01.pt",
+            ProtelisRuntimeException.class,
+            "log",
+            "does not exist",
+            "java.lang.Math"
+        );
+        runExpectingErrors(
+            "/errorMessage01.pt",
+            ProtelisRuntimeException.class,
+            true,
+            "does not exist",
+            "java.lang.Math"
+        );
     }
 
     /**
@@ -104,7 +116,13 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage02() {
-        runExpectingErrors("/errorMessage02.pt", ProtelisRuntimeException.class, "static", "parameters");
+        runExpectingErrors(
+            "/errorMessage02.pt",
+            ProtelisRuntimeException.class,
+            "log",
+            "java.lang.Double",
+            "does not exist"
+        );
     }
 
     /**
@@ -113,7 +131,13 @@ public class TestLanguage {
      */
     @Test
     public void testErrorMessage03() {
-        runExpectingErrors("import non:existent:protelismodule\n1\n", IllegalStateException.class, "resource", "protelismodule", "does not exist");
+        runExpectingErrors(
+            "import non:existent:protelismodule\n1\n",
+            IllegalStateException.class,
+            "resource",
+            "protelismodule",
+            "not found"
+        );
     }
 
     /**

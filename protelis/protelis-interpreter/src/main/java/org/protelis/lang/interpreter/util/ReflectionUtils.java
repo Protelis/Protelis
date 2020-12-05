@@ -466,9 +466,11 @@ public final class ReflectionUtils {
             final StringBuilder paramClasses = new StringBuilder(originalClasses.toString());
             paramClasses.setCharAt(0, '(');
             paramClasses.setCharAt(paramClasses.length() - 1, ')');
-            throw new UnsupportedOperationException(methodName + paramClasses + " does not exist in " + clazz
+            throw new UnsupportedOperationException(
+                    methodName + paramClasses + " does not exist in " + clazz
                     + ".\nYou tried to invoke it with arguments "
-                    + args, outerException);
+                    + args, outerException
+            );
         }
     }
 
