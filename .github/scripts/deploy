@@ -1,0 +1,28 @@
+#!/bin/sh
+set -e
+cd protelis
+COMMAND='./gradlew publishAll --parallel'
+$COMMAND || $COMMAND || $COMMAND || $COMMAND || $COMMAND
+if [ -n "$TAG" ] || [ "$BRANCH" = 'develop' ]
+then
+    echo Installing surge
+    sudo npm install --global surge
+    echo preparing build reports
+    mkdir -p report
+    cp --parent ./*/build/reports build/reports report -R
+    STABILITY_MARKER=$([ "$BRANCH" = 'develop' ] && echo 'unstable-' || echo '')
+    echo Deploying ${STABILITY_MARKER}reports on surge
+    surge report/ protelis-${STABILITY_MARKER}reports.surge.sh
+    echo Deploying ${STABILITY_MARKER}javadoc on surge
+    surge build/docs/javadoc/ protelis-${STABILITY_MARKER}doc.surge.sh
+    echo Deploying protelis-lang ${STABILITY_MARKER}javadoc on surge
+    surge protelis-lang/build/protelis-docs/ protelis-lang-${STABILITY_MARKER}doc.surge.sh
+fi
+if [ -n "$TAG" ]
+then
+    MESSAGE=$(git tag -l --format='%(contents)' "$TAG")
+    hub release create -m "$MESSAGE" "$TAG" || true
+    for jar in build/libs/protelis-redist*.jar; do
+        hub release edit -m '' -a "$jar" "$TAG"
+    done
+fi
