@@ -135,13 +135,13 @@ allprojects {
     }
 
     publishOnCentral {
-        fun String.fromProperties(): String = extra[this].toString()
-        projectDescription.set("projectDescription".fromProperties())
-        projectLongName.set("longName".fromProperties())
-        licenseName.set("licenseName".fromProperties())
-        licenseUrl.set("licenseUrl".fromProperties())
-        projectUrl.set("http://www.protelis.org")
-        scmConnection.set(scmUrl)
+        val String.fromProperties: String get() = extra[this].toString()
+        projectDescription = "projectDescription".fromProperties
+        projectLongName = "longName".fromProperties
+        licenseName = "licenseName".fromProperties
+        licenseUrl = "licenseUrl".fromProperties
+        projectUrl = "http://www.protelis.org"
+        scmConnection = scmUrl
     }
 
     publishing.publications {
