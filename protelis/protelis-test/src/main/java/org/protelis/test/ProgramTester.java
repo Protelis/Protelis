@@ -87,13 +87,9 @@ public final class ProgramTester {
             final String message = (searchCause ? result.getCause() : result)
                     .getMessage().toLowerCase(Locale.ENGLISH);
             assertNotNull(message);
-            if (Locale.getDefault().equals(Locale.ENGLISH)) {
-                for (final String messagePart : messageContents) {
-                    assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
-                            message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
-                }
-            } else {
-                LOGGER.warn("Check of exception message content disabled on non-English locale " + Locale.getDefault());
+            for (final String messagePart : messageContents) {
+                assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
+                        message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
             }
         });
     }

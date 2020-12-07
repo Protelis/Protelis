@@ -1,18 +1,17 @@
 package org.protelis.test;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import org.protelis.lang.ProtelisLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.protelis.lang.ProtelisLoader;
-
-import com.google.common.io.Files;
 
 /**
  * This test ensures that module loading access is performed using thread-local
@@ -45,7 +44,7 @@ public class TestLoadingInSeparateThreads {
     }
 
     private File createDependenciesDirectory() throws IOException, URISyntaxException {
-        final File d = Files.createTempDir();
+        final File d = Files.createTempDirectory("protelis").toFile();
         FileUtils.copyDirectory(new File(Thread.currentThread().getContextClassLoader().getResource("orgoriginal").toURI()), new File(d, "org"));
         return d;
     }
