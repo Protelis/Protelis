@@ -60,7 +60,9 @@ allprojects {
         testImplementation(Libs.junit)
         testImplementation(Libs.slf4j_api)
         testRuntimeOnly(Libs.logback_classic)
-        doclet(Libs.apiviz)
+        if (JavaVersion.current().isJava8Compatible) {
+            doclet(Libs.apiviz)
+        }
     }
 
     tasks.withType<JavaCompile> {
@@ -114,14 +116,17 @@ allprojects {
     }
 
     tasks.withType<Javadoc> {
-        isFailOnError = false
+        isFailOnError = true
         options {
+            encoding = "UTF-8"
             val title = "Protelis ${project.version} Javadoc API"
             windowTitle(title)
-            docletpath = doclet.files.toList()
-            doclet("org.jboss.apiviz.APIviz")
-            if (this is CoreJavadocOptions) {
-                addBooleanOption("nopackagediagram", true)
+            if (JavaVersion.current().isJava8Compatible) {
+                docletpath = doclet.files.toList()
+                doclet("org.jboss.apiviz.APIviz")
+                if (this is CoreJavadocOptions) {
+                    addBooleanOption("nopackagediagram", true)
+                }
             }
         }
     }
