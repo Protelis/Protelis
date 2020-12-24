@@ -45,8 +45,13 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                             assertEquals(pair.getRight(), singleNodeResult);
                         }
                     } catch (Exception | AssertionError e) { // NOPMD
-                        obs.exceptionThrown(new IllegalStateException(String.format(ERROR_TEMPLATE,
-                                getMessage(simulationRes, expectedResult), pair.getLeft(), pair.getRight(), singleNodeResult)));
+                        obs.exceptionThrown(new IllegalStateException(String.format(
+                            ERROR_TEMPLATE,
+                            getMessage(simulationRes, expectedResult),
+                            pair.getLeft(),
+                            pair.getRight(),
+                            singleNodeResult
+                        )));
                         break;
                     }
                 }
