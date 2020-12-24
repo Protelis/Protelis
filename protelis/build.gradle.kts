@@ -63,6 +63,8 @@ allprojects {
         if (JavaVersion.current().isJava8Compatible) {
             doclet(Libs.apiviz)
         }
+        pmd(pmdModule("core"))
+        pmd(pmdModule("java"))
     }
 
     tasks.withType<JavaCompile> {
