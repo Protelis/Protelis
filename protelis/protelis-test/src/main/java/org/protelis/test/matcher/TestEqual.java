@@ -39,7 +39,7 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                             assertEquals(Double.parseDouble(pair.getRight()), tmp, InfrastructureTester.DELTA);
                         } else if (singleNodeResult instanceof Boolean) {
                             final String v = pair.getRight();
-                            final boolean expected = Boolean.parseBoolean(v.equals("T") ? "true" : v.equals("F") ? "false" : pair.getRight());
+                            final boolean expected = Boolean.parseBoolean("T".equals(v) ? "true" : "F".equals(v) ? "false" : pair.getRight());
                             assertEquals(expected, (Boolean) singleNodeResult);
                         } else {
                             assertEquals(pair.getRight(), singleNodeResult);
