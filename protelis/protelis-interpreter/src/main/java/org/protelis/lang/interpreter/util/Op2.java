@@ -293,7 +293,7 @@ public enum Op2 implements WithBytecode {
         if (a instanceof Tuple && b instanceof Tuple) {
             final Tuple ta = (Tuple) a;
             final Tuple tb = (Tuple) b;
-            if (ta.size() == tb.size()) {
+            if (ta.size() == tb.size()) { // NOPMD: ints are compare with ==
                 return (O) DatatypeFactory.createTuple(IntStream.range(0, ta.size())
                         .mapToObj(i -> arithmetic(op, (I) ta.get(i), (I) tb.get(i), f))
                         .toArray());
