@@ -38,7 +38,7 @@ public abstract class AbstractField<T> implements Field<T> {
         if (o instanceof Field) {
             final Field<?> other = (Field<?>) o;
             return size() == other.size()
-                && getLocalDevice() == other.getLocalDevice()
+                && getLocalDevice().equals(other.getLocalDevice())
                 && toMap().equals(other.toMap());
         }
         return false;
