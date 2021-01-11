@@ -1,6 +1,16 @@
 plugins {
     id("org.protelis.protelisdoc")
 }
+repositories {
+    jcenter {
+        content {
+            includeGroup("org.jetbrains.dokka")
+            includeGroup("com.soywiz.korlibs.korte")
+            includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+            includeModule("org.jetbrains", "markdown")
+        }
+    }
+}
 apply(plugin = "org.protelis.protelisdoc")
 
 dependencies {
