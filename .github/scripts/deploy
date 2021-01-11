@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 cd protelis
-COMMAND='./gradlew javadoc shadow publishAll --parallel'
-$COMMAND || $COMMAND || $COMMAND || $COMMAND || $COMMAND
+./gradlew javadoc shadow publishJavaMavenPublicationToCentralS01Repository --parallel
+./gradlew publishJavaMavenPublicationToGithubRepository || true # This task can fail
 if [ -n "$TAG" ] || [ "$BRANCH" = 'develop' ]
 then
     echo Installing surge

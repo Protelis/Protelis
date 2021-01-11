@@ -1,4 +1,5 @@
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import org.danilopianini.gradle.mavencentral.mavenCentral
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
@@ -151,6 +152,15 @@ allprojects {
         licenseUrl = "licenseUrl".fromProperties()
         projectUrl = "http://www.protelis.org"
         scmConnection = scmUrl
+        repository("https://maven.pkg.github.com/protelis/protelis") {
+            user = System.getenv("GITHUB_ACTOR") ?: "DanySK"
+            password = System.getenv("GITHUB_TOKEN")
+        }
+        val central = mavenCentral()
+        repository(central.url.replace("https://", "https://s01."), name = "CentralS01") {
+            user = central.user()
+            password = central.password()
+        }
     }
 
     publishing.publications {
