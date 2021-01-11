@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 cd protelis
-COMMAND='./gradlew javadoc publishAll --parallel'
+COMMAND='./gradlew javadoc shadow publishAll --parallel'
 $COMMAND || $COMMAND || $COMMAND || $COMMAND || $COMMAND
 if [ -n "$TAG" ] || [ "$BRANCH" = 'develop' ]
 then
@@ -22,7 +22,7 @@ if [ -n "$TAG" ]
 then
     MESSAGE=$(git tag -l --format='%(contents)' "$TAG")
     hub release create -m "$MESSAGE" "$TAG" || true
-    for jar in build/libs/protelis-redist*.jar; do
+    for jar in build/shadow/protelis-*-all.jar; do
         hub release edit -m '' -a "$jar" "$TAG"
     done
 fi

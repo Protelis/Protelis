@@ -15,9 +15,11 @@ plugins {
     id("org.danilopianini.publish-on-central")
     id("org.protelis.protelisdoc") apply false
     id("com.jfrog.bintray")
+    id("com.github.johnrengelman.shadow")
 }
 
 apply(plugin = "com.jfrog.bintray")
+apply(plugin = "com.github.johnrengelman.shadow")
 
 val scmUrl = "git:git@github.com:Protelis/Protelis"
 
@@ -236,24 +238,28 @@ tasks.withType<Javadoc> {
     source(subprojects.map { it.tasks.javadoc.get().source })
 }
 
-tasks.register<Jar>("fatJar") {
-    archiveBaseName.set("${rootProject.name}-redist")
-    isZip64 = true
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }) {
-        // remove all signature files
-        exclude("META-INF/")
-        exclude("ant_tasks/")
-        exclude("about_files/")
-        exclude("help/about/")
-        exclude("build")
-        exclude(".gradle")
-        exclude("build.gradle")
-        exclude("gradle")
-        exclude("gradlew")
-        exclude("gradlew.bat")
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    manifest {
+        attributes(
+            mapOf(
+                "Implementation-Title" to "Protelis",
+                "Implementation-Version" to rootProject.version,
+                "Automatic-Module-Name" to "org.protelis"
+            )
+        )
     }
-    with(tasks.jar.get() as CopySpec)
-    dependsOn(subprojects.flatMap { it.tasks.withType<Jar>() })
+    exclude("ant_tasks/")
+    exclude("about_files/")
+    exclude("help/about/")
+    exclude("build")
+    exclude(".gradle")
+    exclude("build.gradle")
+    exclude("gradle")
+    exclude("gradlew")
+    exclude("gradlew.bat")
+    isZip64 = true
+    mergeServiceFiles()
+    destinationDirectory.set(file("${rootProject.buildDir}/shadow"))
 }
 
 /*
