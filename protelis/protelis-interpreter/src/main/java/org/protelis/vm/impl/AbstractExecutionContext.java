@@ -14,7 +14,6 @@ import static org.protelis.lang.interpreter.util.Bytecode.INIT;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +35,7 @@ import org.protelis.vm.ExecutionEnvironment;
 import org.protelis.vm.NetworkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -71,18 +71,18 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     private Optional<Map<Reference, ?>> functions = Optional.empty();
     private Map<Reference, Object> gamma;
     private final NetworkManager nm;
-    private Number previousRoundTime; 
+    private Number previousRoundTime;
     private final List<AbstractExecutionContext<S>> restrictedContexts = Lists.newArrayList();
     private Map<DeviceUID, Map<CodePath, Object>> theta;
     private Map<CodePath, Supplier<?>> tobeComputedBeforeSending;
     private Map<CodePath, Object> toSend;
     private Map<CodePath, Object> toStore;
-    private Map<CodePath, Object> lastStored = new LinkedHashMap<>();
+    private Map<CodePath, Object> lastStored = Collections.emptyMap();
     private int variablesSize;
 
     /**
      * Create a new AbstractExecutionContext with a default, time-efficient code path factory.
-     * 
+     *
      * @param execenv
      *            The execution environment
      * @param netmgr
@@ -96,11 +96,11 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      * Create a new AbstractExecutionContext with the specified
      * {@link CodePathFactory}. Subclasses which want to use hashing or other means
      * to encode {@link CodePath}s can call this constructor, e.g.:
-     * 
+     *
      * <pre>
      * super(execenv, netmgr, new HashingCodePathFactory(Hashing.sha256()));
      * </pre>
-     * 
+     *
      * @param execenv         The execution environment
      * @param netmgr          Abstract network interface to be used
      * @param codePathFactory The code path factory to use
@@ -147,8 +147,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         if (destination.putIfAbsent(codePath, toBeSent) != null) {
             throw new IllegalStateException(
                     "This program has attempted to build a field twice with the same code path. "
-                            + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
-                            + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
+                        + "This is probably a bug in Protelis. Debug information: tried to insert " + codePath
+                        + " into " + toSend + ". Value to insert: " + localValue + ", existing one: " + toSend.get(codePath)
             );
         }
         return builder.build(getDeviceUID(), computeValue.apply(Objects.requireNonNull(localValue)));
@@ -203,7 +203,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         gamma = null;
         theta = null;
         toSend = null;
-        lastStored = toStore;
+        lastStored = Collections.unmodifiableMap(toStore);
         toStore = null;
         tobeComputedBeforeSending = null;
         for (final AbstractExecutionContext<S> rctx: restrictedContexts) {
@@ -235,7 +235,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     /**
      * Support for first-class functions by returning the set of currently
      * accessible functions.
-     * 
+     *
      * @return Map from function name to function objects
      */
     protected final Map<Reference, ?> getFunctions() {
@@ -244,7 +244,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
 
     /**
      * Accessor for abstract network interface.
-     * 
+     *
      * @return Current abstract network interface
      */
     protected final NetworkManager getNetworkManager() {
@@ -264,10 +264,14 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         return gamma.get(name);
     }
 
+    public final Map<CodePath, Object> getStoredState() {
+        return lastStored;
+    }
+
     /**
      * Produce a child execution context, for encapsulated evaluation of
      * sub-programs.
-     * 
+     *
      * @return Child execution context
      */
     protected abstract S instance();
@@ -408,5 +412,4 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         }
         newCallStackFrame(INIT.getCode());
     }
-
 }
