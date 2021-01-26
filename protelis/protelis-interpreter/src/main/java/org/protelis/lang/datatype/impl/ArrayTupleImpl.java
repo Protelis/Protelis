@@ -8,7 +8,6 @@
  *******************************************************************************/
 package org.protelis.lang.datatype.impl;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -34,7 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * Implementation of a Tuple using an array data structure.
@@ -356,7 +354,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple sort() {
         final Object[] newArray = Arrays.copyOf(arrayContents, arrayContents.length);
-        Arrays.sort(newArraqy, COMPARE_TO);
+        Arrays.sort(newArray, COMPARE_TO);
         return DatatypeFactory.createTuple(newArray);
     }
 
@@ -439,6 +437,15 @@ public final class ArrayTupleImpl implements Tuple {
         }).toArray());
     }
 
+    @Override
+    public Tuple zip(final Tuple other) {
+        final Object[] result = new Object[Math.min(size(), other.size())];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new ArrayTupleImpl(new Object[]{ get(i), other.get(i) }, false);
+        }
+        return new ArrayTupleImpl(result, false);
+    }
+
     private static int compareLexicographically(final Object a, final Object b) {
         return a.toString().compareTo(b.toString());
     }
@@ -446,5 +453,4 @@ public final class ArrayTupleImpl implements Tuple {
     private static List<ProtelisAST<?>> elementAsArguments(final Object element) {
         return ImmutableList.of(new Constant<>(JavaInteroperabilityUtils.METADATA, element));
     }
-
 }
