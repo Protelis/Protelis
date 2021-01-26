@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.protelis.lang.datatype.impl;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Implementation of a Tuple using an array data structure.
@@ -65,7 +67,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     /**
      * Create an ArrayTupleImpl with all elements initialized to a given value.
-     * 
+     *
      * @param value
      *            The value to initialize to
      * @param length
@@ -164,19 +166,19 @@ public final class ArrayTupleImpl implements Tuple {
         Objects.requireNonNull(fun);
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             final AtomicInteger counter = new AtomicInteger();
-            return DatatypeFactory
-                    .createTuple(Arrays.stream(arrayContents)
-                        .filter(elem -> {
-                            final List<ProtelisAST<?>> arguments = elementAsArguments(elem);
-                            final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
-                            final Object outcome = ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
-                            if (outcome instanceof Boolean) {
-                                return (Boolean) outcome;
-                            } else {
-                                throw new IllegalArgumentException("Filtering functions must return boolean.");
-                            }
-                        })
-                        .toArray());
+            return new ArrayTupleImpl(
+                Arrays.stream(arrayContents).filter(elem -> {
+                    final List<ProtelisAST<?>> arguments = elementAsArguments(elem);
+                    final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
+                    final Object outcome = ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
+                    if (outcome instanceof Boolean) {
+                        return (Boolean) outcome;
+                    } else {
+                        throw new IllegalArgumentException("Filtering functions must return boolean.");
+                    }
+                }).toArray(),
+                false
+            );
         }
         throw new IllegalArgumentException("Filtering function must take one parameter.");
     }
@@ -184,12 +186,12 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple filter(final Predicate<Object> fun) {
         Objects.requireNonNull(fun);
-        return DatatypeFactory.createTuple(Arrays.stream(arrayContents).filter(fun).toArray());
+        return new ArrayTupleImpl(Arrays.stream(arrayContents).filter(fun).toArray(), false);
     }
 
     /**
      * Compatibility method to speed up calls made using doubles.
-     * 
+     *
      * @param i
      *            the element position (will be floored to int)
      * @return the i-th element
@@ -200,7 +202,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     /**
      * Compatibility method to speed up calls made using doubles.
-     * 
+     *
      * @param i
      *            the element position (will be floored to int)
      * @return the i-th element
@@ -268,12 +270,13 @@ public final class ArrayTupleImpl implements Tuple {
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             final AtomicInteger counter = new AtomicInteger();
-            return DatatypeFactory.createTuple(Arrays.stream(arrayContents)
-                .map(elem -> {
+            return new ArrayTupleImpl(
+                Arrays.stream(arrayContents).map(elem -> {
                     final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, elementAsArguments(elem));
                     return ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
-                })
-                .toArray());
+                }).toArray(),
+                false
+            );
         }
         throw new IllegalArgumentException("Mapping function must take one parameter.");
     }
@@ -353,7 +356,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple sort() {
         final Object[] newArray = Arrays.copyOf(arrayContents, arrayContents.length);
-        Arrays.sort(newArray, COMPARE_TO);
+        Arrays.sort(newArraqy, COMPARE_TO);
         return DatatypeFactory.createTuple(newArray);
     }
 
