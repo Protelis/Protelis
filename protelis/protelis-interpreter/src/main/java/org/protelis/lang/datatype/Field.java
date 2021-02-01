@@ -11,6 +11,7 @@ package org.protelis.lang.datatype;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -160,8 +161,7 @@ public interface Field<T> extends Serializable {
      *                                among its keys
      */
     default T get(@Nonnull DeviceUID id) {
-        return stream().filter(it -> it.getKey().equals(id)).findFirst()
-            .map(Map.Entry::getValue)
+        return getIfPresent(id)
             .orElseThrow(() -> new NoSuchElementException("Device " + id + " is not available in field " + this));
     }
 
@@ -171,6 +171,16 @@ public interface Field<T> extends Serializable {
     @SuppressWarnings("unchecked")
     default Class<? extends T> getExpectedType() {
         return (Class<? extends T>) getLocal().getValue().getClass();
+    }
+
+    /**
+     * @param id the DeviceUID
+     * @return the associated value wrapped in an {@link Optional},
+     *         or an {@link Optional#empty()} if the device is not aligned.
+     */
+    default Optional<T> getIfPresent(@Nonnull DeviceUID id) {
+        return stream().filter(it -> it.getKey().equals(id)).findFirst()
+            .map(Map.Entry::getValue);
     }
 
     /**
