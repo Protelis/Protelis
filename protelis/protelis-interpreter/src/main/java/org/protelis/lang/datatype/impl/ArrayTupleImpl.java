@@ -43,7 +43,7 @@ public final class ArrayTupleImpl implements Tuple {
     private static final Comparator<Object> COMPARE_TO = (a, b) -> {
         if (a instanceof Comparable && b instanceof Comparable) {
             try {
-                return ((Comparable<Object>) a).compareTo((Comparable<?>) b);
+                return ((Comparable<Object>) a).compareTo(b);
             } catch (RuntimeException e) { // NOPMD: this is done by purpose
                 return compareLexicographically(a, b);
             }
@@ -99,7 +99,7 @@ public final class ArrayTupleImpl implements Tuple {
             final Object o2 = o.get(i);
             if (o1 instanceof Comparable && o2 instanceof Comparable) {
                 try {
-                    res = ((Comparable<Object>) o1).compareTo((Comparable<?>) o2);
+                    res = ((Comparable<Object>) o1).compareTo(o2);
                 } catch (ClassCastException ex) {
                     /*
                      * Uncomparable, go lexicographically
@@ -147,7 +147,7 @@ public final class ArrayTupleImpl implements Tuple {
         }
         if (o instanceof Tuple) {
             final Tuple t = (Tuple) o;
-            if ((int) t.size() == arrayContents.length) {
+            if (t.size() == arrayContents.length) {
                 for (int i = 0; i < arrayContents.length; i++) {
                     if (!arrayContents[i].equals(t.get(i))) {
                         return false;
@@ -244,7 +244,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple insert(final int i, final Object element) {
-        return new ArrayTupleImpl(ArrayUtils.insert((int) i, arrayContents, element), false);
+        return new ArrayTupleImpl(ArrayUtils.insert(i, arrayContents, element), false);
     }
 
     @Override
@@ -295,7 +295,7 @@ public final class ArrayTupleImpl implements Tuple {
         if (tuple instanceof ArrayTupleImpl) {
             return new ArrayTupleImpl(ArrayUtils.addAll(arrayContents, ((ArrayTupleImpl) tuple).arrayContents), false);
         }
-        final Object[] copy = new Object[arrayContents.length + (int) tuple.size()];
+        final Object[] copy = new Object[arrayContents.length + tuple.size()];
         System.arraycopy(arrayContents, 0, copy, 0, arrayContents.length);
         for (int i = 0; i < copy.length; i++) {
             copy[i] = tuple.get(i - arrayContents.length);
