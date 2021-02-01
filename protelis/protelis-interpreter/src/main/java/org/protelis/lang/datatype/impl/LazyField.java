@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -115,8 +116,8 @@ public final class LazyField<T> extends AbstractField<T> {
     }
 
     @Override
-    public T get(@Nonnull final DeviceUID id) {
-        final T result = neighbors.getUnchecked(id);
+    public Optional<T> getIfPresent(@Nonnull final DeviceUID id) {
+        final Optional<T> result = Optional.ofNullable(neighbors.getUnchecked(id));
         /*
          * Check for cache population completion
          */
