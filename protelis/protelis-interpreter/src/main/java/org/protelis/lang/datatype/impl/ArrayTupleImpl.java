@@ -342,7 +342,7 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple set(final int i, final Object element) {
         final Object[] copy = Arrays.copyOf(arrayContents, arrayContents.length);
-        copy[(int) i] = element;
+        copy[i] = element;
         return new ArrayTupleImpl(copy, false);
     }
 
@@ -369,7 +369,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public ArrayTupleImpl subTuple(final int i, final int j) {
-        return new ArrayTupleImpl(ArrayUtils.subarray(arrayContents, (int) i, (int) j), false);
+        return new ArrayTupleImpl(ArrayUtils.subarray(arrayContents, i, j), false);
     }
 
     @Override
