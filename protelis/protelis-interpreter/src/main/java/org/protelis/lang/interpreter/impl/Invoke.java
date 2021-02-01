@@ -58,8 +58,13 @@ public final class Invoke extends AbstractProtelisAST<Object> {
      * @param args
      *            arguments of the function
      */
-    public Invoke(final Metadata metadata, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
-        this(metadata, name.equals(APPLY), name, target, args);
+    public Invoke(
+            final Metadata metadata,
+            final String name,
+            final ProtelisAST<?> target,
+            final List<ProtelisAST<?>> args
+    ) {
+        this(metadata, APPLY.equals(name), name, target, args);
     }
 
     /**
