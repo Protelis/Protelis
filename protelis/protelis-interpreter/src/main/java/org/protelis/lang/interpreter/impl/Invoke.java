@@ -34,7 +34,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     public static final String APPLY = "apply";
     private static final long serialVersionUID = 1L;
     private final boolean isApply;
-    private final ProtelisAST<?> left;
+    private final ProtelisAST<?> leftExpression;
     private final String methodName;
 
     private Invoke(final Metadata metadata, final boolean apply, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
@@ -42,7 +42,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
         Objects.requireNonNull(target);
         isApply = apply;
         methodName = apply ? APPLY : name;
-        left = target;
+        leftExpression = target;
     }
 
     /**
@@ -81,7 +81,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
         /*
          * If it is a function pointer, then create a new function call
          */
-        final Object target = context.runInNewStackFrame(DOT_OPERATOR_TARGET.getCode(), left::eval);
+        final Object target = context.runInNewStackFrame(DOT_OPERATOR_TARGET.getCode(), leftExpression::eval);
         if (isApply && target instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) target;
             /*
@@ -121,6 +121,13 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * @return the {@link ProtelisAST} representing the invocation receiver
+     */
+    public ProtelisAST<?> getLeftExpression() {
+        return leftExpression;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -133,7 +140,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
      */
     @Override
     public String toString() {
-        return stringFor(left) + '.' + methodName + branchesToString();
+        return stringFor(leftExpression) + '.' + methodName + branchesToString();
     }
 
     @Override
