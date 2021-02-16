@@ -65,11 +65,10 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     static {
         SERIALIZER.registerClass(String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class);
     }
-    private final ProtelisAST<?> defVal;
+    private final ProtelisAST<?> defaultValue;
     private final ProtelisAST<Field<?>> fieldGenerator;
-    private final ProtelisAST<FunctionDefinition> filterOp;
-
-    private final ProtelisAST<FunctionDefinition> runOp;
+    private final ProtelisAST<FunctionDefinition> filter;
+    private final ProtelisAST<FunctionDefinition> execute;
 
     /**
      * @param metadata
@@ -87,9 +86,9 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
                       final ProtelisAST<FunctionDefinition> op, final ProtelisAST<?> def) {
         super(metadata, arg, filter, op, def);
         fieldGenerator = arg;
-        filterOp = filter;
-        runOp = op;
-        defVal = def;
+        this.filter = filter;
+        execute = op;
+        defaultValue = def;
     }
 
     @Override
@@ -141,7 +140,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
          * Get or initialize the mapping between keys and functions
          */
         final List<Tuple> resultList = new ArrayList<>(keyToField.size());
-        final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), defVal::eval);
+        final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), this.defaultValue::eval);
         for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
             final Object key = keyFieldPair.getKey();
             final Map<DeviceUID, Object> preField = keyFieldPair.getValue();
@@ -176,7 +175,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             /*
              * Run the actual filtering and operation
              */
-            final Object condition = callFunctionInSubContext(ALIGNED_MAP_FILTER.getCode(), restricted, filterOp, args);
+            final Object condition = callFunctionInSubContext(ALIGNED_MAP_FILTER.getCode(), restricted, filter, args);
             if (condition instanceof Boolean) {
                 if ((Boolean) condition) {
                     /*
@@ -184,7 +183,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
                      */
                     resultList.add(DatatypeFactory.createTuple(
                             key,
-                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, runOp, args)));
+                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, execute, args)));
                 }
             } else {
                 throw new IllegalStateException("Filter must return a Boolean, got " + condition.getClass());
