@@ -1,16 +1,15 @@
-/*******************************************************************************
- * Copyright (C) 2014, 2015, Danilo Pianini and contributors
- * listed in the project's build.gradle or pom.xml file.
+/*
+ * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
  *
- * This file is part of Protelis, and is distributed under the terms of
- * the GNU General Public License, with a linking exception, as described
- * in the file LICENSE.txt in this project's top directory.
- *******************************************************************************/
+ * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ */
 package org.protelis.lang.datatype;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -160,8 +159,7 @@ public interface Field<T> extends Serializable {
      *                                among its keys
      */
     default T get(@Nonnull DeviceUID id) {
-        return stream().filter(it -> it.getKey().equals(id)).findFirst()
-            .map(Map.Entry::getValue)
+        return getIfPresent(id)
             .orElseThrow(() -> new NoSuchElementException("Device " + id + " is not available in field " + this));
     }
 
@@ -171,6 +169,16 @@ public interface Field<T> extends Serializable {
     @SuppressWarnings("unchecked")
     default Class<? extends T> getExpectedType() {
         return (Class<? extends T>) getLocal().getValue().getClass();
+    }
+
+    /**
+     * @param id the DeviceUID
+     * @return the associated value wrapped in an {@link Optional},
+     *         or an {@link Optional#empty()} if the device is not aligned.
+     */
+    default Optional<T> getIfPresent(@Nonnull DeviceUID id) {
+        return stream().filter(it -> it.getKey().equals(id)).findFirst()
+            .map(Map.Entry::getValue);
     }
 
     /**

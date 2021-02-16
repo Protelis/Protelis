@@ -1,11 +1,9 @@
-/*******************************************************************************
- * Copyright (C) 2010, 2015, Danilo Pianini and contributors
- * listed in the project's build.gradle or pom.xml file.
+/*
+ * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
  *
- * This file is part of Protelis, and is distributed under the terms of
- * the GNU General Public License, with a linking exception, as described
- * in the file LICENSE.txt in this project's top directory.
- *******************************************************************************/
+ * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ */
 package org.protelis.lang.datatype.impl;
 
 import java.io.IOException;
@@ -15,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -115,8 +114,8 @@ public final class LazyField<T> extends AbstractField<T> {
     }
 
     @Override
-    public T get(@Nonnull final DeviceUID id) {
-        final T result = neighbors.getUnchecked(id);
+    public Optional<T> getIfPresent(@Nonnull final DeviceUID id) {
+        final Optional<T> result = Optional.ofNullable(neighbors.getUnchecked(id));
         /*
          * Check for cache population completion
          */

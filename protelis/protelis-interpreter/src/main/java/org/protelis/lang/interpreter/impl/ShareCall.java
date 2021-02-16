@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ *
+ * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ */
+
 package org.protelis.lang.interpreter.impl;
 
 import static org.protelis.lang.interpreter.util.Bytecode.REP;
@@ -32,9 +39,9 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     private static final long serialVersionUID = 8643287734245198408L;
     private final Optional<Reference> fieldName;
     private final Optional<Reference> localName;
-    private final Optional<AbstractProtelisAST<T>> yield;
-    private final ProtelisAST<S> init;
-    private final ProtelisAST<S> body;
+    private final Optional<AbstractProtelisAST<T>> yieldExpression;
+    private final ProtelisAST<S> initExpression;
+    private final ProtelisAST<S> bodyExpression;
 
     /**
      * Convenience constructor with {@link java.util.Optional}.
@@ -58,7 +65,8 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
             @Nonnull final java.util.Optional<Reference> fieldName,
             @Nonnull final ProtelisAST<S> init,
             @Nonnull final ProtelisAST<S> body,
-            @Nonnull final java.util.Optional<ProtelisAST<T>> yield) {
+            @Nonnull final java.util.Optional<ProtelisAST<T>> yield
+    ) {
         this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
     }
 
@@ -89,9 +97,9 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         }
         this.localName = localName;
         this.fieldName = fieldName;
-        this.init = init;
-        this.body = body;
-        this.yield = yield.transform(it ->  {
+        this.initExpression = init;
+        this.bodyExpression = body;
+        this.yieldExpression = yield.transform(it ->  {
             if (it instanceof AbstractProtelisAST) {
                 return (AbstractProtelisAST<T>) it;
             }
@@ -110,7 +118,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     @SuppressWarnings("unchecked")
     @Override
     public T evaluate(final ExecutionContext context) {
-        final S initValue = context.runInNewStackFrame(SHARE_INIT.getCode(), init::eval);
+        final S initValue = context.runInNewStackFrame(SHARE_INIT.getCode(), initExpression::eval);
         final S localValue = ensureType(loadState(context, () -> initValue));
         ifPresent(localName, it -> context.putVariable(it, localValue));
         final BodyResult<S> bodyResult = new BodyResult<>();
@@ -118,8 +126,8 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
                 .putVariable(it, context.buildFieldDeferred(i -> i, localValue, bodyResult::getResult)));
         context.newCallStackFrame(SHARE_BODY.getCode());
         final Optional<T> yieldResult;
-        if (body instanceof All) {
-            final All multilineBody = (All) body;
+        if (bodyExpression instanceof All) {
+            final All multilineBody = (All) bodyExpression;
             multilineBody.forEachWithIndex((i, b) -> {
                 context.newCallStackFrame(i);
                 bodyResult.result = (S) b.eval(context);
@@ -127,7 +135,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
             yieldResult = evaluateYield(context);
             multilineBody.forEach(it -> context.returnFromCallFrame());
         } else {
-            bodyResult.result = body.eval(context);
+            bodyResult.result = bodyExpression.eval(context);
             yieldResult = evaluateYield(context);
         }
         context.returnFromCallFrame();
@@ -136,7 +144,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     }
 
     private Optional<T> evaluateYield(final ExecutionContext context) {
-        return yield.transform(it -> context.runInNewStackFrame(SHARE_YIELD.getCode(), it::eval));
+        return yieldExpression.transform(it -> context.runInNewStackFrame(SHARE_YIELD.getCode(), it::eval));
     }
 
     @Override
@@ -149,6 +157,14 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         return fieldName.isPresent() ? "share" : "rep";
     }
 
+    /**
+     * @return an {@link Optional} containing the {@link ProtelisAST} representing the yield expression,
+     * or an {@link Optional#absent()} otherwise.
+     */
+    public Optional<AbstractProtelisAST<T>> getYieldExpression() {
+        return yieldExpression;
+    }
+
     @Override
     public String toString() {
         final Optional<String> field = fieldName.transform(Reference::toString);
@@ -157,11 +173,11 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
                 .transform(it -> it + field.transform(f -> ", ").or("")).or("")
             + field.or("")
             + " <- "
-            + stringFor(init)
+            + stringFor(initExpression)
             + ") { "
-            + stringFor(body)
+            + stringFor(bodyExpression)
             + " }"
-            + yield.transform(it -> " yield { " + stringFor(it) + '}').or("");
+            + yieldExpression.transform(it -> " yield { " + stringFor(it) + '}').or("");
     }
 
     private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {

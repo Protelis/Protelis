@@ -1,11 +1,9 @@
-/*******************************************************************************
- * Copyright (C) 2014, 2015, Danilo Pianini and contributors
- * listed in the project's build.gradle or pom.xml file.
+/*
+ * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
  *
- * This file is part of Protelis, and is distributed under the terms of
- * the GNU General Public License, with a linking exception, as described
- * in the file LICENSE.txt in this project's top directory.
- *******************************************************************************/
+ * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ */
 package org.protelis.lang.interpreter.impl;
 
 
@@ -36,7 +34,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     public static final String APPLY = "apply";
     private static final long serialVersionUID = 1L;
     private final boolean isApply;
-    private final ProtelisAST<?> left;
+    private final ProtelisAST<?> leftExpression;
     private final String methodName;
 
     private Invoke(final Metadata metadata, final boolean apply, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
@@ -44,7 +42,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
         Objects.requireNonNull(target);
         isApply = apply;
         methodName = apply ? APPLY : name;
-        left = target;
+        leftExpression = target;
     }
 
     /**
@@ -58,8 +56,13 @@ public final class Invoke extends AbstractProtelisAST<Object> {
      * @param args
      *            arguments of the function
      */
-    public Invoke(final Metadata metadata, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
-        this(metadata, name.equals(APPLY), name, target, args);
+    public Invoke(
+            final Metadata metadata,
+            final String name,
+            final ProtelisAST<?> target,
+            final List<ProtelisAST<?>> args
+    ) {
+        this(metadata, APPLY.equals(name), name, target, args);
     }
 
     /**
@@ -78,7 +81,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
         /*
          * If it is a function pointer, then create a new function call
          */
-        final Object target = context.runInNewStackFrame(DOT_OPERATOR_TARGET.getCode(), left::eval);
+        final Object target = context.runInNewStackFrame(DOT_OPERATOR_TARGET.getCode(), leftExpression::eval);
         if (isApply && target instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) target;
             /*
@@ -118,6 +121,13 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * @return the {@link ProtelisAST} representing the invocation receiver
+     */
+    public ProtelisAST<?> getLeftExpression() {
+        return leftExpression;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -130,7 +140,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
      */
     @Override
     public String toString() {
-        return stringFor(left) + '.' + methodName + branchesToString();
+        return stringFor(leftExpression) + '.' + methodName + branchesToString();
     }
 
     @Override

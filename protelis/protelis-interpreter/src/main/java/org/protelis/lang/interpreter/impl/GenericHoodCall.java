@@ -1,11 +1,9 @@
-/*******************************************************************************
- * Copyright (C) 2014, 2015, Danilo Pianini and contributors
- * listed in the project's build.gradle or pom.xml file.
+/*
+ * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
  *
- * This file is part of Protelis, and is distributed under the terms of
- * the GNU General Public License, with a linking exception, as described
- * in the file LICENSE.txt in this project's top directory.
- *******************************************************************************/
+ * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ */
 package org.protelis.lang.interpreter.impl;
 
 import com.google.common.collect.ImmutableList;
@@ -27,6 +25,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_FUNC
 /**
  * Reduce a field into a local value by reduction using a {@link org.protelis.lang.interpreter.util.HoodOp}.
  */
+@Deprecated
 public final class GenericHoodCall extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 1L;
@@ -131,11 +130,12 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
     private FunctionCall makeCall(final ExecutionContext context, final Object a, final Object b) {
         final FunctionDefinition reducer = context.runInNewStackFrame(GENERIC_HOOD_CALL_FUNCTION.getCode(), function::eval);
         return new FunctionCall(
-                    function.getMetadata(),
-                    reducer,
-                    ImmutableList.of(
-                        new Constant<>(function.getMetadata(), a),
-                        new Constant<>(function.getMetadata(), b)));
+            function.getMetadata(),
+            reducer,
+            ImmutableList.of(
+                new Constant<>(function.getMetadata(), a),
+                new Constant<>(function.getMetadata(), b)
+            )
+        );
     }
-
 }

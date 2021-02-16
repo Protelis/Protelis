@@ -1,11 +1,9 @@
-/*******************************************************************************
- * Copyright (C) 2010, 2015, Danilo Pianini and contributors
- * listed in the project's build.gradle or pom.xml file.
+/*
+ * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
  *
- * This file is part of Protelis, and is distributed under the terms of
- * the GNU General Public License, with a linking exception, as described
- * in the file LICENSE.txt in this project's top directory.
- *******************************************************************************/
+ * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ */
 package org.protelis.lang.interpreter.impl;
 
 import com.google.common.cache.CacheBuilder;
@@ -65,31 +63,36 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     static {
         SERIALIZER.registerClass(String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class);
     }
-    private final ProtelisAST<?> defVal;
-    private final ProtelisAST<Field<?>> fieldGenerator;
-    private final ProtelisAST<FunctionDefinition> filterOp;
+    private final ProtelisAST<?> defaultValue;
 
-    private final ProtelisAST<FunctionDefinition> runOp;
+    private final ProtelisAST<Field<?>> fieldGenerator;
+    private final ProtelisAST<FunctionDefinition> filter;
+    private final ProtelisAST<FunctionDefinition> execute;
 
     /**
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
-     * @param arg
+     * @param argument
      *            the field on which {@link AlignedMap} should be applied
      * @param filter
      *            filtering function
-     * @param op
+     * @param operation
      *            function to run
-     * @param def
+     * @param defaultValue
      *            default value
      */
-    public AlignedMap(final Metadata metadata, final ProtelisAST<Field<?>> arg, final ProtelisAST<FunctionDefinition> filter,
-                      final ProtelisAST<FunctionDefinition> op, final ProtelisAST<?> def) {
-        super(metadata, arg, filter, op, def);
-        fieldGenerator = arg;
-        filterOp = filter;
-        runOp = op;
-        defVal = def;
+    public AlignedMap(
+            final Metadata metadata,
+            final ProtelisAST<Field<?>> argument,
+            final ProtelisAST<FunctionDefinition> filter,
+            final ProtelisAST<FunctionDefinition> operation,
+            final ProtelisAST<?> defaultValue
+    ) {
+        super(metadata, argument, filter, operation, defaultValue);
+        fieldGenerator = argument;
+        this.filter = filter;
+        execute = operation;
+        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -141,7 +144,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
          * Get or initialize the mapping between keys and functions
          */
         final List<Tuple> resultList = new ArrayList<>(keyToField.size());
-        final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), defVal::eval);
+        final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), this.defaultValue::eval);
         for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
             final Object key = keyFieldPair.getKey();
             final Map<DeviceUID, Object> preField = keyFieldPair.getValue();
@@ -176,7 +179,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             /*
              * Run the actual filtering and operation
              */
-            final Object condition = callFunctionInSubContext(ALIGNED_MAP_FILTER.getCode(), restricted, filterOp, args);
+            final Object condition = callFunctionInSubContext(ALIGNED_MAP_FILTER.getCode(), restricted, filter, args);
             if (condition instanceof Boolean) {
                 if ((Boolean) condition) {
                     /*
@@ -184,7 +187,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
                      */
                     resultList.add(DatatypeFactory.createTuple(
                             key,
-                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, runOp, args)));
+                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, execute, args)));
                 }
             } else {
                 throw new IllegalStateException("Filter must return a Boolean, got " + condition.getClass());
