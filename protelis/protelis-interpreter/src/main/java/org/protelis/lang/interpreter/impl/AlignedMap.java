@@ -66,6 +66,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
         SERIALIZER.registerClass(String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class);
     }
     private final ProtelisAST<?> defaultValue;
+
     private final ProtelisAST<Field<?>> fieldGenerator;
     private final ProtelisAST<FunctionDefinition> filter;
     private final ProtelisAST<FunctionDefinition> execute;
@@ -73,22 +74,27 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     /**
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
-     * @param arg
+     * @param argument
      *            the field on which {@link AlignedMap} should be applied
      * @param filter
      *            filtering function
-     * @param op
+     * @param operation
      *            function to run
-     * @param def
+     * @param defaultValue
      *            default value
      */
-    public AlignedMap(final Metadata metadata, final ProtelisAST<Field<?>> arg, final ProtelisAST<FunctionDefinition> filter,
-                      final ProtelisAST<FunctionDefinition> op, final ProtelisAST<?> def) {
-        super(metadata, arg, filter, op, def);
-        fieldGenerator = arg;
+    public AlignedMap(
+            final Metadata metadata,
+            final ProtelisAST<Field<?>> argument,
+            final ProtelisAST<FunctionDefinition> filter,
+            final ProtelisAST<FunctionDefinition> operation,
+            final ProtelisAST<?> defaultValue
+    ) {
+        super(metadata, argument, filter, operation, defaultValue);
+        fieldGenerator = argument;
         this.filter = filter;
-        execute = op;
-        defaultValue = def;
+        execute = operation;
+        this.defaultValue = defaultValue;
     }
 
     @Override
