@@ -74,6 +74,27 @@ public final class If<T> extends AbstractProtelisAST<T> {
     }
 
     /**
+     * @return the {@link ProtelisAST} of the condition expression
+     */
+    public ProtelisAST<Boolean> getConditionExpression() {
+        return conditionExpression;
+    }
+
+    /**
+     * @return the {@link ProtelisAST} of the else expression
+     */
+    public ProtelisAST<T> getElseExpression() {
+        return elseExpression;
+    }
+
+    /**
+     * @return the {@link ProtelisAST} of the then expression
+     */
+    public ProtelisAST<T> getThenExpression() {
+        return thenExpression;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
