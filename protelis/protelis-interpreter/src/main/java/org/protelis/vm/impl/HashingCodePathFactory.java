@@ -9,6 +9,7 @@ package org.protelis.vm.impl;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.function.Supplier;
 
 import org.protelis.vm.CodePath;
@@ -129,6 +130,11 @@ public class HashingCodePathFactory implements CodePathFactory {
                 | ((hash[2] & 0xFF) << 16)
                 | ((hash[3] & 0xFF) << 24);
             // CHECKSTYLE: MagicNumber ON
+        }
+
+        @Override
+        public String toString() {
+            return Base64.getEncoder().encodeToString(hash);
         }
     }
 }
