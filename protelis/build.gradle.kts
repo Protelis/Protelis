@@ -81,6 +81,10 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
+    tasks.withType<AbstractCopyTask> {
+        duplicatesStrategy = DuplicatesStrategy.WARN
+    }
+
     tasks.withType<Test> {
         failFast = true
         testLogging {
