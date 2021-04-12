@@ -192,7 +192,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
 
     private static class BodyResult<S> {
         private S result;
-        private S getResult() {
+        private S getResult() { // NOPMD: false positive.
             return result;
         }
     }
