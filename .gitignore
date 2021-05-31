@@ -9,3 +9,4 @@ version.info
 .recommenders/
 */*/.settings/*.prefs
 **/out/
+.idea/
