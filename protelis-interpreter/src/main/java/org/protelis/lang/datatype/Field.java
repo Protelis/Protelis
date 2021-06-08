@@ -37,7 +37,7 @@ public interface Field<T> extends Serializable {
      * @param id a device UID
      * @return true if there is an entry in this field for the device
      */
-    default boolean containsKey(DeviceUID id) {
+    default boolean containsKey(final DeviceUID id) {
         return foldExcludingLocal(false, it -> it.getKey().equals(id), Boolean::logicalOr);
     }
 
@@ -49,7 +49,10 @@ public interface Field<T> extends Serializable {
      * @param combiner reduction function, takes two R and returns a single R
      * @return the result of the reduction
      */
-    default Map.Entry<DeviceUID, T> foldExcludingLocal(Map.Entry<DeviceUID, T> base, BinaryOperator<Map.Entry<DeviceUID, T>> combiner) {
+    default Map.Entry<DeviceUID, T> foldExcludingLocal(
+            final Map.Entry<DeviceUID, T> base,
+            final BinaryOperator<Map.Entry<DeviceUID, T>> combiner
+    ) {
         return foldExcludingLocal(base, Function.identity(), combiner);
     }
 
@@ -65,9 +68,9 @@ public interface Field<T> extends Serializable {
      * @return the result of the reduction
      */
     default <R> R foldExcludingLocal(
-            R base,
-            Function<Map.Entry<DeviceUID, T>, R> mapper,
-            BinaryOperator<R> combiner
+        final R base,
+        final Function<Map.Entry<DeviceUID, T>, R> mapper,
+        final BinaryOperator<R> combiner
     ) {
         return stream()
             .filter(it -> !it.getKey().equals(getLocalDevice()))
@@ -81,7 +84,9 @@ public interface Field<T> extends Serializable {
      * @param combiner reduction function, takes two R and returns a single R
      * @return the result of the reduction
      */
-    default Map.Entry<DeviceUID, T> foldIncludingLocal(BinaryOperator<Map.Entry<DeviceUID, T>> combiner) {
+    default Map.Entry<DeviceUID, T> foldIncludingLocal(
+        final BinaryOperator<Map.Entry<DeviceUID, T>> combiner
+    ) {
         return foldIncludingLocal(Function.identity(), combiner);
     }
 
@@ -96,8 +101,8 @@ public interface Field<T> extends Serializable {
      * @return the result of the reduction
      */
     default <R> R foldIncludingLocal(
-            Function<Map.Entry<DeviceUID, T>, R> mapper,
-            BinaryOperator<R> combiner
+        final Function<Map.Entry<DeviceUID, T>, R> mapper,
+        final BinaryOperator<R> combiner
     ) {
         return stream()
             .map(mapper)
@@ -113,7 +118,7 @@ public interface Field<T> extends Serializable {
      * @param combiner reduction function, takes two DeviceUID and returns a single one
      * @return the result of the reduction
      */
-    default DeviceUID foldKeysExcludingLocal(DeviceUID base, BinaryOperator<DeviceUID> combiner) {
+    default DeviceUID foldKeysExcludingLocal(final DeviceUID base, final BinaryOperator<DeviceUID> combiner) {
         return foldExcludingLocal(base, Map.Entry::getKey, combiner);
     }
 
@@ -125,7 +130,7 @@ public interface Field<T> extends Serializable {
      *                 one
      * @return the result of the reduction
      */
-    default DeviceUID foldKeysIncludingLocal(BinaryOperator<DeviceUID> combiner) {
+    default DeviceUID foldKeysIncludingLocal(final BinaryOperator<DeviceUID> combiner) {
         return foldIncludingLocal(Map.Entry::getKey, combiner);
     }
 
@@ -137,7 +142,7 @@ public interface Field<T> extends Serializable {
      * @param combiner reduction function, takes two Ts and returns a single one
      * @return the result of the reduction
      */
-    default T foldValuesExcludingLocal(T base, BinaryOperator<T> combiner) {
+    default T foldValuesExcludingLocal(final T base, final BinaryOperator<T> combiner) {
         return foldExcludingLocal(base, Map.Entry::getValue, combiner);
     }
 
@@ -148,7 +153,7 @@ public interface Field<T> extends Serializable {
      * @param combiner reduction function, takes two Ts and returns a single one
      * @return the result of the reduction
      */
-    default T foldValuesIncludingLocal(BinaryOperator<T> combiner) {
+    default T foldValuesIncludingLocal(final BinaryOperator<T> combiner) {
         return foldIncludingLocal(Map.Entry::getValue, combiner);
     }
 
@@ -158,7 +163,7 @@ public interface Field<T> extends Serializable {
      * @throws NoSuchElementException if the field does not have the provided id
      *                                among its keys
      */
-    default T get(@Nonnull DeviceUID id) {
+    default T get(@Nonnull final DeviceUID id) {
         return getIfPresent(id)
             .orElseThrow(() -> new NoSuchElementException("Device " + id + " is not available in field " + this));
     }
@@ -176,7 +181,7 @@ public interface Field<T> extends Serializable {
      * @return the associated value wrapped in an {@link Optional},
      *         or an {@link Optional#empty()} if the device is not aligned.
      */
-    default Optional<T> getIfPresent(@Nonnull DeviceUID id) {
+    default Optional<T> getIfPresent(@Nonnull final DeviceUID id) {
         return stream().filter(it -> it.getKey().equals(id)).findFirst()
             .map(Map.Entry::getValue);
     }
@@ -234,7 +239,7 @@ public interface Field<T> extends Serializable {
      * @param mapper mapping function
      * @return a new field whose values are provided by the mapper function
      */
-    default <R> Field<R> map(@Nonnull Function<DeviceUID, R> mapper) {
+    default <R> Field<R> map(@Nonnull final Function<DeviceUID, R> mapper) {
         return new LazyField<>(this, mapper);
     }
 
@@ -247,7 +252,7 @@ public interface Field<T> extends Serializable {
      *         the restriction is operated over the same domain of the current
      *         field, the field itself can be returned.
      */
-    default Field<T> projectOn(@Nonnull Field<?> restricted) {
+    default Field<T> projectOn(@Nonnull final Field<?> restricted) {
         if (restricted.size() > size()) {
             throw new IllegalArgumentException("Field cannot possibly get extended");
         }
@@ -266,7 +271,7 @@ public interface Field<T> extends Serializable {
      * @return An {@link Option} with the computed value, or an empty option if the
      *         field was containing only the local value
      */
-    default Option<Map.Entry<DeviceUID, T>> reduce(@Nonnull BinaryOperator<Map.Entry<DeviceUID, T>> combiner) {
+    default Option<Map.Entry<DeviceUID, T>> reduce(@Nonnull final BinaryOperator<Map.Entry<DeviceUID, T>> combiner) {
         return reduce(Function.identity(), combiner);
     }
 
@@ -283,8 +288,8 @@ public interface Field<T> extends Serializable {
      *         field was containing only the local value
      */
     default <R> Option<R> reduce(
-            @Nonnull Function<Map.Entry<DeviceUID, T>, R> mapper,
-            @Nonnull BinaryOperator<R> combiner
+            @Nonnull final Function<Map.Entry<DeviceUID, T>, R> mapper,
+            @Nonnull final BinaryOperator<R> combiner
     ) {
         return Option.fromJavaUtil(stream()
                 .filter(it -> !it.getKey().equals(getLocalDevice()))
@@ -302,7 +307,7 @@ public interface Field<T> extends Serializable {
      * @return An {@link Option} with the computed value, or an empty option if the
      *         field was containing only the local value
      */
-    default Option<DeviceUID> reduceKeys(@Nonnull BinaryOperator<DeviceUID> combiner) {
+    default Option<DeviceUID> reduceKeys(@Nonnull final BinaryOperator<DeviceUID> combiner) {
         return reduce(Map.Entry::getKey, combiner);
     }
 
@@ -315,7 +320,7 @@ public interface Field<T> extends Serializable {
      * @return An {@link Option} with the computed value, or an empty option if the
      *         field was containing only the local value
      */
-    default Option<T> reduceValues(@Nonnull BinaryOperator<T> combiner) {
+    default Option<T> reduceValues(@Nonnull final BinaryOperator<T> combiner) {
         return reduce(Map.Entry::getValue, combiner);
     }
 
