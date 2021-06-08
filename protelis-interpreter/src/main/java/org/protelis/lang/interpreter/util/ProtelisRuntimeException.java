@@ -64,7 +64,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      * @return A stringyfied version of the Protelis stack trace that caused the issue
      */
     public String getProtelisStacktrace() {
-        final StringBuilder trace = header();
+        final StringBuilder trace = header(); // NOPMD: False positive, the StringBuilder does not have size 16.
         if (stream().noneMatch(it -> it instanceof FunctionCall)) {
             trace.append("\n\tin main script ")
                 .append(extractLines(protelisStackTrace.getFirst()));
