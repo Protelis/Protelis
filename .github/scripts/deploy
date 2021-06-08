@@ -1,12 +1,13 @@
 #!/bin/sh
 set -e
-./gradlew javadoc shadow publishJavaMavenPublicationToCentralS01Repository --parallel
+./gradlew javadoc shadow publishJavaMavenPublicationToMavenCentralRepository --parallel
 ./gradlew publishJavaMavenPublicationToGithubRepository || true # This task can fail
 if [ -n "$TAG" ] || [ "$BRANCH" = 'develop' ]
 then
     echo Installing surge
     sudo npm install --global surge
     echo preparing build reports
+    mkdir -p report
     mkdir -p report
     cp --parent ./*/build/reports build/reports report -R
     STABILITY_MARKER=$([ "$BRANCH" = 'develop' ] && echo 'unstable-' || echo '')

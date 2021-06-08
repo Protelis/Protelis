@@ -167,11 +167,6 @@ allprojects {
             user = System.getenv("GITHUB_ACTOR") ?: "DanySK"
             password = System.getenv("GITHUB_TOKEN")
         }
-        val central = mavenCentral()
-        repository(central.url.replace("https://", "https://s01."), name = "CentralS01") {
-            user = central.user()
-            password = central.password()
-        }
     }
 
     publishing.publications {
