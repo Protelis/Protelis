@@ -17,7 +17,6 @@ dependencies {
     api(Libs.protelis_parser)
     implementation(Libs.commons_codec)
     implementation(Libs.commons_io)
-    implementation(Libs.fst)
     implementation(Libs.commons_lang3)
     implementation(Libs.slf4j_api)
 }
