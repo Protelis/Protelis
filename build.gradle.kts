@@ -137,11 +137,13 @@ allprojects {
             encoding = "UTF-8"
             val title = "Protelis ${project.version} Javadoc API"
             windowTitle(title)
-            if (JavaVersion.current().isJava8Compatible) {
-                docletpath = doclet.files.toList()
-                doclet("org.jboss.apiviz.APIviz")
-                if (this is CoreJavadocOptions) {
-                    addBooleanOption("nopackagediagram", true)
+            doFirst {
+                if (JavaVersion.current().isJava8Compatible) {
+                    docletpath = doclet.files.toList()
+                    doclet("org.jboss.apiviz.APIviz")
+                    if (this is CoreJavadocOptions) {
+                        addBooleanOption("nopackagediagram", true)
+                    }
                 }
             }
         }
