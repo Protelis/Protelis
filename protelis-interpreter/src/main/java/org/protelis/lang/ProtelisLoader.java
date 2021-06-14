@@ -69,7 +69,9 @@ import org.protelis.lang.interpreter.impl.ShareCall;
 import org.protelis.lang.interpreter.impl.TernaryOp;
 import org.protelis.lang.interpreter.impl.UnaryOp;
 import org.protelis.lang.interpreter.impl.Variable;
+import org.protelis.lang.interpreter.util.HashingFunnel;
 import org.protelis.lang.interpreter.util.HoodOp;
+import org.protelis.lang.interpreter.util.Java8CompatibleFunnel;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.parser.ProtelisStandaloneSetup;
@@ -416,13 +418,16 @@ public final class ProtelisLoader {
     private static class Dispatch {
 
         private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE = CacheBuilder.newBuilder().weakKeys().build();
+        private static final HashingFunnel FUNNEL = new Java8CompatibleFunnel();
         private static ProtelisAST<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
             return new AlignedMap(
-                    metadataFor(alMap),
-                    expression(alMap.getArg()),
-                    expression(alMap.getCond()),
-                    expression(alMap.getOp()),
-                    expression(alMap.getDefault()));
+                FUNNEL,
+                metadataFor(alMap),
+                expression(alMap.getArg()),
+                expression(alMap.getCond()),
+                expression(alMap.getOp()),
+                expression(alMap.getDefault())
+            );
         }
 
         private static AssignmentOp assignment(final Assignment assignment) {

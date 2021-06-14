@@ -6,24 +6,19 @@
  */
 package org.protelis.lang.interpreter.impl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.primitives.Longs;
-import org.nustaq.serialization.FSTConfiguration;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
+import org.protelis.lang.datatype.Either;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
+import org.protelis.lang.interpreter.util.HashingFunnel;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP;
 import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_DEFAULT;
@@ -49,27 +43,16 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     private static final Reference CURFIELD = new Reference(new Serializable() {
         private static final long serialVersionUID = 1L;
     });
-    private static final FSTConfiguration SERIALIZER = FSTConfiguration.createDefaultConfiguration();
-    private static final long serialVersionUID = 1L;
-    private static final LoadingCache<Object, byte[]> STACK_IDENTIFIERS = CacheBuilder.newBuilder()
-            .maximumSize(1000)
-            .expireAfterAccess(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<Object, byte[]>() {
-                @Override
-                public byte[] load(@Nonnull final Object key) {
-                    return SERIALIZER.asByteArray(key);
-                }
-            });
-    static {
-        SERIALIZER.registerClass(String.class, Double.class, Integer.class, Tuple.class, FunctionDefinition.class, JVMEntity.class);
-    }
-    private final ProtelisAST<?> defaultValue;
+    private static final long serialVersionUID = 2L;
 
+    private final HashingFunnel hasher;
+    private final ProtelisAST<?> defaultValue;
     private final ProtelisAST<Field<?>> fieldGenerator;
     private final ProtelisAST<FunctionDefinition> filter;
     private final ProtelisAST<FunctionDefinition> execute;
 
     /**
+     * @param hasher a function producing a valid, reproducible, and unambiguous hash for arbitrary objects
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param argument
@@ -82,6 +65,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
      *            default value
      */
     public AlignedMap(
+            final HashingFunnel hasher,
             final Metadata metadata,
             final ProtelisAST<Field<?>> argument,
             final ProtelisAST<FunctionDefinition> filter,
@@ -89,6 +73,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             final ProtelisAST<?> defaultValue
     ) {
         super(metadata, argument, filter, operation, defaultValue);
+        this.hasher = hasher;
         fieldGenerator = argument;
         this.filter = filter;
         execute = operation;
@@ -166,15 +151,11 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             /*
              * Compute the code path: align on keys
              */
-            if (key instanceof Integer || key instanceof Short || key instanceof Byte) {
-                restricted.newCallStackFrame(((Number) key).intValue());
-            } else if (key instanceof Double) {
-                restricted.newCallStackFrame(Longs.toByteArray(Double.doubleToRawLongBits((double) key)));
-            } else if (key instanceof Serializable) {
-                final byte[] hash = STACK_IDENTIFIERS.getUnchecked(key);
-                restricted.newCallStackFrame(hash);
+            final Either<Integer, byte[]> hashed = hasher.apply(key);
+            if (hashed.isLeft()) {
+                restricted.newCallStackFrame(hashed.getLeft());
             } else {
-                throw new IllegalStateException("alignedMap cannot aligned on non-Serializable objects of type " + key.getClass().getName());
+                restricted.newCallStackFrame(hashed.getRight());
             }
             /*
              * Run the actual filtering and operation
@@ -224,5 +205,4 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     public String toString() {
         return getName() + branchesToString();
     }
-
 }
