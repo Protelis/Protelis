@@ -352,13 +352,13 @@ public final class InfrastructureTester {
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This is not going to get serialized")
     private static void testSingleRun(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
                     final Environment<Object> env, final List<Pair<String, String>> expectedResult, final Object f) {
-        final Engine<Object> sim = new Engine<>(env, totalSimulationSteps + stabilitySteps);
-        sim.addOutputMonitor(new OutputMonitor<Object>() {
+        final Engine<Object> simulation = new Engine<>(env, totalSimulationSteps + stabilitySteps);
+        simulation.addOutputMonitor(new OutputMonitor<Object>() {
             private static final long serialVersionUID = 1L;
             @Override
             public void finished(final Environment<Object> env, final Time time, final long step) {
-                if (sim.getError() != null) {
-                    throw new IllegalStateException(sim.getError());
+                if (simulation.getError() != null) {
+                    throw new IllegalStateException(simulation.getError());
                 }
                 assertEquals(totalSimulationSteps + stabilitySteps, step);
             }
@@ -369,8 +369,8 @@ public final class InfrastructureTester {
                 checkResult(obs, totalSimulationSteps + stabilitySteps, stabilitySteps, expectedResult, f, env, step);
             }
         });
-        sim.addCommand(new StateCommand<>().run().build());
-        sim.run();
+        simulation.addCommand(new StateCommand<>().run().build());
+        simulation.run();
         assertFalse(obs.getFirstException().isPresent() ? obs.getFirstException().get().getMessage() : "", obs.getFirstException().isPresent());
     }
 
