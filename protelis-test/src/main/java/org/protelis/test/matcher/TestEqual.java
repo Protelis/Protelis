@@ -37,7 +37,7 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
         try {
             assertEquals(expectedResult.size(), simulationRes.values().size());
             for (final Pair<String, String> pair : expectedResult) {
-                if (!pair.getRight().equals(InfrastructureTester.DC)) {
+                if (!InfrastructureTester.DC.equals(pair.getRight())) {
                     final Object singleNodeResult = simulationRes.get(pair.getLeft());
                     try {
                         assertNotNull(singleNodeResult);
