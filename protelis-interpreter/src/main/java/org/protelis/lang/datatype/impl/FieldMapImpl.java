@@ -42,13 +42,22 @@ public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builde
     }
 
     @Override
-    public Optional<T> getIfPresent(@NotNull final DeviceUID device) {
-        return Optional.ofNullable(values.get(device));
+    public DeviceUID getLocalDevice() {
+        return local;
     }
 
     @Override
-    public DeviceUID getLocalDevice() {
-        return local;
+    public T get(@NotNull final DeviceUID id) {
+        final T value = values.get(id);
+        if (value == null) {
+            return super.get(id);
+        }
+        return value;
+    }
+
+    @Override
+    public Optional<T> getIfPresent(@NotNull final DeviceUID device) {
+        return Optional.ofNullable(values.get(device));
     }
 
     @Override
@@ -98,7 +107,7 @@ public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builde
 
     /**
      * Builder for an immutable field.
-     * 
+     *
      * @param <T>
      */
     public static final class Builder<T> implements Field.Builder<T> {
