@@ -92,6 +92,8 @@ object Libs {
      */
     const val guava: String = "com.google.guava:guava:_"
 
+    const val guice: String = "com.google.inject:guice:_"
+
     /**
      * http://junit.org
      */
