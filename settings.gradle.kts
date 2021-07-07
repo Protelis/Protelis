@@ -23,7 +23,7 @@ include(
 
 plugins {
     id("de.fayard.refreshVersions") version "0.10.1"
-    id("com.gradle.enterprise") version "3.2"
+    id("com.gradle.enterprise") version "3.6.3"
 }
 
 refreshVersions {

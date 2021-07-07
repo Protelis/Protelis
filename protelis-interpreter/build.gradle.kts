@@ -19,6 +19,7 @@ dependencies {
     implementation(Libs.commons_io)
     implementation(Libs.commons_lang3)
     implementation(Libs.slf4j_api)
+    runtimeOnly(Libs.guice)
 }
 
 eclipse {
