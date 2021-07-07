@@ -283,3 +283,14 @@ so this release should be for all users a de facto drop-in replacement.
 * Protelis parser updated to 10.2.0, which pulls in Xtext 2.26.0.M1 and Guice 5.0.1
 * `AlignedMap` has changed and now requires an external hashing provider. A default implementation has been written and it is currently hard-coded as default
 * Protelis no longer depends on FST
+
+## 15.1.0
+
+Introduces a simplified version of the per-neighbor communication, [see #536](https://github.com/Protelis/Protelis/pull/536).
+This release should be a drop-in replacement of Protelis 15.0.0:
+the new per-neighbor communication in `share` exploits a previously forbidden situation,
+in which the `share` block evaluation returned a field.
+
+Other changes:
+* Google Guice 5.0.1 is forced in as a runtime environment, improving support for Java 16
+* Small performance improvement when operating with fields
