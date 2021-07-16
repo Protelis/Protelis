@@ -12,8 +12,8 @@ package org.protelis.vm;
  */
 public class ProtelisVM {
 
-    private final ProtelisProgram prog;
-    private final ExecutionContext ctx;
+    private final ProtelisProgram program;
+    private final ExecutionContext context;
 
     /**
      * Create a virtual machine for executing a Protelis program in a particular
@@ -25,8 +25,8 @@ public class ProtelisVM {
      *            Environment in which this program will be executed
      */
     public ProtelisVM(final ProtelisProgram program, final ExecutionContext context) {
-        prog = program;
-        ctx = context;
+        this.program = program;
+        this.context = context;
     }
 
     /**
@@ -37,11 +37,11 @@ public class ProtelisVM {
      */
     public void runCycle() {
         // 1. Take the messages received by neighbors
-        ctx.setup();
+        context.setup();
         // 2. Compute
-        prog.compute(ctx);
+        program.compute(context);
         // 3. Finalize the new environment and send Messages away
-        ctx.commit();
+        context.commit();
     }
 
     /**
@@ -50,7 +50,7 @@ public class ProtelisVM {
      * @return Last value computed
      */
     public Object getCurrentValue() {
-        return prog.getCurrentValue();
+        return program.getCurrentValue();
     }
 
 }
