@@ -7,6 +7,7 @@
 
 package org.protelis.test.infrastructure;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class CachingNetworkManager implements NetworkManager {
      * @return cache
      */
     public Map<CodePath, Object> getSendCache() {
-        return sendCache;
+        return Collections.unmodifiableMap(sendCache);
     }
 
     /**
@@ -76,7 +77,7 @@ public class CachingNetworkManager implements NetworkManager {
      */
     @Override
     public Map<DeviceUID, Map<CodePath, Object>> getNeighborState() {
-        return receiveCache;
+        return Collections.unmodifiableMap(receiveCache);
     }
 
     /**
