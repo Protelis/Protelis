@@ -22,6 +22,8 @@ import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableCollection;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -51,7 +53,7 @@ public final class LazyField<T> extends AbstractField<T> {
     @Nullable
     private transient Function<DeviceUID, T> mapper;
     @Nonnull
-    private final Collection<DeviceUID> origin;
+    private final ImmutableCollection<DeviceUID> origin;
     @Nonnull
     private final DeviceUID localDevice;
 
@@ -61,7 +63,7 @@ public final class LazyField<T> extends AbstractField<T> {
      */
     public LazyField(@Nonnull final Field<?> origin, @Nonnull final Function<DeviceUID, T> mapper) {
         final Iterable<DeviceUID> keys = origin.keys();
-        this.origin = keys instanceof Collection ? (Collection<DeviceUID>) keys : ImmutableSet.copyOf(keys);
+        this.origin = keys instanceof ImmutableCollection ? (ImmutableCollection<DeviceUID>) keys : ImmutableSet.copyOf(keys);
         this.mapper = mapper;
         this.localDevice = origin.getLocalDevice();
     }
@@ -86,6 +88,7 @@ public final class LazyField<T> extends AbstractField<T> {
     }
 
     @Override
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public Iterable<DeviceUID> keys() {
         return origin;
     }
