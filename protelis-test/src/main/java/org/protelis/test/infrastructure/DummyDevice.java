@@ -28,6 +28,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
  * A simple implementation of a Protelis-based device, encapsulating a
  * {@link org.protelis.vm.ProtelisVM} and a network interface.
  */
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "This is done by purpose")
 public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
                 implements SpatiallyEmbeddedDevice<Double>, LocalizedDevice, TimeAwareDevice<Double> {
     private final RandomGenerator r;
