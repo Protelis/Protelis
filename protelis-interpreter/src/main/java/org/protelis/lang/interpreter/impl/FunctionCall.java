@@ -26,7 +26,7 @@ import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
 public final class FunctionCall extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = 4143090001260538814L;
-    private final FunctionDefinition fd;
+    private final FunctionDefinition functionDefinition;
     private final byte[] stackCode;
 
     /**
@@ -41,17 +41,17 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
     public FunctionCall(final Metadata metadata, final FunctionDefinition functionDefinition, final List<ProtelisAST<?>> args) {
         super(metadata, args);
         Objects.requireNonNull(functionDefinition);
-        fd = functionDefinition;
-        if (fd.invokerShouldInitializeIt()) {
+        this.functionDefinition = functionDefinition;
+        if (this.functionDefinition.invokerShouldInitializeIt()) {
             if (args.size() > 1) {
-                throw new IllegalArgumentException(fd + " is a lambda expression invokable with none or one parameter (it)"
+                throw new IllegalArgumentException(functionDefinition + " is a lambda expression invokable with none or one parameter (it)"
                         + ", but was invoked with " + args + ", which are " + args.size());
             }
-        } else if (fd.getParameterCount() != args.size()) {
-            throw new IllegalArgumentException(fd + " must be invoked with " + fd.getParameterCount()
+        } else if (this.functionDefinition.getParameterCount() != args.size()) {
+            throw new IllegalArgumentException(functionDefinition + " must be invoked with " + functionDefinition.getParameterCount()
                     + " arguments, but was invoked with " + args + ", which are " + args.size());
         }
-        stackCode = fd.getStackCode();
+        stackCode = this.functionDefinition.getStackCode();
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
          * Inner gamma must hold param values
          */
         context.newCallStackFrame(stackCode);
-        if (fd.invokerShouldInitializeIt() && getBranchesNumber() == 1) {
+        if (functionDefinition.invokerShouldInitializeIt() && getBranchesNumber() == 1) {
             context.putVariable(ProtelisLoadingUtilities.IT, context.runInNewStackFrame(0, getBranch(0)::eval));
         } else {
             /*
@@ -70,14 +70,14 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
              */
             final HashMap<Reference, Object> arguments = newLinkedHashMapWithExpectedSize(getBranchesNumber());
             for (int i = 0; i < getBranchesNumber(); i++) {
-                arguments.put(fd.getArgumentByPosition(i), context.runInNewStackFrame(i, getBranch(i)::eval));
+                arguments.put(functionDefinition.getArgumentByPosition(i), context.runInNewStackFrame(i, getBranch(i)::eval));
             }
             context.putMultipleVariables(arguments);
         }
         /*
          * Evaluate the body and copy return its result
          */
-        final Object result = fd.getBody().eval(context);
+        final Object result = functionDefinition.getBody().eval(context);
         context.returnFromCallFrame();
         return result;
     }
@@ -91,11 +91,11 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
      * @return the {@link FunctionDefinition}
      */
     public FunctionDefinition getFunctionDefinition() {
-        return fd;
+        return functionDefinition;
     }
 
     @Override
     public String getName() {
-        return fd.getName();
+        return functionDefinition.getName();
     }
 }
