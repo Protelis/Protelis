@@ -115,6 +115,7 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
     }
 
     @Override
+    @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE", justification = "False positive")
     public double nextRandomDouble() {
         return rng.nextDouble();
     }
