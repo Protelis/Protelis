@@ -39,6 +39,7 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
      *            the arguments. Must be in the same number of the
      *            {@link FunctionDefinition}'s expected arguments
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "FunctionDefinition is immutable")
     public FunctionCall(final Metadata metadata, final FunctionDefinition functionDefinition, final List<ProtelisAST<?>> args) {
         super(metadata, args);
         Objects.requireNonNull(functionDefinition);
