@@ -64,6 +64,7 @@ public final class JVMEntity implements Serializable {
     /**
      * @return The type this entity belongs to
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public Class<?> getType() {
         if (type == null) {
             try {
