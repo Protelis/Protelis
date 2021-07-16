@@ -7,6 +7,7 @@
 
 package org.protelis.test.observer;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,7 +27,7 @@ public final class SimpleExceptionObserver implements ExceptionObserver {
 
     @Override
     public List<Exception> getExceptionList() {
-        return exceptions;
+        return Collections.unmodifiableList(exceptions);
     }
 
     @Override
