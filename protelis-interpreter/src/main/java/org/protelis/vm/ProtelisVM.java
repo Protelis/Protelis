@@ -6,6 +6,8 @@
  */
 package org.protelis.vm;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A virtual machine for executing a Protelis program on a particular device
  * (context).
@@ -24,6 +26,7 @@ public class ProtelisVM {
      * @param context
      *            Environment in which this program will be executed
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "This is intentional")
     public ProtelisVM(final ProtelisProgram program, final ExecutionContext context) {
         this.program = program;
         this.context = context;
