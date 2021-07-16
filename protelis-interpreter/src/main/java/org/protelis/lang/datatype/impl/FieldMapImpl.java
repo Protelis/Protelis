@@ -9,6 +9,7 @@ package org.protelis.lang.datatype.impl;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -91,6 +92,7 @@ public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builde
     }
 
     @Override
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public ImmutableMap<DeviceUID, T> toMap() {
         return values;
     }
