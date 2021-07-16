@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.danilopianini.lang.PrimitiveUtils;
@@ -84,6 +85,7 @@ import java8.util.stream.StreamSupport;
 /**
  * Loads a properly formatted YAML file and provides method for instancing a batch of scenarios.
  */
+@SuppressFBWarnings
 public final class YamlLoader implements Loader, Serializable {
 
     /**

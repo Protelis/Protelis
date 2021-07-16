@@ -7,6 +7,7 @@
 package it.unibo.alchemist.core.implementations;
 
 import com.google.common.collect.MapMaker;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.alchemist.boundary.interfaces.OutputMonitor;
 import it.unibo.alchemist.core.interfaces.Command;
 import it.unibo.alchemist.core.interfaces.DependencyGraph;
@@ -46,6 +47,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @param <T>
  */
+@SuppressFBWarnings
 public final class Engine<T> implements Simulation<T> {
 
     private static final ConcurrentMap<Environment<?>, Engine<?>> MAP = new MapMaker().weakKeys().weakValues()
