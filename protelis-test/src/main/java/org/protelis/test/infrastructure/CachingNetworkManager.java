@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.CodePath;
 import org.protelis.vm.NetworkManager;
@@ -30,7 +32,7 @@ import org.protelis.vm.NetworkManager;
  * device and the most recent messages received from each neighbor.
  */
 public class CachingNetworkManager implements NetworkManager {
-    private Map<CodePath, Object> sendCache;
+    private ImmutableMap<CodePath, Object> sendCache;
     private final Map<DeviceUID, Map<CodePath, Object>> receiveCache = new HashMap<>();
 
     /**
@@ -38,8 +40,9 @@ public class CachingNetworkManager implements NetworkManager {
      * 
      * @return cache
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public Map<CodePath, Object> getSendCache() {
-        return Collections.unmodifiableMap(sendCache);
+        return sendCache;
     }
 
     /**
@@ -91,7 +94,7 @@ public class CachingNetworkManager implements NetworkManager {
      */
     @Override
     public void shareState(final Map<CodePath, Object> toSend) {
-        sendCache = toSend;
+        sendCache = ImmutableMap.copyOf(toSend);
     }
 
 }
