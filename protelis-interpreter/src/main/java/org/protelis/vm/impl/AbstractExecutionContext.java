@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -226,6 +227,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     }
 
     @Override
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "This is intentional")
     public final ExecutionEnvironment getExecutionEnvironment() {
         return environment;
     }
@@ -262,6 +264,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         return gamma.get(name);
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is unmodifiable")
     public final Map<CodePath, Object> getStoredState() {
         return lastStored;
     }
