@@ -64,11 +64,11 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     private final TIntList callStack = new TIntArrayList(10, -1);
     private final CodePathFactory codePathFactory;
     private int deferredExportSize;
-    private final ExecutionEnvironment env;
+    private final ExecutionEnvironment environment;
     private int exportsSize;
     private Optional<Map<Reference, ?>> functions = Optional.empty();
     private Map<Reference, Object> gamma;
-    private final NetworkManager nm;
+    private final NetworkManager networkManager;
     private Number previousRoundTime;
     private final List<AbstractExecutionContext<S>> restrictedContexts = Lists.newArrayList();
     private Map<DeviceUID, Map<CodePath, Object>> theta;
@@ -104,8 +104,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      * @param codePathFactory The code path factory to use
      */
     protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr, final CodePathFactory codePathFactory) {
-        nm = Objects.requireNonNull(netmgr);
-        env = Objects.requireNonNull(execenv);
+        networkManager = Objects.requireNonNull(netmgr);
+        environment = Objects.requireNonNull(execenv);
         this.codePathFactory = codePathFactory;
     }
 
@@ -177,7 +177,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
                 );
             }
         });
-        nm.shareState(toSend);
+        networkManager.shareState(toSend);
         exportsSize = toSend.size();
         variablesSize = gamma.size();
         deferredExportSize = tobeComputedBeforeSending.size();
@@ -189,7 +189,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      * recursively commits on restricted contexts.
      */
     protected final void commitRecursively() {
-        Objects.requireNonNull(env);
+        Objects.requireNonNull(environment);
         Objects.requireNonNull(gamma);
         Objects.requireNonNull(theta);
         Objects.requireNonNull(toSend);
@@ -197,7 +197,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         Objects.requireNonNull(tobeComputedBeforeSending);
         Objects.requireNonNull(functions);
         previousRoundTime = getCurrentTime();
-        env.commit();
+        environment.commit();
         gamma = null;
         theta = null;
         toSend = null;
@@ -227,7 +227,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
 
     @Override
     public final ExecutionEnvironment getExecutionEnvironment() {
-        return env;
+        return environment;
     }
 
     /**
@@ -246,7 +246,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      * @return Current abstract network interface
      */
     protected final NetworkManager getNetworkManager() {
-        return nm;
+        return networkManager;
     }
 
     @SuppressWarnings("unchecked")
@@ -387,13 +387,13 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         }
         assert previousRoundTime != null : "Round time is null.";
         callStack.clear();
-        env.setup();
+        environment.setup();
         toSend = newLinkedHashMapWithExpectedSize(exportsSize);
         tobeComputedBeforeSending = newLinkedHashMapWithExpectedSize(deferredExportSize);
         toStore = newLinkedHashMapWithExpectedSize(lastStored.size());
         gamma = newLinkedHashMapWithExpectedSize(variablesSize);
         gamma.putAll(functions.orElseGet(Collections::emptyMap));
-        theta = Collections.unmodifiableMap(nm.getNeighborState());
+        theta = Collections.unmodifiableMap(networkManager.getNeighborState());
         if (theta.containsKey(getDeviceUID())) {
             LOGGER.warn("Local device UID {} was included in the set of received messages, "
                     + "indicating that an auto-arc was present in your network configuration. "
