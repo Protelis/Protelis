@@ -6,6 +6,7 @@
  */
 package org.protelis.lang.interpreter.impl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.ProtelisAST;
@@ -90,6 +91,7 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
     /**
      * @return the {@link FunctionDefinition}
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public FunctionDefinition getFunctionDefinition() {
         return functionDefinition;
     }
