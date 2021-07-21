@@ -43,10 +43,6 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "org.danilopianini.publish-on-central")
 
-    gitSemVer {
-        version = computeGitSemVer()
-    }
-
     repositories {
         mavenCentral()
         jcenter {
