@@ -5,8 +5,6 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
-import org.danilopianini.gradle.mavencentral.mavenCentral
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
@@ -22,11 +20,9 @@ plugins {
     `maven-publish`
     id("org.danilopianini.publish-on-central")
     id("org.protelis.protelisdoc") apply false
-    id("com.jfrog.bintray")
     id("com.github.johnrengelman.shadow")
 }
 
-apply(plugin = "com.jfrog.bintray")
 apply(plugin = "com.github.johnrengelman.shadow")
 
 val scmUrl = "git:git@github.com:Protelis/Protelis"
@@ -46,7 +42,6 @@ allprojects {
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
     apply(plugin = "org.danilopianini.publish-on-central")
-    apply(plugin = "com.jfrog.bintray")
 
     gitSemVer {
         version = computeGitSemVer()
@@ -204,42 +199,6 @@ allprojects {
                     }
                 }
             }
-        }
-    }
-    /*
-     * Use Bintray for beta releases
-     */
-    val apiKeyName = "BINTRAY_API_KEY"
-    val userKeyName = "BINTRAY_USER"
-    bintray {
-        user = System.getenv(userKeyName)
-        key = System.getenv(apiKeyName)
-        override = true
-        publishing.publications.withType<MavenPublication>().names.forEach {
-            setPublications(it)
-        }
-        with(pkg) {
-            repo = "Protelis"
-            name = project.name
-            userOrg = "protelis"
-            vcsUrl = scmUrl
-            setLicenses("GPL-3.0-or-later")
-            with(version) {
-                name = project.version.toString()
-            }
-        }
-    }
-    tasks.withType<BintrayUploadTask> {
-        onlyIf {
-            val hasKey = System.getenv(apiKeyName) != null
-            val hasUser = System.getenv(userKeyName) != null
-            if (!hasKey) {
-                println("The $apiKeyName environment variable must be set in order for the bintray deployment to work")
-            }
-            if (!hasUser) {
-                println("The $userKeyName environment variable must be set in order for the bintray deployment to work")
-            }
-            hasKey && hasUser
         }
     }
 }
