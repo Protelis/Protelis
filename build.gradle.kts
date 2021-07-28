@@ -21,6 +21,7 @@ plugins {
     id("org.danilopianini.publish-on-central")
     id("org.protelis.protelisdoc") apply false
     id("com.github.johnrengelman.shadow")
+    id("kotlin-qa")
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
@@ -42,6 +43,7 @@ allprojects {
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
     apply(plugin = "org.danilopianini.publish-on-central")
+    apply(plugin = "kotlin-qa")
 
     repositories {
         mavenCentral()
