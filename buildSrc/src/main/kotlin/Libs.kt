@@ -7,15 +7,20 @@
 
 import kotlin.String
 
-fun modularizedLibrary(base: String, module: String = "", separator: String = "-") = when {
+private fun modularizedLibrary(base: String, module: String = "", separator: String = "-") = when {
     module.isEmpty() -> base
     else -> base + separator + module
 } + ":_"
 
+/**
+ * Modules for PMD.
+ */
 fun pmdModule(module: String = "") = modularizedLibrary("net.sourceforge.pmd:pmd", module)
 
+/**
+ * Static libraries definitions.
+ */
 object Libs {
-
 
     /**
      * https://spotbugs.github.io/
@@ -46,7 +51,7 @@ object Libs {
      * https://commons.apache.org/proper/commons-codec/
      */
     const val commons_codec: String = "commons-codec:commons-codec:_"
-    
+
     /**
      * http://commons.apache.org/proper/commons-lang/
      */
