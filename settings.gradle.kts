@@ -5,21 +5,6 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 import org.danilopianini.VersionAliases.justAdditionalAliases
-buildscript {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.danilopianini:refreshversions-aliases:+")
-    }
-}
-
-include(
-    "protelis-interpreter",
-    "protelis-lang",
-    "protelis-test"
-)
 
 plugins {
     id("de.fayard.refreshVersions") version "0.10.1"
@@ -30,6 +15,16 @@ refreshVersions {
     extraArtifactVersionKeyRules = justAdditionalAliases
 }
 
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.danilopianini:refreshversions-aliases:+")
+    }
+}
+
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
@@ -38,3 +33,9 @@ gradleEnterprise {
 }
 
 rootProject.name = "protelis"
+
+include(
+    "protelis-interpreter",
+    "protelis-lang",
+    "protelis-test"
+)
