@@ -42,33 +42,33 @@ def tieBreakerOf(tuple) = [tuple.get(1).get(0), tuple.get(0)]
 /**
  * Devices compete against one another to become local leaders,
  * resulting  in  a  random  Voronoi  partition  with  a  characteristic
- * grain size.
+ * radius size.
  * This implementation leverages [processes](https://doi.org/10.1016/j.engappai.2020.104081),
  * each device tries to propagate a "bubble of influence", overlapping bubbles compete,
  * the highest symmetryBreaker value of the competing participants is selected.
  *
  * @param uid  T, unique node identifier
  * @param symmetryBreaker  V, competitivity, higher values make their node a more likely leader. Must be Comparable<V>.
- * @param grain  num, maximum radius of the partition
+ * @param radius  num, maximum radius of the partition
  * @param metric () -> num, neighbor distance estimator, returns a field of numbers
  * @param distance (bool) -> num, finds the distance with the closest location where the provided input is true
  * @return  T, the id of the local leader
  */
-public def localLeaderElection(uid, symmetryBreaker, grain, metric, distance) {
+public def localLeaderElection(uid, symmetryBreaker, radius, metric, distance) {
 	let default = [uid, [symmetryBreaker, 0]]
 	share (lead, nbrLead <- default) {
 		let sources = [nbrLead]
 		let distances = alignedMap(
 			sources,
 			{ candidate, breakDist ->
-				candidate == uid || foldMin(POSITIVE_INFINITY, breakDist.get(1) + metric()) < grain
+				candidate == uid || foldMin(POSITIVE_INFINITY, breakDist.get(1) + metric()) < radius
 			},
 			{ candidate, breakDist ->
 				[foldMax(breakDist.get(0)), distance(uid == candidate && idOf(lead) == uid)]
 			},
 			[NEGATIVE_INFINITY, POSITIVE_INFINITY]
 		)
-		let closeEnough = distances.filter { distanceOf(it) < grain }
+		let closeEnough = distances.filter { distanceOf(it) < radius }
 		let best = closeEnough.fold(default) { a, b ->
 			if (tieBreakerOf(a) > tieBreakerOf(b)) { a } else { b }
 		}
