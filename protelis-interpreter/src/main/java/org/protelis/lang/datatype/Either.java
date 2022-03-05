@@ -6,6 +6,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
+/**
+ * A data structure that can yield either a value of type L or a value of type R.
+ *
+ * @param <L> left type
+ * @param <R> right type
+ */
 public final class Either<L, R> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,26 +34,40 @@ public final class Either<L, R> implements Serializable {
         this.right = right;
     }
 
+    /**
+     * @return true if it is a left {@link Either}
+     */
     public boolean isLeft() {
         return right == null;
     }
 
+    /**
+     * @return true if it is a right {@link Either}
+     */
     public boolean isRight() {
         return left == null;
     }
 
-    public R getRight() {
-        if (isRight()) {
-            return right;
-        }
-        throw new IllegalStateException(this + " is a Left either and does not store any value on its right");
-    }
-
+    /**
+     * @return the left value, or an {@link IllegalStateException}
+     * @throws IllegalStateException if this is a right either
+     */
     public L getLeft() {
         if (isLeft()) {
             return left;
         }
         throw new IllegalStateException(this + " is a Right either and does not store any value on its left");
+    }
+
+    /**
+     * @return the right value, or an {@link IllegalStateException}
+     * @throws IllegalStateException if this is a left either
+     */
+    public R getRight() {
+        if (isRight()) {
+            return right;
+        }
+        throw new IllegalStateException(this + " is a Left either and does not store any value on its right");
     }
 
     @Override
@@ -78,10 +98,24 @@ public final class Either<L, R> implements Serializable {
         return hash;
     }
 
+    /**
+     * Factory method for a left {@link Either}.
+     * @param value the left of this {@link Either}
+     * @param <L> the left type
+     * @param <R> the right type
+     * @return a left {@link Either} with the provided value
+     */
     public static <L, R> Either<L, R> left(final L value) {
         return new Either<>(value, null);
     }
 
+    /**
+     * Factory method for a right {@link Either}.
+     * @param value the right of this {@link Either}
+     * @param <L> the left type
+     * @param <R> the right type
+     * @return a right {@link Either} with the provided value
+     */
     public static <L, R> Either<L, R> right(final R value) {
         return new Either<>(null, value);
     }
