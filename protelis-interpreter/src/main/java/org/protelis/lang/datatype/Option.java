@@ -166,7 +166,7 @@ public final class Option<E> implements Serializable {
             if (value instanceof Option) {
                 final Option<?> result = (Option<?>) value;
                 if (result.isEmpty()) {
-                    return Option.<X>empty();
+                    return Option.empty();
                 }
                 return (Option<X>) value;
             } else if (value instanceof Optional) {
