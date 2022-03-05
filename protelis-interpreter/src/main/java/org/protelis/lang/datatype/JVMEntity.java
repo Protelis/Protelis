@@ -48,6 +48,9 @@ public final class JVMEntity implements Serializable {
         }
     }
 
+    /**
+     * @param method the {@link Method} that this {@link JVMEntity} represents
+     */
     public JVMEntity(final Method method) {
         typeName = method.getDeclaringClass().getName();
         memberName = method.getName();
