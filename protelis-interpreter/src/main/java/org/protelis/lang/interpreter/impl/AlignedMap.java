@@ -122,7 +122,9 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
                     }
                 }
             } else {
-                throw new IllegalStateException("Expected " + Tuple.class + ", got " + originalTupleObject.getClass() + ": " + originalTupleObject);
+                throw new IllegalStateException(
+                    "Expected " + Tuple.class + ", got " + originalTupleObject.getClass() + ": " + originalTupleObject
+                );
             }
         }
         /*
