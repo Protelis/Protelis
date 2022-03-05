@@ -13,6 +13,9 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * Implementation of a Java8-compatible serializable hash function.
+ */
 public final class Java8CompatibleFunnel implements HashingFunnel {
 
     private static final long serialVersionUID = 1L;
