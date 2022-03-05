@@ -197,7 +197,7 @@ public final class Option<E> implements Serializable {
                         + ", expects no parameter, and returns boolean."));
                 boolean isPresent;
                 try {
-                    isPresent = TESTERS.get(tester.getName()) == (boolean) tester.invoke(value);
+                    isPresent = Boolean.TRUE.equals(TESTERS.get(tester.getName())) == (boolean) tester.invoke(value);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new IllegalStateException(e);
                 }
