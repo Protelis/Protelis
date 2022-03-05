@@ -355,6 +355,7 @@ public final class ProtelisLoader {
      * @throws IllegalArgumentException
      *             when the program has errors
      */
+    @SuppressWarnings("unused")
     public static ProtelisProgram parseURI(final String programURI) throws IOException {
         return parse(resourceFromURIString(programURI).orElseThrow(IllegalArgumentException::new));
     }
