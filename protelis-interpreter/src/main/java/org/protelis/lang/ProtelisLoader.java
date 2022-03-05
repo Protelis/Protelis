@@ -372,7 +372,6 @@ public final class ProtelisLoader {
      *            the program in String format
      * @return a dummy:/ resource that can be used to interpret the program
      */
-    @SuppressWarnings("UnstableApiUsage")
     public static Resource resourceFromString(final String program) {
         final String programId = "dummy:/protelis-generated-program-"
             + Hashing.sha512().hashString(program, StandardCharsets.UTF_8)
