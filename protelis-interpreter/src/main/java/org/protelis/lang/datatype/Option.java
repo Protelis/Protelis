@@ -42,6 +42,7 @@ import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runPr
  *     this type, so it is safe to cast an {@code Option<T>} to {@code Option<S>} for any
  *     supertype {@code S} of {@code T}.
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class Option<E> implements Serializable {
 
     /**
