@@ -46,8 +46,11 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
         this.functionDefinition = functionDefinition;
         if (this.functionDefinition.invokerShouldInitializeIt()) {
             if (args.size() > 1) {
-                throw new IllegalArgumentException(functionDefinition + " is a lambda expression invokable with none or one parameter (it)"
-                        + ", but was invoked with " + args + ", which are " + args.size());
+                throw new IllegalArgumentException(
+                    functionDefinition
+                    + " is a lambda expression invokable with none or one parameter (it)"
+                    + ", but was invoked with " + args + ", which are " + args.size()
+                );
             }
         } else if (this.functionDefinition.getParameterCount() != args.size()) {
             throw new IllegalArgumentException(functionDefinition + " must be invoked with " + functionDefinition.getParameterCount()
