@@ -4,9 +4,6 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
-/**
- * 
- */
 package org.protelis.vm;
 
 import java.util.Map;
@@ -108,6 +105,15 @@ public interface ExecutionContext {
      */
     ExecutionEnvironment getExecutionEnvironment();
 
+    /**
+     * Gets a value that survives across rounds.
+     * If a value was stored at the previous iteration, then the previous value is returned.
+     * Otherwise, the alternative value is computed via isAbsent and stored for the future.
+     *
+     * @param ifAbsent replacement
+     * @param <S> type of the value
+     * @return the value
+     */
     <S> S getPersistent(Supplier<S> ifAbsent);
 
     /**
@@ -188,6 +194,11 @@ public interface ExecutionContext {
      */
     void setGloballyAvailableReferences(Map<Reference, ?> knownFunctions);
 
+    /**
+     * Stores a value to be used in future rounds via getPersistent.
+     *
+     * @param o the value to store
+     */
     void setPersistent(Object o);
 
     /**
