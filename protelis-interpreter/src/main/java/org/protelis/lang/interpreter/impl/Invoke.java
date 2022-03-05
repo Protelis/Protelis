@@ -37,7 +37,13 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     private final ProtelisAST<?> leftExpression;
     private final String methodName;
 
-    private Invoke(final Metadata metadata, final boolean apply, final String name, final ProtelisAST<?> target, final List<ProtelisAST<?>> args) {
+    private Invoke(
+        final Metadata metadata,
+        final boolean apply,
+        final String name,
+        final ProtelisAST<?> target,
+        final List<ProtelisAST<?>> args
+    ) {
         super(metadata, args);
         Objects.requireNonNull(target);
         isApply = apply;
