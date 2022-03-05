@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.jetbrains.annotations.NotNull;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 
@@ -48,7 +47,7 @@ public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builde
     }
 
     @Override
-    public T get(@NotNull final DeviceUID id) {
+    public T get(@Nonnull final DeviceUID id) {
         final T value = values.get(id);
         if (value == null) {
             return super.get(id);
@@ -57,7 +56,7 @@ public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builde
     }
 
     @Override
-    public Optional<T> getIfPresent(@NotNull final DeviceUID device) {
+    public Optional<T> getIfPresent(@Nonnull final DeviceUID device) {
         return Optional.ofNullable(values.get(device));
     }
 

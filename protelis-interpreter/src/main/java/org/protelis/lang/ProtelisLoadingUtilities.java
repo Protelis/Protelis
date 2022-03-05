@@ -12,7 +12,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
-import org.jetbrains.annotations.NotNull;
 import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.parser.protelis.Assignment;
 import org.protelis.parser.protelis.Block;
@@ -51,7 +50,7 @@ public final class ProtelisLoadingUtilities {
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .build(new CacheLoader<Object, Reference>() {
                 @Override
-                public Reference load(@NotNull final Object key) {
+                public Reference load(@Nonnull final Object key) {
                     return new Reference(key);
                 }
             });
