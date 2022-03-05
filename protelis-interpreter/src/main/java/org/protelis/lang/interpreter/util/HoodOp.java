@@ -45,57 +45,82 @@ public enum HoodOp implements WithBytecode {
     /**
      * Logical product.
      */
-    ALL(HOOD_ALL, HoodOp::all,
+    ALL(
+        HOOD_ALL,
+        HoodOp::all,
         of(create(Boolean.class, () -> true)),
-        emptyList()),
+        emptyList()
+    ),
     /**
      * Logical sum.
      */
-    ANY(HOOD_ANY, HoodOp::any,
+    ANY(
+        HOOD_ANY,
+        HoodOp::any,
         of(create(Boolean.class, () -> false)),
-        emptyList()),
+        emptyList()
+    ),
     /**
      * Pick local value.
      */
-    LOCAL(HOOD_LOCAL, HoodOp::local,
-         emptyList(),
-         emptyList()),
+    LOCAL(
+        HOOD_LOCAL,
+        HoodOp::local,
+        emptyList(),
+        emptyList()
+    ),
     /**
      * Maximum.
      */
-    MAX(HOOD_MAX, HoodOp::max,
+    MAX(
+        HOOD_MAX,
+        HoodOp::max,
         of(create(Number.class, () -> NEGATIVE_INFINITY)),
-        of(create(Tuple.class, t -> fillTuple(NEGATIVE_INFINITY, (Tuple) t)))),
+        of(create(Tuple.class, t -> fillTuple(NEGATIVE_INFINITY, (Tuple) t)))
+    ),
     /**
      * Mean of values.
      */
-    MEAN(HOOD_MEAN, HoodOp::mean,
-         of(create(Number.class, () -> NaN)),
-         of(create(Tuple.class, t -> fillTuple(NaN, (Tuple) t)))),
+    MEAN(
+        HOOD_MEAN,
+        HoodOp::mean,
+        of(create(Number.class, () -> NaN)),
+        of(create(Tuple.class, t -> fillTuple(NaN, (Tuple) t)))
+    ),
     /**
      * Minimum.
      */
-    MIN(HOOD_MIN, HoodOp::min,
+    MIN(
+        HOOD_MIN,
+        HoodOp::min,
         of(create(Number.class, () -> POSITIVE_INFINITY)),
-        of(create(Tuple.class, t -> fillTuple(POSITIVE_INFINITY, (Tuple) t)))),
+        of(create(Tuple.class, t -> fillTuple(POSITIVE_INFINITY, (Tuple) t)))
+    ),
     /**
      * Sum of values.
      */
-    SUM(HOOD_SUM, HoodOp::sum,
+    SUM(
+        HOOD_SUM,
+        HoodOp::sum,
         of(create(Number.class, () -> 0d)),
-        of(create(Tuple.class, t -> fillTuple(0d, (Tuple) t)))),
+        of(create(Tuple.class, t -> fillTuple(0d, (Tuple) t)))
+    ),
     /**
      * Union of values.
      */
-    UNION(HOOD_UNION, HoodOp::union,
-          of(create(Object.class, DatatypeFactory::createTuple)),
-          of(create(Object.class, DatatypeFactory::createTuple)));
+    UNION(
+        HOOD_UNION,
+        HoodOp::union,
+        of(create(Object.class, DatatypeFactory::createTuple)),
+        of(create(Object.class, DatatypeFactory::createTuple))
+    );
 
     private final Bytecode bytecode;
     private final SerializableFunction defs; // NOPMD false positive, not a singular field
-    private final SerializableBifunction function;
+    private final SerializableBiFunction function;
 
     /**
+     * @param bytecode code corresponding to the desired hood operation
      * @param fun the reduction function
      * @param suppliers
      *            list of pairs mapping classes to 0-ary functions that provide
@@ -106,10 +131,12 @@ public enum HoodOp implements WithBytecode {
      *            functions are used in case there is no supplier that can
      *            provide a specific value-agnostic default
      */
-    HoodOp(final Bytecode bytecode,
-            final SerializableBifunction fun,
-            final List<Pair<Class<?>, Supplier<Object>>> suppliers,
-            final List<Pair<Class<?>, Function<Object, Object>>> cloners) {
+    HoodOp(
+        final Bytecode bytecode,
+        final SerializableBiFunction fun,
+        final List<Pair<Class<?>, Supplier<Object>>> suppliers,
+        final List<Pair<Class<?>, Function<Object, Object>>> cloners
+    ) {
         function = fun;
         defs = (field) -> {
             /*
@@ -244,9 +271,9 @@ public enum HoodOp implements WithBytecode {
     }
 
     @FunctionalInterface
-    private interface SerializableBifunction extends BiFunction<Field<Object>, Boolean, Object>, Serializable { }
+    private interface SerializableBiFunction extends BiFunction<Field<Object>, Boolean, Object>, Serializable { }
 
     @FunctionalInterface
-    private interface SerializableFunction extends Function<Field<? extends Object>, Object>, Serializable { }
+    private interface SerializableFunction extends Function<Field<?>, Object>, Serializable { }
 
 }
