@@ -301,12 +301,18 @@ public enum Op2 implements WithBytecode {
     }
 
     @SuppressWarnings(UNCHECKED)
-    private static <I, O> Tuple tupleArithmetic(final String op, final boolean numFirst, final I num, final Tuple t, final BiFunction<Double, Double, O> f) {
+    private static <I, O> Tuple tupleArithmetic(
+        final String op,
+        final boolean numFirst,
+        final I num,
+        final Tuple t,
+        final BiFunction<Double, Double, O> f
+    ) {
         return DatatypeFactory.createTuple(IntStream.range(0, t.size())
-                .mapToObj(i -> numFirst
-                        ? arithmetic(op, num, (I) t.get(i), f)
-                        : arithmetic(op, (I) t.get(i), num, f))
-                .toArray());
+            .mapToObj(i ->
+                numFirst ? arithmetic(op, num, (I) t.get(i), f) : arithmetic(op, (I) t.get(i), num, f)
+            )
+            .toArray());
     }
 
     private static boolean smaller(final Object a, final Object b) {
