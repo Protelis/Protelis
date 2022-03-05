@@ -104,7 +104,11 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      * @param netmgr          Abstract network interface to be used
      * @param codePathFactory The code path factory to use
      */
-    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr, final CodePathFactory codePathFactory) {
+    protected AbstractExecutionContext(
+        final ExecutionEnvironment execenv,
+        final NetworkManager netmgr,
+        final CodePathFactory codePathFactory
+    ) {
         networkManager = Objects.requireNonNull(netmgr);
         environment = Objects.requireNonNull(execenv);
         this.codePathFactory = codePathFactory;
