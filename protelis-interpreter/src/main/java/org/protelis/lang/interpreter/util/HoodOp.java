@@ -212,7 +212,12 @@ public enum HoodOp implements WithBytecode {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T reduceFieldValues(final Field<T> f, final boolean inclusive, final SerializableFunction defs, final BinaryOperator<T> reducer) {
+    private static <T> T reduceFieldValues(
+        final Field<T> f,
+        final boolean inclusive,
+        final SerializableFunction defs,
+        final BinaryOperator<T> reducer
+    ) {
         if (inclusive) {
             return f.foldValuesIncludingLocal(reducer);
         } else {
