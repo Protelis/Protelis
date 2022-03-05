@@ -50,6 +50,7 @@ public final class ProtelisLoadingUtilities {
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .build(new CacheLoader<Object, Reference>() {
                 @Override
+                @Nonnull
                 public Reference load(@Nonnull final Object key) {
                     return new Reference(key);
                 }
