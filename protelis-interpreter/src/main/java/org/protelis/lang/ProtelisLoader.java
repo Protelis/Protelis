@@ -139,7 +139,10 @@ public final class ProtelisLoader {
             + "See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=549084"
             + "and https://github.com/eclipse/openj9/issues/6370";
     private static final String PROTELIS_FILE_EXTENSION = "pt";
-    private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile("^\\s*import\\s+((?:\\w+:)*\\w+)\\s+", Pattern.MULTILINE);
+    private static final Pattern REGEX_PROTELIS_IMPORT = Pattern.compile(
+        "^\\s*import\\s+((?:\\w+:)*\\w+)\\s+",
+        Pattern.MULTILINE
+    );
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 
     private static final ThreadLocal<XtextResourceSet> XTEXT = ThreadLocal.withInitial(() -> {
