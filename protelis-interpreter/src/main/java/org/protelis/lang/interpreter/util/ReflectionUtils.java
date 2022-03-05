@@ -385,7 +385,11 @@ public final class ReflectionUtils {
         }
     }
 
-    private static Object[] repackageIfRequired(@Nonnull final ExecutionContext context, @Nonnull final Method m, @Nonnull final Object[] args) {
+    private static Object[] repackageIfRequired(
+        @Nonnull final ExecutionContext context,
+        @Nonnull final Method m,
+        @Nonnull final Object[] args
+    ) {
         final Class<?>[] expectedArgs = m.getParameterTypes();
         final boolean pushContext = shouldPushContext(expectedArgs, args);
         if (m.isVarArgs() || pushContext) {
