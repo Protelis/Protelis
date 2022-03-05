@@ -156,15 +156,12 @@ public final class Option<E> implements Serializable {
      * @return the result of applying an {@code Optional}-bearing mapping function
      *         to the value of this {@code Optional}, if a value is present,
      *         otherwise an empty {@code Optional}
-     * @throws IllegalAccessException    in case of issues with Java reflection
-     * @throws InvocationTargetException in case of error while invoking Java
-     *                                   reflectively
      */
     @SuppressWarnings("unchecked")
     public <X> Option<X> flatMap(
         final ExecutionContext ctx,
         final FunctionDefinition fun
-    ) throws IllegalAccessException, InvocationTargetException {
+    ) {
         runProtelis(ctx, fun, value -> {
             if (value instanceof Option) {
                 final Option<?> result = (Option<?>) value;
