@@ -601,11 +601,14 @@ public final class ProtelisLoader {
             final List<VarDef> arguments = expression instanceof LongLambda
                 ? ((LongLambda) expression).getArgs().getArgs()
                 : expression instanceof OldLongLambda
-                    ? Optional.ofNullable(((OldLongLambda) expression).getArgs()).<List<VarDef>>map(VarDefList::getArgs).orElseGet(Collections::emptyList)
+                    ? Optional.ofNullable(((OldLongLambda) expression).getArgs())
+                        .<List<VarDef>>map(VarDefList::getArgs)
+                        .orElseGet(Collections::emptyList)
                     : expression instanceof OldShortLambda
                         ? Collections.singletonList(((OldShortLambda) expression).getSingleArg())
                         : Collections.emptyList();
-            final FunctionDefinition lambda = new FunctionDefinition(expression, referenceListFor(arguments), block(expression.getBody()));
+            final FunctionDefinition lambda =
+                new FunctionDefinition(expression, referenceListFor(arguments), block(expression.getBody()));
             return new Constant<>(metadataFor(expression), lambda);
         }
 
@@ -676,7 +679,8 @@ public final class ProtelisLoader {
              * 
              * - VarDef (variables defined in scope, parameters in scope)
              * 
-             * The former can be treated as constants. They are immutable and do not require restriction (as they cannot bind a Field).
+             * The former can be treated as constants. They are immutable and do not require restriction
+             * (as they cannot bind a Field).
              */
             final Metadata meta = metadataFor(expression);
             final EObject ref = expression.getReference();
