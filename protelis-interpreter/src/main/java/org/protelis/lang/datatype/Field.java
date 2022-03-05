@@ -368,10 +368,28 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Builder for Fields.
+     *
      * @param <T> resulting field type
      */
     interface Builder<T> {
+
+        /**
+         * Adds an element to the field.
+         *
+         * @param key the neighbor id
+         * @param value the neighbor value
+         * @return this builder
+         */
         Builder<T> add(DeviceUID key, T value);
+
+        /**
+         * Builds a {@link Field}.
+         *
+         * @param localKey the local device {@link DeviceUID}
+         * @param localValue the local value of the {@link Field}
+         * @return a {@link Field} of the desired type
+         */
         Field<T> build(DeviceUID localKey, T localValue);
     }
 
