@@ -202,12 +202,16 @@ public enum HoodOp implements WithBytecode {
         return reduceFieldValues(f, inclusive, MIN.defs, Op2.MIN.getFunction());
     }
 
-    private static Object reduceFieldValues(final Field<Object> f, final boolean inclusive, final SerializableFunction defs, final Op2 reducer) {
+    private static Object reduceFieldValues(
+        final Field<Object> f,
+        final boolean inclusive,
+        final SerializableFunction defs,
+        final Op2 reducer
+    ) {
         if (inclusive) {
             return f.foldValuesIncludingLocal(reducer.getFunction());
         } else {
-            return f.reduceValues(reducer.getFunction())
-                    .orElseGet(() -> defs.apply(f));
+            return f.reduceValues(reducer.getFunction()).orElseGet(() -> defs.apply(f));
         }
     }
 
