@@ -88,7 +88,13 @@ public final class Builtins {
     private static <X, Y, R> R byReflection(final String name, final X a, final Y b) {
         try {
             return (R) a.getClass().getMethod(name, b.getClass()).invoke(a, b);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+        } catch (
+            IllegalAccessException
+            | IllegalArgumentException
+            | InvocationTargetException
+            | NoSuchMethodException
+            | SecurityException e
+        ) {
             throw new IllegalStateException("Unable to perform operation a." + name
                     + "(b) where a=" + a + " and b=" + b
                     + ", a of type " + a.getClass()
@@ -442,7 +448,11 @@ public final class Builtins {
             @Nonnull final Field<T> target,
             @Nonnull final FunctionDefinition reductionFunction) {
         return (a, b) -> {
-            final Object reductionResult = runProtelisFunctionWithJavaArguments(context, reductionFunction, ImmutableList.of(a, b));
+            final Object reductionResult = runProtelisFunctionWithJavaArguments(
+                context,
+                reductionFunction,
+                ImmutableList.of(a, b)
+            );
             if (expectedType.isAssignableFrom(reductionResult.getClass())) {
                 return expectedType.cast(reductionResult);
             }
