@@ -207,7 +207,9 @@ public final class Option<E> implements Serializable {
                         .filter(it -> it.getParameterCount() == 0)
                         .filter(it -> "get".equals(it.getName()))
                         .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("No method in " + value.getClass() + " named get with no parameter"));
+                        .orElseThrow(() ->
+                            new IllegalStateException("No method in " + value.getClass() + " named get with no parameter")
+                        );
                     Object result;
                     try {
                         result = getter.invoke(value);
