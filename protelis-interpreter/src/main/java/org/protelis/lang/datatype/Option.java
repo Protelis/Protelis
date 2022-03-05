@@ -160,7 +160,10 @@ public final class Option<E> implements Serializable {
      *                                   reflectively
      */
     @SuppressWarnings("unchecked")
-    public <X> Option<X> flatMap(final ExecutionContext ctx, final FunctionDefinition fun) throws IllegalAccessException, InvocationTargetException {
+    public <X> Option<X> flatMap(
+        final ExecutionContext ctx,
+        final FunctionDefinition fun
+    ) throws IllegalAccessException, InvocationTargetException {
         runProtelis(ctx, fun, value -> {
             if (value instanceof Option) {
                 final Option<?> result = (Option<?>) value;
