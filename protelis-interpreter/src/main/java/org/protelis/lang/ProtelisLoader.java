@@ -435,7 +435,11 @@ public final class ProtelisLoader {
         }
 
         private static AssignmentOp assignment(final Assignment assignment) {
-            return new AssignmentOp(metadataFor(assignment), referenceFor(assignment.getRefVar()), expression(assignment.getRight()));
+            return new AssignmentOp(
+                metadataFor(assignment),
+                referenceFor(assignment.getRefVar()),
+                expression(assignment.getRight())
+            );
         }
 
         private static ProtelisAST<?> block(@Nonnull final Block block) {
