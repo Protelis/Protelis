@@ -468,7 +468,13 @@ public final class Builtins {
         };
     }
 
-    private static <X, Y, R> R run(final Class<X> xClass, final Object x, final Class<Y> yClass, final Object y, final BiFunction<X, Y, R> fun) {
+    private static <X, Y, R> R run(
+        final Class<X> xClass,
+        final Object x,
+        final Class<Y> yClass,
+        final Object y,
+        final BiFunction<X, Y, R> fun
+    ) {
         return fun.apply(convert(xClass, x), convert(yClass, y));
     }
 
