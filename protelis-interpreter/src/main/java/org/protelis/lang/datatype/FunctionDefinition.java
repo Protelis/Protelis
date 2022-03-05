@@ -68,11 +68,6 @@ public final class FunctionDefinition implements Serializable {
         this(ProtelisLoadingUtilities.qualifiedNameFor(lambda), args, () -> body, lambda instanceof ShortLambda);
     }
 
-    /**
-     * @param name         function name
-     * @param args         arguments
-     * @param bodySupplier function providing a body when needed
-     */
     private FunctionDefinition(
             final String name,
             final List<Reference> args,
