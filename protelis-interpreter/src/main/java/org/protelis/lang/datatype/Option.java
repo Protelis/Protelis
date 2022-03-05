@@ -247,6 +247,7 @@ public final class Option<E> implements Serializable {
     /**
      * @return the internal value of the {@link Option}, or a {@link RuntimeException} if absent.
      */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public E get() {
         return internal.get();
     }
