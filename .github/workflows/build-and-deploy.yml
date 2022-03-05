@@ -5,9 +5,13 @@ on:
     branches-ignore:
       - 'autodelivery**'
       - 'bump-**'
+      - 'renovate/**'
+    paths-ignore:
+      - 'CHANGELOG.md'
+      - 'renovate.json'
+      - '.gitignore'
   pull_request:
-  schedule:
-    - cron: '0 3 * * SUN'
+  workflow_dispatch:
 
 jobs:
   Build:
