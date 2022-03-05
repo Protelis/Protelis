@@ -171,15 +171,7 @@ public final class ProtelisLoader {
             final URI uri = workAroundOpenJ9EMFBug(() -> URI.createURI(resource.realURI));
             if (resource.exists()) {
                 try (InputStream is = resource.openStream()) {
-                    final String ss = IOUtils.toString(is, StandardCharsets.UTF_8);
-                    final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
-                    while (matcher.find()) {
-                        final int start = matcher.start(1);
-                        final int end = matcher.end(1);
-                        final String imp = ss.substring(start, end);
-                        final String classpathResource = "classpath:/" + imp.replace(":", "/") + "." + PROTELIS_FILE_EXTENSION;
-                        loadResourcesRecursively(target, classpathResource, alreadyInQueue);
-                    }
+                    loadStringResources(target, is, alreadyInQueue);
                 }
                 LOADED_RESOURCES.get().put(programURI, workAroundOpenJ9EMFBug(() -> target.getResource(uri, true)));
             } else {
@@ -188,8 +180,11 @@ public final class ProtelisLoader {
         }
     }
 
-    private static void loadStringResources(final XtextResourceSet target, final InputStream is) throws IOException {
-        final Set<String> alreadyInQueue = new LinkedHashSet<>();
+    private static void loadStringResources(
+        final XtextResourceSet target,
+        final InputStream is,
+        final Set<String> alreadyInQueue
+    ) throws IOException {
         final String ss = IOUtils.toString(is, StandardCharsets.UTF_8);
         final Matcher matcher = REGEX_PROTELIS_IMPORT.matcher(ss);
         while (matcher.find()) {
@@ -201,7 +196,11 @@ public final class ProtelisLoader {
         }
     }
 
-    private static Metadata metadataFor(final EObject origin) {
+    private static void loadStringResources(final XtextResourceSet target, final InputStream is) throws IOException {
+        loadStringResources(target, is, new LinkedHashSet<>());
+    }
+
+        private static Metadata metadataFor(final EObject origin) {
         final INode grammarElement = NodeModelUtils.getNode(origin);
         final int startLine = grammarElement.getStartLine();
         final int endLine = grammarElement.getEndLine();
