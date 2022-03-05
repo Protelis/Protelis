@@ -409,7 +409,11 @@ public final class Option<E> implements Serializable {
         throw exceptionSupplier.get();
     }
 
-    private <X> Option<X> runProtelis(final ExecutionContext ctx, final FunctionDefinition fun, final Function<Object, Option<X>> converter) {
+    private <X> Option<X> runProtelis(
+        final ExecutionContext ctx,
+        final FunctionDefinition fun,
+        final Function<Object, Option<X>> converter
+    ) {
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             if (isPresent()) {
                 final Object value = runProtelisFunctionWithJavaArguments(ctx, fun, ImmutableList.of(get()));
