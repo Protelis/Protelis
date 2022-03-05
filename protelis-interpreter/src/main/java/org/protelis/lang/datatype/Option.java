@@ -218,7 +218,7 @@ public final class Option<E> implements Serializable {
                     if (result == null) {
                         throw new IllegalStateException(value + " is not empty, but its get() method returned null.");
                     }
-                    return new Option<X>((X) result);
+                    return new Option<>((X) result);
                 } else {
                     return empty();
                 }
