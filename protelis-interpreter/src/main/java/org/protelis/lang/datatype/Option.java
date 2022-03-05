@@ -179,10 +179,7 @@ public final class Option<E> implements Serializable {
                 return Option.<X>empty();
             } else if (value instanceof java.util.Optional) {
                 final java.util.Optional<?> result = (java.util.Optional<?>) value;
-                if (result.isPresent()) {
-                    return new Option<X>((X) result.get());
-                }
-                return Option.<X>empty();
+                return result.map(o -> new Option<>((X) o)).orElseGet(Option::empty);
             } else {
                 /*
                  * Attempt with structural typing. In case of failure, give up.
