@@ -729,6 +729,9 @@ public final class Engine<T> implements Simulation<T> {
         }
     }
 
+    /**
+     * @return the error, or null if there is none
+     */
     public Throwable getError() {
         return error;
     }
