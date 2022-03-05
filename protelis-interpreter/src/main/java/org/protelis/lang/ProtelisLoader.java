@@ -454,6 +454,7 @@ public final class ProtelisLoader {
             return (ProtelisAST<T>) block(block);
         }
 
+        @SuppressWarnings("deprecation")
         private static ProtelisAST<?> builtin(@Nonnull final Builtin expression) {
             if (expression instanceof org.protelis.parser.protelis.AlignedMap) {
                 return alignedMap((org.protelis.parser.protelis.AlignedMap) expression);
