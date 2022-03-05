@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -184,7 +185,7 @@ public final class Option<E> implements Serializable {
                  */
                 final List<Method> methods = Arrays.stream(value.getClass().getMethods())
                     .map(MethodUtils::getAccessibleMethod)
-                    .filter(it -> it != null)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
                 final Method tester = methods.stream()
                     .filter(it -> it.getParameterCount() == 0)
