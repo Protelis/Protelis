@@ -1,6 +1,6 @@
 bin/
 build/
-/.gradle/
+.gradle/
 /src-gen/
 *.directory
 gradle.prefs
