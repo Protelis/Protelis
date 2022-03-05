@@ -53,8 +53,10 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
                 );
             }
         } else if (this.functionDefinition.getParameterCount() != args.size()) {
-            throw new IllegalArgumentException(functionDefinition + " must be invoked with " + functionDefinition.getParameterCount()
-                    + " arguments, but was invoked with " + args + ", which are " + args.size());
+            throw new IllegalArgumentException(
+                functionDefinition + " must be invoked with " + functionDefinition.getParameterCount()
+                + " arguments, but was invoked with " + args + ", which are " + args.size()
+            );
         }
         stackCode = this.functionDefinition.getStackCode();
     }
