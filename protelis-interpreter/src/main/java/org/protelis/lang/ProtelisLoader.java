@@ -420,7 +420,8 @@ public final class ProtelisLoader {
 
     private static class Dispatch {
 
-        private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE = CacheBuilder.newBuilder().weakKeys().build();
+        private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE =
+            CacheBuilder.newBuilder().weakKeys().build();
         private static final HashingFunnel FUNNEL = new Java8CompatibleFunnel();
         private static ProtelisAST<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
             return new AlignedMap(
