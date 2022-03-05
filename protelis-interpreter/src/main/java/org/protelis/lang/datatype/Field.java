@@ -32,7 +32,8 @@ public interface Field<T> extends Serializable {
 
     /**
      * Verifies if some device has an entry in this field.
-     * Note to interface implementors: the default version of this method is not optimized for performance and should be overriden.
+     * Note to interface implementors:
+     * the default version of this method is not optimized for performance and should be overridden.
      * 
      * @param id a device UID
      * @return true if there is an entry in this field for the device
