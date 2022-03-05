@@ -97,20 +97,20 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      * to encode {@link CodePath}s can call this constructor, e.g.:
      *
      * <pre>
-     * super(execenv, netmgr, new HashingCodePathFactory(Hashing.sha256()));
+     * super(executionEnvironment, networkManager, new HashingCodePathFactory(Hashing.sha256()));
      * </pre>
      *
-     * @param execenv         The execution environment
-     * @param netmgr          Abstract network interface to be used
+     * @param executionEnvironment The execution environment
+     * @param networkManager Abstract network interface to be used
      * @param codePathFactory The code path factory to use
      */
     protected AbstractExecutionContext(
-        final ExecutionEnvironment execenv,
-        final NetworkManager netmgr,
+        final ExecutionEnvironment executionEnvironment,
+        final NetworkManager networkManager,
         final CodePathFactory codePathFactory
     ) {
-        networkManager = Objects.requireNonNull(netmgr);
-        environment = Objects.requireNonNull(execenv);
+        this.networkManager = Objects.requireNonNull(networkManager);
+        environment = Objects.requireNonNull(executionEnvironment);
         this.codePathFactory = codePathFactory;
     }
 
