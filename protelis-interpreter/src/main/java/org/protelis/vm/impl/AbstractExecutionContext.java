@@ -257,9 +257,9 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
 
     @SuppressWarnings("unchecked")
     @Override
-    public final <S> S getPersistent(final Supplier<S> ifAbsent) {
+    public final <P> P getPersistent(final Supplier<P> ifAbsent) {
         final CodePath path = codePathFactory.createCodePath(callStack, callFrameSizes);
-        final S last = (S) lastStored.get(path);
+        final P last = (P) lastStored.get(path);
         return last == null ? ifAbsent.get() : last;
     }
 
@@ -268,6 +268,9 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         return gamma.get(name);
     }
 
+    /**
+     * @return a view on the state stored in this context.
+     */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is unmodifiable")
     public final Map<CodePath, Object> getStoredState() {
         return lastStored;
