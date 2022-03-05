@@ -94,12 +94,6 @@ public class HashingCodePathFactory implements CodePathFactory {
             this(hash, true);
         }
 
-        /**
-         * Builds a new {@link HashingCodePath} based on the provided hash.
-         * 
-         * @param hash a byte array representing the hash it must be at least four bytes
-         *             (though longer hashes are warmly recommended to avoid collisions)
-         */
         private HashingCodePath(final byte[] hash, final boolean copy) {
             if (hash.length < 4) {
                 throw new IllegalArgumentException("Hashes shorter than four bytes are unacceptable: " + Arrays.toString(hash));
