@@ -7,6 +7,12 @@
 
 package org.protelis.lang.datatype;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.reflect.MethodUtils;
+import org.protelis.vm.ExecutionContext;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,13 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
-import org.protelis.vm.ExecutionContext;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments;
 
 /**
  * An immutable object that may contain a non-null reference to another object. Each instance of
@@ -376,7 +376,7 @@ public final class Option<E> implements Serializable {
     @SuppressWarnings("unchecked")
     public E orElseGet(final ExecutionContext ctx, final FunctionDefinition other) {
         if (other.getParameterCount() == 0) {
-            return internal.or(() -> (E) JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, other, ImmutableList.of()));
+            return internal.or(() -> (E) runProtelisFunctionWithJavaArguments(ctx, other, ImmutableList.of()));
         }
         throw new IllegalArgumentException("Optional supplier function must be 0-ary. Illegal function: " + other);
     }
@@ -412,7 +412,7 @@ public final class Option<E> implements Serializable {
     private <X> Option<X> runProtelis(final ExecutionContext ctx, final FunctionDefinition fun, final Function<Object, Option<X>> converter) {
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
             if (isPresent()) {
-                final Object value = JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments(ctx, fun, ImmutableList.of(get()));
+                final Object value = runProtelisFunctionWithJavaArguments(ctx, fun, ImmutableList.of(get()));
                 return converter.apply(value);
             }
             return empty();
