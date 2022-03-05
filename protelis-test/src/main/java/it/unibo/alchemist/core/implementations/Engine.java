@@ -616,8 +616,10 @@ public final class Engine<T> implements Simulation<T> {
         } else {
             final Time t = root.getTau();
             if (t.compareTo(currentTime) < 0) {
-                throw new IllegalStateException(root + "\nis scheduled in the past at time " + t + ", current time is " + currentTime
-                        + "\nProblem occurred at step " + curStep);
+                throw new IllegalStateException(
+                    root + "\nis scheduled in the past at time " + t + ", current time is " + currentTime
+                    + "\nProblem occurred at step " + curStep
+                );
             }
             currentTime = t;
             if (root.canExecute()) {
