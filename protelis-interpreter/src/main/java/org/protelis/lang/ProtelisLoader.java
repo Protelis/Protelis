@@ -113,7 +113,6 @@ import org.protelis.vm.ProtelisProgram;
 import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
