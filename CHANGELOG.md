@@ -1,3 +1,102 @@
+### [15.1.1](https://github.com/Protelis/Protelis/compare/15.1.0...15.1.1) (2022-03-06)
+
+
+### Bug Fixes
+
+* **interpreter:** fail clearly in case of deserialization issues with LazyField ([bef1f7b](https://github.com/Protelis/Protelis/commit/bef1f7b578aa9980947b5435086b35fd82e1ee86))
+* **interpreter:** intercept a potential null pointer exception when reducing ([04f3c2b](https://github.com/Protelis/Protelis/commit/04f3c2b780008712c377c67ae7f24969ad774b35))
+* **interpreter:** prevent potential null pointer exception in unboxing of Boolean ([11d552f](https://github.com/Protelis/Protelis/commit/11d552f38f5aa2602bf547d81cc33777f1d4663d))
+
+
+### Refactoring
+
+* **interpreter:** break long line ([5e800c6](https://github.com/Protelis/Protelis/commit/5e800c6e9fefac4efc77bbb251f95131214782a3))
+* **interpreter:** break long line ([3bf0288](https://github.com/Protelis/Protelis/commit/3bf028825f79b6e854acdcc57fcf7355a5138288))
+* **interpreter:** break long line ([276ae0f](https://github.com/Protelis/Protelis/commit/276ae0f5091d16efa3e5c6c4167ca69ec47f8fae))
+* **interpreter:** let the compiler infer a type argument ([ecb8c41](https://github.com/Protelis/Protelis/commit/ecb8c418860c2116f9f52961565a62e7d0b8f600))
+* **interpreter:** let the compiler infer the type argument ([6e58fc9](https://github.com/Protelis/Protelis/commit/6e58fc97e7b4fe662d68ed74147c4535a51d8867))
+* **interpreter:** prefer javax annotations over JetBrain's ([ea40536](https://github.com/Protelis/Protelis/commit/ea405367d4b467045e98485c48720396eb10c16f))
+* **interpreter:** prefer the diamond operator ([0dafa64](https://github.com/Protelis/Protelis/commit/0dafa645f3b93708493aa1ae48bca24d804627d6))
+* **interpreter:** reduce code duplication ([5c14fd5](https://github.com/Protelis/Protelis/commit/5c14fd5fc8867b8d4f71421ba1371c285b4782f6))
+* **interpreter:** remove never-thrown exceptions from the flatMap method signature ([78c7a3e](https://github.com/Protelis/Protelis/commit/78c7a3e9525646090dc9e5fe21e34c11b3259677))
+* **interpreter:** replace lambda with method reference ([353cba0](https://github.com/Protelis/Protelis/commit/353cba03c304eca16829d29518de6743e923114e))
+* **interpreter:** suppress false positive ([4837d78](https://github.com/Protelis/Protelis/commit/4837d78fe0e81cd9ee8bfed3c6cc146454e23e0d))
+* **interpreter:** use a clearer parameter name ([f231fc7](https://github.com/Protelis/Protelis/commit/f231fc7bcdee0db925c4bdfe3d5b8ca4601b4661))
+* **interpreter:** use clearer parameter names ([1033f69](https://github.com/Protelis/Protelis/commit/1033f69143069f76b209b9d3be1f3cfe2594111a))
+
+
+### General maintenance
+
+* **gitignore:** ignore all .gradle folders ([2444c55](https://github.com/Protelis/Protelis/commit/2444c559600e6cabd60457e71a129747556bd9a8))
+* **interpreter:** break long line ([9370b48](https://github.com/Protelis/Protelis/commit/9370b482465583e8c7b0f30d94a2a948265648a1))
+* **interpreter:** break long line ([822388b](https://github.com/Protelis/Protelis/commit/822388b4dc586e5714fa401ca299c27c7e76d30a))
+* **interpreter:** drop outdated docs ([1570e1b](https://github.com/Protelis/Protelis/commit/1570e1bf6b1518c53d3aaa7d290d46f970302744))
+* **interpreter:** honor @Nonnull annotation ([4764380](https://github.com/Protelis/Protelis/commit/476438072c40e2a424af95e3779967d4d68f0a76))
+* **interpreter:** remove commented line ([f4c1148](https://github.com/Protelis/Protelis/commit/f4c114873300ff26cdff90abcd40d11c9bea650c))
+* **interpreter:** remove redundant suppression ([2311579](https://github.com/Protelis/Protelis/commit/2311579a6c19bfd75af7d753a006fa9fd4286c82))
+* **interpreter:** suppress unused warning, the method is part of the public API ([1cceaef](https://github.com/Protelis/Protelis/commit/1cceaefbdd02bb5b55129acf51a5f7cd809e680e))
+* **interpreter:** suppress warning as the behavior is desired ([601ff9a](https://github.com/Protelis/Protelis/commit/601ff9a6acc1e7cba799e3294d6ced44f338294a))
+* **interpreter:** suppress warning that will be there until legacy hood calls get dropped ([6a96114](https://github.com/Protelis/Protelis/commit/6a96114974b09b9aadfc94d96823102afa968b81))
+
+
+### Dependency updates
+
+* **deps:** upgrade Gradle to 7.4 ([f339f2e](https://github.com/Protelis/Protelis/commit/f339f2e3adbee13a97a6daecc9cb9f4d2a4d16f4))
+
+
+### Style improvements
+
+* **interpreter:** break long line ([540cfb4](https://github.com/Protelis/Protelis/commit/540cfb4c0dd9bad53fb153926688e26562f91658))
+* **interpreter:** break long line ([aa24832](https://github.com/Protelis/Protelis/commit/aa248323cb20287c2259759a5328d1cf556210ee))
+* **interpreter:** break long line ([fb4a9ff](https://github.com/Protelis/Protelis/commit/fb4a9ff0f6d61102bc3796ade01f360adf63f96b))
+* **interpreter:** break long line ([c3d4365](https://github.com/Protelis/Protelis/commit/c3d436599a9c54db3530c097d53e5b0e3917d1f4))
+* **interpreter:** break long line ([911e5d1](https://github.com/Protelis/Protelis/commit/911e5d16f2e370cf754db6e84b2dcd93ec796007))
+* **interpreter:** break long line ([a98f8b4](https://github.com/Protelis/Protelis/commit/a98f8b461224ca1e444aa1b249f5722e0e4309f1))
+* **interpreter:** break long line ([a4c96ec](https://github.com/Protelis/Protelis/commit/a4c96ec39a7be8c68203f3b743ccdd3c88c0dcc0))
+* **interpreter:** break long line ([3f1032e](https://github.com/Protelis/Protelis/commit/3f1032ee93c6becac0fbe2ba3d91eb9cd2a0246d))
+* **interpreter:** break long line ([4a5df02](https://github.com/Protelis/Protelis/commit/4a5df0266126aa921e84eae2abef898a3291464b))
+* **interpreter:** break long line ([eb4c0eb](https://github.com/Protelis/Protelis/commit/eb4c0eb68a0716f0408e9e7cc686ae8f63f474f4))
+* **interpreter:** break long line ([9a223d5](https://github.com/Protelis/Protelis/commit/9a223d5c83eec7e8543d045a90dc9d8625d77ca8))
+* **interpreter:** break long line ([6863fe5](https://github.com/Protelis/Protelis/commit/6863fe51e29db49a9942fc530ece8a8f0485e224))
+* **interpreter:** break long line ([d3ae4ec](https://github.com/Protelis/Protelis/commit/d3ae4ecf09c0bb1c589bbb0368497172228f7ea9))
+* **interpreter:** let the compiler figure out a type argument ([94864e2](https://github.com/Protelis/Protelis/commit/94864e234518f05b1891fa285a66f4fc6c4bb3b5))
+* **interpreter:** make call more functional ([c10d7ce](https://github.com/Protelis/Protelis/commit/c10d7ce61c0c559dd7f00c92e4ed413b64f22f79))
+* **interpreter:** optimize imports in Option ([7779043](https://github.com/Protelis/Protelis/commit/77790438897c91020a04fe7c677810e109b5f590))
+* **interpreter:** style fixes in HoodOp ([97a614a](https://github.com/Protelis/Protelis/commit/97a614aa81dcf5a0087b46147f819026b1f515cc))
+* **test:** break long line ([d8cb7bc](https://github.com/Protelis/Protelis/commit/d8cb7bc00c6f0764ac7da3ecfff343839e891c18))
+* **test:** style fixes across test sources ([78da7f0](https://github.com/Protelis/Protelis/commit/78da7f0d5870a9ce5c5f6c23d9dd1cbf6181d849))
+* **test:** style fixes in InfrastructureTester ([ddb73f7](https://github.com/Protelis/Protelis/commit/ddb73f7146e5ffc3523b4cdd17a11f73a4990c69))
+* **test:** style fixes in TestEqual ([8a314ba](https://github.com/Protelis/Protelis/commit/8a314bae17a031fcc1b67614afa1507e6ba8ef27))
+* **test:** suppress a PMD false positive ([7794f36](https://github.com/Protelis/Protelis/commit/7794f36b9b2c11457e757a2912187122798a0862))
+* **test:** suppress checkstyle on Alchemist-inherited class ([191d7b2](https://github.com/Protelis/Protelis/commit/191d7b25343a6a169375278a62fc691f584b672f))
+
+
+### Documentation
+
+* fix the javadoc and disable apiviz ([369b379](https://github.com/Protelis/Protelis/commit/369b37924bf9d18d9f195cdd070837c996622015))
+* **interpreter:** break long lines ([a960a0a](https://github.com/Protelis/Protelis/commit/a960a0a30368057ff76dec3e0ed22e8ae3c25bdb))
+* **interpreter:** break long lines ([f4e9778](https://github.com/Protelis/Protelis/commit/f4e9778902dede9900ee1e427f1df2f07ef81012))
+* **interpreter:** document Either ([20dc368](https://github.com/Protelis/Protelis/commit/20dc368bff21109f6335f566331aaf60908a03c8))
+* **interpreter:** document Field.Builder ([4ddfa01](https://github.com/Protelis/Protelis/commit/4ddfa013376df99af17976e81ea1955a659a4a67))
+* **interpreter:** document get/set Persistent ([3d35b38](https://github.com/Protelis/Protelis/commit/3d35b3899e24abb9492030c561691fdfea888ef0))
+* **interpreter:** document getStoredState ([f03e2b4](https://github.com/Protelis/Protelis/commit/f03e2b422676995bb3c9c1d2a36a032e909fdd4f))
+* **interpreter:** document HashingFunnel ([8961355](https://github.com/Protelis/Protelis/commit/896135555f88c580a2f1fbb04bd7950c871aa0fd))
+* **interpreter:** document Java8CompatibleFunnel ([9bc9524](https://github.com/Protelis/Protelis/commit/9bc95245a1a27fab0aa2d70865f184080fef39e7))
+* **interpreter:** document JVMEntity constructor ([b319891](https://github.com/Protelis/Protelis/commit/b31989166c805ce250c62eb267feb21233f54224))
+* **interpreter:** fix typo ([70f260a](https://github.com/Protelis/Protelis/commit/70f260adcbd5eb3a0df636ca945a085162b41726))
+* **interpreter:** remove outdated documentation on private method ([9c06be6](https://github.com/Protelis/Protelis/commit/9c06be623d14cb52feaadfdb6fdc4376ac28bbdc))
+* **test:** document getError ([fb7627f](https://github.com/Protelis/Protelis/commit/fb7627fb12159e92109414669d538fbf91b11471))
+
+
+### Build and continuous integration
+
+* **deps:** update the build action to 1.2.6 ([ef507e0](https://github.com/Protelis/Protelis/commit/ef507e0d3cecc561780178bd6a32089b47bc8fc5))
+* **deps:** update to build-check-deploy-gradle-action@1.2.5 ([e9814c2](https://github.com/Protelis/Protelis/commit/e9814c20ce1f18154b81676a085e2a8b62453734))
+* disable the cronjob ([7a6366e](https://github.com/Protelis/Protelis/commit/7a6366ee58bcd60ab25d848d86e4f40dc33e8a27))
+* modernize the build ([3d07863](https://github.com/Protelis/Protelis/commit/3d078638e9ff2d8c9c8fc5ac6dca2dcaed45778c))
+* provide secrets to sign artifacts for dry-deployment ([40d38c8](https://github.com/Protelis/Protelis/commit/40d38c8ce55f6fd11b5ae39e5cd7b3ea6d2b1476))
+* switch to semantic release ([fcbc480](https://github.com/Protelis/Protelis/commit/fcbc48044edb07985ad666eb64a32dd583f5fe9e))
+
 # CHANGELOG
 
 ## 10.1.0
