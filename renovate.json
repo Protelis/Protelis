@@ -20,6 +20,13 @@
         "org.apache.commons:commons-math3"
       ],
       "semanticCommitScope": "core-deps"
+    },
+    {
+      "description": "Updates that modify the documentation",
+      "matchPackageNames": [
+        "org.protelis.protelisdoc"
+      ],
+      "semanticCommitType": "docs"
     }
   ]
 }
