@@ -3,6 +3,7 @@
   "extends": [
     "github>DanySK/renovate-config"
   ],
+  "includeForks": true,
   "packageRules": [
     {
       "description": "Trigger a minor update on some dependencies",
