@@ -1,3 +1,16 @@
+### [15.1.2](https://github.com/Protelis/Protelis/compare/15.1.1...15.1.2) (2022-03-06)
+
+
+### Bug Fixes
+
+* **ci-surge:** export the login information ([3ed60c1](https://github.com/Protelis/Protelis/commit/3ed60c1b59aa6a265abd913e964f6aa8d7579289))
+
+
+### Build and continuous integration
+
+* **release:** do not search for secrets in the wrong deploy phase ([f815df0](https://github.com/Protelis/Protelis/commit/f815df09932023c7f7cf9c7093a123dea5c138b3))
+* **release:** limit the process to 20 minutes ([3008a9b](https://github.com/Protelis/Protelis/commit/3008a9b26ae35290e0455d911383027d4cfe8fe4))
+
 ### [15.1.1](https://github.com/Protelis/Protelis/compare/15.1.0...15.1.1) (2022-03-06)
 
 
