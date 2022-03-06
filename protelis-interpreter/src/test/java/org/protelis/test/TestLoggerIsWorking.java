@@ -12,8 +12,14 @@ import org.junit.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Verifies that the current Log4J implementation does not fall back to NOP.
+ */
 public class TestLoggerIsWorking {
 
+    /**
+     * Verifies that the current Log4J implementation does not fall back to NOP.
+     */
     @Test
     public void testLoggerImplementationIsNotNOP() {
         final String loggerName = LoggerFactory.getLogger(ProtelisLoader.class).getClass().getName();

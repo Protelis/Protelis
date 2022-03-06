@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +40,12 @@ public final class TestStacktrace {
         ProgramTester.runExpectingErrors("/errorTrace02.pt", ProtelisRuntimeException.class, e -> {
             final String fullTrace = e.toString();
             assertTrue("Exception does not identify line numbers\n" + fullTrace, fullTrace.contains("line"));
-            for (final String function : ImmutableList.of("errorTrace02:rootError", "errorTrace02:aCall", "errorTrace02:anotherCall")) {
+            final List<String> functions = ImmutableList.of(
+                "errorTrace02:rootError",
+                "errorTrace02:aCall",
+                "errorTrace02:anotherCall"
+            );
+            for (final String function : functions) {
                 assertTrue("Exception does not identify function name " + function + '\n' + fullTrace,
                         fullTrace.contains(function));
             }

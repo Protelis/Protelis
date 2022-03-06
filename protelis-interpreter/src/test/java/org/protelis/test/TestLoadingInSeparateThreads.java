@@ -52,7 +52,10 @@ public class TestLoadingInSeparateThreads {
 
     private File createDependenciesDirectory() throws IOException, URISyntaxException {
         final File d = Files.createTempDirectory("protelis").toFile();
-        FileUtils.copyDirectory(new File(Thread.currentThread().getContextClassLoader().getResource("orgoriginal").toURI()), new File(d, "org"));
+        FileUtils.copyDirectory(
+            new File(Thread.currentThread().getContextClassLoader().getResource("orgoriginal").toURI()),
+            new File(d, "org")
+        );
         return d;
     }
 

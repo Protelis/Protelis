@@ -125,10 +125,15 @@ public class TestParseError {
         InfrastructureTester.runTest(file, simulationSteps, stabilitySteps);
     }
 
-    private static void testCommentedImportLine(final String importLine, final String programLine, final String... errorMessages) {
+    private static void testCommentedImportLine(
+        final String importLine,
+        final String programLine,
+        final String... errorMessages
+    ) {
         ProgramTester.runProgram(importLine + "\n" + programLine, 1);
         COMMENT_STYLES.entries().forEach(entry -> ProgramTester.runExpectingErrors(
                 entry.getKey() + importLine + entry.getValue() + programLine,
-                Exception.class, errorMessages));
+                Exception.class, errorMessages)
+        );
     }
 }
