@@ -56,11 +56,11 @@ jobs:
           token: ${{ secrets.DEPLOYMENT_TOKEN }}
       - uses: DanySK/build-check-deploy-gradle-action@1.2.6
         with:
-          build-command: |
-            [ -n "$CUSTOM_SECRET_0" ]
-            [ -n "$CUSTOM_SECRET_1" ]
+          build-command: true
           check-command: true
           deploy-command: |
+            [ -n "$CUSTOM_SECRET_0" ]
+            [ -n "$CUSTOM_SECRET_1" ]
             export SURGE_LOGIN="$CUSTOM_SECRET_0"
             export SURGE_TOKEN="$CUSTOM_SECRET_1"
             npm install --global surge
