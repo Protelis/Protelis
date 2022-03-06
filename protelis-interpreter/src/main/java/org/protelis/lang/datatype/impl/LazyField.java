@@ -25,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -165,8 +166,13 @@ public final class LazyField<T> extends AbstractField<T> {
         final ImmutableMap<DeviceUID, T> allValues = (ImmutableMap<DeviceUID, T>) stream.readObject();
         neighbors = CacheBuilder.newBuilder().build(new CacheLoader<DeviceUID, T>() {
             @Override
-            public T load(final DeviceUID key) throws Exception {
-                return allValues.get(key);
+            @Nonnull
+            @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
+            public T load(@Nonnull final DeviceUID key) throws Exception {
+                return Objects.requireNonNull(
+                    allValues.get(key),
+                    "Field broken after de-serialization! Available values: " + allValues + ", requested id: " + key
+                );
             }
         });
     }
