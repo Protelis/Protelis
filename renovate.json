@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>DanySK/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "description": "Trigger a minor update on some dependencies",
+      "matchPackageNames": [
+        "org.protelis:protelis.parser"
+      ],
+      "semanticCommitScope": "api-deps"
+    },
+    {
+      "description": "Trigger a patch update on some dependencies",
+      "matchPackageNames": [
+        "com.google.guava:guava",
+        "net.sf.trove4j:trove4j",
+        "org.apache.commons:commons-math3"
+      ],
+      "semanticCommitScope": "core-deps"
+    }
+  ]
+}
