@@ -114,15 +114,15 @@ allprojects {
 
     publishOnCentral {
         fun String.fromProperties(): String = extra[this].toString()
-        projectDescription = "projectDescription".fromProperties()
-        projectLongName = "longName".fromProperties()
-        licenseName = "licenseName".fromProperties()
-        licenseUrl = "licenseUrl".fromProperties()
-        projectUrl = "http://www.protelis.org"
-        scmConnection = scmUrl
+        projectDescription.set("projectDescription".fromProperties())
+        projectLongName.set("longName".fromProperties())
+        licenseName.set("licenseName".fromProperties())
+        licenseUrl.set("licenseUrl".fromProperties())
+        projectUrl.set("http://www.protelis.org")
+        scmConnection.set(scmUrl)
         repository("https://maven.pkg.github.com/protelis/protelis") {
-            user = System.getenv("GITHUB_ACTOR") ?: "DanySK"
-            password = System.getenv("GITHUB_TOKEN")
+            user.set(System.getenv("GITHUB_ACTOR") ?: "DanySK")
+            password.set(System.getenv("GITHUB_TOKEN"))
         }
     }
 
@@ -133,7 +133,7 @@ allprojects {
                     developer {
                         name.set("Danilo Pianini")
                         email.set("danilo.pianini@unibo.it")
-                        url.set("http://www.danilopianini.org")
+                        url.set("https://danysk.github.io")
                     }
                     developer {
                         name.set("Jacob Beal")
