@@ -453,7 +453,7 @@ public final class Builtins {
                 reductionFunction,
                 ImmutableList.of(a, b)
             );
-            if (expectedType.isAssignableFrom(reductionResult.getClass())) {
+            if (reductionResult != null && expectedType.isAssignableFrom(reductionResult.getClass())) {
                 return expectedType.cast(reductionResult);
             }
             throw new IllegalStateException("Reduction operation over target field " + target
