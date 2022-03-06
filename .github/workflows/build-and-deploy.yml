@@ -38,6 +38,8 @@ jobs:
           gradle-publish-secret: ${{ secrets.GRADLE_PUBLISH_SECRET }}
           gradle-publish-key: ${{ secrets.GRADLE_PUBLISH_KEY }}
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          signing-key: ${{ secrets.SIGNING_KEY }}
+          signing-password: ${{ secrets.SIGNING_PASSWORD }}
 
   Release:
     needs:
