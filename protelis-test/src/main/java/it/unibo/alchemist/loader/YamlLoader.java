@@ -82,6 +82,7 @@ import java8.util.stream.RefStreams;
 import java8.util.stream.Stream;
 import java8.util.stream.StreamSupport;
 
+// CHECKSTYLE:OFF
 /**
  * Loads a properly formatted YAML file and provides method for instancing a batch of scenarios.
  */
@@ -1079,5 +1080,4 @@ public final class YamlLoader implements Loader, Serializable {
         }
         return Optional.empty();
     }
-
 }
