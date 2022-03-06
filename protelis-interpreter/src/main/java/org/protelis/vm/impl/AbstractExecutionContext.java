@@ -55,7 +55,7 @@ import gnu.trove.stack.array.TIntArrayStack;
  *            no foolish cast is used) that restricted contexts have all the
  *            methods available in the main {@link ExecutionContext}. For
  *            instance, if your class is MyContext, it should be written as
- *            MyContext extends AbstractExecutionContext<MyContext>.
+ *            MyContext extends AbstractExecutionContext&lt;MyContext&gt;.
  */
 public abstract class AbstractExecutionContext<S extends AbstractExecutionContext<S>> implements ExecutionContext {
 

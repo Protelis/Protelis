@@ -15,7 +15,7 @@ import org.protelis.vm.ExecutionContext;
 /**
  * An arbitrary object-valued constant.
  *
- * @param <T>
+ * @param <T> the type of the constant
  */
 public class Constant<T> extends AbstractProtelisAST<T> {
 

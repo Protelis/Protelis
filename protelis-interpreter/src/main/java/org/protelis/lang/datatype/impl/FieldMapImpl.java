@@ -109,7 +109,7 @@ public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builde
     /**
      * Builder for an immutable field.
      *
-     * @param <T>
+     * @param <T> field type
      */
     public static final class Builder<T> implements Field.Builder<T> {
 

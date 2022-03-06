@@ -66,7 +66,7 @@ public final class Tuples {
     /**
      * Apply fun to pairs of elements from t1 and t2. If one tuple is longer,
      * then its unmatched elements will be added to the output e.g.,
-     * pairOperation([1,2,3],[4,5],max) --> [4,5,3]
+     * pairOperation([1,2,3],[4,5],max) -&gt; [4,5,3]
      * 
      * @param t1
      *            Tuple of first arguments

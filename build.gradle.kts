@@ -49,14 +49,12 @@ allprojects {
         mavenCentral()
     }
 
-    val doclet by configurations.creating
     dependencies {
         with(rootProject.libs) {
             compileOnly(spotbugs.annotations)
             testImplementation(junit)
             testImplementation(slf4j)
             testRuntimeOnly(logback)
-            doclet(apiviz)
         }
     }
 
@@ -92,15 +90,6 @@ allprojects {
             encoding = "UTF-8"
             val title = "Protelis ${project.version} Javadoc API"
             windowTitle(title)
-            doFirst {
-                if (JavaVersion.current().isJava8Compatible) {
-                    docletpath = doclet.files.toList()
-                    doclet("org.jboss.apiviz.APIviz")
-                    if (this is CoreJavadocOptions) {
-                        addBooleanOption("nopackagediagram", true)
-                    }
-                }
-            }
         }
     }
 
@@ -171,8 +160,12 @@ dependencies {
 }
 
 tasks.withType<Javadoc> {
-    dependsOn(subprojects.map { it.tasks.javadoc })
-    source(subprojects.map { it.tasks.javadoc.get().source })
+    subprojects.forEach { subproject ->
+        val subJavadoc = subproject.tasks.javadoc.get()
+        dependsOn(subJavadoc)
+        source(subJavadoc.source)
+        options.classpath(subJavadoc.classpath.files.toList())
+    }
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

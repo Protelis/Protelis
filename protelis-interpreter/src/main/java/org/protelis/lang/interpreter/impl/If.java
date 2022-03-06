@@ -21,7 +21,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
  * Branch, restricting domain of true and false branches into their own aligned
  * subspaces.
  *
- * @param <T>
+ * @param <T> the return type of this If
  */
 public final class If<T> extends AbstractProtelisAST<T> {
 

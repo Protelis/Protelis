@@ -74,7 +74,6 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
      *            the expression that will be evaluated if the field is empty
      * @param arg
      *            the argument to evaluate (must return a {@link Field}).
-     * @throws ClassNotFoundException 
      */
     public GenericHoodCall(
             final Metadata metadata, 

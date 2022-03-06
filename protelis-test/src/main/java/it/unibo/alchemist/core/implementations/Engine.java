@@ -45,7 +45,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * This class implements a simulation. It offers a wide number of static
  * factories to ease the creation process.
  *
- * @param <T>
+ * @param <T> ignored
  */
 @SuppressFBWarnings
 public final class Engine<T> implements Simulation<T> {
@@ -666,7 +666,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * This class provides a flexible Builder to create a new {@link Command}
+     * This class provides a flexible Builder to create a new Command
      * whose aim is to change the status of a Engine.
      *
      * @param <T> concentration
@@ -677,7 +677,7 @@ public final class Engine<T> implements Simulation<T> {
         private Status status;
 
         /**
-         * Sets the desired status to {@link Status#RUNNING}.
+         * Sets the desired status to RUNNING.
          * Calling this method overrides an eventual previous call to 
          * {@link #pause()} and\or {@link #stop()}.
          *
@@ -690,7 +690,7 @@ public final class Engine<T> implements Simulation<T> {
         }
 
         /**
-         * Sets the desired status to {@link Status#PAUSED}.
+         * Sets the desired status to PAUSED.
          * Calling this method overrides an eventual previous call to 
          * {@link #run()} and\or {@link #stop()}.
          *
@@ -716,9 +716,9 @@ public final class Engine<T> implements Simulation<T> {
         }
 
         /**
-         * Performs the building of an {@link Command} according to the previously called methods.
+         * Performs the building of a Command according to the previously called methods.
          *
-         * @return the generated {@link Command}
+         * @return the generated Command
          */
         public Command<T> build() {
             if (isValid) {

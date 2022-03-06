@@ -16,7 +16,7 @@ import org.protelis.vm.ExecutionContext;
  * Data structure representing the field calculus semantics of annotating
  * expressions with their evaluated values.
  * 
- * @param <T>
+ * @param <T> return type of this sub-program
  */
 public interface ProtelisAST<T> extends Serializable {
 

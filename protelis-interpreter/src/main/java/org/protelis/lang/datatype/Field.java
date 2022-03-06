@@ -188,7 +188,7 @@ public interface Field<T> extends Serializable {
     }
 
     /**
-     * @return the local <DeviceUID, T> entry
+     * @return the local DeviceUID, T entry
      */
     default Map.Entry<DeviceUID, T> getLocal() {
         return new ImmutablePair<>(getLocalDevice(), getLocalValue());

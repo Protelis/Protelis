@@ -280,10 +280,6 @@ public final class InfrastructureTester {
      * 
      * @param file
      *            file to bested
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
      */
     public static void multiRunTest(final String file) {
         final ExceptionObserver obs = new SimpleExceptionObserver();
@@ -295,10 +291,6 @@ public final class InfrastructureTester {
      * 
      * @param file
      *            file to bested
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
      */
     public static void runTest(final String file) {
         runTest(file, SIMULATION_STEPS, STABILITY_STEPS);
@@ -313,10 +305,6 @@ public final class InfrastructureTester {
      *            number of runs
      * @param stabilitySteps
      *            check function stability for this number of steps
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
      */
     public static void runTest(final String file, final int exampleRuns, final int stabilitySteps) {
         final ExceptionObserver obs = new SimpleExceptionObserver();
@@ -334,10 +322,6 @@ public final class InfrastructureTester {
      *            check function stability for this number of steps
      * @param expectedValue
      *            value to be checked
-     * @throws IOException
-     *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
      */
     public static void runTest(
         final String file,
@@ -364,10 +348,8 @@ public final class InfrastructureTester {
      *            value to be checked
      * @throws IOException
      *             IOexception
-     * @throws InterruptedException
-     *             InterruptedException
      */
-    public static void runTest(final String file, final Object expectedValue) throws InterruptedException, IOException {
+    public static void runTest(final String file, final Object expectedValue) throws IOException {
         runTest(file, SIMULATION_STEPS, STABILITY_STEPS, expectedValue);
     }
 

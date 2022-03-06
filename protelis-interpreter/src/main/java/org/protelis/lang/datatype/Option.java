@@ -228,7 +228,7 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * @see java.util.Optional#flatMap(Function).
+     * @see java.util.Optional#flatMap(Function)
      * 
      * @param <X> The type parameter to the {@code Optional} returned
      * @param fun a mapping function to apply to the value, if present the mapping
