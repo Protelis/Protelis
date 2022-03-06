@@ -42,11 +42,15 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                     try {
                         assertNotNull(singleNodeResult);
                         if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
-                            final double tmp = singleNodeResult instanceof Integer ? ((Integer) singleNodeResult).doubleValue() : (double) singleNodeResult;
+                            final double tmp = singleNodeResult instanceof Integer
+                                ? ((Integer) singleNodeResult).doubleValue()
+                                : (double) singleNodeResult;
                             assertEquals(Double.parseDouble(pair.getRight()), tmp, InfrastructureTester.DELTA);
                         } else if (singleNodeResult instanceof Boolean) {
                             final String v = pair.getRight();
-                            final boolean expected = Boolean.parseBoolean("T".equals(v) ? "true" : "F".equals(v) ? "false" : pair.getRight());
+                            final boolean expected = Boolean.parseBoolean("T".equals(v)
+                                ? "true"
+                                : "F".equals(v) ? "false" : pair.getRight());
                             assertEquals(expected, (Boolean) singleNodeResult);
                         } else {
                             assertEquals(pair.getRight(), singleNodeResult);
@@ -64,7 +68,12 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                 }
             }
         } catch (AssertionError e) {
-            obs.exceptionThrown(new IllegalStateException("expectedResult.length [" + expectedResult.size() + "] != simulationResult.length [" + simulationRes.values().size() + "]"));
+            obs.exceptionThrown(
+                new IllegalStateException(
+                    "expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
+                        + simulationRes.values().size() + "]"
+                )
+            );
         }
     }
 
