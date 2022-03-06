@@ -115,7 +115,7 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
         /*
          * A Protelis program may modify any molecule (global variable)
          */
-        return null;
+        return null; // NOPMD: this is desired.
     }
 
     @Override
