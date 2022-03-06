@@ -76,9 +76,16 @@ public final class InfrastructureTester {
         private static final String EXPECTED = "result:";
         private static final String ML_NAME = "multilineComment";
         private static final String ML_RUN = "multirun";
-        private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}", Pattern.DOTALL);
-        private static final Pattern MULTI_RESULT_PATTERN = Pattern.compile("(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?", Pattern.DOTALL);
-        private static final String RESULT_LIST = "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
+        private static final Pattern EXTRACT_RESULT = Pattern.compile(
+            ".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}",
+            Pattern.DOTALL
+        );
+        private static final Pattern MULTI_RESULT_PATTERN = Pattern.compile(
+            "(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?",
+            Pattern.DOTALL
+        );
+        private static final String RESULT_LIST =
+            "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
         static {
@@ -98,10 +105,13 @@ public final class InfrastructureTester {
          *            text to be matched
          * @return result
          */
-        public static TIntObjectMap<List<Pair<String, String>>> getMultiRunResult(final ExceptionObserver obs, final String text) {
+        public static TIntObjectMap<List<Pair<String, String>>> getMultiRunResult(
+            final ExceptionObserver obs,
+            final String text
+        ) {
             final TIntObjectMap<List<Pair<String, String>>> res = new TIntObjectHashMap<>();
             try {
-                assertFalse(!text.isEmpty());
+                assertTrue(text.isEmpty());
                 final Matcher outer = EXTRACT_RESULT.matcher(text);
                 if (outer.find()) {
                     final String result = outer.group(ML_NAME);
@@ -176,8 +186,15 @@ public final class InfrastructureTester {
     }
 
     @SuppressWarnings("unchecked")
-    private static void checkResult(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
-                    final List<Pair<String, String>> expectedResult, final Object f, final Environment<Object> env, final long step) {
+    private static void checkResult(
+        final ExceptionObserver obs,
+        final int totalSimulationSteps,
+        final int stabilitySteps,
+        final List<Pair<String,  String>> expectedResult,
+        final Object f,
+        final Environment<Object> env,
+        final long step
+    ) {
         if (step >= totalSimulationSteps - stabilitySteps) {
             L.debug("---- ROUND - {}", step);
             final Map<String, Object> simulationRes = new HashMap<>();
@@ -192,9 +209,11 @@ public final class InfrastructureTester {
                 final int occ = expectedResult.size();
                 final int found = ((Function<Map<String, Object>, Integer>) f).apply(simulationRes);
                 try {
-                    assertTrue(occ == found);
+                    assertEquals(occ, found);
                 } catch (AssertionError e) {
-                    obs.exceptionThrown(new IllegalArgumentException("Expected occurences [" + occ + "] != Occurences found [" + found + "]"));
+                    obs.exceptionThrown(
+                        new IllegalArgumentException("Expected occurences [" + occ + "] != Occurences found [" + found + "]")
+                    );
                 }
             } else {
                 obs.exceptionThrown(new IllegalArgumentException("How can I test without a proper function?"));
@@ -202,11 +221,14 @@ public final class InfrastructureTester {
         }
     }
 
-    /**
-     * Run a test.
-     */
-    private static void generalTest(final ExceptionObserver obs, final String file, final int simulationSteps, final int stabilitySteps,
-                    final boolean multirun, final Object f) {
+    private static void generalTest(
+        final ExceptionObserver obs,
+        final String file,
+        final int simulationSteps,
+        final int stabilitySteps,
+        final boolean multirun,
+        final Object f
+    ) {
         final String resource = "/" + file + ".yml";
         final InputStream is = InfrastructureTester.class.getResourceAsStream(resource);
         if (is == null) {
@@ -317,8 +339,20 @@ public final class InfrastructureTester {
      * @throws InterruptedException
      *             InterruptedException
      */
-    public static void runTest(final String file, final int simulationSteps, final int stabilitySteps, final Object expectedValue) {
-        generalTest(new SimpleExceptionObserver(), file, simulationSteps, stabilitySteps, false, new TestCount(expectedValue));
+    public static void runTest(
+        final String file,
+        final int simulationSteps,
+        final int stabilitySteps,
+        final Object expectedValue
+    ) {
+        generalTest(
+            new SimpleExceptionObserver(),
+            file,
+            simulationSteps,
+            stabilitySteps,
+            false,
+            new TestCount(expectedValue)
+        );
     }
 
     /**
@@ -337,21 +371,15 @@ public final class InfrastructureTester {
         runTest(file, SIMULATION_STEPS, STABILITY_STEPS, expectedValue);
     }
 
-    /**
-     * Run a simulation until the given number of runs.
-     * 
-     * @param totalSimulationSteps
-     *            number of runs
-     * @param env
-     *            environment
-     * @param expectedResult
-     *            expected result
-     * @param f
-     *            testing function
-     */
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This is not going to get serialized")
-    private static void testSingleRun(final ExceptionObserver obs, final int totalSimulationSteps, final int stabilitySteps,
-                    final Environment<Object> env, final List<Pair<String, String>> expectedResult, final Object f) {
+    private static void testSingleRun(
+        final ExceptionObserver obs,
+        final int totalSimulationSteps,
+        final int stabilitySteps,
+        final Environment<Object> env,
+        final List<Pair<String, String>> expectedResult,
+        final Object f
+    ) {
         final Engine<Object> simulation = new Engine<>(env, totalSimulationSteps + stabilitySteps);
         simulation.addOutputMonitor(new OutputMonitor<Object>() {
             private static final long serialVersionUID = 1L;
@@ -371,7 +399,10 @@ public final class InfrastructureTester {
         });
         simulation.addCommand(new StateCommand<>().run().build());
         simulation.run();
-        assertFalse(obs.getFirstException().isPresent() ? obs.getFirstException().get().getMessage() : "", obs.getFirstException().isPresent());
+        assertFalse(
+            obs.getFirstException().isPresent() ? obs.getFirstException().get().getMessage() : "",
+            obs.getFirstException().isPresent()
+        );
     }
 
     private InfrastructureTester() {
