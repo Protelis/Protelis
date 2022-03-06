@@ -7,67 +7,62 @@
 
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("org.danilopianini.git-sensitive-semantic-versioning")
-    eclipse
     `java-library`
-    jacoco
-    id("com.github.spotbugs")
-    pmd
-    checkstyle
-    id("org.jlleitschuh.gradle.ktlint")
     signing
     `maven-publish`
-    id("org.danilopianini.publish-on-central")
-    id("org.protelis.protelisdoc") apply false
-    id("com.github.johnrengelman.shadow")
-    id("kotlin-qa")
+    alias(libs.plugins.gitSemVer)
+    alias(libs.plugins.java.qa)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.qa)
+    alias(libs.plugins.multiJvmTesting)
+    alias(libs.plugins.protelisdoc)
+    alias(libs.plugins.publishOnCentral)
+    alias(libs.plugins.shadowJar)
+    alias(libs.plugins.taskTree)
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
 
 val scmUrl = "git:git@github.com:Protelis/Protelis"
 
+val Provider<PluginDependency>.id get() = get().pluginId
+
 allprojects {
 
-    apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning")
-    apply(plugin = "eclipse")
+    with(rootProject.libs.plugins) {
+        apply(plugin = gitSemVer.id)
+        apply(plugin = java.qa.id)
+        apply(plugin = kotlin.qa.id)
+        apply(plugin = multiJvmTesting.id)
+        apply(plugin = publishOnCentral.id)
+        apply(plugin = taskTree.id)
+        apply(plugin = shadowJar.id)
+    }
+
     apply(plugin = "java-library")
-    apply(plugin = "jacoco")
-    apply(plugin = "com.github.spotbugs")
-    apply(plugin = "checkstyle")
-    apply(plugin = "pmd")
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "build-dashboard")
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
-    apply(plugin = "org.danilopianini.publish-on-central")
-    apply(plugin = "kotlin-qa")
 
     repositories {
         mavenCentral()
-        jcenter {
-            content {
-                onlyForConfigurations(
-                    "generateProtelisDocPlugin",
-                    "generateProtelisDocRuntime"
-                )
-            }
-        }
     }
 
     val doclet by configurations.creating
     dependencies {
-        compileOnly(Libs.spotbugs_annotations)
-        testImplementation(Libs.junit)
-        testImplementation(Libs.slf4j_api)
-        testRuntimeOnly(Libs.logback_classic)
-        if (JavaVersion.current().isJava8Compatible) {
-            doclet(Libs.apiviz)
+        with(rootProject.libs) {
+            compileOnly(spotbugs.annotations)
+            testImplementation(junit)
+            testImplementation(slf4j)
+            testRuntimeOnly(logback)
+            doclet(apiviz)
         }
-        pmd(pmdModule("core"))
-        pmd(pmdModule("java"))
+    }
+
+    multiJvm {
+        jvmVersionForCompilation.set(8)
+        maximumSupportedJvmVersion.set(latestJava)
     }
 
     tasks.withType<JavaCompile> {
@@ -86,47 +81,14 @@ allprojects {
         }
     }
 
-    jacoco {
-        val match =
-            """(\d+)\.(\d+)\.(\d+).*""".toRegex().matchEntire(toolVersion)
-        if (match != null) {
-            val (major, minor, patch) = match.destructured
-            if (major.toInt() == 0 && minor.toInt() <= 8 && patch.toInt() <= 5) {
-                toolVersion = "0.8.6"
-            }
-        }
-    }
-
-    spotbugs {
-        setEffort("max")
-        setReportLevel("low")
-        File("${project.rootProject.projectDir}/config/spotbugs/excludes.xml")
-            .takeIf { it.exists() }
-            ?.also { excludeFilter.set(it) }
-    }
-
-    tasks.spotbugsMain {
-        reports.create("html") {
-            isEnabled = true
-        }
-    }
-
-    pmd {
-        ruleSets = listOf()
-        ruleSetConfig = resources.text.fromFile("${project.rootProject.projectDir}/config/pmd/pmd.xml")
-    }
-
-    ktlint {
-        filter {
-            exclude {
-                it.file.path.toString().contains("protelis2kotlin")
-            }
-        }
-    }
-
     tasks.withType<Javadoc> {
         isFailOnError = true
         options {
+            javadocTool.set(
+                javaToolchains.javadocToolFor {
+                    languageVersion.set(JavaLanguageVersion.of(8))
+                }
+            )
             encoding = "UTF-8"
             val title = "Protelis ${project.version} Javadoc API"
             windowTitle(title)

@@ -4,26 +4,14 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 dependencies {
-    api(Libs.trove4j)
-    api(Libs.commons_math3)
-    api(Libs.guava)
-    api(Libs.protelis_parser)
-    implementation(Libs.commons_codec)
-    implementation(Libs.commons_io)
-    implementation(Libs.commons_lang3)
-    implementation(Libs.slf4j_api)
-    runtimeOnly(Libs.guice)
-}
-
-eclipse {
-    classpath {
-        isDownloadSources = true
-    }
+    api(libs.trove4j)
+    api(libs.commons.math)
+    api(libs.guava)
+    api(libs.protelis.parser)
+    implementation(libs.commons.codec)
+    implementation(libs.commons.io)
+    implementation(libs.commons.lang)
+    implementation(libs.slf4j)
+    runtimeOnly(libs.guice)
 }

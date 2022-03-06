@@ -5,20 +5,10 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("org.protelis.protelisdoc")
+    alias(libs.plugins.protelisdoc)
 }
-repositories {
-    jcenter {
-        content {
-            includeGroup("org.jetbrains.dokka")
-            includeGroup("com.soywiz.korlibs.korte")
-            includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
-            includeModule("org.jetbrains", "markdown")
-        }
-    }
-}
-apply(plugin = "org.protelis.protelisdoc")
 
 dependencies {
     implementation(project(":protelis-interpreter"))
@@ -45,11 +35,13 @@ protelisdoc {
     debug.set(false)
 }
 
-tasks.withType<org.danilopianini.gradle.mavencentral.JavadocJar> {
-    dependsOn(tasks.generateProtelisDoc)
-    from(tasks.generateProtelisDoc.get().outputDirectory)
+tasks.protelisdoc {
+    dependsOn(project(":protelis-interpreter").tasks.jar)
 }
 
-tasks.generateProtelisDoc {
-    dependsOn(project(":protelis-interpreter").tasks.jar)
+val dokkaOutput = tasks.protelisdoc.get().outputDirectory
+
+tasks.withType<org.danilopianini.gradle.mavencentral.JavadocJar> {
+    dependsOn(tasks.protelisdoc)
+    from(dokkaOutput)
 }

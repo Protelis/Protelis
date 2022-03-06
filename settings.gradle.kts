@@ -4,34 +4,6 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
-import org.danilopianini.VersionAliases.justAdditionalAliases
-
-plugins {
-    id("de.fayard.refreshVersions") version "0.10.1"
-    id("com.gradle.enterprise") version "3.6.3"
-}
-
-refreshVersions {
-    extraArtifactVersionKeyRules = justAdditionalAliases
-}
-
-buildscript {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.danilopianini:refreshversions-aliases:+")
-    }
-}
-
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-    }
-}
-
 rootProject.name = "protelis"
 
 include(
@@ -39,3 +11,24 @@ include(
     "protelis-lang",
     "protelis-test"
 )
+
+plugins {
+    id("com.gradle.enterprise") version "3.8.1"
+    id("org.danilopianini.gradle-pre-commit-git-hooks") version "1.0.4"
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        publishAlways()
+    }
+}
+
+gitHooks {
+    commitMsg { conventionalCommits() }
+    preCommit {
+        tasks("checkstyleMain", "checkstyleTest")
+    }
+    createHooks(overwriteExisting = true)
+}

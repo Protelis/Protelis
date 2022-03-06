@@ -6,14 +6,24 @@
  */
 
 dependencies {
-    api(Libs.junit)
+    api(libs.junit)
     api(project(":protelis-interpreter"))
-    implementation(Libs.alchemist_interfaces) {
+    implementation(libs.alchemist.interfaces) {
         exclude(module = "asm-debug-all")
     }
-    implementation(Libs.alchemist_loading) {
+    implementation(libs.alchemist.loading) {
         exclude(module = "asm-debug-all")
     }
-    implementation(Libs.commons_lang3)
-    implementation(Libs.classgraph)
+    implementation(libs.commons.lang)
+    implementation(libs.classgraph)
+}
+
+javaQA {
+    checkstyle {
+        additionalConfiguration.set(
+            """
+            <module name="SuppressWithPlainTextCommentFilter"/>
+            """.trimIndent()
+        )
+    }
 }
