@@ -1,3 +1,22 @@
+## [15.2.0](https://github.com/Protelis/Protelis/compare/15.1.2...15.2.0) (2022-03-07)
+
+
+### Build and continuous integration
+
+* **renovate:** configure renovate ([2b6167d](https://github.com/Protelis/Protelis/commit/2b6167d5fd03a21f92173e50067417ef861e35c5))
+* **renovate:** enable renovate on forks ([14e455d](https://github.com/Protelis/Protelis/commit/14e455dd267c6d6a2cfb9ef291a57e01fe0f67d8))
+* **renovate:** updates to protelisdoc trigger a docs-type update ([0c89648](https://github.com/Protelis/Protelis/commit/0c8964881ef9aac5d3175085b62cdc98aa629dac))
+
+
+### General maintenance
+
+* **build:** remove commented line ([f656c82](https://github.com/Protelis/Protelis/commit/f656c824a07df6646093a16ed7d8ccd565f614ea))
+
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v10.2.12 ([acabf6b](https://github.com/Protelis/Protelis/commit/acabf6b4a8abdc641a5a557fdfd1d5612aff4ede))
+
 ### [15.1.2](https://github.com/Protelis/Protelis/compare/15.1.1...15.1.2) (2022-03-06)
 
 
