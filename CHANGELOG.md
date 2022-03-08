@@ -1,3 +1,17 @@
+### [15.2.1](https://github.com/Protelis/Protelis/compare/15.2.0...15.2.1) (2022-03-08)
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.3.0-alpha14 ([f40c252](https://github.com/Protelis/Protelis/commit/f40c2522a49d92b6413c1ba0c4c1cf3183e2298a))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.141 ([a70a6d0](https://github.com/Protelis/Protelis/commit/a70a6d03d33240bf681de441d2c940fe1d91612f))
+* **deps:** update dependency org.slf4j:slf4j-api to v1.7.36 ([bf0803c](https://github.com/Protelis/Protelis/commit/bf0803cb7f7b9f18794f1fbbb504d6c5979d2f9f))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.1 ([2db960f](https://github.com/Protelis/Protelis/commit/2db960f52ec88edf13229dddc29cc7c70d64816e))
+
 ## [15.2.0](https://github.com/Protelis/Protelis/compare/15.1.2...15.2.0) (2022-03-07)
 
 
