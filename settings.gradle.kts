@@ -14,7 +14,7 @@ include(
 
 plugins {
     id("com.gradle.enterprise") version "3.8.1"
-    id("org.danilopianini.gradle-pre-commit-git-hooks") version "1.0.4"
+    id("org.danilopianini.gradle-pre-commit-git-hooks") version "1.0.5"
 }
 
 gradleEnterprise {
