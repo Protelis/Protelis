@@ -1,3 +1,27 @@
+### [15.2.2](https://github.com/Protelis/Protelis/compare/15.2.1...15.2.2) (2022-03-11)
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3 ([beb8215](https://github.com/Protelis/Protelis/commit/beb8215728595703b066aab73fea54e3f386ae64))
+
+
+### Dependency updates
+
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.6.0 ([a4cd6d7](https://github.com/Protelis/Protelis/commit/a4cd6d7b17cb78e6e5c1aa8fca6b988bdcffbe92))
+* **deps:** update dependency com.google.inject:guice to v5.1.0 ([4efa922](https://github.com/Protelis/Protelis/commit/4efa9220fd819f733dd4c9b00cf3fcf99bcaadaa))
+* **deps:** update dependency gradle to v7.4.1 ([45a030e](https://github.com/Protelis/Protelis/commit/45a030e1c5ca20dc332cab83c32ad8d33cea5e10))
+* **deps:** update plugin java-qa to v0.21.0 ([3e523c7](https://github.com/Protelis/Protelis/commit/3e523c7267dcca663325d2e31ac01f01415b9653))
+* **deps:** update plugin kotlin-qa to v0.12.0 ([e9a094d](https://github.com/Protelis/Protelis/commit/e9a094d02a6423383126dd54883170e2a2c947d7))
+* **deps:** update plugin kotlin-qa to v0.12.1 ([07d3d1c](https://github.com/Protelis/Protelis/commit/07d3d1c62957f613fb14520cdee4016881abca11))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.0.5 ([ff26254](https://github.com/Protelis/Protelis/commit/ff2625482374d9831e264081f9c438c678b7b7b1))
+* **deps:** update plugin publishoncentral to v0.7.14 ([7482a6e](https://github.com/Protelis/Protelis/commit/7482a6e49a1eb9750c58ca8be1e1f0d7c00d7a6d))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.2 ([7a92e26](https://github.com/Protelis/Protelis/commit/7a92e26f4190b323a2d8d2e0d17c597cbc95185b))
+
 ### [15.2.1](https://github.com/Protelis/Protelis/compare/15.2.0...15.2.1) (2022-03-08)
 
 
