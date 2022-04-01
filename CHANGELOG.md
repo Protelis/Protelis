@@ -1,3 +1,27 @@
+### [15.2.3](https://github.com/Protelis/Protelis/compare/15.2.2...15.2.3) (2022-04-01)
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.7 ([27b030c](https://github.com/Protelis/Protelis/commit/27b030c7ee261b91897bed23567b27b2427b8ff8))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v7.4.2 ([8a88dd8](https://github.com/Protelis/Protelis/commit/8a88dd85a78e4ded329749eed5a4b1852ba17604))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.143 ([f868565](https://github.com/Protelis/Protelis/commit/f86856598a51511c6b1cddfeeb90f96da2d1ca50))
+* **deps:** update plugin com.gradle.enterprise to v3.9 ([43cc203](https://github.com/Protelis/Protelis/commit/43cc203a7e008bb6d6310f5a0cbc087e84d0974f))
+* **deps:** update plugin java-qa to v0.22.0 ([a04a327](https://github.com/Protelis/Protelis/commit/a04a3272ed51063ea74d672c2e5a8551e0599eb8))
+* **deps:** update plugin kotlin-qa to v0.13.0 ([f61375c](https://github.com/Protelis/Protelis/commit/f61375cf4737f0d966ede6d0025a83bbcdce909c))
+* **deps:** update plugin kotlin-qa to v0.14.0 ([de52da4](https://github.com/Protelis/Protelis/commit/de52da4cda76fb22d50b6f24dbc3c1232a508d79))
+* **deps:** update plugin kotlin-qa to v0.14.1 ([f14939a](https://github.com/Protelis/Protelis/commit/f14939a41b122186cfb69e0c5cdba8003b5b3ad0))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.0.6 ([49977f3](https://github.com/Protelis/Protelis/commit/49977f3e9e898252537838c39e131a1067706def))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.3 ([22c9605](https://github.com/Protelis/Protelis/commit/22c96053dda2e5074d7a783c7bc8c94d40d2a544))
+
 ### [15.2.2](https://github.com/Protelis/Protelis/compare/15.2.1...15.2.2) (2022-03-11)
 
 
