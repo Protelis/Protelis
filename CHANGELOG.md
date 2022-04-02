@@ -1,3 +1,10 @@
+## [15.3.0](https://github.com/Protelis/Protelis/compare/15.2.4...15.3.0) (2022-04-02)
+
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v10.2.13 ([1d744df](https://github.com/Protelis/Protelis/commit/1d744df4f00c749c799a3ceeee305b2105368a30))
+
 ### [15.2.4](https://github.com/Protelis/Protelis/compare/15.2.3...15.2.4) (2022-04-02)
 
 
