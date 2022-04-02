@@ -1,3 +1,22 @@
+### [15.2.4](https://github.com/Protelis/Protelis/compare/15.2.3...15.2.4) (2022-04-02)
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.8 ([1b3a3b8](https://github.com/Protelis/Protelis/commit/1b3a3b800292b4be7cdd5916312ad65db7c3f0c8))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.9 ([15ea6f4](https://github.com/Protelis/Protelis/commit/15ea6f4bab2ec47d3038e40151e5c451f9ab39e4))
+
+
+### Dependency updates
+
+* **deps:** update plugin kotlin-jvm to v1.6.20 ([e0251af](https://github.com/Protelis/Protelis/commit/e0251aff81720c78932e3bcf6d6b6ff6477b6ae1))
+* **deps:** update plugin publishoncentral to v0.7.15 ([66adb78](https://github.com/Protelis/Protelis/commit/66adb782662070de256c8fcf1126407f9d833d9c))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.4 ([3e89f99](https://github.com/Protelis/Protelis/commit/3e89f99e5141c85dc67329fd58a3d87cbf19d52b))
+
 ### [15.2.3](https://github.com/Protelis/Protelis/compare/15.2.2...15.2.3) (2022-04-01)
 
 
