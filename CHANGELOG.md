@@ -1,3 +1,30 @@
+### [15.3.1](https://github.com/Protelis/Protelis/compare/15.3.0...15.3.1) (2022-04-15)
+
+
+### Dependency updates
+
+* **deps:** update plugin kotlin-qa to v0.14.2 ([56d3783](https://github.com/Protelis/Protelis/commit/56d37839a38a48accda1c2178ffea434078ecad0))
+* **deps:** update plugin kotlin-qa to v0.15.0 ([1b4d056](https://github.com/Protelis/Protelis/commit/1b4d056c9fb1203dced4cd44038f98859eb3541c))
+* **deps:** update plugin kotlin-qa to v0.15.1 ([ad7aedc](https://github.com/Protelis/Protelis/commit/ad7aedc1bca2cebc787df170226bb2efe7a19a34))
+* **deps:** update plugin multijvmtesting to v0.3.5 ([cf8f212](https://github.com/Protelis/Protelis/commit/cf8f21287b89c35d7238693c6651142280be1a01))
+* **deps:** update plugin multijvmtesting to v0.3.6 ([74de613](https://github.com/Protelis/Protelis/commit/74de613c04b83255ca5adc2ec7820f68412f2d54))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.0.7 ([0894e8b](https://github.com/Protelis/Protelis/commit/0894e8b96b1ba68dcb5deac71f607536455eb13c))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.0.8 ([b848b21](https://github.com/Protelis/Protelis/commit/b848b2112f3275490e03ffd3afd2164baf5960be))
+* **deps:** update plugin publishoncentral to v0.7.16 ([b87933c](https://github.com/Protelis/Protelis/commit/b87933c41e51a4b970285f16e7dcfd2cd44413dc))
+* **deps:** update plugin publishoncentral to v0.7.17 ([446f86e](https://github.com/Protelis/Protelis/commit/446f86e3bf91738b96f6b1b16cefd6e8a0c25c4f))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.0.1 ([474fc87](https://github.com/Protelis/Protelis/commit/474fc87fc65e2390d79d9db3aabfdac6a47eac8e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.10 ([26c96df](https://github.com/Protelis/Protelis/commit/26c96df418a07867f20cb2e17e5951bf52f3f086))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.12 ([35b898b](https://github.com/Protelis/Protelis/commit/35b898b48e1d1acf1d49fea9efdfe7b0ef184029))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.5 ([1e2059a](https://github.com/Protelis/Protelis/commit/1e2059a749efc9de8d5fe05e44035e1abe0c0f3b))
+
 ## [15.3.0](https://github.com/Protelis/Protelis/compare/15.2.4...15.3.0) (2022-04-02)
 
 
