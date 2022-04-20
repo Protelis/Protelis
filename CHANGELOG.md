@@ -1,3 +1,23 @@
+### [15.3.2](https://github.com/Protelis/Protelis/compare/15.3.1...15.3.2) (2022-04-20)
+
+
+### Dependency updates
+
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.144 ([be7a12b](https://github.com/Protelis/Protelis/commit/be7a12b80610bcf6ed86ad6c19867eaaee1b5a23))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.145 ([11ff96a](https://github.com/Protelis/Protelis/commit/11ff96a24f5a133ab2467e189bfa69bd1eb59f1b))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.146 ([259d423](https://github.com/Protelis/Protelis/commit/259d42305f716114f67d1b170310e82d005d1f71))
+* **deps:** update plugin com.gradle.enterprise to v3.10 ([e22d113](https://github.com/Protelis/Protelis/commit/e22d1138163a29abfb7e425acf66426be9271d37))
+* **deps:** update plugin kotlin-jvm to v1.6.21 ([efb657d](https://github.com/Protelis/Protelis/commit/efb657d9378ffef31a314e9dc51f76841ce1d11c))
+* **deps:** update plugin kotlin-qa to v0.16.0 ([fbee7aa](https://github.com/Protelis/Protelis/commit/fbee7aa30a482edde2c867c193921ed89cd95c0e))
+* **deps:** update plugin kotlin-qa to v0.16.1 ([ac27410](https://github.com/Protelis/Protelis/commit/ac274107fb4884c3c72f8b729575a7d15b06bd13))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.0.9 ([08e82ab](https://github.com/Protelis/Protelis/commit/08e82ab145090bbdb79b55a27851f08bd8f11fe5))
+* **deps:** update plugin publishoncentral to v0.7.18 ([1177c23](https://github.com/Protelis/Protelis/commit/1177c23751e221dcc8f8d3f3edae7b2212b6c3b4))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.6 ([4eff83c](https://github.com/Protelis/Protelis/commit/4eff83c9c1bec0819ee87bfd13c9fa1ff156dcc1))
+
 ### [15.3.1](https://github.com/Protelis/Protelis/compare/15.3.0...15.3.1) (2022-04-15)
 
 
