@@ -31,8 +31,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Splitter;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -165,7 +167,7 @@ public final class ProtelisLoader {
                         for (final Diagnostic d : recursivelyCollectErrors(resource)) {
                             sb.append("Error");
                             if (d.getLocation() != null) {
-                                final String place = d.getLocation().split("#")[0];
+                                final String place = Iterables.get(Splitter.on('#').split(d.getLocation()), 0);
                                 sb.append(" in ");
                                 sb.append(place);
                             }
