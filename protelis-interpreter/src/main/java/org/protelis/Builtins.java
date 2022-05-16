@@ -129,10 +129,11 @@ public final class Builtins {
      * @param base the base value
      */
     public static <T> T foldHood(
-            @Nonnull final ExecutionContext context,
-            @Nonnull final T base,
-            @Nonnull final Field<T> target,
-            @Nonnull final FunctionDefinition reductionFunction) {
+        @Nonnull final ExecutionContext context,
+        @Nonnull final T base,
+        @Nonnull final Field<T> target,
+        @Nonnull final FunctionDefinition reductionFunction
+    ) {
         @SuppressWarnings(UNCHECKED)
         final Class<? extends T> defaultType = (Class<? extends T>) Objects.requireNonNull(base).getClass();
         final Class<? extends T> fieldType = Objects.requireNonNull(target).getExpectedType();
