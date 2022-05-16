@@ -152,17 +152,18 @@ public final class Builtins {
 
     /**
      * Folds the field, including the local value.
-     * 
+     *
      * @param <T> field and result type
      * @param context {@link ExecutionContext}
      * @param target target field
-     * @param reductionFunction a Protelis function (T, T) =&gt; T
+     * @param reductionFunction a Protelis function (T, T)=>T
      * @return the folded value
      */
     public static <T> T foldHoodPlusSelf(
-            @Nonnull final ExecutionContext context,
-            @Nonnull final Field<T> target,
-            @Nonnull final FunctionDefinition reductionFunction) {
+        @Nonnull final ExecutionContext context,
+        @Nonnull final Field<T> target,
+        @Nonnull final FunctionDefinition reductionFunction
+    ) {
         return target.foldValuesIncludingLocal(reductionFunction(context, target.getExpectedType(), target, reductionFunction));
     }
 
