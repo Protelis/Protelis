@@ -1,3 +1,85 @@
+## [15.4.0](https://github.com/Protelis/Protelis/compare/15.3.3...15.4.0) (2022-05-16)
+
+
+### Features
+
+* **interpreter:** add methods to convert Protelis binary operators and functions to Java's ([918ef83](https://github.com/Protelis/Protelis/commit/918ef837a53d4d37a874505baccf9d90430612ad))
+* **interpreter:** implement `Tuple.fold` and `Tuple.flatMap` ([656f862](https://github.com/Protelis/Protelis/commit/656f86212ee16ad8f947ea4bdf84b95e91b83878))
+* **interpreter:** offer a pre-implementation of reduce ([edce27f](https://github.com/Protelis/Protelis/commit/edce27f670b1c49bb838d51fe3eaec8bfd61596a))
+
+
+### Bug Fixes
+
+* **interpreter:** fix comparable types selection ([0bcc027](https://github.com/Protelis/Protelis/commit/0bcc027503aa5bb80a303e21412a2cab89f5820f))
+* **interpreter:** mark JavaInteroperabilityUtils.runProtelisFunction as Nonnull ([be1544c](https://github.com/Protelis/Protelis/commit/be1544c734451aab3cbbf7c6d1576ee6727f1a3a))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.14 ([08dc254](https://github.com/Protelis/Protelis/commit/08dc254ea6a442a2ec9f21a232d0ff9f2917fd5c))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v1.2.15 ([d47cb81](https://github.com/Protelis/Protelis/commit/d47cb81ce7a969ecd46a093bdf13a1182442ed41))
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.3.0-alpha15 ([b765251](https://github.com/Protelis/Protelis/commit/b765251b6ce7d274183b16106db6b585c82a6e34))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.7.0 ([9fdf3be](https://github.com/Protelis/Protelis/commit/9fdf3be4ee41d690c09252575769ed29786ac06f))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.6 ([dbcb594](https://github.com/Protelis/Protelis/commit/dbcb5947d51b39452e7428a47b3fef6609f431b9))
+* **deps:** update node.js to 16.15 ([9295d4c](https://github.com/Protelis/Protelis/commit/9295d4c6953c0d9ff910c76e09039b5102c60d83))
+* **deps:** update plugin java-qa to v0.23.0 ([a110b3f](https://github.com/Protelis/Protelis/commit/a110b3fe8f8fa96d2ec9093521b5e0cdf14ad644))
+* **deps:** update plugin kotlin-qa to v0.17.0 ([8b0920e](https://github.com/Protelis/Protelis/commit/8b0920e3af70c4467922636d991b315b5684af7e))
+* **deps:** update plugin kotlin-qa to v0.18.0 ([3254a28](https://github.com/Protelis/Protelis/commit/3254a2846916bbe8f575fbc33a9934f12c640adb))
+
+
+### Refactoring
+
+* **interpreter:** use the default implementation of Tuple.reduce ([5d2b987](https://github.com/Protelis/Protelis/commit/5d2b987531ad8444447370637b76ebd45ee8fc35))
+
+
+### General maintenance
+
+* **interpreter:** fix typo in comment in ArrayTupleImpl ([046b48e](https://github.com/Protelis/Protelis/commit/046b48e4de61851e013dbbb59e00e56a0de04c7b))
+* **interpreter:** update copyright year in Builtins ([704b49f](https://github.com/Protelis/Protelis/commit/704b49f9f94b677e9295aa95d4ec47c7dfc2ce08))
+* remove unneded submodules ([5ace409](https://github.com/Protelis/Protelis/commit/5ace4095ffac683e7b773fc59d4e429709339df2))
+
+
+### Style improvements
+
+* **interpreter:** add missing in ArrayTupleImpl.iterator @Nonnull annotation ([581115d](https://github.com/Protelis/Protelis/commit/581115d3fcaf28bace32ae5e236551d84df888a6))
+* **interpreter:** fix the indentation in `runMethodWithProtelisArguments` ([0497235](https://github.com/Protelis/Protelis/commit/049723577218152bd92978dc0b5da2d683b8efd8))
+* **interpreter:** fix the indentation in `runProtelisFunction` ([343a88d](https://github.com/Protelis/Protelis/commit/343a88d1bacc42bcf76d98d6e21fd4c39b4e24b0))
+* **interpreter:** fix the indentation in `runStaticMethodWithProtelisArguments` ([12ab50c](https://github.com/Protelis/Protelis/commit/12ab50c59d2512717ed0a88c1571d0dd964e2e1d))
+* **interpreter:** fix warning when calling murmur3_32 from Guava in ArrayTupleImpl ([ba13db7](https://github.com/Protelis/Protelis/commit/ba13db7b3201918058db6b8575063a725039faef))
+* **interpreter:** improve indentation and parameter clarity in `runProtelisFunctionWithJavaArguments` ([3c27f7f](https://github.com/Protelis/Protelis/commit/3c27f7f84edd818684580376b4c5f0a7b84410b4))
+* **interpreter:** improve indentation and parameter clarity in `runProtelisFunctionWithJavaArguments` ([69a3d98](https://github.com/Protelis/Protelis/commit/69a3d9866c35220227d6d2058773bc928a62cf6c))
+* **interpreter:** improve indentation in Builtins ([7a6f21e](https://github.com/Protelis/Protelis/commit/7a6f21e002584203af9bfd49fe52c6d624564ff2))
+* **interpreter:** improve indentation in Builtins.byReflection ([ea09eea](https://github.com/Protelis/Protelis/commit/ea09eea37b42be292f0006501558aa504a1d35ff))
+* **interpreter:** improve indentation in Builtins.foldHood ([ccbdcc6](https://github.com/Protelis/Protelis/commit/ccbdcc6ca7ad97944f60f16592d1f5c5ec286d12))
+* **interpreter:** improve indentation in Builtins.foldHoodPlusSelf ([d70fdee](https://github.com/Protelis/Protelis/commit/d70fdeecafece30e1c65283a479c83db4dfe2cec))
+* **interpreter:** improve indentation in Builtins.reduceHood ([bd4cc9b](https://github.com/Protelis/Protelis/commit/bd4cc9b019e934b5fcac6e8b9878c2fa852d8f22))
+* **interpreter:** improve indentation in Builtins.reductionFunction ([fe453bf](https://github.com/Protelis/Protelis/commit/fe453bf20dbdfcc4e9e5a85965c73ec43fde6bdd))
+* **interpreter:** infer explicit type arguments in `Tuple.flatMap` ([201908d](https://github.com/Protelis/Protelis/commit/201908dc9f8dfb94faab4240f48a444d0c8c764d))
+* **interpreter:** mark as final all parameters of default methods in Tuple ([4048aac](https://github.com/Protelis/Protelis/commit/4048aac6fdbbb8115c1d7b266c47d6b398b62748))
+* **interpreter:** remove trailing spaces in Builtins ([f94499b](https://github.com/Protelis/Protelis/commit/f94499b4e26007586748404d582b562b68b11809))
+* **interpreter:** suppress warning from Guava ([768a116](https://github.com/Protelis/Protelis/commit/768a116f3d60b604e7940f5c28089619914d0c06))
+* **interpreter:** use better parameter names in JavaInteroperabilityUtils.runProtelisFunction ([3ed4f79](https://github.com/Protelis/Protelis/commit/3ed4f792dd2130bca0be9bac8d7a666675ac144d))
+* **interpreter:** use clearer parameter names in `runMethodWithProtelisArguments` ([95e145d](https://github.com/Protelis/Protelis/commit/95e145d3a615d3f8386b2217156e2b2de951a32d))
+* **interpreter:** use clearer parameter names in `runStaticMethodWithProtelisArguments` ([35af019](https://github.com/Protelis/Protelis/commit/35af01985b1ad2d5225505ce1439dc37aa39eda0))
+
+
+### Documentation
+
+* **interpreter:** add a summary documentation fragment and improve a parameter name in JavaInteroperabilityUtils.runMethodWithProtelisArguments ([2389603](https://github.com/Protelis/Protelis/commit/2389603cc4d06c823b982e7a3a4de2e3a59fd7f8))
+* **interpreter:** add a summary documentation fragment in Builtins.noneButSelf ([c925f91](https://github.com/Protelis/Protelis/commit/c925f91a997171ab75aaa923284f4a47ac34eb96))
+* **interpreter:** add a summary documentation fragment in JavaInteroperabilityUtils.runProtelisFunction ([7ad0a53](https://github.com/Protelis/Protelis/commit/7ad0a53d5341f70a47916a1544ae396a44c0843a))
+* **interpreter:** add a summary documentation fragment in JavaInteroperabilityUtils.runStaticMethodWithProtelisArguments ([481d3e4](https://github.com/Protelis/Protelis/commit/481d3e4b1bfc79e83f2cc7ef607f243d68b1b1c4))
+* **interpreter:** add a summary documentation fragment to Builtins.none ([9a020ea](https://github.com/Protelis/Protelis/commit/9a020ea010301fd436e251e4da802366b0dd4631))
+* **interpreter:** add a summary documentation fragment to JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments ([423c2f2](https://github.com/Protelis/Protelis/commit/423c2f242ba20145a67debab0c7b4ab40aacb25c))
+* **interpreter:** add a summary documentation fragment to JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments ([a6e3699](https://github.com/Protelis/Protelis/commit/a6e3699cdaa521e72c379d49b699a6a36067fa74))
+* **interpreter:** fix bad use of '>' in Builtins' documentation ([d1f9742](https://github.com/Protelis/Protelis/commit/d1f9742cec0b026e1a281ab576c2fce148b60f77))
+* **interpreter:** fix links in Builtins internal documentation ([343f667](https://github.com/Protelis/Protelis/commit/343f667bfb1ba801b09366115e96e328c4854711))
+* **interpreter:** fix missing semicolon in Builtins.foldHood documentation ([2be0e22](https://github.com/Protelis/Protelis/commit/2be0e223a1b9de707839f7a9e98da292dc34f98c))
+
 ### [15.3.3](https://github.com/Protelis/Protelis/compare/15.3.2...15.3.3) (2022-04-26)
 
 
