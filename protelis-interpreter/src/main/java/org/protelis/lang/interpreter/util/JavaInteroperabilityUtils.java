@@ -55,6 +55,8 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
+     * Executes a static Java method using Protelis-produced arguments.
+     *
      * @param context
      *            {@link ExecutionContext}
      * @param method
