@@ -71,24 +71,24 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
-     * @param ctx
+     * @param context
      *            {@link ExecutionContext}
      * @param target
      *            the {@link ProtelisAST} on which annotation the method will
      *            be invoked
      * @param method
      *            a valid {@link java.lang.reflect.Method} name
-     * @param args
+     * @param arguments
      *            the arguments for the method
      * @return the result of the evaluation
      */
     public static Object runMethodWithProtelisArguments(
-        final ExecutionContext ctx,
+        final ExecutionContext context,
         final ProtelisAST<?> target,
         final String method,
-        final ProtelisAST<?>... args
+        final ProtelisAST<?>... arguments
     ) {
-        return new Invoke(METADATA, method, target, Arrays.asList(args)).eval(ctx);
+        return new Invoke(METADATA, method, target, Arrays.asList(arguments)).eval(context);
     }
 
     private static List<ProtelisAST<?>> toAnnotatedTree(final Object[] a) {
