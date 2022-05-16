@@ -7,8 +7,17 @@
 
 package org.protelis;
 
-import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import org.protelis.lang.datatype.DatatypeFactory;
+import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.FunctionDefinition;
+import org.protelis.lang.datatype.Option;
+import org.protelis.lang.datatype.Tuple;
+import org.protelis.vm.ExecutionContext;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,19 +26,9 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.protelis.lang.datatype.DatatypeFactory;
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.FunctionDefinition;
-import org.protelis.lang.datatype.Option;
-import org.protelis.lang.datatype.Tuple;
-import org.protelis.vm.ExecutionContext;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
+import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments;
 
 /**
  * Collection of static methods automatically imported by Protelis.
@@ -307,7 +306,7 @@ public final class Builtins {
     }
 
     private static <T extends Comparable<T>> T max(final T a, final T b) {
-        return a.compareTo(b) > 0 ? a : b;
+        return selectComparable(a, b, c -> c > 0);
     }
 
     /**
@@ -323,7 +322,27 @@ public final class Builtins {
     }
 
     private static <T extends Comparable<T>> T min(final T a, final T b) {
-        return a.compareTo(b) < 0 ? a : b;
+        return selectComparable(a, b, c -> c < 0);
+    }
+
+    private static <T extends Comparable<T>> T selectComparable(final T a, final T b, final IntPredicate selector) {
+        if (a.getClass() == b.getClass() || a.getClass().isAssignableFrom(b.getClass())) {
+            // Same types, or A is superclass (hence should be comparable with B)
+            return selector.test(a.compareTo(b)) ? a : b;
+        }
+        if (b.getClass().isAssignableFrom(a.getClass())) {
+            // B is superclass of A
+            return selector.test(b.compareTo(a)) ? b : a;
+        }
+        // Compare different numbers as double
+        if (a instanceof Number && b instanceof Number) {
+            return selector.test(Double.compare(((Number) a).doubleValue(), ((Number) b).doubleValue())) ? a : b;
+        }
+        // Give up
+        throw new IllegalArgumentException("Tried to compare '"
+            + a + ": " + a.getClass().getSimpleName() + "' with "
+            + b + ": " + b.getClass().getSimpleName() + "', but such comparison of types was not possible."
+        );
     }
 
     /**
