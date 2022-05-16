@@ -110,6 +110,7 @@ public final class JavaInteroperabilityUtils {
      *            the function arguments
      * @return the result of the evaluation
      */
+    @Nonnull
     public static Object runProtelisFunction(
         final ExecutionContext ctx,
         final ProtelisAST<FunctionDefinition> fd,
@@ -145,6 +146,7 @@ public final class JavaInteroperabilityUtils {
      *            the function arguments
      * @return the result of the evaluation
      */
+    @Nonnull
     public static Object runProtelisFunctionWithJavaArguments(
         @Nonnull final ExecutionContext context,
         @Nonnull final FunctionDefinition function,
