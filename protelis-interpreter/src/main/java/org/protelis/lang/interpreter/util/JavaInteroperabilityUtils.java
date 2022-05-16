@@ -12,14 +12,19 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.collect.ImmutableList;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.JVMEntity;
 import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.impl.Constant;
+import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.impl.Invoke;
 import org.protelis.lang.interpreter.impl.JvmConstant;
 import org.protelis.lang.loading.Metadata;
@@ -151,4 +156,52 @@ public final class JavaInteroperabilityUtils {
         return runProtelisFunction(context, new Constant<>(METADATA, function), actualArguments);
     }
 
+    /**
+     * Converts a protelis {@link FunctionDefinition} to a Java {@link BinaryOperator}.
+     * @param context the {@link ExecutionContext}
+     * @param binaryOperator the {@link FunctionDefinition} to convert to Java
+     * @return a java {@link BinaryOperator}
+     */
+    public static BinaryOperator<Object> toBinaryOperator(
+        final ExecutionContext context,
+        final FunctionDefinition binaryOperator
+    ) {
+        if (binaryOperator.getParameterCount() == 2) {
+            final AtomicInteger counter = new AtomicInteger();
+            return (first, second) -> {
+                final List<ProtelisAST<?>> arguments = ImmutableList.of(
+                    new Constant<>(JavaInteroperabilityUtils.METADATA, first),
+                    new Constant<>(JavaInteroperabilityUtils.METADATA, second)
+                );
+                final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, binaryOperator, arguments);
+                return context.runInNewStackFrame(counter.getAndIncrement(), call::eval);
+            };
+        }
+        throw new IllegalArgumentException("Reducing function must take two parameters.");
+    }
+
+    /**
+     * Converts a protelis {@link FunctionDefinition} to a Java {@link Function}.
+     * @param context the {@link ExecutionContext}
+     * @param function the {@link FunctionDefinition} to convert to Java
+     * @param <R> Return type of the function
+     * @return a java {@link Function}
+     */
+    @SuppressWarnings("unchecked")
+    public static <R> Function<Object, R> toFunction(
+        final ExecutionContext context,
+        final FunctionDefinition function
+    ) {
+        if (function.getParameterCount() <= 1) {
+            final AtomicInteger counter = new AtomicInteger();
+            return (argument) -> {
+                final List<ProtelisAST<?>> arguments = ImmutableList.of(
+                    new Constant<>(JavaInteroperabilityUtils.METADATA, argument)
+                );
+                final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, function, arguments);
+                return (R) context.runInNewStackFrame(counter.getAndIncrement(), call::eval);
+            };
+        }
+        throw new IllegalArgumentException("Reducing function must take two parameters.");
+    }
 }
