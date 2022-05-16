@@ -50,24 +50,24 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
-     * @param ctx
+     * @param context
      *            {@link ExecutionContext}
      * @param method
      *            a valid {@link java.lang.reflect.Method} name
-     * @param args
+     * @param arguments
      *            the arguments for the method
      * @return the result of the evaluation
      */
     public static Object runStaticMethodWithProtelisArguments(
-        final ExecutionContext ctx,
+        final ExecutionContext context,
         final Method method,
-        final ProtelisAST<?>... args
+        final ProtelisAST<?>... arguments
     ) {
         Objects.requireNonNull(method);
         if (!Modifier.isStatic(method.getModifiers())) {
             throw new IllegalArgumentException("Method " + method + " cannot be invoked statically.");
         }
-        return new Invoke(new JvmConstant(METADATA, new JVMEntity(method)), Arrays.asList(args)).eval(ctx);
+        return new Invoke(new JvmConstant(METADATA, new JVMEntity(method)), Arrays.asList(arguments)).eval(context);
     }
 
     /**
