@@ -443,28 +443,31 @@ public final class Builtins {
 
     @Nonnull
     private static <T> BinaryOperator<T> reductionFunction(
-            @Nonnull final ExecutionContext context,
-            @Nonnull final Class<? extends T> expectedType,
-            @Nonnull final Field<T> target,
-            @Nonnull final FunctionDefinition reductionFunction) {
+        @Nonnull final ExecutionContext context,
+        @Nonnull final Class<? extends T> expectedType,
+        @Nonnull final Field<T> target,
+        @Nonnull final FunctionDefinition reductionFunction
+    ) {
         return (a, b) -> {
             final Object reductionResult = runProtelisFunctionWithJavaArguments(
                 context,
                 reductionFunction,
                 ImmutableList.of(a, b)
             );
-            if (reductionResult != null && expectedType.isAssignableFrom(reductionResult.getClass())) {
+            if (expectedType.isAssignableFrom(reductionResult.getClass())) {
                 return expectedType.cast(reductionResult);
             }
-            throw new IllegalStateException("Reduction operation over target field " + target
+            throw new IllegalStateException(
+                "Reduction operation over target field " + target
                     + " with type " + target.getExpectedType()
                     + " failed because the provided reduction function reduced "
                     + a + " of type " + a.getClass().getName()
                     + " and " + b + " of type " + b.getClass().getName()
                     + " into " + reductionResult
-                    + (reductionResult == null ? "" : " of type " + reductionResult.getClass().getName())
+                    + " of type " + reductionResult.getClass().getName()
                     + " which does not conform to expected type "
-                    + expectedType.getName());
+                    + expectedType.getName()
+            );
         };
     }
 
