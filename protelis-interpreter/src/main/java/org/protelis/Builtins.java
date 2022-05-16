@@ -158,7 +158,7 @@ public final class Builtins {
      * @param <T> field and result type
      * @param context {@link ExecutionContext}
      * @param target target field
-     * @param reductionFunction a Protelis function (T, T)=>T
+     * @param reductionFunction a Protelis function (T, T)=&gtT
      * @return the folded value
      */
     public static <T> T foldHoodPlusSelf(
