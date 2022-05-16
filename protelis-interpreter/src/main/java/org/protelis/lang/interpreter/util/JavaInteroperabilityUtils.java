@@ -104,9 +104,10 @@ public final class JavaInteroperabilityUtils {
      * @return the result of the evaluation
      */
     public static Object runProtelisFunction(
-            final ExecutionContext ctx,
-            final ProtelisAST<FunctionDefinition> fd,
-            final List<ProtelisAST<?>> args) {
+        final ExecutionContext ctx,
+        final ProtelisAST<FunctionDefinition> fd,
+        final List<ProtelisAST<?>> args
+    ) {
         return new Invoke(fd, args).eval(ctx);
     }
 
