@@ -346,6 +346,8 @@ public final class Builtins {
     }
 
     /**
+     * Returns true if all the elements of the field are false, including the local value.
+     *
      * @param target the field
      * @return true if all the elements of the field are false
      */
