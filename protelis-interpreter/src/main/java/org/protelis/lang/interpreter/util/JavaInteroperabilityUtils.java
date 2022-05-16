@@ -59,9 +59,10 @@ public final class JavaInteroperabilityUtils {
      * @return the result of the evaluation
      */
     public static Object runStaticMethodWithProtelisArguments(
-            final ExecutionContext ctx,
-            final Method method,
-            final ProtelisAST<?>... args) {
+        final ExecutionContext ctx,
+        final Method method,
+        final ProtelisAST<?>... args
+    ) {
         Objects.requireNonNull(method);
         if (!Modifier.isStatic(method.getModifiers())) {
             throw new IllegalArgumentException("Method " + method + " cannot be invoked statically.");
