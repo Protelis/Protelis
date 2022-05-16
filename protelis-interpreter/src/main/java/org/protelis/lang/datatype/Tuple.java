@@ -6,6 +6,9 @@
  */
 package org.protelis.lang.datatype;
 
+import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
+import org.protelis.vm.ExecutionContext;
+
 import java.io.Serializable;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -175,7 +178,9 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
      *               of values
      * @return a single value of this tuple, or the default value if empty
      */
-    Object reduce(ExecutionContext ctx, Object defVal, FunctionDefinition fun);
+    default Object reduce(ExecutionContext ctx, Object defVal, FunctionDefinition fun) {
+        return reduce(defVal, JavaInteroperabilityUtils.toBinaryOperator(ctx, fun));
+    }
 
     /**
      * Performs a reduction operation, that maps a tuple to a single value.
