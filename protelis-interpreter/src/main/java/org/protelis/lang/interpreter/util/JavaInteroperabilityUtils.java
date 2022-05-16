@@ -78,9 +78,11 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
+     * Executes a Java method on a reiceiver Java object computed by Protelis using Protelis-produced arguments.
+     *
      * @param context
      *            {@link ExecutionContext}
-     * @param target
+     * @param receiver
      *            the {@link ProtelisAST} on which annotation the method will
      *            be invoked
      * @param method
@@ -91,11 +93,11 @@ public final class JavaInteroperabilityUtils {
      */
     public static Object runMethodWithProtelisArguments(
         final ExecutionContext context,
-        final ProtelisAST<?> target,
+        final ProtelisAST<?> receiver,
         final String method,
         final ProtelisAST<?>... arguments
     ) {
-        return new Invoke(METADATA, method, target, Arrays.asList(arguments)).eval(context);
+        return new Invoke(METADATA, method, receiver, Arrays.asList(arguments)).eval(context);
     }
 
     private static List<ProtelisAST<?>> toAnnotatedTree(final Object[] a) {
