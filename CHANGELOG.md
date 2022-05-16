@@ -1,3 +1,15 @@
+### [15.4.1](https://github.com/Protelis/Protelis/compare/15.4.0...15.4.1) (2022-05-16)
+
+
+### Bug Fixes
+
+* **interpreter:** apply Sonatype Lift's suggestion on ProtelisLoader (String.split(String) has surprising behavior) ([3b9d7d1](https://github.com/Protelis/Protelis/commit/3b9d7d1c8f37c4da216fbc7a1b99cd55c10be8f0))
+
+
+### Performance improvements
+
+* **interpreter:** use a flyweight when parsing ([01b9502](https://github.com/Protelis/Protelis/commit/01b9502ff3678cde0a5ead4974c5c29366bd3489))
+
 ## [15.4.0](https://github.com/Protelis/Protelis/compare/15.3.3...15.4.0) (2022-05-16)
 
 
