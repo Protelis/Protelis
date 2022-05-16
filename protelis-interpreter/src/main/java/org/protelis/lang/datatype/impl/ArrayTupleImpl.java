@@ -21,6 +21,7 @@ import org.protelis.lang.interpreter.impl.FunctionCall;
 import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -274,6 +275,7 @@ public final class ArrayTupleImpl implements Tuple {
     }
 
     @Override
+    @Nonnull
     public Iterator<Object> iterator() {
         return Iterators.forArray(arrayContents);
     }
