@@ -507,9 +507,9 @@ public final class Builtins {
             return (T) runBi(Long.class, a, b, Long::sum);
         }
         if (a instanceof Integer || b instanceof Integer
-                || a instanceof Byte || b instanceof Byte
-                || a instanceof Short || b instanceof Short
-                ) {
+            || a instanceof Byte || b instanceof Byte
+            || a instanceof Short || b instanceof Short
+        ) {
             return (T) runBi(Integer.class, a, b, Integer::sum);
         }
         if (a instanceof Boolean && b instanceof Boolean) {
