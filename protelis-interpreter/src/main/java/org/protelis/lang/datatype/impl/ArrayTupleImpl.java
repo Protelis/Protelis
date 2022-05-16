@@ -227,6 +227,7 @@ public final class ArrayTupleImpl implements Tuple {
         return arrayContents[i];
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public int hashCode() {
         if (hash == 0) {
