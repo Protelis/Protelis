@@ -105,22 +105,22 @@ public final class JavaInteroperabilityUtils {
     /**
      * Runs a Protelis function from Java, provided context and arguments.
      *
-     * @param ctx
+     * @param context
      *            {@link ExecutionContext}
-     * @param fd
+     * @param function
      *            an {@link ProtelisAST} with the {@link FunctionDefinition}
      *            to instance and use
-     * @param args
+     * @param arguments
      *            the function arguments
      * @return the result of the evaluation
      */
     @Nonnull
     public static Object runProtelisFunction(
-        final ExecutionContext ctx,
-        final ProtelisAST<FunctionDefinition> fd,
-        final List<ProtelisAST<?>> args
+        final ExecutionContext context,
+        final ProtelisAST<FunctionDefinition> function,
+        final List<ProtelisAST<?>> arguments
     ) {
-        return new Invoke(fd, args).eval(ctx);
+        return new Invoke(function, arguments).eval(context);
     }
 
     /**
