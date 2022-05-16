@@ -356,9 +356,10 @@ public final class Builtins {
      *         option.
      */
     public static <T> Option<T> reduceHood(
-            @Nonnull final ExecutionContext context,
-            @Nonnull final Field<T> target,
-            @Nonnull final FunctionDefinition reductionFunction) {
+        @Nonnull final ExecutionContext context,
+        @Nonnull final Field<T> target,
+        @Nonnull final FunctionDefinition reductionFunction
+    ) {
         return target.reduceValues(reductionFunction(context, target.getExpectedType(), target, reductionFunction));
     }
 
