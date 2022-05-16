@@ -114,20 +114,21 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
-     * @param ctx
+     * @param context
      *            {@link ExecutionContext}
-     * @param fd
+     * @param function
      *            an {@link ProtelisAST} with the {@link FunctionDefinition}
      *            to instance and use
-     * @param args
+     * @param arguments
      *            the function arguments
      * @return the result of the evaluation
      */
     public static Object runProtelisFunctionWithJavaArguments(
-            final ExecutionContext ctx,
-            final ProtelisAST<FunctionDefinition> fd,
-            final Object... args) {
-        return runProtelisFunction(ctx, fd, toAnnotatedTree(args));
+        final ExecutionContext context,
+        final ProtelisAST<FunctionDefinition> function,
+        final Object... arguments
+    ) {
+        return runProtelisFunction(context, function, toAnnotatedTree(arguments));
     }
 
     /**
