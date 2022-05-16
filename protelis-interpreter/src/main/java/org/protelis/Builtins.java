@@ -90,15 +90,18 @@ public final class Builtins {
             return (R) a.getClass().getMethod(name, b.getClass()).invoke(a, b);
         } catch (
             IllegalAccessException
-            | IllegalArgumentException
-            | InvocationTargetException
-            | NoSuchMethodException
-            | SecurityException e
+             | IllegalArgumentException
+             | InvocationTargetException
+             | NoSuchMethodException
+             | SecurityException e
         ) {
-            throw new IllegalStateException("Unable to perform operation a." + name
+            throw new IllegalStateException(
+                "Unable to perform operation a." + name
                     + "(b) where a=" + a + " and b=" + b
                     + ", a of type " + a.getClass()
-                    + ", b of type " + b.getClass(), e);
+                    + ", b of type " + b.getClass(),
+                e
+            );
         }
     }
 
