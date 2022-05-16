@@ -83,10 +83,11 @@ public final class JavaInteroperabilityUtils {
      * @return the result of the evaluation
      */
     public static Object runMethodWithProtelisArguments(
-            final ExecutionContext ctx,
-            final ProtelisAST<?> target,
-            final String method,
-            final ProtelisAST<?>... args) {
+        final ExecutionContext ctx,
+        final ProtelisAST<?> target,
+        final String method,
+        final ProtelisAST<?>... args
+    ) {
         return new Invoke(METADATA, method, target, Arrays.asList(args)).eval(ctx);
     }
 
