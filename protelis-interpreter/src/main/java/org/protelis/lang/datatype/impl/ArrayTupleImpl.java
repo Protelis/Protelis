@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Implementation of a Tuple using an array data structure.
@@ -183,6 +184,20 @@ public final class ArrayTupleImpl implements Tuple {
     public Tuple filter(final Predicate<Object> fun) {
         Objects.requireNonNull(fun);
         return new ArrayTupleImpl(Arrays.stream(arrayContents).filter(fun).toArray(), false);
+    }
+
+    @Override
+    public Tuple flatMap(final Function<Object, Tuple> fun) {
+        final Stream<Object> flatMapped = Arrays.stream(arrayContents).<Object>flatMap(e ->
+            Arrays.stream(fun.apply(e).toArray())
+        );
+        final Object[] mappedArray = flatMapped.toArray();
+        return new ArrayTupleImpl(mappedArray, false);
+    }
+
+    @Override
+    public Object fold(final Object initial, final BinaryOperator<Object> fun) {
+        return Arrays.stream(arrayContents).reduce(Objects.requireNonNull(initial), Objects.requireNonNull(fun));
     }
 
     /**
