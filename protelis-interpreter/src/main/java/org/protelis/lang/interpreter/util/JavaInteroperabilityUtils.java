@@ -132,20 +132,23 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
-     * @param ctx
+     * @param context
      *            {@link ExecutionContext}
-     * @param fd
+     * @param function
      *            the {@link FunctionDefinition} to instance and use
-     * @param args
+     * @param arguments
      *            the function arguments
      * @return the result of the evaluation
      */
     public static Object runProtelisFunctionWithJavaArguments(
-            @Nonnull final ExecutionContext ctx,
-            @Nonnull final FunctionDefinition fd,
-            @Nonnull final List<?> args) {
-        final List<ProtelisAST<?>> arguments = args.stream().map(it -> new Constant<>(METADATA, it)).collect(Collectors.toList());
-        return runProtelisFunction(ctx, new Constant<>(METADATA, fd), arguments);
+        @Nonnull final ExecutionContext context,
+        @Nonnull final FunctionDefinition function,
+        @Nonnull final List<?> arguments
+    ) {
+        final List<ProtelisAST<?>> actualArguments = arguments.stream()
+            .map(it -> new Constant<>(METADATA, it))
+            .collect(Collectors.toList());
+        return runProtelisFunction(context, new Constant<>(METADATA, function), actualArguments);
     }
 
 }
