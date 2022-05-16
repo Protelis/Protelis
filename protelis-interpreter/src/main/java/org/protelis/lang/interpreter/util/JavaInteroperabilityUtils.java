@@ -146,6 +146,8 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
+     * Runs a Protelis function from Java using Java-produced arguments, provided a context.
+     *
      * @param context
      *            {@link ExecutionContext}
      * @param function
