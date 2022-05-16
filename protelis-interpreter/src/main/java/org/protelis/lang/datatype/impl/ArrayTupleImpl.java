@@ -188,7 +188,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple flatMap(final Function<Object, Tuple> fun) {
-        final Stream<Object> flatMapped = Arrays.stream(arrayContents).<Object>flatMap(e ->
+        final Stream<Object> flatMapped = Arrays.stream(arrayContents).flatMap(e ->
             Arrays.stream(fun.apply(e).toArray())
         );
         final Object[] mappedArray = flatMapped.toArray();
