@@ -312,25 +312,6 @@ public final class ArrayTupleImpl implements Tuple {
     }
 
     @Override
-    public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
-        Objects.requireNonNull(fun);
-        if (fun.getParameterCount() == 2) {
-            final AtomicInteger counter = new AtomicInteger();
-            return Arrays.stream(arrayContents)
-                .reduce((first, second) -> {
-                    final List<ProtelisAST<?>> arguments = ImmutableList.of(
-                            new Constant<>(JavaInteroperabilityUtils.METADATA, first),
-                            new Constant<>(JavaInteroperabilityUtils.METADATA, second)
-                    );
-                    final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
-                    return ctx.runInNewStackFrame(counter.getAndIncrement(), call::eval);
-                })
-                .orElse(defVal);
-        }
-        throw new IllegalArgumentException("Reducing function must take two parameters.");
-    }
-
-    @Override
     public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
         return Arrays.stream(arrayContents)
             .reduce(Objects.requireNonNull(fun))
