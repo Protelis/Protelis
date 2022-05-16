@@ -122,7 +122,7 @@ public final class Builtins {
      * value to begin the computation with. The base value is used as initial
      * element. If the field only contains the local value, then the base value is
      * returned.
-     * 
+     *
      * @param <T>               field and result type
      * @param context           {@link ExecutionContext}
      * @param target            the field to be reduced
@@ -173,7 +173,7 @@ public final class Builtins {
     /**
      * Folds the field, including the local value, by picking the maximum value.
      * This method requires the field elements to implement {@link Comparable}.
-     * 
+     *
      * @param <T>               field and result type
      * @param target            target field
      * @return the maximum value among the field values
@@ -188,7 +188,7 @@ public final class Builtins {
      * The base value is used as initial element. If the field only contains the
      * local value, then the base value is returned. This method requires the field
      * elements to implement {@link Comparable}.
-     * 
+     *
      * @param <T>    field and result type
      * @param target the field to be reduced
      * @return the maximum value among the field values and base.
@@ -201,7 +201,7 @@ public final class Builtins {
     /**
      * Folds a field of numbers by computing the mathematical mean. Includes the
      * local value.
-     * 
+     *
      * @param target the field to be reduced
      * @return a {@link Double} with the arithmetic mean of the values
      */
@@ -212,7 +212,7 @@ public final class Builtins {
     /**
      * Folds the field, including the local value, by picking the minimum value.
      * This method requires the field elements to implement {@link Comparable}.
-     * 
+     *
      * @param <T>               field and result type
      * @param target            target field
      * @return the minimum value among the field values
@@ -227,7 +227,7 @@ public final class Builtins {
      * The base value is used as initial element. If the field only contains the
      * local value, then the base value is returned. This method requires the field
      * elements to implement {@link Comparable}.
-     * 
+     *
      * @param <T>               field and result type
      * @param target            the field to be reduced
      * @return the minimum value among the field values and base.
@@ -240,7 +240,7 @@ public final class Builtins {
     /**
      * Folds the field, including the local value, by computing the sum.
      * The sum operation must be well defined for the field type.
-     * 
+     *
      * @param <T>               field and result type
      * @param target            target field
      * @return the sum of the field values
@@ -255,7 +255,7 @@ public final class Builtins {
      * The base value is used as initial element. If the field only contains the
      * local value, then the base value is returned. The sum operation must be well
      * defined for the field type.
-     * 
+     *
      * @param <T>    field and result type
      * @param target the field to be reduced
      * @return the sum of the field values and base
@@ -269,7 +269,7 @@ public final class Builtins {
      * Folds the field, including the local value, by computing the union. The union
      * operation must be well defined for the field type, e.g., this operation can
      * work on a field of tuples.
-     * 
+     *
      * @param <T>    field and result type
      * @param target target field
      * @return the union of the field values
@@ -284,7 +284,7 @@ public final class Builtins {
      * used as initial element. If the field only contains the local value, then the
      * base value is returned. The union operation must be well defined for the
      * field type, e.g., this operation can work on a field of tuples.
-     * 
+     *
      * @param <T>    field and result type
      * @param target the field to be reduced
      * @return the sum of the field values and base
@@ -297,7 +297,7 @@ public final class Builtins {
     /**
      * Picks the local field value (same operation of the previously available
      * "localHood" and "pickHood").
-     * 
+     *
      * @param <T>    field and result type
      * @param target the field to be reduced
      * @return the local field value
@@ -312,7 +312,7 @@ public final class Builtins {
 
     /**
      * Given a nullable reference, builds an {@link Option}.
-     * 
+     *
      * @param <T>    the input and {@link Option} type
      * @param object the input object
      * @return an Option containing the provided object, or an empty {@link Option}
@@ -347,7 +347,7 @@ public final class Builtins {
      * Reduces a field, <b>excluding the local value</b>. This method wraps the
      * result in an {@link Option}. If the field only contains the local value, then
      * an empty {@link Option} is returned.
-     * 
+     *
      * @param <T>               field and result type
      * @param context           {@link ExecutionContext}
      * @param target            the field to be reduced
@@ -366,7 +366,7 @@ public final class Builtins {
      * Produces an Option value. If the passed object is null, then an empty option
      * is returned. Otherwise, an Option enclosing the value is returned.
      * Recommended way to interact with Java method that may return null.
-     * 
+     *
      * @param <T>    Object type
      * @param object the nullable object
      * @return If the passed object is null, then an empty option is returned.
@@ -380,7 +380,7 @@ public final class Builtins {
      * Reduces a field, <b>excluding the local value</b>, by picking the maximum
      * value. This method wraps the result in an {@link Option}. If the field only
      * contains the local value, then an empty {@link Option} is returned.
-     * 
+     *
      * @param <T>               field and result type
      * @param target            the field to be reduced
      * @return an {@link Option} with the result of the field reduction, or an empty
@@ -395,7 +395,7 @@ public final class Builtins {
      * arithmetic mean of the values. This method wraps the result in an
      * {@link Option}. If the field only contains the local value, then an empty
      * {@link Option} is returned.
-     * 
+     *
      * @param target the field to be reduced
      * @return an {@link Option} with the result of the field reduction, or an empty
      *         option.
@@ -408,7 +408,7 @@ public final class Builtins {
      * Reduces a field by picking the minimum of its values, <b>excluding the local
      * value</b>. This method wraps the result in an {@link Option}. If the field
      * only contains the local value, then an empty {@link Option} is returned.
-     * 
+     *
      * @param <T>               field and result type
      * @param target            the field to be reduced
      * @return an {@link Option} with the result of the field reduction, or an empty
@@ -422,7 +422,7 @@ public final class Builtins {
      * Reduces a field, <b>excluding the local value</b>, by computing the sum of
      * the values. This method wraps the result in an {@link Option}. If the field
      * only contains the local value, then an empty {@link Option} is returned.
-     * 
+     *
      * @param <T>    field and result type
      * @param target the field to be reduced
      * @return an {@link Option} with the result of the field reduction, or an empty
@@ -436,7 +436,7 @@ public final class Builtins {
      * Reduces a field, <b>excluding the local value</b>, by computing the union of
      * the values. This method wraps the result in an {@link Option}. If the field
      * only contains the local value, then an empty {@link Option} is returned.
-     * 
+     *
      * @param <T>    field and result type
      * @param target the field to be reduced
      * @return an {@link Option} with the result of the field reduction, or an empty
