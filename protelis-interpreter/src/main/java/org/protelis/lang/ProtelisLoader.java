@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -144,6 +146,59 @@ public final class ProtelisLoader {
     );
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 
+    private static final LoadingCache<Resource, ProtelisProgram> FLYWEIGHT = CacheBuilder.newBuilder()
+        .maximumSize(1000)
+        .build(
+            new CacheLoader<Resource, ProtelisProgram>() {
+                @Override
+                public ProtelisProgram load(@Nonnull final Resource resource) {
+                    Objects.requireNonNull(resource);
+                    if (!resource.getErrors().isEmpty()) {
+                        final String moduleName = Optional.ofNullable(resource.getContents())
+                            .map(it -> it.get(0))
+                            .map(it -> (ProtelisModule) it)
+                            .map(ProtelisModule::getName)
+                            .orElse("without declared module");
+                        final StringBuilder sb = new StringBuilder("Program " + moduleName
+                            + " from resource " + resource.getURI()
+                            + " cannot be created because of the following errors:\n");
+                        for (final Diagnostic d : recursivelyCollectErrors(resource)) {
+                            sb.append("Error");
+                            if (d.getLocation() != null) {
+                                final String place = d.getLocation().split("#")[0];
+                                sb.append(" in ");
+                                sb.append(place);
+                            }
+                            try {
+                                final int line = d.getLine();
+                                sb.append(", line ");
+                                sb.append(line);
+                            } catch (final UnsupportedOperationException e) { // NOPMD
+                                // The line information is not available
+                            }
+                            try {
+                                final int column = d.getColumn();
+                                sb.append(", column ");
+                                sb.append(column);
+                            } catch (final UnsupportedOperationException e) { // NOPMD
+                                // The column information is not available
+                            }
+                            sb.append(": ");
+                            sb.append(d.getMessage());
+                            sb.append('\n');
+                        }
+                        throw new IllegalArgumentException(sb.toString());
+                    }
+                    final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
+                    Objects.requireNonNull(Objects.requireNonNull(root).getProgram(),
+                        "The provided resource does not contain any main program, and can not be executed.");
+                    Diagnostician.INSTANCE.validate(root).getChildren()
+                        .forEach(it -> LOGGER.warn("severity {}: {}", it.getSeverity(), it.getMessage()));
+                    return new SimpleProgramImpl(root, Dispatch.block(root.getProgram()));
+                }
+            }
+        );
+
     private static final ThreadLocal<XtextResourceSet> XTEXT = ThreadLocal.withInitial(() -> {
         final Injector guiceInjector = new ProtelisStandaloneSetup().createInjectorAndDoEMFRegistration();
         final XtextResourceSet xtext = guiceInjector.getInstance(XtextResourceSet.class);
@@ -221,50 +276,12 @@ public final class ProtelisLoader {
      *            the {@link Resource} containing the program to execute
      * @return a {@link ProtelisProgram}
      */
-    public static ProtelisProgram parse(final Resource resource) {
-        Objects.requireNonNull(resource);
-        if (!resource.getErrors().isEmpty()) {
-            final String moduleName = Optional.ofNullable(resource.getContents())
-                    .map(it -> it.get(0))
-                    .map(it -> (ProtelisModule) it)
-                    .map(ProtelisModule::getName)
-                    .orElse("without declared module");
-            final StringBuilder sb = new StringBuilder("Program " + moduleName
-                    + " from resource " + resource.getURI()
-                    + " cannot be created because of the following errors:\n");
-            for (final Diagnostic d : recursivelyCollectErrors(resource)) {
-                sb.append("Error");
-                if (d.getLocation() != null) {
-                    final String place = d.getLocation().split("#")[0];
-                    sb.append(" in ");
-                    sb.append(place);
-                }
-                try {
-                    final int line = d.getLine();
-                    sb.append(", line ");
-                    sb.append(line);
-                } catch (final UnsupportedOperationException e) { // NOPMD 
-                    // The line information is not available
-                }
-                try {
-                    final int column = d.getColumn();
-                    sb.append(", column ");
-                    sb.append(column);
-                } catch (final UnsupportedOperationException e) { // NOPMD 
-                    // The column information is not available
-                }
-                sb.append(": ");
-                sb.append(d.getMessage());
-                sb.append('\n');
-            }
-            throw new IllegalArgumentException(sb.toString());
+    public static ProtelisProgram parse(@Nonnull final Resource resource) {
+        try {
+            return FLYWEIGHT.get(resource);
+        } catch (Exception e) { // NOPMD: this is intentional.
+            throw new IllegalArgumentException(e);
         }
-        final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
-        Objects.requireNonNull(Objects.requireNonNull(root).getProgram(),
-                "The provided resource does not contain any main program, and can not be executed.");
-        Diagnostician.INSTANCE.validate(root).getChildren()
-            .forEach(it -> LOGGER.warn("severity {}: {}", it.getSeverity(), it.getMessage()));
-        return new SimpleProgramImpl(root, Dispatch.block(root.getProgram()));
     }
 
     /**
