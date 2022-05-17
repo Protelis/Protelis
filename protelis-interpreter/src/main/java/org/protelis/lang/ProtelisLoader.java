@@ -36,6 +36,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -148,12 +149,13 @@ public final class ProtelisLoader {
     );
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 
-    private static final LoadingCache<Resource, ProtelisProgram> FLYWEIGHT = CacheBuilder.newBuilder()
+    private static final LoadingCache<Resource, ImmutablePair<ProtelisModule, ProtelisAST<?>>> FLYWEIGHT = CacheBuilder
+        .newBuilder()
         .maximumSize(1000)
         .build(
-            new CacheLoader<Resource, ProtelisProgram>() {
+            new CacheLoader<Resource, ImmutablePair<ProtelisModule, ProtelisAST<?>>>() {
                 @Override
-                public ProtelisProgram load(@Nonnull final Resource resource) {
+                public ImmutablePair<ProtelisModule, ProtelisAST<?>> load(@Nonnull final Resource resource) {
                     Objects.requireNonNull(resource);
                     if (!resource.getErrors().isEmpty()) {
                         final String moduleName = Optional.ofNullable(resource.getContents())
@@ -196,7 +198,7 @@ public final class ProtelisLoader {
                         "The provided resource does not contain any main program, and can not be executed.");
                     Diagnostician.INSTANCE.validate(root).getChildren()
                         .forEach(it -> LOGGER.warn("severity {}: {}", it.getSeverity(), it.getMessage()));
-                    return new SimpleProgramImpl(root, Dispatch.block(root.getProgram()));
+                    return new ImmutablePair<>(root, Dispatch.block(root.getProgram()));
                 }
             }
         );
@@ -280,7 +282,8 @@ public final class ProtelisLoader {
      */
     public static ProtelisProgram parse(@Nonnull final Resource resource) {
         try {
-            return FLYWEIGHT.get(resource);
+            final ImmutablePair<ProtelisModule, ProtelisAST<?>> immutableProgram = FLYWEIGHT.get(resource);
+            return new SimpleProgramImpl(immutableProgram.left, immutableProgram.right);
         } catch (Exception e) { // NOPMD: this is intentional.
             throw new IllegalArgumentException(e);
         }
