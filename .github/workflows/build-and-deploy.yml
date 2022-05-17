@@ -5,6 +5,7 @@ on:
       - 'autodelivery**'
       - 'bump-**'
       - 'renovate/**'
+      - 'dependabot/**'
     paths-ignore:
       - 'CHANGELOG.md'
       - 'LICENSE'
