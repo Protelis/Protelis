@@ -1,3 +1,20 @@
+### [15.4.2](https://github.com/Protelis/Protelis/compare/15.4.1...15.4.2) (2022-05-17)
+
+
+### Bug Fixes
+
+* **interpreter:** fix a critical bug with the new flyweight implementation ([54660d2](https://github.com/Protelis/Protelis/commit/54660d2e249e342481d723d84586b934d2e923b9))
+
+
+### Build and continuous integration
+
+* ignore dependabot branch builds ([4ed6c33](https://github.com/Protelis/Protelis/commit/4ed6c33206772ade77f4bd481c4fe5adcc4e7df8))
+
+
+### Dependency updates
+
+* **deps:** bump minimist from 1.2.5 to 1.2.6 ([fcf2d27](https://github.com/Protelis/Protelis/commit/fcf2d278b8ca4ceff648749606d707e7cffbc48f))
+
 ### [15.4.1](https://github.com/Protelis/Protelis/compare/15.4.0...15.4.1) (2022-05-16)
 
 
