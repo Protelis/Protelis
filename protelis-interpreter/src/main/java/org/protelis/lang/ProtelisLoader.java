@@ -35,6 +35,7 @@ import com.google.common.base.Splitter;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.emf.common.util.URI;
@@ -166,7 +167,12 @@ public final class ProtelisLoader {
                         final StringBuilder sb = new StringBuilder("Program " + moduleName
                             + " from resource " + resource.getURI()
                             + " cannot be created because of the following errors:\n");
-                        for (final Diagnostic d : recursivelyCollectErrors(resource)) {
+                        boolean first = true;
+                        for (final Diagnostic d : Lists.reverse(recursivelyCollectErrors(resource))) {
+                            if (first) {
+                                sb.append("MOST LIKELY CAUSE ==> ");
+                                first = false;
+                            }
                             sb.append("Error");
                             if (d.getLocation() != null) {
                                 final String place = Iterables.get(Splitter.on('#').split(d.getLocation()), 0);
