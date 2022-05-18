@@ -23,8 +23,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T> {
 
-    private static final long serialVersionUID = 457607604000217166L;
-    private transient S superscript;
+    private static final long serialVersionUID = 1;
 
     /**
      * @param metadata
@@ -54,8 +53,7 @@ public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T>
      * @return the previous state, if present, or the state computed by ifAbsent otherwise
      */
     protected final S loadState(final ExecutionContext context, final Supplier<S> ifAbsent) {
-        superscript = context.getPersistent(ifAbsent);
-        return superscript;
+        return context.getPersistent(ifAbsent);
     }
 
     /**
@@ -66,19 +64,12 @@ public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T>
      */
     protected final void saveState(final ExecutionContext context, final S obj) {
         context.setPersistent(obj);
-        superscript = obj;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toString() {
-        return super.toString() + "{ "
-            + (superscript instanceof ProtelisAST
-                ? stringFor((ProtelisAST<?>) superscript)
-                : superscript == null ? "..." : superscript)
-            + " }";
-    }
+    public abstract String toString();
 
 }
