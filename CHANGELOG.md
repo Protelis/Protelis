@@ -1,3 +1,10 @@
+## [16.1.0](https://github.com/Protelis/Protelis/compare/16.0.0...16.1.0) (2022-05-18)
+
+
+### Features
+
+* **interpreter:** improve parsing error description ([#673](https://github.com/Protelis/Protelis/issues/673)) ([9d09325](https://github.com/Protelis/Protelis/commit/9d09325da1e65b16306a72818888f343cbf5fe31))
+
 ## [16.0.0](https://github.com/Protelis/Protelis/compare/15.4.2...16.0.0) (2022-05-18)
 
 
