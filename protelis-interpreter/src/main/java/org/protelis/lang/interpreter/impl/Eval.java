@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (C) 2022, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
@@ -47,10 +47,9 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
                 : createState(currentProgram);
         saveState(context, actualState);
         return context.runInNewStackFrame(EVAL_DYNAMIC_CODE.getCode(), ctx -> {
-            actualState.getRight().compute(ctx);
-        // TODO: figure out which references to pass down... and how to.
-//          context.putMultipleVariables(result.getGloballyAvailableReferences());
-            return actualState.getRight().getCurrentValue();
+            // TODO: figure out which references to pass down... and how to.
+            // context.putMultipleVariables(result.getGloballyAvailableReferences());
+            return actualState.getRight().compute(ctx);
         });
     }
 

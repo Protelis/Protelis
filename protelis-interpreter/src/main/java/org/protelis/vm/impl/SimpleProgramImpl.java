@@ -1,11 +1,8 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (C) 2022, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
- */
-/**
- * 
  */
 package org.protelis.vm.impl;
 
@@ -26,7 +23,6 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
     private final ProtelisAST<?> prog;
     private final String name;
-    private Object result;
 
     /**
      * @param source
@@ -55,13 +51,8 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     }
 
     @Override
-    public Object getCurrentValue() {
-        return result;
-    }
-
-    @Override
-    public void compute(final ExecutionContext context) {
-        result = prog.eval(context);
+    public Object compute(final ExecutionContext context) {
+        return prog.eval(context);
     }
 
     @Override
