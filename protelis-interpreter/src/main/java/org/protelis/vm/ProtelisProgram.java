@@ -24,6 +24,8 @@ public interface ProtelisProgram extends Serializable {
     Object compute(ExecutionContext context);
 
     /**
+     * The name of the program.
+     *
      * @return Name of the program, or some default name if no specific name is
      *         provided
      */
