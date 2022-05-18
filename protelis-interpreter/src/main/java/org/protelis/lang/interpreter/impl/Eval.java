@@ -70,4 +70,9 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
     private ProtelisAST<?> programText() {
         return getBranch(0);
     }
+
+    @Override
+    public String toString() {
+        return "eval(" + stringFor(getBranch(0)) + ")";
+    }
 }
