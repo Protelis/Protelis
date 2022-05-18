@@ -1,43 +1,23 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (C) 2022, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 package org.protelis.lang;
 
-import static org.protelis.lang.ProtelisLoadingUtilities.IT;
-import static org.protelis.lang.ProtelisLoadingUtilities.argumentsToExpressionStream;
-import static org.protelis.lang.ProtelisLoadingUtilities.referenceFor;
-import static org.protelis.lang.ProtelisLoadingUtilities.referenceListFor;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.common.base.Splitter;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.hash.Hashing;
+import com.google.inject.Injector;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -120,13 +100,29 @@ import org.protelis.vm.impl.SimpleProgramImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableList;
-import com.google.common.hash.Hashing;
-import com.google.inject.Injector;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import static org.protelis.lang.ProtelisLoadingUtilities.IT;
+import static org.protelis.lang.ProtelisLoadingUtilities.argumentsToExpressionStream;
+import static org.protelis.lang.ProtelisLoadingUtilities.referenceFor;
+import static org.protelis.lang.ProtelisLoadingUtilities.referenceListFor;
 
 /**
  * Main entry-point class for loading/parsing Protelis programs.
@@ -150,13 +146,14 @@ public final class ProtelisLoader {
     );
     private static final Pattern REGEX_PROTELIS_MODULE = Pattern.compile("(?:\\w+:)*\\w+");
 
-    private static final LoadingCache<Resource, ImmutablePair<ProtelisModule, ProtelisAST<?>>> FLYWEIGHT = CacheBuilder
+    private static final LoadingCache<Resource, ProtelisProgram> FLYWEIGHT = CacheBuilder
         .newBuilder()
         .maximumSize(1000)
         .build(
-            new CacheLoader<Resource, ImmutablePair<ProtelisModule, ProtelisAST<?>>>() {
+            new CacheLoader<Resource, ProtelisProgram>() {
                 @Override
-                public ImmutablePair<ProtelisModule, ProtelisAST<?>> load(@Nonnull final Resource resource) {
+                @Nonnull
+                public ProtelisProgram load(@Nonnull final Resource resource) {
                     Objects.requireNonNull(resource);
                     if (!resource.getErrors().isEmpty()) {
                         final String moduleName = Optional.ofNullable(resource.getContents())
@@ -204,7 +201,7 @@ public final class ProtelisLoader {
                         "The provided resource does not contain any main program, and can not be executed.");
                     Diagnostician.INSTANCE.validate(root).getChildren()
                         .forEach(it -> LOGGER.warn("severity {}: {}", it.getSeverity(), it.getMessage()));
-                    return new ImmutablePair<>(root, Dispatch.block(root.getProgram()));
+                    return new SimpleProgramImpl(root, Dispatch.block(root.getProgram()));
                 }
             }
         );
@@ -288,8 +285,7 @@ public final class ProtelisLoader {
      */
     public static ProtelisProgram parse(@Nonnull final Resource resource) {
         try {
-            final ImmutablePair<ProtelisModule, ProtelisAST<?>> immutableProgram = FLYWEIGHT.get(resource);
-            return new SimpleProgramImpl(immutableProgram.left, immutableProgram.right);
+            return FLYWEIGHT.get(resource);
         } catch (Exception e) { // NOPMD: this is intentional.
             throw new IllegalArgumentException(e);
         }

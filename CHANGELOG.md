@@ -1,3 +1,40 @@
+## [16.0.0](https://github.com/Protelis/Protelis/compare/15.4.2...16.0.0) (2022-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **interpreter:** make `ProtelisProgram` read-only and its implementation immutable. This is a change in the API of Protelis, and thus causes a breaking change. To adapt your software to the change, collect the computation result of `ProtelisProgram.compute`, instead of calling `compute` followed by `getCurrentValue`. If you are interfacing with protelis through the `ProtelisVM`, then there should be no change to be performed, as the VM way to interact with Protelis remains unchanged (call `runCycle` followed by `getCurrentValue`). In other words, this commit enlarges the portion of Protelis that behaves immutably to the whole program, leaving `ProtelisVM` as the first component with a mutable state.
+
+### Features
+
+* **interpreter:** make `ProtelisProgram` read-only and its implementation immutable. This is a change in the API of Protelis, and thus causes a breaking change. To adapt your software to the change, collect the computation result of `ProtelisProgram.compute`, instead of calling `compute` followed by `getCurrentValue`. If you are interfacing with protelis through the `ProtelisVM`, then there should be no change to be performed, as the VM way to interact with Protelis remains unchanged (call `runCycle` followed by `getCurrentValue`). In other words, this commit enlarges the portion of Protelis that behaves immutably to the whole program, leaving `ProtelisVM` as the first component with a mutable state. ([ee6ea6f](https://github.com/Protelis/Protelis/commit/ee6ea6f3cc0dc045e2a037546eee33c5494cd8a7))
+
+
+### Bug Fixes
+
+* **interpreter:** create a `toString` method for `Eval` ([ec4e175](https://github.com/Protelis/Protelis/commit/ec4e175ba1df5e00322e81b4cc8196b03993fc5b))
+* **interpreter:** remove the last piece of state in `AbstractPersistedTree`. It was being used solely for converting to String, so the change should have no portability / upgrade issues. ([e4a8f47](https://github.com/Protelis/Protelis/commit/e4a8f47d1f20cc354a111138fa8b38f439475128))
+
+
+### Dependency updates
+
+* **deps:** update plugin multijvmtesting to v0.4.0 ([8d4c7a3](https://github.com/Protelis/Protelis/commit/8d4c7a3d96eacec025c0e4288826ad480c47e82b))
+
+
+### Style improvements
+
+* **interpreter:** improve indentation in `ShareCall` ([7e31d95](https://github.com/Protelis/Protelis/commit/7e31d95d23084b24a065a70558cc4d3fad00edfd))
+
+
+### General maintenance
+
+* **interpreter:** simplify `ProtelisLoader` as `ProtelisProgram` is now unmodifiable ([d4398fa](https://github.com/Protelis/Protelis/commit/d4398fac1cce5a4a59df621e19e81098a46b90d7))
+
+
+### Documentation
+
+* **interpreter:** add a summary fragment to `ProtelisProgram.getName`'s Javadoc ([c3a8e87](https://github.com/Protelis/Protelis/commit/c3a8e8717624ab0db57e9ed3b2842c943cfe4c75))
+
 ### [15.4.2](https://github.com/Protelis/Protelis/compare/15.4.1...15.4.2) (2022-05-17)
 
 

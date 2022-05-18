@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (C) 2022, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
@@ -7,6 +7,10 @@
 package org.protelis.vm;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * A virtual machine for executing a Protelis program on a particular device
@@ -16,6 +20,8 @@ public class ProtelisVM {
 
     private final ProtelisProgram program;
     private final ExecutionContext context;
+
+    private @Nullable Object lastValue;
 
     /**
      * Create a virtual machine for executing a Protelis program in a particular
@@ -42,7 +48,7 @@ public class ProtelisVM {
         // 1. Take the messages received by neighbors
         context.setup();
         // 2. Compute
-        program.compute(context);
+        lastValue = program.compute(context);
         // 3. Finalize the new environment and send Messages away
         context.commit();
     }
@@ -52,8 +58,12 @@ public class ProtelisVM {
      * 
      * @return Last value computed
      */
+    @Nonnull
     public Object getCurrentValue() {
-        return program.getCurrentValue();
+        return Objects.requireNonNull(
+            lastValue,
+            "No computation has happened so far, so no result is available yet. Call 'runCycle()' first."
+        );
     }
 
 }

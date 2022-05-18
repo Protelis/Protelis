@@ -225,15 +225,15 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     public String toString() {
         final Optional<String> field = fieldName.transform(Reference::toString);
         return getName() + " ("
-                + localName.transform(Reference::toString)
+            + localName.transform(Reference::toString)
                 .transform(it -> it + field.transform(f -> ", ").or("")).or("")
-                + field.or("")
-                + " <- "
-                + stringFor(init)
-                + ") { "
-                + stringFor(body)
-                + " }"
-                + yield.transform(it -> " yield { " + stringFor(it) + '}').or("");
+            + field.or("")
+            + " <- "
+            + stringFor(init)
+            + ") { "
+            + stringFor(body)
+            + " }"
+            + yield.transform(it -> " yield { " + stringFor(it) + '}').or("");
     }
 
     private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {
