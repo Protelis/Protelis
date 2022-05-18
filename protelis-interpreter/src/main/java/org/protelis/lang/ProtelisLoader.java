@@ -13,6 +13,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -163,7 +164,12 @@ public final class ProtelisLoader {
                         final StringBuilder sb = new StringBuilder("Program " + moduleName
                             + " from resource " + resource.getURI()
                             + " cannot be created because of the following errors:\n");
-                        for (final Diagnostic d : recursivelyCollectErrors(resource)) {
+                        boolean first = true;
+                        for (final Diagnostic d : Lists.reverse(recursivelyCollectErrors(resource))) {
+                            if (first) {
+                                sb.append("MOST LIKELY CAUSE ==> ");
+                                first = false;
+                            }
                             sb.append("Error");
                             if (d.getLocation() != null) {
                                 final String place = Iterables.get(Splitter.on('#').split(d.getLocation()), 0);
