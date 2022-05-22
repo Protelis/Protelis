@@ -1,3 +1,21 @@
+### [16.1.1](https://github.com/Protelis/Protelis/compare/16.1.0...16.1.1) (2022-05-22)
+
+
+### Bug Fixes
+
+* **protelis-lang:** patch the code of the S block, that used to exhibit non-self-stabilizing (oscillatory) behavior. The implementation differed from the one in the literature, and should now be aligned ([4db458b](https://github.com/Protelis/Protelis/commit/4db458b1b82c944fc0bd55114bdb5dd395555d5c))
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.3.0-alpha16 ([46b6776](https://github.com/Protelis/Protelis/commit/46b67765b11300d8d95da19d87592c61a67d1add))
+* **deps:** update plugin com.gradle.enterprise to v3.10.1 ([33429fd](https://github.com/Protelis/Protelis/commit/33429fd5813a5d163c8d31aba263abc4739a29ef))
+
+
+### Style improvements
+
+* **interpreter:** improve indentation in ShareCall and AbstractProtelisAST ([87e8e7c](https://github.com/Protelis/Protelis/commit/87e8e7cbbab4074280503b3a24f34831209a0978))
+
 ## [16.1.0](https://github.com/Protelis/Protelis/compare/16.0.0...16.1.0) (2022-05-18)
 
 
