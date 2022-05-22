@@ -135,9 +135,11 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         final S localValue = ensureType(loadState(context, () -> initValue));
         final boolean localIsField = localValue instanceof Field;
         if (localIsField && !(initValue instanceof Field)) {
-            throw new IllegalStateException("The local value " + localValue
+            throw new IllegalStateException(
+                "The local value " + localValue
                     + " is a field, but the default one " + initValue + " is not: "
-                    + initValue.getClass().getSimpleName() + ". Types must be consistent");
+                    + initValue.getClass().getSimpleName() + ". Types must be consistent"
+            );
         }
         final BodyResult<S> bodyResult = new BodyResult<>();
         final DeviceUID myId = context.getDeviceUID();
