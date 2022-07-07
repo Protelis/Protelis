@@ -1,3 +1,10 @@
+## [16.3.0](https://github.com/Protelis/Protelis/compare/16.2.0...16.3.0) (2022-07-07)
+
+
+### Features
+
+* **release:** publish Kotlin publications in place of Java's ([ded7209](https://github.com/Protelis/Protelis/commit/ded7209196ee782b6c1857f5af238d52b432ff2f))
+
 ## [16.2.0](https://github.com/Protelis/Protelis/compare/16.1.2...16.2.0) (2022-07-07)
 
 
