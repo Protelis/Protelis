@@ -24,9 +24,9 @@ jobs:
             ./gradlew assemble shadowJar --parallel ||
             ./gradlew assemble shadowJar --parallel
           deploy-command: >-
-            ./gradlew uploadJava close --parallel ||
-            ./gradlew uploadJava close --parallel ||
-            ./gradlew uploadJava close --parallel
+            ./gradlew uploadKotlin close --parallel ||
+            ./gradlew uploadKotlin close --parallel ||
+            ./gradlew uploadKotlin close --parallel
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: >-
             ${{
