@@ -28,7 +28,7 @@ gradleEnterprise {
 gitHooks {
     commitMsg { conventionalCommits() }
     preCommit {
-        tasks("checkstyleMain", "checkstyleTest")
+        tasks("checkstyleMain", "checkstyleTest", "ktlintCheck")
     }
     createHooks(overwriteExisting = true)
 }
