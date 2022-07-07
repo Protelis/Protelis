@@ -1,3 +1,25 @@
+## [16.4.0](https://github.com/Protelis/Protelis/compare/16.3.0...16.4.0) (2022-07-07)
+
+
+### Features
+
+* **build:** switch to the Kotlin compiler/plugin ([909fac6](https://github.com/Protelis/Protelis/commit/909fac68c0aa5b922895a424e754b886f911fa61))
+
+
+### Bug Fixes
+
+* **release:** run protelisdoc before attempting to publish the protelis-lang docs ([e9a7917](https://github.com/Protelis/Protelis/commit/e9a79175183b5093d07c1255c7faf834d3ff2314))
+
+
+### Dependency updates
+
+* **deps:** drop guice, fixes [#572](https://github.com/Protelis/Protelis/issues/572) ([125aa93](https://github.com/Protelis/Protelis/commit/125aa938737c2cadcf3d72442fee6dc5d3420b86))
+
+
+### General maintenance
+
+* **hooks:** run ktlintCheck before approving commits ([c134a2d](https://github.com/Protelis/Protelis/commit/c134a2df5139881ab30dbfd708a4865a7e83e132))
+
 ## [16.3.0](https://github.com/Protelis/Protelis/compare/16.2.0...16.3.0) (2022-07-07)
 
 
