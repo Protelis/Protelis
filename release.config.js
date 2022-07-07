@@ -1,11 +1,11 @@
 var publishCmd = `
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md
-git push --force origin \${nextRelease.version} || exit 1
 ./gradlew shadowJar --parallel || ./gradlew shadowJar --parallel || exit 2
-./gradlew releaseJavaMavenOnMavenCentralNexus --parallel || exit 3
+./gradlew uploadJava release --parallel || ./gradlew uploadJava release --parallel || ./gradlew uploadJava release --parallel || exit 3
 ./gradlew publishJavaMavenPublicationToGithubRepository --continue || true
 surge build/docs/javadoc/ protelis-doc.surge.sh || exit 4
 surge protelis-lang/build/protelis-docs/ protelis-lang-doc.surge.sh || exit 5
+git push --force origin \${nextRelease.version} || exit 6
 `
 var config = require('semantic-release-preconfigured-conventional-commits');
 config.plugins.push(
