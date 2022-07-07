@@ -13,5 +13,4 @@ dependencies {
     implementation(libs.commons.io)
     implementation(libs.commons.lang)
     implementation(libs.slf4j)
-    runtimeOnly(libs.guice)
 }
