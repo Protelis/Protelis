@@ -1,6 +1,6 @@
 var publishCmd = `
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md
-./gradlew shadowJar --parallel || ./gradlew shadowJar --parallel || exit 2
+./gradlew protelisdoc shadowJar --parallel || ./gradlew shadowJar --parallel || exit 2
 ./gradlew uploadKotlin release --parallel || ./gradlew uploadKotlin release --parallel || ./gradlew uploadKotlin release --parallel || exit 3
 ./gradlew publishKotlinOSSRHPublicationToGithubRepository --continue || true
 surge build/docs/javadoc/ protelis-doc.surge.sh || exit 4
