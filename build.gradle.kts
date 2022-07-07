@@ -34,16 +34,13 @@ allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = gitSemVer.id)
         apply(plugin = java.qa.id)
+        apply(plugin = kotlin.jvm.id)
         apply(plugin = kotlin.qa.id)
         apply(plugin = multiJvmTesting.id)
         apply(plugin = publishOnCentral.id)
         apply(plugin = taskTree.id)
         apply(plugin = shadowJar.id)
     }
-
-    apply(plugin = "java-library")
-    apply(plugin = "signing")
-    apply(plugin = "maven-publish")
 
     repositories {
         mavenCentral()
