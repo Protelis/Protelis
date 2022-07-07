@@ -1,9 +1,3 @@
-  Release:
-    needs:
-      - Build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && contains(github.repository, 'Protelis/Protelis')
-
 name: CI/CD Process
 on:
   workflow_call:
