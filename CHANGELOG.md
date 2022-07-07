@@ -1,3 +1,34 @@
+## [16.2.0](https://github.com/Protelis/Protelis/compare/16.1.2...16.2.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* **release:** update the CI infrastructure for publish-on-central 2.x.x ([#722](https://github.com/Protelis/Protelis/issues/722)) ([8d43f48](https://github.com/Protelis/Protelis/commit/8d43f48205b5041673cab687852a25c323c956ce))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.0.3 ([e11bac0](https://github.com/Protelis/Protelis/commit/e11bac0ad2fe4aaae692574bff0335511fadb52e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.0 ([bc2ff52](https://github.com/Protelis/Protelis/commit/bc2ff5214977e2733983f0b68da8594d354c552d))
+
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v10.2.14 ([92abf31](https://github.com/Protelis/Protelis/commit/92abf316489fc4cff513bdc4c437832d9638cf84))
+* **api-deps:** update dependency org.protelis:protelis.parser to v10.2.15 ([5815b60](https://github.com/Protelis/Protelis/commit/5815b607e25f3ed138783e08a62d8eec996345e9))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.7.1 ([7bdb059](https://github.com/Protelis/Protelis/commit/7bdb0594f9eee7a45e55cd5378359396384cc3a3))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.148 ([d9d4125](https://github.com/Protelis/Protelis/commit/d9d412515f1d500940ffd31c6e37ece052779987))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.149 ([85bf967](https://github.com/Protelis/Protelis/commit/85bf967e0e0d221ed9315c5456c007a7fc5d0dad))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.7.10 ([3339045](https://github.com/Protelis/Protelis/commit/3339045d0604ce9e91a8f226ef5ed71f829498ce))
+* **deps:** update plugin multijvmtesting to v0.4.4 ([110b282](https://github.com/Protelis/Protelis/commit/110b28289df298f31f02566366bdd99ce90694d3))
+* **deps:** update plugin multijvmtesting to v0.4.5 ([aec7581](https://github.com/Protelis/Protelis/commit/aec7581cbe83a9fc764e6dacb9928a6208341f94))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.0.14 ([6747ae0](https://github.com/Protelis/Protelis/commit/6747ae00a5258c0ed298ff55c0449ab7ddb942c9))
+* **deps:** update plugin publishoncentral to v0.8.3 ([ca84bc0](https://github.com/Protelis/Protelis/commit/ca84bc0d91060cca0942153b0c643e5b3080de12))
+* **deps:** update plugin publishoncentral to v1 ([7918bc7](https://github.com/Protelis/Protelis/commit/7918bc77dc790e528246691fc69193c42cd51051))
+* **deps:** update plugin publishoncentral to v2 ([b2e881a](https://github.com/Protelis/Protelis/commit/b2e881adc94b6467d413fd5de8b426dd8a641363))
+* **deps:** update plugin publishoncentral to v2.0.2 ([cfe972d](https://github.com/Protelis/Protelis/commit/cfe972d7cc9a779cb79384b177d60f95f230cda5))
+* **deps:** update plugin publishoncentral to v2.0.3 ([b93deb3](https://github.com/Protelis/Protelis/commit/b93deb387a01abfe5518674f8c4bbd1a2d23088b))
+
 ## [16.1.2](https://github.com/Protelis/Protelis/compare/16.1.1...16.1.2) (2022-06-11)
 
 
