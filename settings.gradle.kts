@@ -13,7 +13,7 @@ include(
 )
 
 plugins {
-    id("com.gradle.enterprise") version "3.10.2"
+    id("com.gradle.enterprise") version "3.10.3"
     id("org.danilopianini.gradle-pre-commit-git-hooks") version "1.0.14"
 }
 
