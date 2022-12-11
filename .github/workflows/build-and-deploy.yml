@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Checkout
         uses: DanySK/action-checkout@0.2.3
-      - uses: DanySK/build-check-deploy-gradle-action@2.1.16
+      - uses: DanySK/build-check-deploy-gradle-action@2.1.17
         with:
           build-command: >-
             ./gradlew assemble shadowJar --parallel ||
@@ -56,7 +56,7 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.DEPLOYMENT_TOKEN }}
-      - uses: DanySK/build-check-deploy-gradle-action@2.1.16
+      - uses: DanySK/build-check-deploy-gradle-action@2.1.17
         with:
           build-command: true
           check-command: true
