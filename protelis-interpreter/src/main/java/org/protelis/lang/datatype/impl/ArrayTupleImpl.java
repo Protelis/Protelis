@@ -344,6 +344,36 @@ public final class ArrayTupleImpl implements Tuple {
     }
 
     @Override
+    public Object reduce(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
+        Objects.requireNonNull(fun);
+        if (fun.getParameterCount() == 2) {
+            if (arrayContents.length == 0) {
+                return defVal;
+            }
+            Object result = arrayContents[0];
+            for (int i = 1; i < arrayContents.length; i++) {
+                result = runBinaryFunctionWithElement(ctx, fun, result, i);
+            }
+            return result;
+        }
+        throw new IllegalArgumentException("Reducing function must take two parameters.");
+    }
+
+    private Object runBinaryFunctionWithElement(
+            final ExecutionContext ctx,
+            final FunctionDefinition fun,
+            final Object param,
+            final int elementPosition
+    ) {
+        final List<ProtelisAST<?>> arguments = ImmutableList.of(
+                new Constant<>(JavaInteroperabilityUtils.METADATA, param),
+                new Constant<>(JavaInteroperabilityUtils.METADATA, arrayContents[elementPosition])
+        );
+        final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
+        return ctx.runInNewStackFrame(elementPosition, call::eval);
+    }
+
+    @Override
     public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
         return Arrays.stream(arrayContents)
             .reduce(Objects.requireNonNull(fun))
