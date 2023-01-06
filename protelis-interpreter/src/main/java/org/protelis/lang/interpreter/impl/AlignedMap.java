@@ -169,9 +169,12 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
                     /*
                      * Filter passed, run operation.
                      */
-                    resultList.add(DatatypeFactory.createTuple(
+                    resultList.add(
+                        DatatypeFactory.createTuple(
                             key,
-                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, execute, args)));
+                            callFunctionInSubContext(ALIGNED_MAP_EXECUTE.getCode(), restricted, execute, args)
+                        )
+                    );
                 }
             } else {
                 throw new IllegalStateException("Filter must return a Boolean, got " + condition.getClass());
