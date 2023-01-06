@@ -283,14 +283,13 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public Tuple map(final ExecutionContext ctx, final FunctionDefinition fun) {
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
-            final AtomicInteger counter = new AtomicInteger();
-            return new ArrayTupleImpl(
-                Arrays.stream(arrayContents).map(elem -> {
-                    final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, elementAsArguments(elem));
-                    return ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
-                }).toArray(),
-                false
-            );
+            final Object[] result = new Object[arrayContents.length];
+            for (int i = 0; i < result.length; i++) {
+                final FunctionCall fc =
+                        new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, elementAsArguments(arrayContents[i]));
+                result[i] = ctx.runInNewStackFrame(i, fc::eval);
+            }
+            return new ArrayTupleImpl(result, false);
         }
         throw new IllegalArgumentException("Mapping function must take one parameter.");
     }
