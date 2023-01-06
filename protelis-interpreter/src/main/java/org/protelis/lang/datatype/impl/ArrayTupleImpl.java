@@ -22,13 +22,13 @@ import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -163,20 +163,22 @@ public final class ArrayTupleImpl implements Tuple {
     public Tuple filter(final ExecutionContext ctx, final FunctionDefinition fun) {
         Objects.requireNonNull(fun);
         if (fun.getParameterCount() == 1 || fun.invokerShouldInitializeIt()) {
-            final AtomicInteger counter = new AtomicInteger();
-            return new ArrayTupleImpl(
-                Arrays.stream(arrayContents).filter(elem -> {
-                    final List<ProtelisAST<?>> arguments = elementAsArguments(elem);
-                    final FunctionCall fc = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
-                    final Object outcome = ctx.runInNewStackFrame(counter.getAndIncrement(), fc::eval);
-                    if (outcome instanceof Boolean) {
-                        return (Boolean) outcome;
-                    } else {
-                        throw new IllegalArgumentException("Filtering functions must return boolean.");
+            final List<Object> result = new ArrayList<>(arrayContents.length);
+            for (int i = 0; i < arrayContents.length; i++) {
+                final FunctionCall fc =
+                        new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, elementAsArguments(arrayContents[i]));
+                final Object outcome = ctx.runInNewStackFrame(i, fc::eval);
+                if (outcome instanceof Boolean) {
+                    if ((Boolean) outcome) {
+                        result.add(arrayContents[i]);
                     }
-                }).toArray(),
-                false
-            );
+                } else {
+                    throw new IllegalArgumentException("Illegal filtering result: '"
+                            + outcome + ": " + outcome.getClass().getName()
+                            + "' (must be a boolean).");
+                }
+            }
+            return result.size() == arrayContents.length ? this : new ArrayTupleImpl(result.toArray(), false);
         }
         throw new IllegalArgumentException("Filtering function must take one parameter.");
     }
