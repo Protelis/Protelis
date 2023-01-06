@@ -15,11 +15,9 @@ import org.protelis.lang.datatype.Tuple;
 import org.protelis.lang.interpreter.ProtelisAST;
 import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.interpreter.util.HashingFunnel;
-import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,9 +38,6 @@ import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_GENERATOR;
  */
 public final class AlignedMap extends AbstractProtelisAST<Tuple> {
 
-    private static final Reference CURFIELD = new Reference(new Serializable() {
-        private static final long serialVersionUID = 1L;
-    });
     private static final long serialVersionUID = 2L;
 
     private final HashingFunnel hasher;
@@ -149,8 +144,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
              */
             final List<ProtelisAST<?>> args = new ArrayList<>(2);
             args.add(new Constant<>(getMetadata(), key));
-            args.add(new Variable(getMetadata(), CURFIELD));
-            restricted.putVariable(CURFIELD, reifiedField);
+            args.add(new Constant<>(getMetadata(), reifiedField));
             /*
              * Compute the code path: align on keys
              */
