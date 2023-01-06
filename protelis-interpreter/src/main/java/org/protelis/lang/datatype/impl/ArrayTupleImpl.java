@@ -102,7 +102,7 @@ public final class ArrayTupleImpl implements Tuple {
                     res = ((Comparable<Object>) o1).compareTo(o2);
                 } catch (ClassCastException ex) {
                     /*
-                     * Incomparable, go lexicographically
+                     * Uncomparable, go lexicographically
                      */
                     res = o1.toString().compareTo(o2.toString());
                 }
