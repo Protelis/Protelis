@@ -16,7 +16,7 @@ public final class OpUtils {
 
     /**
      * This method builds a meaningful exception and throws it immediately.
-     * 
+     *
      * @param op
      *            The name of the operation
      * @param a
@@ -31,21 +31,33 @@ public final class OpUtils {
      * @return Nothing, since it throws an exception
      */
     public static <T> T unsupported(final String op, final Object... a) {
-        final StringBuilder msg = new StringBuilder("Nobody told me how to run ");
+        final StringBuilder msg = new StringBuilder("Nobody told me how to run operator ");
         msg.append(op);
         if (a.length > 0) {
-            msg.append(" with parameters of class: ");
+            msg.append(" with the following parameters: ");
             boolean first = true;
             for (final Object o : a) {
                 if (first) {
                     first = false;
                 } else {
-                    msg.append(", ");
+                    msg.append("; ");
                 }
-                msg.append(o == null ? "null" : o.getClass().getSimpleName());
+                if (o == null) {
+                    msg.append("null");
+                } else {
+                    quoteIfStringy(msg, o)
+                        .append(o);
+                    quoteIfStringy(msg, o)
+                        .append(": ")
+                        .append(o.getClass().getName());
+                }
             }
             msg.append('.');
         }
         throw new UnsupportedOperationException(msg.toString());
+    }
+
+    private static StringBuilder quoteIfStringy(final StringBuilder builder, final Object o) {
+        return o instanceof CharSequence ? builder.append('"') : builder;
     }
 }
