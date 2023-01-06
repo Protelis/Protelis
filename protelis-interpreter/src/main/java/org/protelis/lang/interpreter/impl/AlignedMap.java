@@ -192,9 +192,9 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             final List<ProtelisAST<?>> parameters
     ) {
         return context.runInNewStackFrame(code, ctx -> {
-                final FunctionDefinition function = def.eval(ctx);
-                return new FunctionCall(getMetadata(), function, parameters).eval(ctx);
-            });
+            final FunctionDefinition function = def.eval(ctx);
+            return new FunctionCall(getMetadata(), function, parameters).eval(ctx);
+        });
     }
 
     @Override
