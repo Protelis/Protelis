@@ -197,6 +197,19 @@ public final class ArrayTupleImpl implements Tuple {
     }
 
     @Override
+    public Object fold(final ExecutionContext ctx, final Object defVal, final FunctionDefinition fun) {
+        Objects.requireNonNull(fun);
+        if (fun.getParameterCount() == 2) {
+            Object result = defVal;
+            for (int i = 0; i < arrayContents.length; i++) {
+                result = runBinaryFunctionWithElement(ctx, fun, result, i);
+            }
+            return result;
+        }
+        throw new IllegalArgumentException("Reducing function must take two parameters.");
+    }
+
+    @Override
     public Object fold(final Object initial, final BinaryOperator<Object> fun) {
         return Arrays.stream(arrayContents).reduce(Objects.requireNonNull(initial), Objects.requireNonNull(fun));
     }
