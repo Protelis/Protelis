@@ -56,7 +56,7 @@ allprojects {
     }
 
     multiJvm {
-        jvmVersionForCompilation.set(8)
+        jvmVersionForCompilation.set(11)
         maximumSupportedJvmVersion.set(latestJava)
     }
 
