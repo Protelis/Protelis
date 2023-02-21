@@ -81,7 +81,7 @@ allprojects {
         options {
             javadocTool.set(
                 javaToolchains.javadocToolFor {
-                    languageVersion.set(JavaLanguageVersion.of(8))
+                    languageVersion.set(JavaLanguageVersion.of(11))
                 }
             )
             encoding = "UTF-8"
