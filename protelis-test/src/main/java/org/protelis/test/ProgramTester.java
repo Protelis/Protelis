@@ -182,8 +182,11 @@ public final class ProgramTester {
     public static void runFile(final String file, final int runs) {
         final Object execResult = runProgram(Objects.requireNonNull(file, "File in test cannot be null"), runs);
         final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
-        try (InputStream is = Objects.requireNonNull(ProgramTester.class.getResourceAsStream(fileWithExt), 
-                "Unable to load resource: " + file + " (transformed in: " + fileWithExt + ')')) {
+        final var fileResource = Objects.requireNonNull(
+            ProgramTester.class.getResource(fileWithExt),
+            "Unable to load resource: " + file + " (transformed in: " + fileWithExt + ')'
+        );
+        try (InputStream is = fileResource.openStream()) {
             final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final Matcher extractor = EXTRACT_RESULT.matcher(test);
             if (extractor.find()) {
