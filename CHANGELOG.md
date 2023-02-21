@@ -1,3 +1,57 @@
+## [17.0.0](https://github.com/Protelis/Protelis/compare/16.4.1...17.0.0) (2023-02-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* add support for Java 19, switch to Java 11 as minimum requirement
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v11 ([4a734e1](https://github.com/Protelis/Protelis/commit/4a734e17a7ea65b969fac1e9bb08f9a690aac7b2))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.8.10 ([109546b](https://github.com/Protelis/Protelis/commit/109546bc3b8ba814f3e5ad8fcb0c733ad4fcbb1c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.16 ([09bbd7c](https://github.com/Protelis/Protelis/commit/09bbd7ce33921baf8ccb692cad63d784893041c4))
+* **deps:** update node.js to 18.13 ([e3cb9a3](https://github.com/Protelis/Protelis/commit/e3cb9a397f01aebc593fab03cb1a8e3faa4221d0))
+* **deps:** update node.js to 18.14 ([4ef0028](https://github.com/Protelis/Protelis/commit/4ef00287eb2cbd8d5c170cdfcfe65e55d761706f))
+* **deps:** update plugin com.gradle.enterprise to v3.11.4 ([897cac5](https://github.com/Protelis/Protelis/commit/897cac58de96df088536b13f313565b82283224a))
+* **deps:** update plugin com.gradle.enterprise to v3.12.3 ([0872201](https://github.com/Protelis/Protelis/commit/0872201abff67c8c1c127829fcc5da6ba063b111))
+* **deps:** update plugin gitsemver to v1 ([4789bb9](https://github.com/Protelis/Protelis/commit/4789bb91b4e095aa2c96944a0fe684e88fc1d5bb))
+* **deps:** update plugin gitsemver to v1.0.2 ([c94ec95](https://github.com/Protelis/Protelis/commit/c94ec95e22494e2eb70c7dbfbb904f7f1cb64196))
+* **deps:** update plugin kotlin-qa to v0.34.0 ([e95dd39](https://github.com/Protelis/Protelis/commit/e95dd396941087232ef8bd54b59328a72193360d))
+* **deps:** update plugin kotlin-qa to v0.34.1 ([b6d45d2](https://github.com/Protelis/Protelis/commit/b6d45d20ae6fa1ebfb232a2bea49afb420bafc5b))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.2 ([b8945f0](https://github.com/Protelis/Protelis/commit/b8945f009473827174199a44128d3587992f549b))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.3 ([d454e63](https://github.com/Protelis/Protelis/commit/d454e6386aabd36651eae8219e0bedd3f2d7c5c9))
+* **deps:** update plugin publishoncentral to v2.0.13 ([e6b6955](https://github.com/Protelis/Protelis/commit/e6b6955e0bbd7c0cdfd1a6f00015677c19435747))
+* **deps:** update plugin publishoncentral to v3 ([bd8467e](https://github.com/Protelis/Protelis/commit/bd8467eb11a2a10a9f6a80a03a0090e96a9c4594))
+* **deps:** update plugin publishoncentral to v3.2.3 ([871f512](https://github.com/Protelis/Protelis/commit/871f512c5a9e47805deefe0390860bbbd177cf8f))
+* **deps:** update plugin publishoncentral to v3.2.4 ([5d4dc9a](https://github.com/Protelis/Protelis/commit/5d4dc9ac28f97febe4fcb98ef890c508d130a528))
+* **deps:** update plugin tasktree to v2.1.1 ([f8683ca](https://github.com/Protelis/Protelis/commit/f8683cac3264352e276d7541498fad9c8f40e340))
+
+
+### Build and continuous integration
+
+* add support for Java 19, switch to Java 11 as minimum requirement ([44f10f1](https://github.com/Protelis/Protelis/commit/44f10f10578de7591556102ec8b9df3d9d24fc21))
+* apply org.gradle.toolchains.foojay-resolver-convention ([f49d421](https://github.com/Protelis/Protelis/commit/f49d421d574a6c904cb4116ed9f374f4682d520e))
+* **deps:** update danysk/action-checkout action to v0.2.5 ([7a05900](https://github.com/Protelis/Protelis/commit/7a05900d1d5d9b0b4e7397e40d6e48f4111110d1))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.21 ([bc27264](https://github.com/Protelis/Protelis/commit/bc27264260623631e6a3159047974575b411991c))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.22 ([8bc0971](https://github.com/Protelis/Protelis/commit/8bc09713dcfc5806dc8be64bb11b5b98514b0ffc))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.23 ([afb7dbf](https://github.com/Protelis/Protelis/commit/afb7dbfe4956d39ad3c564b9485f3e65720973aa))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.24 ([d55721c](https://github.com/Protelis/Protelis/commit/d55721c2ecc02d479c3e8ada0c5010e361af1efe))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.25 ([0beb772](https://github.com/Protelis/Protelis/commit/0beb7722dda1e0bf53341fa297f3b158146e16d3))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.26 ([e5bce87](https://github.com/Protelis/Protelis/commit/e5bce872205aaae4118c13eaa2ba83268e32c567))
+* drop dry-deployed packages to relieve Sonatype OSSRH ([d080be1](https://github.com/Protelis/Protelis/commit/d080be1e6ebf2856002a6b559f59f08034a49901))
+* **mergify:** update mergify ([7e866c1](https://github.com/Protelis/Protelis/commit/7e866c1b287642d8d1ef2014fabe7bb0bd674ac6))
+
+
+### Style improvements
+
+* **test:** remove redundant escapes in regex ([3b5a2fd](https://github.com/Protelis/Protelis/commit/3b5a2fdb96bd39b7cabb20a17965f1397af976df))
+* **test:** replace statement lambda with expression lambda ([b5967e7](https://github.com/Protelis/Protelis/commit/b5967e72b1e7c60b789280a06bc6841146e71220))
+
+
+### Documentation
+
+* **javadoc:** switch to Javadoc 11 ([bb6766f](https://github.com/Protelis/Protelis/commit/bb6766f85dfa07aa40ec750d5ab4f07c01eeeb6d))
+
 ## [16.4.1](https://github.com/Protelis/Protelis/compare/16.4.0...16.4.1) (2023-01-06)
 
 
