@@ -45,8 +45,8 @@ public final class ProgramTester {
     /*
      * .*?\/\*.*?EXPECTED\s*(?<ML_NAME>.*?)\s*\/\/\s*EXPECTED\s*(?<SL_NAME>.*?)\s*\n
      */
-    private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?\\/\\*.*?" + EXPECTED + "\\s*(?<" + ML_NAME
-                    + ">.*?)\\s*\\*\\/|\\/\\/\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
+    private static final Pattern EXTRACT_RESULT = Pattern.compile(".*?/\\*.*?" + EXPECTED + "\\s*(?<" + ML_NAME
+                    + ">.*?)\\s*\\*/|//\\s*" + EXPECTED + "\\s*(?<" + SL_NAME + ">.*?)\\s*\\n", Pattern.DOTALL);
     private static final Pattern CYCLE = Pattern.compile("\\$CYCLE");
     private static final int MIN_CYCLE_NUM = 1;
     private static final int MAX_CYCLE_NUM = 100;
