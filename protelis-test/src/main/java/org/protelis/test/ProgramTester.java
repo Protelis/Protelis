@@ -167,9 +167,7 @@ public final class ProgramTester {
      *            stream of run
      */
     public static void runFileWithMultipleRuns(final String file, final IntStream stream) {
-        stream.forEach(i -> {
-            runFile(file, i);
-        });
+        stream.forEach(i -> runFile(file, i));
     }
 
     /**
