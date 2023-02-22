@@ -89,7 +89,6 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
      *            how many entries for the field
      * @return a field with populated with numbers from 0 to 99
      */
-    @SuppressWarnings("serial")
     public Field<Double> makeTestField(final int entries) {
         final Field.Builder<Double> res = DatatypeFactory.createFieldBuilder();
         IntStreams.range(1, entries)
@@ -105,7 +104,6 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
      *            how many entries for the field
      * @return a field with populated with tuples of numbers from 0 to 99
      */
-    @SuppressWarnings("serial")
     public Field<Tuple> makeTupleTestField(final int entries) {
         final Field.Builder<Tuple> res = DatatypeFactory.createFieldBuilder();
         IntStreams.range(1, entries)
