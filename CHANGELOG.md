@@ -1,3 +1,22 @@
+## [17.0.2](https://github.com/Protelis/Protelis/compare/17.0.1...17.0.2) (2023-06-09)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v32.0.1-jre ([1d65171](https://github.com/Protelis/Protelis/commit/1d65171027efa6c5a3603abb8d51f64f9a882a25))
+* **deps:** update dependency commons-io:commons-io to v2.13.0 ([d616dab](https://github.com/Protelis/Protelis/commit/d616dabcba7b7ccbfc98a3fc78f41084dc64870d))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.8.22 ([05503ed](https://github.com/Protelis/Protelis/commit/05503ed3bc7259c2b54cae95f6c1722cee515c94))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.27 ([45e62ce](https://github.com/Protelis/Protelis/commit/45e62ce7eeb71e305b670e80b14b6b2d751140fd))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.28 ([6399043](https://github.com/Protelis/Protelis/commit/639904331b77d60e2dbacb98fe2beb8cd8bd1657))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.29 ([5f97139](https://github.com/Protelis/Protelis/commit/5f97139de6be889eeccab0ebc7154f75574b1bfb))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.30 ([933ef50](https://github.com/Protelis/Protelis/commit/933ef50e4296570b20e49581039cc786513ee3af))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.32 ([7f1fca1](https://github.com/Protelis/Protelis/commit/7f1fca1080c67a9a5ad54468781bfc59b8d2e1b3))
+* **deps:** update plugin gitsemver to v1.1.10 ([aa4a26d](https://github.com/Protelis/Protelis/commit/aa4a26ddeadaff157fa2744972a978d532683306))
+* **deps:** update plugin java-qa to v1.10.0 ([b602b64](https://github.com/Protelis/Protelis/commit/b602b642e77c112dc1bbbdf3ba4188ba72a4cff5))
+* **deps:** update plugin multijvmtesting to v0.5.2 ([a84b795](https://github.com/Protelis/Protelis/commit/a84b7953d9915dc9008c9ae79b0d8a7fc73d7ef8))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.8 ([c040690](https://github.com/Protelis/Protelis/commit/c04069079e578485f70b82be7f7bdb3b9d3a97ac))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.9 ([7c54ff9](https://github.com/Protelis/Protelis/commit/7c54ff94fd03adec28ad2d1e4a88ae6052f77e63))
+
 ## [17.0.1](https://github.com/Protelis/Protelis/compare/17.0.0...17.0.1) (2023-05-27)
 
 
