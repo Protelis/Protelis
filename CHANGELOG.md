@@ -1,3 +1,28 @@
+## [17.0.3](https://github.com/Protelis/Protelis/compare/17.0.2...17.0.3) (2023-06-29)
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.3 ([5e272bb](https://github.com/Protelis/Protelis/commit/5e272bb9ed20ab774caaeaed7b85737d726fd9aa))
+* **deps:** update danysk/action-checkout action to v0.2.10 ([9205ec1](https://github.com/Protelis/Protelis/commit/9205ec1a70c081758573c89454a397e22fc0ef00))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v32.1.0-jre ([a1dcee6](https://github.com/Protelis/Protelis/commit/a1dcee6dd1a96195b235385ae5bf6497ff987ae6))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.4.8 ([fa45edf](https://github.com/Protelis/Protelis/commit/fa45edf427675c6f2ddc509d31a77489311b80d3))
+* **deps:** update dependency commons-codec:commons-codec to v1.16.0 ([1f03bab](https://github.com/Protelis/Protelis/commit/1f03bab3c7e29d3dd713c98b9979f165bb14dd13))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.33 ([5d58231](https://github.com/Protelis/Protelis/commit/5d58231a95f82daa6ee37faf2a5552fcfef1b94a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.34 ([f24682d](https://github.com/Protelis/Protelis/commit/f24682dcce15729eb4528ed285de496721a176ea))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.35 ([f09cc59](https://github.com/Protelis/Protelis/commit/f09cc592ee7c6ebb964de15f035623cbaff288a8))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.36 ([6db8bfc](https://github.com/Protelis/Protelis/commit/6db8bfc6ab4f46acdfa7e2eade0e1c00dd1e5bcc))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.37 ([b034f28](https://github.com/Protelis/Protelis/commit/b034f28e0cf76f65cc4673a30e160435fce9b443))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.38 ([f93d381](https://github.com/Protelis/Protelis/commit/f93d3810bcd49a4511f0a7aa32febcc240aec65b))
+* **deps:** update plugin com.gradle.enterprise to v3.13.4 ([42d9154](https://github.com/Protelis/Protelis/commit/42d9154f44b8497f5a1eea6a880ceadede913f3f))
+* **deps:** update plugin java-qa to v1.11.0 ([a199c47](https://github.com/Protelis/Protelis/commit/a199c474abaa6f80ff58dd62ad4ec4ad944aa7d9))
+* **deps:** update plugin publishoncentral to v5.0.6 ([0ed6c85](https://github.com/Protelis/Protelis/commit/0ed6c85ddda7b5e4a182d2561da7b144b4bcb79d))
+* **deps:** update plugin publishoncentral to v5.0.7 ([098edae](https://github.com/Protelis/Protelis/commit/098edae8c1e47b8b0c48c6ac2564dab10aea2a85))
+
 ## [17.0.2](https://github.com/Protelis/Protelis/compare/17.0.1...17.0.2) (2023-06-09)
 
 
