@@ -1,3 +1,11 @@
+## [17.0.4](https://github.com/Protelis/Protelis/compare/17.0.3...17.0.4) (2023-06-30)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v32.1.1-jre ([5ad3528](https://github.com/Protelis/Protelis/commit/5ad35284f038361b565f2d34a8af751d6a8adf63))
+* **deps:** update dependency gradle to v8.2 ([accfda9](https://github.com/Protelis/Protelis/commit/accfda9589f6d3b5cb3e1b8d71b98f0217b00ff8))
+
 ## [17.0.3](https://github.com/Protelis/Protelis/compare/17.0.2...17.0.3) (2023-06-29)
 
 
