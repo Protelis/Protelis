@@ -78,15 +78,15 @@ public final class InfrastructureTester {
         private static final String ML_NAME = "multilineComment";
         private static final String ML_RUN = "multirun";
         private static final Pattern EXTRACT_RESULT = Pattern.compile(
-            ".*?" + EXPECTED + "\\s*\\r?\\n?\\s*\\#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*\\}",
+            ".*?" + EXPECTED + "\\s*\\r?\\n?\\s*#?\\s*\\{(?<" + ML_NAME + ">.*?)\\s*}",
             Pattern.DOTALL
         );
         private static final Pattern MULTI_RESULT_PATTERN = Pattern.compile(
-            "(\\d+)\\s*\\:\\s*\\[(?<" + ML_RUN + ">.*?)\\]\\s*,?\\s*\\r?\\n?",
+            "(\\d+)\\s*:\\s*\\[(?<" + ML_RUN + ">.*?)]\\s*,?\\s*\\r?\\n?",
             Pattern.DOTALL
         );
         private static final String RESULT_LIST =
-            "\\s*\\#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-\\$\\d\\w\\.]+)\\s*,?\\s*\\r?\\n?";
+            "\\s*#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-$\\w.]+)\\s*,?\\s*\\r?\\n?";
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
         static {
