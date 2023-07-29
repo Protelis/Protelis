@@ -51,18 +51,26 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                             final boolean expected = Boolean.parseBoolean("T".equals(v)
                                 ? "true"
                                 : "F".equals(v) ? "false" : pair.getRight());
-                            assertEquals(expected, (Boolean) singleNodeResult);
+                            assertEquals(expected, singleNodeResult);
                         } else {
                             assertEquals(pair.getRight(), singleNodeResult);
                         }
                     } catch (Exception | AssertionError e) { // NOPMD
-                        obs.exceptionThrown(new IllegalStateException(String.format(
-                            ERROR_TEMPLATE,
-                            getMessage(simulationRes, expectedResult),
-                            pair.getLeft(),
-                            pair.getRight(),
-                            singleNodeResult
-                        )));
+                        final var expected = pair.getRight() + " (type: " + pair.getRight().getClass().getSimpleName() + ")";
+                        final var actual = singleNodeResult == null
+                            ? "null"
+                            : singleNodeResult  + " (type: " + singleNodeResult.getClass().getSimpleName() + ")";
+                        obs.exceptionThrown(
+                            new IllegalStateException(
+                                String.format(
+                                    ERROR_TEMPLATE,
+                                    getMessage(simulationRes, expectedResult),
+                                    pair.getLeft(),
+                                    expected,
+                                    actual
+                                )
+                            )
+                        );
                         break;
                     }
                 }
