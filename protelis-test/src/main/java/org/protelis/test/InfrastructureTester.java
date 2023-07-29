@@ -364,6 +364,7 @@ public final class InfrastructureTester {
         final Engine<Object> simulation = new Engine<>(env, totalSimulationSteps + stabilitySteps);
         simulation.addOutputMonitor(new OutputMonitor<>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void finished(final Environment<Object> env, final Time time, final long step) {
                 if (simulation.getError() != null) {
@@ -371,8 +372,11 @@ public final class InfrastructureTester {
                 }
                 assertEquals(totalSimulationSteps + stabilitySteps, step);
             }
+
             @Override
-            public void initialized(final Environment<Object> env) { }
+            public void initialized(final Environment<Object> env) {
+            }
+
             @Override
             public void stepDone(final Environment<Object> env, final Reaction<Object> r, final Time time, final long step) {
                 checkResult(obs, totalSimulationSteps + stabilitySteps, stabilitySteps, expectedResult, f, env, step);
