@@ -347,10 +347,8 @@ public final class InfrastructureTester {
      *            file to bested
      * @param expectedValue
      *            value to be checked
-     * @throws IOException
-     *             IOexception
      */
-    public static void runTest(final String file, final Object expectedValue) throws IOException {
+    public static void runTest(final String file, final Object expectedValue) {
         runTest(file, SIMULATION_STEPS, STABILITY_STEPS, expectedValue);
     }
 
