@@ -368,7 +368,7 @@ public final class InfrastructureTester {
             @Override
             public void finished(final Environment<Object> env, final Time time, final long step) {
                 if (simulation.getError() != null) {
-                    throw new IllegalStateException(simulation.getError());
+                    throw new IllegalStateException("Simulation Failure", simulation.getError());
                 }
                 assertEquals(totalSimulationSteps + stabilitySteps, step);
             }
