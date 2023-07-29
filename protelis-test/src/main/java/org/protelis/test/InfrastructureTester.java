@@ -90,7 +90,9 @@ public final class InfrastructureTester {
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
 
         static {
-            final InputStream is = InfrastructureTester.class.getResourceAsStream("/example.yml");
+            final InputStream is = Objects.requireNonNull(
+                InfrastructureTester.class.getResourceAsStream("/example.yml")
+            );
             try {
                 final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
                 assertNotNull(getResult(new SimpleExceptionObserver(), test));
