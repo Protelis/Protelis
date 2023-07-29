@@ -204,7 +204,7 @@ public final class InfrastructureTester {
             env.getNodes().forEach(n -> {
                 final ProtelisNode pNode = (ProtelisNode) n;
                 simulationRes.put(pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
-                L.debug("[node{}] res:{}", pNode.toString(), pNode.get(RunProtelisProgram.RESULT));
+                L.debug("[node{}] res:{}", pNode, pNode.get(RunProtelisProgram.RESULT));
             });
             if (f instanceof BiConsumer) {
                 ((BiConsumer<Map<String, Object>, List<Pair<String, String>>>) f).accept(simulationRes, expectedResult);
