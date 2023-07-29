@@ -264,8 +264,6 @@ public final class InfrastructureTester {
      * 
      * @param args
      *            parameters
-     * @throws InterruptedException
-     *             if interrupted
      * @throws IOException
      *             file not found
      */
