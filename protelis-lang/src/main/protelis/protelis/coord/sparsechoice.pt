@@ -55,8 +55,8 @@ public def S(grain, metric) {
  * Implemented from <i>Self-stabilising Priority-Based Multi-Leader Election and Network Partitioning</i>.
  * Find more at https://ieeexplore.ieee.org/document/9935012
  *
+ * @param localId  num, local identifier
  * @param radius  num, extension of the local candidacy
- * @param strength  num, power of the local device candidacy
  * @param strength  num, power of the local device candidacy
  * @param metric () -> num, estimated distance from neighbors
  * @return       bool, true if the current device is the leader, false otherwise
