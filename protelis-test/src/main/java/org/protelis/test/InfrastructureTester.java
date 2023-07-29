@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -266,8 +267,8 @@ public final class InfrastructureTester {
      * @throws IOException
      *             file not found
      */
-    public static void main(final String[] args) throws InterruptedException, IOException {
-        final InputStream is = InfrastructureTester.class.getResourceAsStream(EXAMPLE);
+    public static void main(final String[] args) throws IOException {
+        final InputStream is = Objects.requireNonNull(InfrastructureTester.class.getResourceAsStream(EXAMPLE));
         final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
         final SimpleExceptionObserver obs = new SimpleExceptionObserver();
         TestMatcher.getResult(obs, test);
