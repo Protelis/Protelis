@@ -321,7 +321,15 @@ public final class Builtins {
         return Option.of(object);
     }
 
-    private static <T extends Comparable<T>> T min(final T a, final T b) {
+    /**
+     * Compares two arbitrary {@link Comparable}s and returns the smaller.
+     *
+     * @param a a comparable
+     * @param b another comparable
+     * @return the smallest between the two parameters
+     * @param <T> the type of objects being compared
+     */
+    public static <T extends Comparable<T>> T min(final T a, final T b) {
         return selectComparable(a, b, c -> c < 0);
     }
 
