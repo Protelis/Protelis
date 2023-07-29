@@ -1,0 +1,14 @@
+import protelis:coord:sparsechoice
+import protelis:coord:spreading
+import protelis:lang:utils
+
+let localId = self.getDeviceUID().getId()
+let coordinates = self.getCoordinates()
+[
+    boundedElection(localId, 20, localId, nbrRange),
+    boundedElection(localId, 20, -localId, nbrRange),
+    boundedElection(localId, 20, coordinates.get(0), nbrRange),
+    boundedElection(localId, 20, coordinates.get(1), nbrRange),
+    boundedElection(localId, 1.99, localId, nbrRange),
+    boundedElection(localId, 2.99, localId, nbrRange)
+].toString().replace("[", "").replace("]", "").replace(", ", "_")
