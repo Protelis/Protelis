@@ -10,6 +10,7 @@ package org.protelis;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import org.protelis.lang.datatype.DatatypeFactory;
+import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.Option;
@@ -21,6 +22,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -114,6 +116,17 @@ public final class Builtins {
     @SuppressWarnings(UNCHECKED)
     private static <I, O> O convert(final Class<O> out, final I in) {
         return conversionFunction((Class<I>) in.getClass(), out).apply(in);
+    }
+
+    /**
+     * Reifies a Field into a Java Map for interoperability and debug purposes.
+     *
+     * @param field the field to reify
+     * @return a map having {@link DeviceUID}s as keys and field values as values
+     * @param <T> the field (and return map values) type
+     */
+    public static <T> Map<DeviceUID, T> fieldToMap(final Field<T> field) {
+        return field.toMap();
     }
 
     /**
