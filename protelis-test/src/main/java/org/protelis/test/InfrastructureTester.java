@@ -362,7 +362,7 @@ public final class InfrastructureTester {
         final Object f
     ) {
         final Engine<Object> simulation = new Engine<>(env, totalSimulationSteps + stabilitySteps);
-        simulation.addOutputMonitor(new OutputMonitor<Object>() {
+        simulation.addOutputMonitor(new OutputMonitor<>() {
             private static final long serialVersionUID = 1L;
             @Override
             public void finished(final Environment<Object> env, final Time time, final long step) {
