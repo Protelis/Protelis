@@ -49,3 +49,34 @@ def randomUid() {
 public def S(grain, metric) {
     breakUsingUids(randomUid(), grain, metric)
 }
+
+/**
+ * Multi-leader election based on a symmetry breaking value, presented at ACSOS 2022.
+ * Implemented from <i>Self-stabilising Priority-Based Multi-Leader Election and Network Partitioning</i>.
+ * Find more at https://ieeexplore.ieee.org/document/9935012
+ *
+ * @param radius  num, extension of the local candidacy
+ * @param strength  num, power of the local device candidacy
+ * @param strength  num, power of the local device candidacy
+ * @param metric () -> num, estimated distance from neighbors
+ * @return       bool, true if the current device is the leader, false otherwise
+ */
+public def boundedElection(localId, radius, strength, metric) {
+	let local = Candidacy(-strength, 0, localId)
+	let worstCandidacy = Candidacy(POSITIVE_INFINITY, POSITIVE_INFINITY, POSITIVE_INFINITY)
+	candidacyLeaderId(
+		share (received <- local) {
+			let candidacies = received.set(1, candidacyDistance(received) + metric())
+			let shouldBeDiscarded = candidacyLeaderId(candidacies) == localId // myself
+			    || candidacyDistance(candidacies) >= radius // too far away
+			let filtered = mux (shouldBeDiscarded) { worstCandidacy } else { candidacies }
+			min(local, foldMin(worstCandidacy, filtered))
+		}
+	)
+}
+/*
+  * Support functions for boundedElection
+  */
+def Candidacy(symmetryBreaker, distance, leaderId) = [symmetryBreaker, distance, leaderId]
+def candidacyDistance(candidacy) = candidacy.get(1)
+def candidacyLeaderId(candidacy) = candidacy.get(2)

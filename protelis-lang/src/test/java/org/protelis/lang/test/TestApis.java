@@ -158,6 +158,14 @@ public class TestApis {
      * Test boundG.pt.
      */
     @Test
+    public void testBoundedElection() {
+        test("boundedElection");
+    }
+
+    /**
+     * Test boundG.pt.
+     */
+    @Test
     public void testBoundG() {
         test("boundG");
     }
