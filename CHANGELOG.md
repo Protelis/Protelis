@@ -1,3 +1,66 @@
+## [17.1.0](https://github.com/Protelis/Protelis/compare/17.0.4...17.1.0) (2023-07-31)
+
+
+### Features
+
+* **interpreter:** provide a builtin method to convert fields to Java maps ([d752a81](https://github.com/Protelis/Protelis/commit/d752a8102d61e1fa3f2bd2f4eb5c84d5c0418279))
+* **interpreter:** publicly expose the min function ([5645ddd](https://github.com/Protelis/Protelis/commit/5645dddf7b50ec49e245a74f8633864780a560eb))
+* **lang:** implement and test Bounded Election: https://doi.org/10.1109/ACSOS55765.2022.00026 ([4084f61](https://github.com/Protelis/Protelis/commit/4084f6191caf53e8381f91b7720fff3334822d59))
+
+
+### Bug Fixes
+
+* **test:** remove never-thrown exception ([08007ce](https://github.com/Protelis/Protelis/commit/08007ced57321cdcdcd4c44806616aae25c80bd4))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.7 ([632675a](https://github.com/Protelis/Protelis/commit/632675a054604db56a54b3759598b870358ebf2e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.8 ([fc9f133](https://github.com/Protelis/Protelis/commit/fc9f1338dcd46e92717a436fbd97c1e41508aede))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v8.2.1 ([7f1b294](https://github.com/Protelis/Protelis/commit/7f1b2941b43f7468f2f29a9a1e732582b369d680))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.161 ([de5a735](https://github.com/Protelis/Protelis/commit/de5a735588109d0f8d28c6ef3cb614df643ceed8))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.13.0 ([cb5ac07](https://github.com/Protelis/Protelis/commit/cb5ac07259507b91e4ca553ac6b862a8243cc62c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.39 ([8b49860](https://github.com/Protelis/Protelis/commit/8b49860143ae01771a9844754346a7d86a78df81))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.40 ([207e4ed](https://github.com/Protelis/Protelis/commit/207e4ed6c9f88043a9d686ae32e2e7fa865e0f7b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.41 ([8ca8f5e](https://github.com/Protelis/Protelis/commit/8ca8f5ed21f50d4d051b34f7f6c5ad3ce724cf0b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.42 ([92682e0](https://github.com/Protelis/Protelis/commit/92682e0afb7f8d26d51534f6d8d5caec57a77fde))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.43 ([d459505](https://github.com/Protelis/Protelis/commit/d4595059e14b93abed268ed0eeb490201a4fc8db))
+* **deps:** update node.js to 18.17 ([35a18e4](https://github.com/Protelis/Protelis/commit/35a18e437bd03e133be9b5c61d59e8cd27bfc638))
+* **deps:** update plugin com.gradle.enterprise to v3.14 ([3a3e50d](https://github.com/Protelis/Protelis/commit/3a3e50da146dc6d284ad6dd3ebdb504ded631092))
+* **deps:** update plugin com.gradle.enterprise to v3.14.1 ([c3e179a](https://github.com/Protelis/Protelis/commit/c3e179acf1fd9d400fe8acfb3440ebe4dd123445))
+* **deps:** update plugin multijvmtesting to v0.5.3 ([94176e7](https://github.com/Protelis/Protelis/commit/94176e77392956fa001b5bc9f889fb85ba9f131c))
+* **deps:** update plugin multijvmtesting to v0.5.4 ([cf95c7b](https://github.com/Protelis/Protelis/commit/cf95c7b3c7defa65da33a1944dea04fb31dd2865))
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v0.6.0 ([104c83d](https://github.com/Protelis/Protelis/commit/104c83d954fe9dfeaba6bc17e28689216be59352))
+* **deps:** update plugin publishoncentral to v5.0.10 ([ac9f60a](https://github.com/Protelis/Protelis/commit/ac9f60a12bc438d46805d93f596ae5623ebcc255))
+* **deps:** update plugin publishoncentral to v5.0.8 ([97fc83c](https://github.com/Protelis/Protelis/commit/97fc83ce4261192282f971a9ca795c43ad72e012))
+* **deps:** update plugin publishoncentral to v5.0.9 ([6a19e80](https://github.com/Protelis/Protelis/commit/6a19e806aa28aaa46bff51da3be7693e032fe9a3))
+
+
+### Tests
+
+* improve error message ([0f2c357](https://github.com/Protelis/Protelis/commit/0f2c3571dfa42335468ca8588585b04b484bc387))
+* improve error messages when simulations fail by printing types ([80fd743](https://github.com/Protelis/Protelis/commit/80fd743c0fca74149409bee737b23d37a0b14405))
+
+
+### Style improvements
+
+* **test:** explicitly check for non-null result of resource loading ([37eecbd](https://github.com/Protelis/Protelis/commit/37eecbdce1f80af985b4a699ac3098649f6706a6))
+* **test:** explicitly check for non-null values when loading files ([90b2aea](https://github.com/Protelis/Protelis/commit/90b2aeae005f77b2ebfbafffad36788cbb0c9710))
+* **test:** improve vertical spacing ([54f5de3](https://github.com/Protelis/Protelis/commit/54f5de39c0b3e78b366ce0fdf5658e90cbfefaa0))
+* **test:** prefer the diamond operator ([37c16a0](https://github.com/Protelis/Protelis/commit/37c16a055189f354d077b5b851f2d424cefc5733))
+* **test:** remove redundant escapes in regexes ([7c36f33](https://github.com/Protelis/Protelis/commit/7c36f335a84ddca0f99d9de500c90314bced7df2))
+* **test:** remove unnecessary call to toString ([12f950a](https://github.com/Protelis/Protelis/commit/12f950a2ea3349394557b3551693893e4f802eb8))
+
+
+### Documentation
+
+* **lang:** fix boundedElection parameter documentation ([5ff57a8](https://github.com/Protelis/Protelis/commit/5ff57a86c8b5d37b410d300b3c236aaf28a53a8d))
+* **test:** remove documentation of never-thrown exception ([300919f](https://github.com/Protelis/Protelis/commit/300919fdef43070749df062f7718a3e24eefb7d7))
+
 ## [17.0.4](https://github.com/Protelis/Protelis/compare/17.0.3...17.0.4) (2023-06-30)
 
 
