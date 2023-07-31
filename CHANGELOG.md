@@ -1,3 +1,11 @@
+## [17.1.1](https://github.com/Protelis/Protelis/compare/17.1.0...17.1.1) (2023-07-31)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v32.1.2-jre ([339ab61](https://github.com/Protelis/Protelis/commit/339ab61d9c9b60c86067b51c641f12bba4a7eb32))
+* **deps:** update plugin java-qa to v1.12.0 ([150cf9c](https://github.com/Protelis/Protelis/commit/150cf9cf006c8139ca2f125c3b5b6c5c5fef88fd))
+
 ## [17.1.0](https://github.com/Protelis/Protelis/compare/17.0.4...17.1.0) (2023-07-31)
 
 
