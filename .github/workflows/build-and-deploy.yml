@@ -52,7 +52,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
         with:
           submodules: recursive
           token: ${{ secrets.DEPLOYMENT_TOKEN }}
