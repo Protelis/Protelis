@@ -1,3 +1,23 @@
+## [17.2.0](https://github.com/Protelis/Protelis/compare/17.1.2...17.2.0) (2023-10-20)
+
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v11.0.2 ([065c671](https://github.com/Protelis/Protelis/commit/065c6719c0b606a1d6031ecb5b66fa64f7dfae88))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.0 ([0957fc9](https://github.com/Protelis/Protelis/commit/0957fc9f2242caf8b4b24f3ec88b000207512e46))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.163 ([310f103](https://github.com/Protelis/Protelis/commit/310f1032f04b118677f49ef672fa32cc19882862))
+* **deps:** update plugin gitsemver to v1.1.11 ([8d7aa12](https://github.com/Protelis/Protelis/commit/8d7aa12d861e5ef7b7d2d50f78ee38109c9ae91f))
+* **deps:** update plugin gitsemver to v1.1.12 ([565e251](https://github.com/Protelis/Protelis/commit/565e2511f0e8e2f4e64e9715f43cf9e0d7e18056))
+* **deps:** update plugin gitsemver to v1.1.15 ([6981a1a](https://github.com/Protelis/Protelis/commit/6981a1ad9ee3d3b15861692458197ab2bea022c9))
+* **deps:** update plugin java-qa to v1.20.0 ([d320bc7](https://github.com/Protelis/Protelis/commit/d320bc7b62284b4136639175211baa1d4eee6fae))
+* **deps:** update plugin java-qa to v1.21.0 ([72f5382](https://github.com/Protelis/Protelis/commit/72f53824c716558fa9d279fc40fbfdf7b77e8b89))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.11 ([2864857](https://github.com/Protelis/Protelis/commit/286485791f2a1461e4b63e11154743ec43fea067))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.1 ([56e993f](https://github.com/Protelis/Protelis/commit/56e993f3452aa68a9a0d48d58551ab3b956ccff1))
+
 ## [17.1.2](https://github.com/Protelis/Protelis/compare/17.1.1...17.1.2) (2023-10-10)
 
 
