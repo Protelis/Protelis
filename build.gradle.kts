@@ -186,7 +186,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     exclude("gradlew.bat")
     isZip64 = true
     mergeServiceFiles()
-    destinationDirectory.set(file("${rootProject.buildDir}/shadow"))
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("shadow"))
 }
 
 /*
