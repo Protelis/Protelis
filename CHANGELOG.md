@@ -1,3 +1,30 @@
+## [17.2.1](https://github.com/Protelis/Protelis/compare/17.2.0...17.2.1) (2023-11-01)
+
+
+### Dependency updates
+
+* **deps:** update dependency commons-io:commons-io to v2.15.0 ([d865c46](https://github.com/Protelis/Protelis/commit/d865c46cfeb7d954c03b0647efd8b51d51c5536c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.69 ([926f017](https://github.com/Protelis/Protelis/commit/926f0174f368b2cb24331dd9035d256adb01d70c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.70 ([7ecef14](https://github.com/Protelis/Protelis/commit/7ecef140766180e7b0a9b2439b86745ee7b24dab))
+* **deps:** update node.js to 20.9 ([ef983c0](https://github.com/Protelis/Protelis/commit/ef983c0eb7c8de08e6a64f31d95287eeebca4fb0))
+* **deps:** update node.js to v20 ([7dc5572](https://github.com/Protelis/Protelis/commit/7dc5572cdfb897f00b84880af5b96f2f35695c57))
+* **deps:** update plugin gitsemver to v2 ([a052a83](https://github.com/Protelis/Protelis/commit/a052a83190cee8e03464729c45157d8f969ceb92))
+* **deps:** update plugin gitsemver to v2.0.1 ([a48a139](https://github.com/Protelis/Protelis/commit/a48a1397d07e495dbb22673261703489a8a82776))
+* **deps:** update plugin java-qa to v1.22.0 ([5f0423a](https://github.com/Protelis/Protelis/commit/5f0423a2295c3d09b7ef73b1b82cd30ad210195d))
+* **deps:** update plugin java-qa to v1.22.1 ([9cf5757](https://github.com/Protelis/Protelis/commit/9cf575724d770d887ba7dceeb6316b09b0183058))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.13 ([936785b](https://github.com/Protelis/Protelis/commit/936785b95f77aa4ace0eb7c2224a8ea8bd27fd0d))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.14 ([28e9907](https://github.com/Protelis/Protelis/commit/28e9907f93f23268c72f72d92e51a2d5b39404ec))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.15 ([a671818](https://github.com/Protelis/Protelis/commit/a67181864958adf2030113407ca1a1a635688bf1))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/action-checkout action to v0.2.14 ([e26eb97](https://github.com/Protelis/Protelis/commit/e26eb976059a430b184a2a28ff72e9d5c4f74853))
+
 ## [17.2.0](https://github.com/Protelis/Protelis/compare/17.1.2...17.2.0) (2023-10-20)
 
 
