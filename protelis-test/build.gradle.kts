@@ -23,7 +23,7 @@ javaQA {
         additionalConfiguration.set(
             """
             <module name="SuppressWithPlainTextCommentFilter"/>
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 }
