@@ -82,7 +82,7 @@ allprojects {
             javadocTool.set(
                 javaToolchains.javadocToolFor {
                     languageVersion.set(JavaLanguageVersion.of(11))
-                }
+                },
             )
             encoding = "UTF-8"
             val title = "Protelis ${project.version} Javadoc API"
@@ -171,8 +171,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
             mapOf(
                 "Implementation-Title" to "Protelis",
                 "Implementation-Version" to rootProject.version,
-                "Automatic-Module-Name" to "org.protelis"
-            )
+                "Automatic-Module-Name" to "org.protelis",
+            ),
         )
     }
     exclude("ant_tasks/")

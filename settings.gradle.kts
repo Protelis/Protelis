@@ -9,7 +9,7 @@ rootProject.name = "protelis"
 include(
     "protelis-interpreter",
     "protelis-lang",
-    "protelis-test"
+    "protelis-test",
 )
 
 plugins {
