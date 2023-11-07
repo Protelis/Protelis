@@ -1,3 +1,10 @@
+## [17.2.3](https://github.com/Protelis/Protelis/compare/17.2.2...17.2.3) (2023-11-07)
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.20 ([efe4026](https://github.com/Protelis/Protelis/commit/efe4026fb411011087f13b990493d90805f771d0))
+
 ## [17.2.2](https://github.com/Protelis/Protelis/compare/17.2.1...17.2.2) (2023-11-07)
 
 
