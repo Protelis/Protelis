@@ -1,3 +1,29 @@
+## [17.2.2](https://github.com/Protelis/Protelis/compare/17.2.1...17.2.2) (2023-11-07)
+
+
+### Dependency updates
+
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.1 ([f3c8115](https://github.com/Protelis/Protelis/commit/f3c81157d3316c8720c7ae3439ca5f81dee426aa))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.164 ([21c201f](https://github.com/Protelis/Protelis/commit/21c201fd486078f929523d642a0a18447f6eba76))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.20 ([4e46b70](https://github.com/Protelis/Protelis/commit/4e46b70cf25aab1b1d1ba25877226b2f87f19810))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.71 ([aed275a](https://github.com/Protelis/Protelis/commit/aed275add478efd52ecb159173bd8eb574b36ba1))
+* **deps:** update plugin java-qa to v1.23.0 ([818e4ed](https://github.com/Protelis/Protelis/commit/818e4edae9c3fcf242d420163e4686767813b4a6))
+* **deps:** update plugin java-qa to v1.24.0 ([c3d1fe7](https://github.com/Protelis/Protelis/commit/c3d1fe7a707f99ac294ca52f602a9e343135d33a))
+* **deps:** update plugin kotlin-qa to v0.54.0 ([410784d](https://github.com/Protelis/Protelis/commit/410784d02f058d165788c7f77a6dbe310910f943))
+* **deps:** update plugin publishoncentral to v5.0.18 ([7ec4962](https://github.com/Protelis/Protelis/commit/7ec496294005dd4826e621b1562e637daf2b5117))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.20-dev02-592cb93 ([#1152](https://github.com/Protelis/Protelis/issues/1152)) ([dd993f0](https://github.com/Protelis/Protelis/commit/dd993f09570b37bcff3629b295af329ff0f1c3c6))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.11 ([976c3a9](https://github.com/Protelis/Protelis/commit/976c3a9d7f0f35505d316d23e341cd8ecd7a5f97))
+* disable the fail-fast strategy for matrix jobs ([#1158](https://github.com/Protelis/Protelis/issues/1158)) ([1374c8f](https://github.com/Protelis/Protelis/commit/1374c8f78011e46cdb5f851cdc66c31a600451dc))
+* remove deprecated call to `rootProject.buildDir` ([8688d09](https://github.com/Protelis/Protelis/commit/8688d095460610c3f1ed922bb186b49337dd868d))
+
 ## [17.2.1](https://github.com/Protelis/Protelis/compare/17.2.0...17.2.1) (2023-11-01)
 
 
