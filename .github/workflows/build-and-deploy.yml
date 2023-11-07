@@ -7,6 +7,7 @@ jobs:
   # Runs all tests
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ windows, macos, ubuntu ]
     runs-on: ${{ matrix.os }}-latest
