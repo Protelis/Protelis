@@ -1,3 +1,20 @@
+## [17.3.0](https://github.com/Protelis/Protelis/compare/17.2.3...17.3.0) (2023-11-21)
+
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v11.0.3 ([6be8f81](https://github.com/Protelis/Protelis/commit/6be8f8157e36f0c32eef73540cafb45d04cf29c9))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.165 ([47a4030](https://github.com/Protelis/Protelis/commit/47a4030ff7b28260e364e7faf2dfbe8aae7e1630))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.72 ([1bb27bd](https://github.com/Protelis/Protelis/commit/1bb27bd0e94dbc14b352479bc5bc73143743540a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.73 ([521c34b](https://github.com/Protelis/Protelis/commit/521c34bf5e95423f39a25dcdd4f05dd3e61a5535))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.74 ([8c535ba](https://github.com/Protelis/Protelis/commit/8c535ba5ccecde8de738cdfd155a16abb96d4c3a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.75 ([67fa702](https://github.com/Protelis/Protelis/commit/67fa7027ed8093cc763b0e50714600c803b1c5ae))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.76 ([f869a3f](https://github.com/Protelis/Protelis/commit/f869a3f7f568c9359229b98267346495f5bc750b))
+* **deps:** update plugin gitsemver to v2.0.2 ([df232d0](https://github.com/Protelis/Protelis/commit/df232d05c845f482097a9ed0e55cec82f488fb55))
+* **deps:** update plugin java-qa to v1.24.1 ([b1e0de2](https://github.com/Protelis/Protelis/commit/b1e0de223e5820c9fc521ffa92392be13c5d4f6a))
+* **deps:** update plugin java-qa to v1.25.0 ([3addd30](https://github.com/Protelis/Protelis/commit/3addd30801d4d9a69e8ed90a9cf7cfaf638ec7bd))
+* **deps:** update plugin publishoncentral to v5.0.19 ([e991063](https://github.com/Protelis/Protelis/commit/e991063a9b7790acb8d61cb2b51610f2759ed40e))
+
 ## [17.2.3](https://github.com/Protelis/Protelis/compare/17.2.2...17.2.3) (2023-11-07)
 
 
