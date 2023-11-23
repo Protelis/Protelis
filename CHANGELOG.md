@@ -1,3 +1,15 @@
+## [17.3.2](https://github.com/Protelis/Protelis/compare/17.3.1...17.3.2) (2023-11-23)
+
+
+### Dependency updates
+
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.15 ([196929a](https://github.com/Protelis/Protelis/commit/196929a8c1c8588113abf10f55e7857508d34528))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.22 ([b86af91](https://github.com/Protelis/Protelis/commit/b86af91468801080058171a917925e0ec2d587b9))
+
 ## [17.3.1](https://github.com/Protelis/Protelis/compare/17.3.0...17.3.1) (2023-11-23)
 
 
