@@ -1,3 +1,21 @@
+## [17.3.1](https://github.com/Protelis/Protelis/compare/17.3.0...17.3.1) (2023-11-23)
+
+
+### Dependency updates
+
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.14.0 ([a738e27](https://github.com/Protelis/Protelis/commit/a738e275f2ca0ab58e647f1fbd20d1e513325f36))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.21 ([5a7c5c8](https://github.com/Protelis/Protelis/commit/5a7c5c8bd893b3f167ce59119e4ab1eb011deb92))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.77 ([cef910f](https://github.com/Protelis/Protelis/commit/cef910facb4648df9254dfe9c57318d67291c83e))
+* **deps:** update node.js to 20.10 ([1ff7c85](https://github.com/Protelis/Protelis/commit/1ff7c850023545bd408abe1efb12202fb8660073))
+* **deps:** update plugin gitsemver to v2.0.3 ([4e354b2](https://github.com/Protelis/Protelis/commit/4e354b2edc4b6f9160e1936bf045b26960270952))
+* **deps:** update plugin kotlin-qa to v0.54.1 ([b3582fd](https://github.com/Protelis/Protelis/commit/b3582fd5bd06e15388e74ff3777d430015aee08e))
+* **deps:** update plugin publishoncentral to v5.0.20 ([027a385](https://github.com/Protelis/Protelis/commit/027a38503f20e2007277fed6f098bbe1dae930ba))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.21 ([4446169](https://github.com/Protelis/Protelis/commit/4446169114e16479a906ab252a0925ac3af4003c))
+
 ## [17.3.0](https://github.com/Protelis/Protelis/compare/17.2.3...17.3.0) (2023-11-21)
 
 
