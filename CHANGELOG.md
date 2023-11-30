@@ -1,3 +1,29 @@
+## [17.3.4](https://github.com/Protelis/Protelis/compare/17.3.3...17.3.4) (2023-11-30)
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.4.12 ([d5e7fbd](https://github.com/Protelis/Protelis/commit/d5e7fbd1a2c704da9b5c4c6178b9b3c6554109cd))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.4.13 ([7c9d5a0](https://github.com/Protelis/Protelis/commit/7c9d5a03c88f1a01ccd142e65edd01514a38e1de))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.2 ([4d8b8ad](https://github.com/Protelis/Protelis/commit/4d8b8ad272f324dcb5a367c4d18037d91469b199))
+* **deps:** update dependency commons-io:commons-io to v2.15.1 ([221fcba](https://github.com/Protelis/Protelis/commit/221fcba14ecd7ab60f05dfcf8264c391731dc0dd))
+* **deps:** update dependency gradle to v8.5 ([ef1be0a](https://github.com/Protelis/Protelis/commit/ef1be0a14cfbdcb12285f5648ac3b421d3b1897d))
+* **deps:** update plugin gitsemver to v2.0.4 ([2fbdb3e](https://github.com/Protelis/Protelis/commit/2fbdb3ee4c4972592a893476ceb082785cacfdc9))
+* **deps:** update plugin java-qa to v1.26.0 ([f791f91](https://github.com/Protelis/Protelis/commit/f791f913145cc684d923d8943d5c5f004cc67b85))
+* **deps:** update plugin java-qa to v1.27.0 ([59e5c88](https://github.com/Protelis/Protelis/commit/59e5c88ab0e2a1860d9ae511a5d3ddea35e85525))
+* **deps:** update plugin kotlin-qa to v0.55.2 ([a805c59](https://github.com/Protelis/Protelis/commit/a805c59cac8ca767fd8c45544f9783306f4077db))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.16 ([f3db20c](https://github.com/Protelis/Protelis/commit/f3db20c5b2357cbcdd1b80f394b1c0e0d9861eb2))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.25 ([5f9f2e3](https://github.com/Protelis/Protelis/commit/5f9f2e35309c7881e378cee3082c7ccc19479198))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.12 ([706af12](https://github.com/Protelis/Protelis/commit/706af12d32f7878e839160e8fa2bcad7ec2f8048))
+
 ## [17.3.3](https://github.com/Protelis/Protelis/compare/17.3.2...17.3.3) (2023-11-26)
 
 
