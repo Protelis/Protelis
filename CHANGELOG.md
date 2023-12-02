@@ -1,3 +1,17 @@
+## [17.3.5](https://github.com/Protelis/Protelis/compare/17.3.4...17.3.5) (2023-12-02)
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.4.14 ([4096e2d](https://github.com/Protelis/Protelis/commit/4096e2ddf9aedc32a3dd32494939181463b5ec24))
+* **deps:** update plugin java-qa to v1.28.0 ([e3b3a2c](https://github.com/Protelis/Protelis/commit/e3b3a2c996202c37e1a78b5c2e228324f58cc226))
+* **deps:** update plugin kotlin-qa to v0.56.0 ([2b5a806](https://github.com/Protelis/Protelis/commit/2b5a8064c0b34a4a552ec46fa1719d99a009a3d3))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.26 ([5b3b54d](https://github.com/Protelis/Protelis/commit/5b3b54d75e59e0c16d24100ca6e11ae69cdef60d))
+
 ## [17.3.4](https://github.com/Protelis/Protelis/compare/17.3.3...17.3.4) (2023-11-30)
 
 
