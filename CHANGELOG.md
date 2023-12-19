@@ -1,3 +1,17 @@
+## [17.3.7](https://github.com/Protelis/Protelis/compare/17.3.6...17.3.7) (2023-12-19)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33 ([690d6a4](https://github.com/Protelis/Protelis/commit/690d6a4a1d70ca0c9f34979b0ed2280f97623fe8))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.3 ([b0f479c](https://github.com/Protelis/Protelis/commit/b0f479c70d71784b4966248c919d3dd6f8a49a86))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.81 ([09752d6](https://github.com/Protelis/Protelis/commit/09752d62d6b45f7060e1da6f362ec82edfbdca47))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.82 ([5196c3f](https://github.com/Protelis/Protelis/commit/5196c3f556e20a1a5c179c10133d1ccac6f34fd3))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.83 ([7ec58a7](https://github.com/Protelis/Protelis/commit/7ec58a779bd8a378fce9dc74dfc2a8c36cd5a498))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.84 ([ceb6431](https://github.com/Protelis/Protelis/commit/ceb6431fd79b9ebc7081f8fbf3885a6df005193b))
+* **deps:** update plugin com.gradle.enterprise to v3.16.1 ([1120037](https://github.com/Protelis/Protelis/commit/11200372772cb669c2de5ffd9fc153c39e093b44))
+* **deps:** update plugin java-qa to v1.29.0 ([c0d462b](https://github.com/Protelis/Protelis/commit/c0d462b00471e5ff850841af97f41b34bb094831))
+
 ## [17.3.6](https://github.com/Protelis/Protelis/compare/17.3.5...17.3.6) (2023-12-11)
 
 
