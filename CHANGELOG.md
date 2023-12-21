@@ -1,3 +1,18 @@
+## [17.3.8](https://github.com/Protelis/Protelis/compare/17.3.7...17.3.8) (2023-12-21)
+
+
+### Dependency updates
+
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.22 ([dc751ab](https://github.com/Protelis/Protelis/commit/dc751ab5b12bf4d2930ad897d31e3c6d319bafe1))
+* **deps:** update plugin gitsemver to v2.0.5 ([38f6c64](https://github.com/Protelis/Protelis/commit/38f6c6425be125e5ccc72713dae4de6d7c0f211b))
+* **deps:** update plugin java-qa to v1.31.0 ([d7cd3b8](https://github.com/Protelis/Protelis/commit/d7cd3b85e8a973af00334aa919fe65e627119c7e))
+* **deps:** update plugin kotlin-qa to v0.57.1 ([b480700](https://github.com/Protelis/Protelis/commit/b48070064a6c0ae7a5cf7ef227103cebb9a37fbc))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.28 ([a85f382](https://github.com/Protelis/Protelis/commit/a85f3823049a703c81b628cb2d89e42770be7b74))
+
 ## [17.3.7](https://github.com/Protelis/Protelis/compare/17.3.6...17.3.7) (2023-12-19)
 
 
