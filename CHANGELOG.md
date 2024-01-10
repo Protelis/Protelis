@@ -1,3 +1,26 @@
+## [17.3.10](https://github.com/Protelis/Protelis/compare/17.3.9...17.3.10) (2024-01-10)
+
+
+### Dependency updates
+
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.10 ([7bfedc6](https://github.com/Protelis/Protelis/commit/7bfedc6a67304a2fe34ead32e22262c358a45529))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.11 ([72c3a3a](https://github.com/Protelis/Protelis/commit/72c3a3a22ed5c0930ecc22bcfbd781c2630f90d3))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.85 ([1cd45b7](https://github.com/Protelis/Protelis/commit/1cd45b7202712357895d6885fbc46f3c74cb8def))
+* **deps:** update node.js to 20.11 ([23c25b2](https://github.com/Protelis/Protelis/commit/23c25b26807a67b935fb3cea5bdd58d18edd17c9))
+* **deps:** update plugin java-qa to v1.31.1 ([c1967a0](https://github.com/Protelis/Protelis/commit/c1967a0e6c4c7cfd7a5d5bf07a2f327ae7175c23))
+* **deps:** update plugin java-qa to v1.32.0 ([d484eee](https://github.com/Protelis/Protelis/commit/d484eee901cb62056ae64485907dccb017010200))
+* **deps:** update plugin java-qa to v1.33.0 ([ad630ef](https://github.com/Protelis/Protelis/commit/ad630ef25d00adacd8cb1ecd90ac1d6c0c04c7cb))
+* **deps:** update plugin java-qa to v1.34.0 ([b34af60](https://github.com/Protelis/Protelis/commit/b34af60dd47612c065dc2aad04a17258f915eab9))
+* **deps:** update plugin kotlin-qa to v0.58.0 ([4df4b17](https://github.com/Protelis/Protelis/commit/4df4b17a69ef4b7a449ae179feb94acfb64a391e))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.17 ([0f05d53](https://github.com/Protelis/Protelis/commit/0f05d53c80453cc61fe3f141fe6f55cbde1e9bb0))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2 ([09ec110](https://github.com/Protelis/Protelis/commit/09ec1101bbd373e5321e68cc782a07557ede4113))
+* **deps:** update plugin publishoncentral to v5.0.22 ([757341a](https://github.com/Protelis/Protelis/commit/757341aee42630f4886152002f79b49c2ae8c5fb))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.30 ([1032639](https://github.com/Protelis/Protelis/commit/1032639551b83612304e876caf1da87193b6dc5a))
+
 ## [17.3.9](https://github.com/Protelis/Protelis/compare/17.3.8...17.3.9) (2023-12-21)
 
 
