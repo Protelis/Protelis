@@ -1,3 +1,26 @@
+## [17.3.12](https://github.com/Protelis/Protelis/compare/17.3.11...17.3.12) (2024-02-03)
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v8.6 ([0fa6b96](https://github.com/Protelis/Protelis/commit/0fa6b96600ac54271d253f6e2015aeda560f5d79))
+* **deps:** update plugin gitsemver to v3.1.1 ([5691764](https://github.com/Protelis/Protelis/commit/569176477eaf1bb3fa89e16610e535f6d5a0e835))
+* **deps:** update plugin kotlin-qa to v0.59.1 ([8b54c78](https://github.com/Protelis/Protelis/commit/8b54c7852f3191e6b54acdf17ee8af60a8c2cbed))
+* **deps:** update plugin publishoncentral to v5.0.23 ([d247aa0](https://github.com/Protelis/Protelis/commit/d247aa036b478326588e9f3f4ed341b0f5fc098b))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.33 ([11e8f29](https://github.com/Protelis/Protelis/commit/11e8f2973b50f00aeeacf6d8e5600ba070c0eef0))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.17 ([63ad0fa](https://github.com/Protelis/Protelis/commit/63ad0faab5a275d645c6c52ce16b66a491f82d68))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.18 ([c12ed26](https://github.com/Protelis/Protelis/commit/c12ed26a5f2859df0ba8b04ef27198c5509094d2))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.19 ([ca8f9b5](https://github.com/Protelis/Protelis/commit/ca8f9b53c1e8459acf6a2e4d24d2344dd349ce5e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.20 ([37a5256](https://github.com/Protelis/Protelis/commit/37a5256f346a2c308277a580213396da14298a97))
+
 ## [17.3.11](https://github.com/Protelis/Protelis/compare/17.3.10...17.3.11) (2024-01-31)
 
 
