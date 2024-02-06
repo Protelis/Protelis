@@ -14,7 +14,7 @@ guava = "com.google.guava:guava:33.0.0-jre"
 junit = "junit:junit:4.13.2"
 logback = "ch.qos.logback:logback-classic:1.4.14"
 protelis-parser = "org.protelis:protelis.parser:11.0.3"
-slf4j = "org.slf4j:slf4j-api:2.0.11"
+slf4j = "org.slf4j:slf4j-api:2.0.12"
 spotbugs-annotations = "com.github.spotbugs:spotbugs-annotations:4.8.3"
 trove4j = "net.sf.trove4j:trove4j:3.0.3"
 
