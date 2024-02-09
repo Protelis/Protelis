@@ -1,3 +1,35 @@
+## [17.3.13](https://github.com/Protelis/Protelis/compare/17.3.12...17.3.13) (2024-02-09)
+
+
+### Dependency updates
+
+* **deps:** update dependency commons-codec:commons-codec to v1.16.1 ([2f4274b](https://github.com/Protelis/Protelis/commit/2f4274bfb66416687d08e91dd157b2292982fe16))
+* **deps:** update dependency it.unibo.alchemist:alchemist-loading to v30 ([8b25507](https://github.com/Protelis/Protelis/commit/8b255079c60d2bd0c3f81cf35e398f5086a3ef96))
+* **deps:** update dependency it.unibo.alchemist:alchemist-loading to v30.1.2 ([47a1cc0](https://github.com/Protelis/Protelis/commit/47a1cc018508d844df53eb41308f9ba57a99af92))
+* **deps:** update dependency it.unibo.alchemist:alchemist-loading to v30.1.3 ([15932f1](https://github.com/Protelis/Protelis/commit/15932f1525bd4c0d239da0e58fa67005c59b5785))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.12 ([d5c51ed](https://github.com/Protelis/Protelis/commit/d5c51ed50e9c8d59e53f4245b02ab5cad39369ab))
+* **deps:** update plugin kotlin-qa to v0.60.0 ([5ecb1d7](https://github.com/Protelis/Protelis/commit/5ecb1d75238a5e9e362a22546b6a587ea2fc73e5))
+* **deps:** update plugin kotlin-qa to v0.60.1 ([e807694](https://github.com/Protelis/Protelis/commit/e80769411e8e19f934078fd21941305414b669b8))
+* **deps:** update plugin multijvmtesting to v0.5.8 ([9aad71a](https://github.com/Protelis/Protelis/commit/9aad71a94da390502a8545f33818e89efb46a9d1))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.1 ([fabc277](https://github.com/Protelis/Protelis/commit/fabc277904cd96a55b88c69cd3d22840021f5578))
+
+
+### Revert previous changes
+
+* Revert "chore(deps): update dependency it.unibo.alchemist:alchemist-loading t…" ([238e061](https://github.com/Protelis/Protelis/commit/238e061460ec47150dc5e8fdd7edd25c82ffa83e))
+* Revert "chore(deps): update dependency it.unibo.alchemist:alchemist-loading t…" ([442e099](https://github.com/Protelis/Protelis/commit/442e099106f1fbe2db45a69d8f6df76248c274e4))
+* Revert "chore(deps): update dependency it.unibo.alchemist:alchemist-loading t…" ([9d09983](https://github.com/Protelis/Protelis/commit/9d09983422009c21e87a6ce6b74a98716cac2327))
+* revert broken plugin update ([abc5de3](https://github.com/Protelis/Protelis/commit/abc5de30678f07779b893b27019f54ba15b5dce8))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.3.0 ([66b641a](https://github.com/Protelis/Protelis/commit/66b641a4090eb842dbf5b4beb4fe6c27d134a86a))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.3.1 ([f097c55](https://github.com/Protelis/Protelis/commit/f097c55f1fbbcb31f3ac78038b14f06ddb6da87c))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.3.2 ([42dc55d](https://github.com/Protelis/Protelis/commit/42dc55dd04789104341c07afc0cbb77c43755229))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.0 ([e8ee307](https://github.com/Protelis/Protelis/commit/e8ee307a914bd4e32ee52892fee8b520efefa64f))
+* stop using the broken gradle execution action ([98b0625](https://github.com/Protelis/Protelis/commit/98b0625115b36b840c342900152d9a9789defeeb))
+
 ## [17.3.12](https://github.com/Protelis/Protelis/compare/17.3.11...17.3.12) (2024-02-03)
 
 
