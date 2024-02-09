@@ -1,3 +1,10 @@
+## [17.3.14](https://github.com/Protelis/Protelis/compare/17.3.13...17.3.14) (2024-02-09)
+
+
+### Bug Fixes
+
+* **release:** do not force annotated tags on release ([0f559e8](https://github.com/Protelis/Protelis/commit/0f559e8180f7f578adf2112381d986ae8525c56f))
+
 ## [17.3.13](https://github.com/Protelis/Protelis/compare/17.3.12...17.3.13) (2024-02-09)
 
 
