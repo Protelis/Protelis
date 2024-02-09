@@ -1,3 +1,10 @@
+## [17.3.15](https://github.com/Protelis/Protelis/compare/17.3.14...17.3.15) (2024-02-09)
+
+
+### Bug Fixes
+
+* **release:** disable publication on surge.sh ([912c1b0](https://github.com/Protelis/Protelis/commit/912c1b0f27ba884172907b0e90f2828cd8908842))
+
 ## [17.3.14](https://github.com/Protelis/Protelis/compare/17.3.13...17.3.14) (2024-02-09)
 
 
