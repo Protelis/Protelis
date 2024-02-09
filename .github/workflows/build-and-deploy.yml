@@ -18,15 +18,12 @@ jobs:
     steps:
       - name: Checkout
         uses: DanySK/action-checkout@0.2.14
-      - uses: DanySK/build-check-deploy-gradle-action@2.4.1
+      - uses: DanySK/build-check-deploy-gradle-action@2.4.0
         with:
+          retries-on-failure: 3
           build-command: >-
-            ./gradlew assemble shadowJar --parallel ||
-            ./gradlew assemble shadowJar --parallel ||
-            ./gradlew assemble shadowJar --parallel
+            ./gradlew assemble shadowJar
           deploy-command: >-
-            ./gradlew uploadKotlin close drop --parallel ||
-            ./gradlew uploadKotlin close drop --parallel ||
             ./gradlew uploadKotlin close drop --parallel
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: >-
@@ -57,8 +54,9 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.DEPLOYMENT_TOKEN }}
-      - uses: DanySK/build-check-deploy-gradle-action@2.4.1
+      - uses: DanySK/build-check-deploy-gradle-action@2.4.0
         with:
+          retries-on-failure: 1
           build-command: true
           check-command: true
           deploy-command: |
