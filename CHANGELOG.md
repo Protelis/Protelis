@@ -1,3 +1,32 @@
+## [17.3.17](https://github.com/Protelis/Protelis/compare/17.3.16...17.3.17) (2024-03-04)
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.0 ([b9a072d](https://github.com/Protelis/Protelis/commit/b9a072da991398ab1b76a39ee17764cc287da15f))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.1 ([08497c5](https://github.com/Protelis/Protelis/commit/08497c56a95c99e964e19b0285a96e72ea893598))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.2 ([02f900f](https://github.com/Protelis/Protelis/commit/02f900f80c396d01d109211e78d3a712d293b0c2))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.3 ([aff7a37](https://github.com/Protelis/Protelis/commit/aff7a37193f1e01da651093e7f4a16ed6a9f46b8))
+* **deps:** update plugin gitsemver to v3.1.2 ([876d632](https://github.com/Protelis/Protelis/commit/876d63279e7c2cc58bf4dc3748cfc67ce085a829))
+* **deps:** update plugin java-qa to v1.37.0 ([03ff163](https://github.com/Protelis/Protelis/commit/03ff163f66a0bf344cf5a94ae08a79c2ddf972ec))
+* **deps:** update plugin java-qa to v1.38.0 ([543a44a](https://github.com/Protelis/Protelis/commit/543a44adede6428b1339660be622f48aad5c2b7f))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.2 ([53f0329](https://github.com/Protelis/Protelis/commit/53f0329365abf44255cfdc68343df396a98fa230))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.35 ([375b490](https://github.com/Protelis/Protelis/commit/375b490c4edebea6bbd065aad60a51f7935ce986))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.1 ([bad9d9c](https://github.com/Protelis/Protelis/commit/bad9d9cb6204d30e654d693b4baafde99df8781e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.2 ([83d75d5](https://github.com/Protelis/Protelis/commit/83d75d584449197ca229ab3a75770503fed85f43))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.3 ([f1bbc82](https://github.com/Protelis/Protelis/commit/f1bbc8204a9ad34f7ec84cfa20cc55d5a4643bf5))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.4 ([bf76f82](https://github.com/Protelis/Protelis/commit/bf76f8209375846687a6c4c4fdb363eb3fa3f4fb))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.5 ([b3d0ff1](https://github.com/Protelis/Protelis/commit/b3d0ff16f03fb2e166bb0dece823d5d48d249cde))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.6 ([c10067d](https://github.com/Protelis/Protelis/commit/c10067db1ceecca1f2fb25617d275f7257c486fa))
+
 ## [17.3.16](https://github.com/Protelis/Protelis/compare/17.3.15...17.3.16) (2024-02-09)
 
 
