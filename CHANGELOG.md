@@ -1,3 +1,19 @@
+## [17.3.19](https://github.com/Protelis/Protelis/compare/17.3.18...17.3.19) (2024-03-07)
+
+
+### Dependency updates
+
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.167 ([8a2b7c9](https://github.com/Protelis/Protelis/commit/8a2b7c9ed3e6d3d915ad13dbd811808917c033b6))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v1.9.23 ([8c20c87](https://github.com/Protelis/Protelis/commit/8c20c8703b9d05fcf1e3028222d47897ecb6cd33))
+* **deps:** update plugin kotlin-qa to v0.60.3 ([f1c7c9f](https://github.com/Protelis/Protelis/commit/f1c7c9fc5347180732a37df132c065e092d609c1))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.3 ([bd156fb](https://github.com/Protelis/Protelis/commit/bd156fb5893141417ced29a46553ba4066f212a2))
+* **deps:** update plugin publishoncentral to v5.0.25 ([c1f302a](https://github.com/Protelis/Protelis/commit/c1f302aef454df78939df7afc5948931f3c4421e))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.37 ([8e38862](https://github.com/Protelis/Protelis/commit/8e38862f590a1eb8bcf0cbd3b3e17812d99bba47))
+
 ## [17.3.18](https://github.com/Protelis/Protelis/compare/17.3.17...17.3.18) (2024-03-04)
 
 
