@@ -1,3 +1,15 @@
+## [17.3.20](https://github.com/Protelis/Protelis/compare/17.3.19...17.3.20) (2024-03-07)
+
+
+### Dependency updates
+
+* **deps:** update plugin gitsemver to v3.1.3 ([5c41310](https://github.com/Protelis/Protelis/commit/5c4131099f615396167e147aa30ade1bce2315f0))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.38 ([9963755](https://github.com/Protelis/Protelis/commit/99637557bc425090e6a3686f1108b902aa96c785))
+
 ## [17.3.19](https://github.com/Protelis/Protelis/compare/17.3.18...17.3.19) (2024-03-07)
 
 
