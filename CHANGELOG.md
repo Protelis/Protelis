@@ -1,3 +1,17 @@
+## [17.3.21](https://github.com/Protelis/Protelis/compare/17.3.20...17.3.21) (2024-03-13)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.1.0-jre ([ec71adf](https://github.com/Protelis/Protelis/commit/ec71adf4e08c3ef328d7642a4b5173ead984ea72))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.168 ([80b7186](https://github.com/Protelis/Protelis/commit/80b718642c9a8d0f29366009aaec2872a0cdfb4d))
+* **deps:** update plugin java-qa to v1.39.0 ([d9997de](https://github.com/Protelis/Protelis/commit/d9997deb8d781f7a289e5edf32a6f0e5d85f52b2))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.7 ([e3afdb5](https://github.com/Protelis/Protelis/commit/e3afdb5259f25ef1309efb9fdd17ffc0b10b88cb))
+
 ## [17.3.20](https://github.com/Protelis/Protelis/compare/17.3.19...17.3.20) (2024-03-07)
 
 
