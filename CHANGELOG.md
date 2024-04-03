@@ -1,3 +1,10 @@
+## [17.3.25](https://github.com/Protelis/Protelis/compare/17.3.24...17.3.25) (2024-04-03)
+
+
+### Bug Fixes
+
+* never cancel a release in progress ([4a5c7b8](https://github.com/Protelis/Protelis/commit/4a5c7b8cbc74a7d60d94b61be763fcdc9e57a2da))
+
 ## [17.3.24](https://github.com/Protelis/Protelis/compare/17.3.23...17.3.24) (2024-04-03)
 
 
