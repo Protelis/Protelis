@@ -1,3 +1,22 @@
+## [17.3.24](https://github.com/Protelis/Protelis/compare/17.3.23...17.3.24) (2024-04-03)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.ow2.asm:asm to v9.7 ([c7ef997](https://github.com/Protelis/Protelis/commit/c7ef9970cac51e334a05a3bc626d7348a099b769))
+* **deps:** update dependency commons-io:commons-io to v2.16.0 ([666a5d7](https://github.com/Protelis/Protelis/commit/666a5d7cf7d1984295c9f603c38946e2183819dd))
+* **deps:** update node.js to 20.12 ([4ecbae6](https://github.com/Protelis/Protelis/commit/4ecbae67f9a20d6f1fd2ce6d7ebe06dd2d197c23))
+* **deps:** update plugin com.gradle.enterprise to v3.17 ([459e527](https://github.com/Protelis/Protelis/commit/459e52751cc111e12a1a1049fa44e1278fff6d4b))
+* **deps:** update plugin java-qa to v1.42.0 ([838bde9](https://github.com/Protelis/Protelis/commit/838bde90b9bf86a1e03077e78dd27141ccde7952))
+* **deps:** update plugin tasktree to v3 ([77e0362](https://github.com/Protelis/Protelis/commit/77e0362d1b14dcf589f4d8d681263a0f990ce71f))
+
+
+### Build and continuous integration
+
+* add ASM to the core dependencies ([b149f2c](https://github.com/Protelis/Protelis/commit/b149f2cda7f6f15e459fa8aa801530b78e846018))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.11 ([a900962](https://github.com/Protelis/Protelis/commit/a9009624de69bdba8433b625eb89063acafef318))
+* manually constrain the version of ASM to work around eclipse/xtext[#2686](https://github.com/Protelis/Protelis/issues/2686) and the general problem of Xtext not updating its dependencies frequently ([c78854f](https://github.com/Protelis/Protelis/commit/c78854fbe39058d1317b62b145be6c9a5996477f))
+
 ## [17.3.23](https://github.com/Protelis/Protelis/compare/17.3.22...17.3.23) (2024-03-25)
 
 
