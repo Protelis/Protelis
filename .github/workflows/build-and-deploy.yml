@@ -48,7 +48,7 @@ jobs:
     concurrency:
       group: release-${{ github.event.number || github.ref }}
       cancel-in-progress: false
-    timeout-minutes: 20
+    timeout-minutes: 120
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
