@@ -5,6 +5,7 @@ kotlin = "1.9.23"
 [libraries]
 alchemist-interfaces = { module = "it.unibo.alchemist:alchemist-interfaces", version.ref = "alchemist" }
 alchemist-loading = { module = "it.unibo.alchemist:alchemist-loading", version.ref = "alchemist" }
+asm = "org.ow2.asm:asm:9.4"
 commons-codec = "commons-codec:commons-codec:1.16.1"
 commons-io = "commons-io:commons-io:2.16.0"
 commons-lang = "org.apache.commons:commons-lang3:3.14.0"

@@ -52,6 +52,11 @@ allprojects {
             testImplementation(junit)
             testImplementation(slf4j)
             testRuntimeOnly(logback)
+            constraints {
+                implementation(asm) {
+                    because("Xtext often remains stuck to old versions of ASM")
+                }
+            }
         }
     }
 
