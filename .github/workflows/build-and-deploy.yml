@@ -46,7 +46,8 @@ jobs:
       !github.event.repository.fork
       && github.event_name != 'pull_request'
     concurrency:
-      group: release
+      group: release-${{ github.event.number || github.ref }}
+      cancel-in-progress: false
     timeout-minutes: 20
     steps:
       - name: Checkout
