@@ -29,6 +29,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.61.0"
 multiJvmTesting = "org.danilopianini.multi-jvm-test-plugin:0.5.8"
 protelisdoc = "org.protelis.protelisdoc:3.0.41"
-publishOnCentral = "org.danilopianini.publish-on-central:5.0.26"
+publishOnCentral = "org.danilopianini.publish-on-central:5.1.0"
 shadowJar = "com.github.johnrengelman.shadow:8.1.1"
 taskTree = "com.dorongold.task-tree:3.0.0"
