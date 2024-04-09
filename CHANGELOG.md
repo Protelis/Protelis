@@ -1,3 +1,39 @@
+## [17.3.26](https://github.com/Protelis/Protelis/compare/17.3.25...17.3.26) (2024-04-09)
+
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.4 ([c72ca4e](https://github.com/Protelis/Protelis/commit/c72ca4ed6d6ebe48fb4b48ee04be112df1d9a29f))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.4 ([1901134](https://github.com/Protelis/Protelis/commit/1901134372b5117be523efb488ecfde60eb7d1e7))
+* **deps:** update dependency commons-io:commons-io to v2.16.1 ([290a43c](https://github.com/Protelis/Protelis/commit/290a43c0870c03c501fca053948273e25f9975b6))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.170 ([c6d26d1](https://github.com/Protelis/Protelis/commit/c6d26d1d615f8cb1a549ecb94096e1261df3df7b))
+* **deps:** update plugin com.gradle.enterprise to v3.17.1 ([e8479df](https://github.com/Protelis/Protelis/commit/e8479df862cbf785ca668b3c630366dc799ca7d8))
+* **deps:** update plugin java-qa to v1.44.0 ([4bc27d2](https://github.com/Protelis/Protelis/commit/4bc27d2d6dd33562037dd70fcb24bf0ba45ca468))
+* **deps:** update plugin multijvmtesting to v0.5.8 ([8144cef](https://github.com/Protelis/Protelis/commit/8144cefe9c539135f0c59a5b72c503c798a4baba))
+* **deps:** update plugin publishoncentral to v5.1.0 ([d17c20e](https://github.com/Protelis/Protelis/commit/d17c20eec2bc72eba0c2a39b82127d9ebffe5354))
+
+
+### Bug Fixes
+
+* **interpreter:** modify a potentially dangerous implementation of `Option.empty()` using the enum singleton pattern ([23a0e24](https://github.com/Protelis/Protelis/commit/23a0e24056d48af35da1284f929772be94174e1e))
+
+
+### Tests
+
+* **test:** ignore a bad implementation of singleton, it is never serialized in tests ([bd9f133](https://github.com/Protelis/Protelis/commit/bd9f1337680c1135cc91c0df794b73645e59f924))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.12 ([3062233](https://github.com/Protelis/Protelis/commit/3062233278caf5cefdaf7ab88eddba3b329532f9))
+* switch from Gradle Enterprise to Develocity ([57fff2e](https://github.com/Protelis/Protelis/commit/57fff2e04e117de7ae0a58214975bfc069ee7be4))
+
+
+### Style improvements
+
+* **interpreter:** finalize static nested class ([26edc2d](https://github.com/Protelis/Protelis/commit/26edc2d65d5c01a4aa68da05c7539c9fdcc21bbc))
+* **interpreter:** make method final ([4a86392](https://github.com/Protelis/Protelis/commit/4a86392719cfff11ec822d113bafce13debecd8d))
+
 ## [17.3.25](https://github.com/Protelis/Protelis/compare/17.3.24...17.3.25) (2024-04-03)
 
 
