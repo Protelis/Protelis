@@ -46,12 +46,22 @@ import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runPr
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class Option<E> implements Serializable {
 
+    private enum EmptyOption {
+
+        EMPTY_OPTION(new Option<>(Optional.absent()));
+
+        private final Option<Object> empty;
+
+        EmptyOption(final Option<Object> empty) {
+            this.empty = empty;
+        }
+    }
+
     /**
      * Returns the Java null value. To be used ONLY for interacting with Java.
      * Protelis is null-intolerant.
      */
     public static final Object JAVA_NULL = null;
-    private static final Option<Object> EMPTY_OPTION = new Option<>(Optional.absent());
     private static final long serialVersionUID = 1L;
     private static final ImmutableMap<String, Boolean> TESTERS = ImmutableMap.of(
             "isPresent", true,
@@ -486,8 +496,8 @@ public final class Option<E> implements Serializable {
      * @return an empty {@code Option}
      */
     @SuppressWarnings("unchecked")
-    public static <E> Option<E> empty() {
-        return (Option<E>) EMPTY_OPTION;
+    public static synchronized <E> Option<E> empty() {
+        return (Option<E>) EmptyOption.EMPTY_OPTION.empty;
     }
 
     /**
