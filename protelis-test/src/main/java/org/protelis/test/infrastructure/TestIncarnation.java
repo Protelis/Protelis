@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (C) 2024, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
  *
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
@@ -9,6 +9,7 @@ package org.protelis.test.infrastructure;
 
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.danilopianini.lang.LangUtils;
@@ -34,6 +35,9 @@ import it.unibo.alchemist.model.interfaces.TimeDistribution;
 
 /**
  */
+@SuppressFBWarnings(
+    { "SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR", "SING_SINGLETON_GETTER_NOT_SYNCHRONIZED" }
+)
 public final class TestIncarnation implements Incarnation<Object> {
 
     private static final TestIncarnation SINGLETON = new TestIncarnation();
