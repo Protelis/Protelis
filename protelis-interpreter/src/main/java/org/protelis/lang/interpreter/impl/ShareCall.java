@@ -248,7 +248,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         return Optional.fromNullable(origin.orElse(null));
     }
 
-    private static class BodyResult<S> {
+    private static final class BodyResult<S> {
         private S result;
         private S getResult() { // NOPMD: false positive, method used as function reference
             return result;
