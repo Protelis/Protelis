@@ -440,7 +440,7 @@ public final class ProtelisLoader {
         }
     }
 
-    private static class Dispatch {
+    private static final class Dispatch {
 
         private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE =
             CacheBuilder.newBuilder().weakKeys().build();
