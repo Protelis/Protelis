@@ -1,3 +1,34 @@
+## [17.3.27](https://github.com/Protelis/Protelis/compare/17.3.26...17.3.27) (2024-05-03)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.2.0-jre ([161ed72](https://github.com/Protelis/Protelis/commit/161ed7241e01e26190468f36fc3e24915b3c781e))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.5 ([1164145](https://github.com/Protelis/Protelis/commit/1164145c463517d7143cb1ebc9924420ab68624c))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.6 ([dfa73fb](https://github.com/Protelis/Protelis/commit/dfa73fb25218792d94813a5364c7307339adb32b))
+* **deps:** update dependency commons-codec:commons-codec to v1.17.0 ([1e09d80](https://github.com/Protelis/Protelis/commit/1e09d806fd599faf12290b49b98421e6e2eb5ca3))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.171 ([2bf4015](https://github.com/Protelis/Protelis/commit/2bf4015caab670ed8c8d881e48744b0203fcc9a5))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.172 ([d72df1e](https://github.com/Protelis/Protelis/commit/d72df1e5d7cef1da427a8473b11c0cf09abf1dbd))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.13 ([5346e50](https://github.com/Protelis/Protelis/commit/5346e509572b133024d64d85dcce372bdca7c937))
+* **deps:** update plugin com.gradle.develocity to v3.17.2 ([f9370a3](https://github.com/Protelis/Protelis/commit/f9370a31ea99b0693828faeea7eaecd70f07e3d7))
+* **deps:** update plugin java-qa to v1.45.0 ([bd34649](https://github.com/Protelis/Protelis/commit/bd34649d4b88c2e4ba3e8e0187dd701c997628d3))
+* **deps:** update plugin java-qa to v1.46.0 ([4784894](https://github.com/Protelis/Protelis/commit/47848941204d9ec8714d583cd7d65e5ab08bc6bc))
+* **deps:** update plugin java-qa to v1.46.1 ([7e7cf77](https://github.com/Protelis/Protelis/commit/7e7cf778c7320f368dc4b1f4c0ec046cce5b4de6))
+* **deps:** update plugin java-qa to v1.47.0 ([53b0789](https://github.com/Protelis/Protelis/commit/53b07892c571fc304782159e511fe771af4bca12))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.3 ([754088c](https://github.com/Protelis/Protelis/commit/754088c86bc9008f1cc4f104d8113211b98d50ec))
+* **deps:** update actions/checkout action to v4.1.4 ([00376f9](https://github.com/Protelis/Protelis/commit/00376f99f0db943d8323c11820abaa9c0c2d8285))
+* **deps:** update danysk/action-checkout action to v0.2.15 ([b97199c](https://github.com/Protelis/Protelis/commit/b97199c423f71bfb8537ab8d2d7f18ff2f5be8d1))
+* **deps:** update danysk/action-checkout action to v0.2.16 ([7496456](https://github.com/Protelis/Protelis/commit/7496456ebec3c79450bfddcbe8c54bee2f7f450a))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.13 ([9dd3e47](https://github.com/Protelis/Protelis/commit/9dd3e476b97274817e957f53c4623c6292384ea3))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.14 ([d5eaef8](https://github.com/Protelis/Protelis/commit/d5eaef8d37c76ec59966947bb563a52a2b9dc8ec))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.15 ([b335a51](https://github.com/Protelis/Protelis/commit/b335a51430bb4c8fb58ae2b762d7cb4becdc7eaa))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.16 ([f2a56f2](https://github.com/Protelis/Protelis/commit/f2a56f2f6a78256b33938845f4fcfcfc4a766da7))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.17 ([89206d0](https://github.com/Protelis/Protelis/commit/89206d0f9f8a2a5e8db5baa3b11d0c249410db85))
+
 ## [17.3.26](https://github.com/Protelis/Protelis/compare/17.3.25...17.3.26) (2024-04-09)
 
 
