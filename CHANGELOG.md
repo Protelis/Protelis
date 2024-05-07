@@ -1,3 +1,23 @@
+## [17.3.28](https://github.com/Protelis/Protelis/compare/17.3.27...17.3.28) (2024-05-07)
+
+
+### Dependency updates
+
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.5 ([8ca7845](https://github.com/Protelis/Protelis/commit/8ca78456031219e4c37f1364dcea8f286f6f0fa3))
+* **deps:** update plugin java-qa to v1.48.0 ([174a9cf](https://github.com/Protelis/Protelis/commit/174a9cf6c4d565c0a0e2a9b0645ba823ac027a95))
+* **deps:** update plugin java-qa to v1.49.0 ([8243b86](https://github.com/Protelis/Protelis/commit/8243b863acbd74f2138611501b99dfc6a17604bb))
+* **deps:** update plugin java-qa to v1.50.0 ([f6e9844](https://github.com/Protelis/Protelis/commit/f6e984405648e1a3dc22b41c31746182a2a24267))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.42 ([836003c](https://github.com/Protelis/Protelis/commit/836003c015e39cbcc8c5e207a953dac19fbca6bb))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.18 ([85b8c54](https://github.com/Protelis/Protelis/commit/85b8c54aab36cb4e74085cf8840a744a4b8bc27a))
+
 ## [17.3.27](https://github.com/Protelis/Protelis/compare/17.3.26...17.3.27) (2024-05-03)
 
 
