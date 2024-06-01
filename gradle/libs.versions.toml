@@ -28,7 +28,7 @@ java-qa = "org.danilopianini.gradle-java-qa:1.52.0"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.62.1"
 multiJvmTesting = "org.danilopianini.multi-jvm-test-plugin:0.5.8"
-protelisdoc = "org.protelis.protelisdoc:3.0.44"
+protelisdoc = "org.protelis.protelisdoc:3.0.45"
 publishOnCentral = "org.danilopianini.publish-on-central:5.1.1"
 shadowJar = "com.github.johnrengelman.shadow:8.1.1"
 taskTree = "com.dorongold.task-tree:3.0.0"
