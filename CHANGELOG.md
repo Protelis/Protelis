@@ -1,3 +1,15 @@
+## [17.3.34](https://github.com/Protelis/Protelis/compare/17.3.33...17.3.34) (2024-06-04)
+
+
+### Dependency updates
+
+* **deps:** update plugin publishoncentral to v5.1.2 ([c7482a3](https://github.com/Protelis/Protelis/commit/c7482a38cfe4d9f7690f4b339c7ec87800da3846))
+
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.47 ([86e1eec](https://github.com/Protelis/Protelis/commit/86e1eeca42ad6209beb73ad3b6f996638f2fb2cd))
+
 ## [17.3.33](https://github.com/Protelis/Protelis/compare/17.3.32...17.3.33) (2024-06-01)
 
 
