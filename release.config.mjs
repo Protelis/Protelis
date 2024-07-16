@@ -1,4 +1,4 @@
-var publishCmd = `
+const publishCmd = `
 echo 'Creating shadowJar and protelisdoc...'
 ./gradlew protelisdoc shadowJar --parallel || ./gradlew shadowJar --parallel || exit 2
 echo '...assemblage done.'
@@ -14,7 +14,7 @@ echo '...released.'
 #echo '...published.'
 echo 'All done.'
 `
-var config = require('semantic-release-preconfigured-conventional-commits');
+import config from 'semantic-release-preconfigured-conventional-commits' assert { type: "json" };
 config.plugins.push(
     ["@semantic-release/exec", {
         "publishCmd": publishCmd,
@@ -26,4 +26,4 @@ config.plugins.push(
     }],
     "@semantic-release/git",
 )
-module.exports = config
+export default config
