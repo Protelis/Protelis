@@ -1,3 +1,35 @@
+## [17.3.36](https://github.com/Protelis/Protelis/compare/17.3.35...17.3.36) (2024-07-16)
+
+### Dependency updates
+
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.8.6 ([625ecba](https://github.com/Protelis/Protelis/commit/625ecba10c84e9a229338019dce4715a14216d56))
+* **deps:** update dependency commons-codec:commons-codec to v1.17.1 ([b451b39](https://github.com/Protelis/Protelis/commit/b451b394dee11ed20e17f0e5df441d8c6fcefa16))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.174 ([6559694](https://github.com/Protelis/Protelis/commit/65596948912336a3a3bff66aa47f58d72bf1427e))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.86 ([aceb096](https://github.com/Protelis/Protelis/commit/aceb096d11e8c852ed4d14a5e596db234e9a4d3a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.87 ([08fef0c](https://github.com/Protelis/Protelis/commit/08fef0c1200df3588cecbbf666f320f0e573e2bc))
+* **deps:** update node.js to 20.15 ([083ceb3](https://github.com/Protelis/Protelis/commit/083ceb35b4ace036c4fe5ac60b38c58b094c2d2d))
+* **deps:** update plugin com.gradle.develocity to v3.17.5 ([55df915](https://github.com/Protelis/Protelis/commit/55df91514528b5390f2614ec4e34da0e4bd14b17))
+* **deps:** update plugin java-qa to v1.53.0 ([6c15472](https://github.com/Protelis/Protelis/commit/6c15472baedca2f02580b4356db1a7dbd41388ab))
+* **deps:** update plugin java-qa to v1.55.0 ([2a9bef4](https://github.com/Protelis/Protelis/commit/2a9bef4905436fcd0e28217f76ec4d774f729637))
+* **deps:** update plugin tasktree to v4 ([91d1017](https://github.com/Protelis/Protelis/commit/91d1017f1c527fc93c875f038fa9cca6f0440a4b))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.49 ([925cd18](https://github.com/Protelis/Protelis/commit/925cd180c71baa501145bc51fd4df09e3a926c96))
+
+### Build and continuous integration
+
+* **deps-dev:** bump braces from 3.0.2 to 3.0.3 ([66e1b15](https://github.com/Protelis/Protelis/commit/66e1b154873949adc749569c94a4e3b24341a846))
+* **deps:** update actions/checkout action to v4.1.7 ([22082fc](https://github.com/Protelis/Protelis/commit/22082fc86aa670b22f3839119c1ce47c550877f3))
+* **deps:** update danysk/action-checkout action to v0.2.19 ([17b9f5d](https://github.com/Protelis/Protelis/commit/17b9f5d3e1d54237f0b80bab7071ef285c665da5))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.21 ([df378f6](https://github.com/Protelis/Protelis/commit/df378f6ece2bacc79e4c2b96b4d0eade0dd77bb1))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.22 ([525c8dd](https://github.com/Protelis/Protelis/commit/525c8dd959983a68b38c63b340033cc66bd2803c))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3 ([9f3087a](https://github.com/Protelis/Protelis/commit/9f3087aacfe64e1d51ac5f998499a74614ea6624))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.1.0 ([8b1d797](https://github.com/Protelis/Protelis/commit/8b1d7976204d28f8a60804aabed6988a0bc575e2))
+* install the version of node from the package.json ([886c8ae](https://github.com/Protelis/Protelis/commit/886c8ae1aa652832d88c825bdb14d6ec36729848))
+* read the Central username from the repository's actions secrets ([35f5ff7](https://github.com/Protelis/Protelis/commit/35f5ff7ee0ab979534afcac687676894de157daa))
+* **release:** switch to a ECMA6-compliant semantic release configuration ([ce4dc66](https://github.com/Protelis/Protelis/commit/ce4dc66bf74e01b04d46e22a6c3e08dcfc041902))
+
 ## [17.3.35](https://github.com/Protelis/Protelis/compare/17.3.34...17.3.35) (2024-06-06)
 
 
