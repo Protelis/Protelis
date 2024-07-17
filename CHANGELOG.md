@@ -1,3 +1,22 @@
+## [17.3.37](https://github.com/Protelis/Protelis/compare/17.3.36...17.3.37) (2024-07-17)
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v8.9 ([c032c3e](https://github.com/Protelis/Protelis/commit/c032c3e4510efd48fe790fda60f7e982c23849e7))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.91 ([74ed244](https://github.com/Protelis/Protelis/commit/74ed244627de363db743cd5cd6e276ba4b098699))
+* **deps:** update plugin java-qa to v1.57.1 ([64d7968](https://github.com/Protelis/Protelis/commit/64d7968c7d51f22e0b49515b0b56687e8e242c97))
+* **deps:** update plugin multijvmtesting to v1 ([c90d279](https://github.com/Protelis/Protelis/commit/c90d279b94f327eb8467a4a28a61e0ccb89a731e))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.8 ([08d9987](https://github.com/Protelis/Protelis/commit/08d9987f3234729dc02a0941a506a947b1f4a2fb))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.50 ([7cac979](https://github.com/Protelis/Protelis/commit/7cac97963bc97fef9753ce4f9547ff40d8874520))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.1.1 ([bdac01d](https://github.com/Protelis/Protelis/commit/bdac01d78fd8a6b28fe5c6a72f065971300ce31b))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.3.0 ([0529976](https://github.com/Protelis/Protelis/commit/0529976af3dd0d9daf2db464e5a2a6e876649ee7))
+
 ## [17.3.36](https://github.com/Protelis/Protelis/compare/17.3.35...17.3.36) (2024-07-16)
 
 ### Dependency updates
