@@ -1,3 +1,20 @@
+## [17.3.38](https://github.com/Protelis/Protelis/compare/17.3.37...17.3.38) (2024-07-18)
+
+### Dependency updates
+
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.15.0 ([af28dbe](https://github.com/Protelis/Protelis/commit/af28dbe67d48657bcd02edde62eed32a4d287ecf))
+* **deps:** update plugin kotlin-qa to v0.62.4 ([17a0ad8](https://github.com/Protelis/Protelis/commit/17a0ad87cf2af9947a5645f819440b287df0a529))
+* **deps:** update plugin kotlin-qa to v0.63.0 ([de70387](https://github.com/Protelis/Protelis/commit/de7038786b302c3b1d82801563ff4ba99d9b38f3))
+* **deps:** update plugin publishoncentral to v5.1.4 ([6d7d1ba](https://github.com/Protelis/Protelis/commit/6d7d1ba168db6233554675cc46e1ffcd56a60bbe))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.51 ([3a72a26](https://github.com/Protelis/Protelis/commit/3a72a260432e486e122fb2aa71d6a9d0df9d06bf))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.4.0 ([8138f43](https://github.com/Protelis/Protelis/commit/8138f436312398e0755f08bbb8662c66306aa87c))
+
 ## [17.3.37](https://github.com/Protelis/Protelis/compare/17.3.36...17.3.37) (2024-07-17)
 
 ### Dependency updates
