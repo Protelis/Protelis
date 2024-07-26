@@ -1,3 +1,21 @@
+## [17.3.39](https://github.com/Protelis/Protelis/compare/17.3.38...17.3.39) (2024-07-26)
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.92 ([460fc2b](https://github.com/Protelis/Protelis/commit/460fc2baccfff5064b592d68c0e11a76e02f35d0))
+* **deps:** update plugin com.gradle.develocity to v3.17.6 ([026e470](https://github.com/Protelis/Protelis/commit/026e4708caa4cb33bc6bd90e8397923e1e1829cc))
+* **deps:** update plugin kotlin-qa to v0.64.0 ([dd82ed7](https://github.com/Protelis/Protelis/commit/dd82ed7672e0d765828d73eb95a5062dd17aee52))
+* **deps:** update plugin multijvmtesting to v1.1.1 ([4790ec7](https://github.com/Protelis/Protelis/commit/4790ec77dc49c923d72f4a9730c235588b2d2861))
+* **deps:** update plugin multijvmtesting to v1.2.2 ([a01282b](https://github.com/Protelis/Protelis/commit/a01282b79340185597200cf103345e8574ebdfec))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.52 ([4dfad04](https://github.com/Protelis/Protelis/commit/4dfad04337b94010be1f37092bf19fb5ce5151cf))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.0 ([0f63563](https://github.com/Protelis/Protelis/commit/0f6356305175b5d63076a3ec2198a351487c9f94))
+
 ## [17.3.38](https://github.com/Protelis/Protelis/compare/17.3.37...17.3.38) (2024-07-18)
 
 ### Dependency updates
