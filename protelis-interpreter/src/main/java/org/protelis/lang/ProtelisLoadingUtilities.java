@@ -63,9 +63,7 @@ public final class ProtelisLoadingUtilities {
      * @return a stream of expressions, one element per argument.
      */
     public static Stream<Expression> argumentsToExpressionStream(@Nonnull final InvocationArguments args) {
-        final Stream<KotlinStyleLambda> lastArgument = Optional.ofNullable(args.getLastArg())
-            .map(Stream::of)
-            .orElseGet(Stream::empty);
+        final Stream<KotlinStyleLambda> lastArgument = Optional.ofNullable(args.getLastArg()).stream();
         final Stream<Expression> inParenthesis = Optional.ofNullable(args.getArgs())
                 .<List<Expression>>map(ExpressionList::getArgs)
                 .orElseGet(Collections::emptyList)
