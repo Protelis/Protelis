@@ -263,7 +263,7 @@ public enum Op2 implements WithBytecode {
             return a.toString() + b.toString();
         }
         try {
-            return arithmetic("+", a, b, (v1, v2) -> v1 + v2);
+            return arithmetic("+", a, b, Double::sum);
         } catch (UnsupportedOperationException e) {
             /*
              * Sum falls back to string sum.
@@ -273,7 +273,7 @@ public enum Op2 implements WithBytecode {
     }
 
     private static Object pow(final Object a, final Object b) {
-        return arithmetic("^", a, b, (v1, v2) -> FastMath.pow(v1, v2));
+        return arithmetic("^", a, b, FastMath::pow);
     }
 
     @SuppressWarnings(UNCHECKED)
