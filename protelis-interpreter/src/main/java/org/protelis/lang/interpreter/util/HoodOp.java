@@ -209,7 +209,8 @@ public enum HoodOp implements WithBytecode {
                 .orElseThrow(() -> new IllegalArgumentException("No built-in hood operation matches " + reducer));
     }
 
-    private static Object local(final Field<Object> f, final boolean inclusive) {
+    private static Object local(final Field<Object> f, final boolean inclusive) { // NOPMD
+        // The parameter is useful to pass this function to the constructor as reference
         return f.getLocalValue();
     }
 
