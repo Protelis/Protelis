@@ -11,7 +11,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -212,7 +211,7 @@ public final class ReflectionUtils {
                 fieldIndexes.add(i);
             }
         }
-        if (fieldTarget || fieldIndexes.size() > 0) {
+        if (fieldTarget || !fieldIndexes.isEmpty()) {
             return Fields.apply(
                     (actualT, actualA) -> ReflectionUtils.invokeMethod(context, toInvoke, actualT, actualA),
                     fieldTarget,
@@ -288,7 +287,11 @@ public final class ReflectionUtils {
         return result;
     }
 
-    private static Method loadBestMethod(final Class<?> clazz, final String methodName, final Class<?>[] argClass) {
+    private static Method loadBestMethod(
+        @Nonnull final Class<?> clazz,
+        @Nonnull final String methodName,
+        @Nonnull final Class<?>[] argClass
+    ) {
         Objects.requireNonNull(clazz, "The class on which the method will be invoked can not be null.");
         Objects.requireNonNull(methodName, "Method name can not be null.");
         Objects.requireNonNull(argClass, "Method arguments can not be null.");
@@ -368,7 +371,7 @@ public final class ReflectionUtils {
          * Find best
          */
         return lm.stream()
-                .max(Comparator.comparing(Pair::getKey))
+                .max(Map.Entry.comparingByKey())
                 .map(Pair::getValue)
                 .orElseThrow(() -> new IllegalStateException("Method selection for " + methodName
                     + " inside " + clazz
