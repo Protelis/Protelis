@@ -150,7 +150,7 @@ public final class ProtelisLoader {
         .newBuilder()
         .maximumSize(1000)
         .build(
-            new CacheLoader<Resource, ProtelisProgram>() {
+            new CacheLoader<>() {
                 @Override
                 @Nonnull
                 public ProtelisProgram load(@Nonnull final Resource resource) {
