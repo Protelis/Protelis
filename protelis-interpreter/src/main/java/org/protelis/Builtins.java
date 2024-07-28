@@ -42,12 +42,12 @@ public final class Builtins {
      * This variable is used by the interpreter for providing compatibility hints in the Eclipse plugin.
      * See <a href="https://github.com/Protelis/Protelis/issues/245">https://github.com/Protelis/Protelis/issues/245</a>.
      */
-    public static final ImmutableList<Integer> MINIMUM_PARSER_VERSION = ImmutableList.of(11, 0, 0); // NOPMD
+    public static final ImmutableList<Integer> MINIMUM_PARSER_VERSION = ImmutableList.of(11, 0, 0);
     /**
      * This variable is used by the interpreter for providing compatibility hints in the Eclipse plugin.
      * See <a href="https://github.com/Protelis/Protelis/issues/245">https://github.com/Protelis/Protelis/issues/245</a>.
      */
-    public static final ImmutableList<Integer> MAXIMUM_PARSER_VERSION = ImmutableList.of(11, 1, 0); // NOPMD
+    public static final ImmutableList<Integer> MAXIMUM_PARSER_VERSION = ImmutableList.of(11, 1, 0);
 
     private Builtins() { }
 
