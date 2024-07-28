@@ -49,7 +49,7 @@ public enum Op2 implements WithBytecode {
     /** Logical AND operation. */
     AND(BINARY_AND, "&&", Op2::and),
     /** Inequality comparison operation. */
-    DIFFERS(BINARY_DIFFERS, "!=", (a, b) -> !Op2.areEquals(a, b)),
+    DIFFERS(BINARY_DIFFERS, "!=", (a, b) -> !areEquals(a, b)),
     /** Arithmetic division operation. */
     DIVIDE(BINARY_DIVIDE, "/", Op2::divide),
     /** Equality comparison operation. */
