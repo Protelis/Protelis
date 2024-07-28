@@ -170,7 +170,7 @@ public final class LazyField<T> extends AbstractField<T> {
             @Override
             @Nonnull
             @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
-            public T load(@Nonnull final DeviceUID key) throws Exception {
+            public T load(@Nonnull final DeviceUID key) {
                 return Objects.requireNonNull(
                     allValues.get(key),
                     "Field broken after de-serialization! Available values: " + allValues + ", requested id: " + key
