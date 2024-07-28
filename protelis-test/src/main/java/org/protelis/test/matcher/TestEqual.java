@@ -41,11 +41,19 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                     final Object singleNodeResult = simulationRes.get(pair.getLeft());
                     try {
                         assertNotNull(singleNodeResult);
-                        if (singleNodeResult instanceof Integer || singleNodeResult instanceof Double) {
-                            final double tmp = singleNodeResult instanceof Integer
-                                ? (Integer) singleNodeResult
-                                : (double) singleNodeResult;
-                            assertEquals(Double.parseDouble(pair.getRight()), tmp, InfrastructureTester.DELTA);
+                        if (singleNodeResult instanceof Integer) {
+                            final double result = (Integer) singleNodeResult;
+                            assertEquals(
+                                Double.parseDouble(pair.getRight()),
+                                result,
+                                InfrastructureTester.DELTA
+                            );
+                        } else if (singleNodeResult instanceof Double) {
+                            assertEquals(
+                                Double.parseDouble(pair.getRight()),
+                                (Double) singleNodeResult,
+                                InfrastructureTester.DELTA
+                            );
                         } else if (singleNodeResult instanceof Boolean) {
                             final String v = pair.getRight();
                             final boolean expected = Boolean.parseBoolean("T".equals(v)
