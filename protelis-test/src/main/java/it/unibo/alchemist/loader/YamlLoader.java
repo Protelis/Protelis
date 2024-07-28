@@ -247,7 +247,7 @@ public final class YamlLoader implements Loader, Serializable {
          * RNG
          */
         final Object seedMapObj = contents.get(SEEDS);
-        Object scenarioSeed;
+        final Object scenarioSeed;
         if (seedMapObj instanceof Map) {
             final Map<String, Object> seedMap = (Map<String, Object>) seedMapObj;
             simulationSeed = Optional.ofNullable(makePlaceHolderIfNeeded(seedMap.get(SIMULATION_SEED))).orElse(0);
