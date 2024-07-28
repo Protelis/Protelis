@@ -717,10 +717,14 @@ public final class ProtelisLoader {
             }
             if (ref instanceof FunctionDef) {
                 final FunctionDef functionDefinition = (FunctionDef) ref;
-                FunctionDefinition target;
                 try {
-                    target = VIRTUAL_METHOD_TABLE.get(functionDefinition,
-                            () -> new FunctionDefinition(functionDefinition, () -> functionBody(functionDefinition)));
+                    final var target = VIRTUAL_METHOD_TABLE.get(
+                        functionDefinition,
+                        () -> new FunctionDefinition(
+                            functionDefinition,
+                            () -> functionBody(functionDefinition)
+                        )
+                    );
                     return new Constant<>(meta, target);
                 } catch (ExecutionException e) {
                     throw new IllegalStateException(e);
