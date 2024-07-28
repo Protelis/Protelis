@@ -117,7 +117,7 @@ public final class LazyField<T> extends AbstractField<T> {
 
     @Override
     public Optional<T> getIfPresent(@Nonnull final DeviceUID id) {
-        final Optional<T> result = Optional.ofNullable(neighbors.getUnchecked(id));
+        final Optional<T> result = Optional.of(neighbors.getUnchecked(id));
         /*
          * Check for cache population completion
          */
