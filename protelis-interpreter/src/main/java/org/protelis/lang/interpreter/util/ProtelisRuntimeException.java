@@ -5,9 +5,6 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-/**
- * 
- */
 package org.protelis.lang.interpreter.util;
 
 import java.util.Deque;
