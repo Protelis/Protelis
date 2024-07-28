@@ -54,7 +54,7 @@ public final class ReflectionUtils {
     private static final int CACHE_MAX_SIZE = 1000;
     private static final LoadingCache<Triple<Class<?>, String, List<Class<?>>>, Method> METHOD_CACHE = CacheBuilder
             .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(1, TimeUnit.HOURS)
-            .build(new CacheLoader<Triple<Class<?>, String, List<Class<?>>>, Method>() {
+            .build(new CacheLoader<>() {
                 @Override
                 public Method load(@Nonnull final Triple<Class<?>, String, List<Class<?>>> key) {
                     final List<Class<?>> al = key.getRight();
