@@ -105,8 +105,13 @@ public final class TestIncarnation implements Incarnation<Object> {
     }
 
     @Override
-    public Reaction<Object> createReaction(final RandomGenerator rand, final Environment<Object> env,
-                    final Node<Object> node, final TimeDistribution<Object> time, final String param) {
+    public Reaction<Object> createReaction(
+        final RandomGenerator rand,
+        final Environment<Object> env,
+        final Node<Object> node,
+        final TimeDistribution<Object> time,
+        final String param
+    ) {
         LangUtils.requireNonNull(node, time);
         final Reaction<Object> result = new Event<>(node, time);
         if (param != null) {
