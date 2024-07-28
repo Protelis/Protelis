@@ -297,16 +297,16 @@ public final class ProtelisLoader {
      * @param program
      *            Protelis module, program file or program to be prepared for
      *            execution. It must be one of:
-     * 
+     * <p>
      *            i) a valid Protelis qualifier name (Java like name, colon
      *            separated);
-     * 
+     * <p>
      *            ii) a valid {@link URI} string;
-     * 
+     * <p>
      *            iii) a valid Protelis program.
-     * 
+     * <p>
      *            Those possibilities are checked in order.
-     * 
+     * <p>
      *            The URI String can be in the form of a URL like
      *            "file:///home/user/protelis/myProgram" or a location relative
      *            to the classpath. In case, for instance,
@@ -345,7 +345,7 @@ public final class ProtelisLoader {
     /**
      * @param program
      *            A valid Protelis program to be prepared for execution.
-     * 
+     * <p>
      *            All the Protelis modules your program relies upon must be
      *            included in your Java classpath. The Java classpath scanning
      *            is done automatically by this constructor, linking is
