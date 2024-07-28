@@ -161,7 +161,8 @@ public final class ProtelisLoader {
                             .map(it -> (ProtelisModule) it)
                             .map(ProtelisModule::getName)
                             .orElse("without declared module");
-                        final StringBuilder sb = new StringBuilder("Program ")
+                        final StringBuilder sb = new StringBuilder(100)
+                            .append("Program ")
                             .append(moduleName)
                             .append(" from resource ")
                             .append(resource.getURI())
