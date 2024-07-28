@@ -978,7 +978,7 @@ public final class YamlLoader implements Loader, Serializable {
                 if (Position.class.isAssignableFrom(expectedClass) && param instanceof List) {
                     final List<?> coordList = (List<?>) param;
                     if (coordList.stream().allMatch(n -> n instanceof Number)) {
-                        return posMaker.makePosition(coordList.stream().map(v -> (Number) v).toArray(i -> new Number[i]));
+                        return posMaker.makePosition(coordList.stream().map(v -> (Number) v).toArray(Number[]::new));
                     }
                     return null;
                 }
