@@ -164,7 +164,7 @@ public final class LazyField<T> extends AbstractField<T> {
         stream.defaultReadObject();
         @SuppressWarnings("unchecked")
         final ImmutableMap<DeviceUID, T> allValues = (ImmutableMap<DeviceUID, T>) stream.readObject();
-        neighbors = CacheBuilder.newBuilder().build(new CacheLoader<DeviceUID, T>() {
+        neighbors = CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
             @Nonnull
             @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
