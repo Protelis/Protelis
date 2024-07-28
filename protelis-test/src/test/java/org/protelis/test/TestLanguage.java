@@ -392,7 +392,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test that the issue described at https://github.com/Protelis/Protelis/issues/127 is solved.
+     * Test that the issue described at <a href="https://github.com/Protelis/Protelis/issues/127">...</a> is solved.
      */
     @Test
     public void testIssue127() {
