@@ -90,15 +90,16 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
             if (isNullable() || result != null) {
                 return result;
             } else {
-                throw new ProtelisRuntimeException(
+                final var exception = new ProtelisRuntimeException(
                     new IllegalStateException(
                         "Evaluation returned null, but null values are not allowed but when interacting with Java methods."
                     ),
                     this
                 );
+                exception.fillInStackFrame(this);
+                throw exception;
             }
-        } catch (ProtelisRuntimeException e) {
-            e.fillInStackFrame(this);
+        } catch (ProtelisRuntimeException e) { // NOPMD: this is wanted.
             throw e;
         } catch (Exception e) { // NOPMD: this is wanted.
             throw new ProtelisRuntimeException(e, this);
