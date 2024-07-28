@@ -177,7 +177,7 @@ public final class Option<E> implements Serializable {
             if (value instanceof Option) {
                 final Option<?> result = (Option<?>) value;
                 if (result.isEmpty()) {
-                    return Option.empty();
+                    return empty();
                 }
                 return (Option<X>) value;
             } else if (value instanceof Optional) {
@@ -185,7 +185,7 @@ public final class Option<E> implements Serializable {
                 if (result.isPresent()) {
                     return new Option<>((X) result.get());
                 }
-                return Option.empty();
+                return empty();
             } else if (value instanceof java.util.Optional) {
                 final java.util.Optional<?> result = (java.util.Optional<?>) value;
                 return result.map(o -> new Option<>((X) o)).orElseGet(Option::empty);
