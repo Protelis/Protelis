@@ -161,9 +161,11 @@ public final class ProtelisLoader {
                             .map(it -> (ProtelisModule) it)
                             .map(ProtelisModule::getName)
                             .orElse("without declared module");
-                        final StringBuilder sb = new StringBuilder("Program " + moduleName
-                            + " from resource " + resource.getURI()
-                            + " cannot be created because of the following errors:\n");
+                        final StringBuilder sb = new StringBuilder("Program ")
+                            .append(moduleName)
+                            .append(" from resource ")
+                            .append(resource.getURI())
+                            .append(" cannot be created because of the following errors:\n");
                         boolean first = true;
                         for (final Diagnostic d : Lists.reverse(recursivelyCollectErrors(resource))) {
                             if (first) {
