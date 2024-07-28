@@ -228,11 +228,11 @@ public final class YamlLoader implements Loader, Serializable {
                 .collect(Collectors.toMap(e -> univoqueId(e.getValue()), Entry::getKey));
         L.debug("Reverse lookup table: {}", reverseLookupTable);
         lookupTable = StreamSupport.stream(originalVars.entrySet())
-                .filter(e -> e.getValue() != null && !((Map<?, ?>) e.getValue()).containsKey(FORMULA))
+                .filter(e -> e.getValue() != null && !e.getValue().containsKey(FORMULA))
                 .collect(Collectors.toMap(Entry::getKey, e -> makeVar(e.getValue())));
         L.debug("Lookup table: {}", lookupTable);
         computableVariables = StreamSupport.stream(originalVars.entrySet())
-                .filter(e -> e.getValue() != null && ((Map<?, ?>) e.getValue()).containsKey(FORMULA))
+                .filter(e -> e.getValue() != null && e.getValue().containsKey(FORMULA))
                 .collect(Collectors.toMap(Entry::getKey, e -> makeDepVar(e.getValue())));
         /*
          * Incarnation
