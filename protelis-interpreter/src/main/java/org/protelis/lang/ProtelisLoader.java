@@ -176,26 +176,21 @@ public final class ProtelisLoader {
                             sb.append("Error");
                             if (d.getLocation() != null) {
                                 final String place = Iterables.get(Splitter.on('#').split(d.getLocation()), 0);
-                                sb.append(" in ");
-                                sb.append(place);
+                                sb.append(" in ").append(place);
                             }
                             try {
                                 final int line = d.getLine();
-                                sb.append(", line ");
-                                sb.append(line);
+                                sb.append(", line ").append(line);
                             } catch (final UnsupportedOperationException e) { // NOPMD
                                 // The line information is not available
                             }
                             try {
                                 final int column = d.getColumn();
-                                sb.append(", column ");
-                                sb.append(column);
+                                sb.append(", column ").append(column);
                             } catch (final UnsupportedOperationException e) { // NOPMD
                                 // The column information is not available
                             }
-                            sb.append(": ");
-                            sb.append(d.getMessage());
-                            sb.append('\n');
+                            sb.append(": ").append(d.getMessage()).append('\n');
                         }
                         throw new IllegalArgumentException(sb.toString());
                     }
