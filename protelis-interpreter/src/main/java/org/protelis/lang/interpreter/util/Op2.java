@@ -166,16 +166,19 @@ public enum Op2 implements WithBytecode {
     }
 
     private static boolean greater(final Object a, final Object b) {
-        return comparison(">", a, b, (v1, v2) -> v1 > v2);
+        return comparison(a, b, (v1, v2) -> v1 > v2);
     }
 
     private static boolean greaterEquals(final Object a, final Object b) {
-        return comparison(">=", a, b, (v1, v2) -> v1 >= v2);
+        return comparison(a, b, (v1, v2) -> v1 >= v2);
     }
 
     @SuppressWarnings({ "rawtypes", UNCHECKED })
-    private static <T> boolean comparison(final String op, final T a, final T b,
-            final BiFunction<Double, Double, Boolean> f) {
+    private static <T> boolean comparison(
+        final T a,
+        final T b,
+        final BiFunction<Double, Double, Boolean> f
+    ) {
         if (a instanceof Number && b instanceof Number) {
             return f.apply(((Number) a).doubleValue(), ((Number) b).doubleValue());
         }
@@ -316,11 +319,11 @@ public enum Op2 implements WithBytecode {
     }
 
     private static boolean smaller(final Object a, final Object b) {
-        return comparison("<", a, b, (v1, v2) -> v1 < v2);
+        return comparison(a, b, (v1, v2) -> v1 < v2);
     }
 
     private static boolean smallerEquals(final Object a, final Object b) {
-        return comparison("<=", a, b, (v1, v2) -> v1 <= v2);
+        return comparison(a, b, (v1, v2) -> v1 <= v2);
     }
 
     private static Object times(final Object a, final Object b) {
