@@ -839,7 +839,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple03() {
-        runFileWithExplicitResult("/tuple03.pt", Integer.valueOf(3));
+        runFileWithExplicitResult("/tuple03.pt", 3);
     }
 
     /**
