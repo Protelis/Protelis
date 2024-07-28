@@ -42,7 +42,7 @@ public final class LazyField<T> extends AbstractField<T> {
     private static final long serialVersionUID = 1L;
     @Nonnull
     private transient LoadingCache<DeviceUID, T> neighbors = CacheBuilder.newBuilder()
-            .build(new CacheLoader<DeviceUID, T>() {
+            .build(new CacheLoader<>() {
                 @Override
                 public T load(final DeviceUID key) {
                     return mapper.apply(key);
