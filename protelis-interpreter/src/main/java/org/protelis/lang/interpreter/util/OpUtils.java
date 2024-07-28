@@ -31,8 +31,9 @@ public final class OpUtils {
      * @return Nothing, since it throws an exception
      */
     public static <T> T unsupported(final String op, final Object... a) {
-        final StringBuilder msg = new StringBuilder("Nobody told me how to run operator ");
-        msg.append(op);
+        final StringBuilder msg = new StringBuilder(100)
+            .append("Nobody told me how to run operator ")
+            .append(op);
         if (a.length > 0) {
             msg.append(" with the following parameters: ");
             boolean first = true;
