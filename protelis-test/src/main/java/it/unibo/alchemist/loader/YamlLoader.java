@@ -159,7 +159,6 @@ public final class YamlLoader implements Loader, Serializable {
     private static final Shape IN_ALL = (p) -> true;
 
     private Object simulationSeed;
-    private Object scenarioSeed;
     private final Map<Long, String> reverseLookupTable;
     private final Map<String, Variable> lookupTable;
     private final Map<String, DependentVariable> computableVariables;
@@ -248,6 +247,7 @@ public final class YamlLoader implements Loader, Serializable {
          * RNG
          */
         final Object seedMapObj = contents.get(SEEDS);
+        Object scenarioSeed;
         if (seedMapObj instanceof Map) {
             final Map<String, Object> seedMap = (Map<String, Object>) seedMapObj;
             simulationSeed = Optional.ofNullable(makePlaceHolderIfNeeded(seedMap.get(SIMULATION_SEED))).orElse(0);
