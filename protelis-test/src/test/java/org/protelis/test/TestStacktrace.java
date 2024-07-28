@@ -46,8 +46,10 @@ public final class TestStacktrace {
                 "errorTrace02:anotherCall"
             );
             for (final String function : functions) {
-                assertTrue("Exception does not identify function name " + function + '\n' + fullTrace,
-                        fullTrace.contains(function));
+                assertTrue(
+                    "Exception does not identify function name " + function + '\n' + fullTrace,
+                        fullTrace.contains(function)
+                );
             }
         });
     }
