@@ -74,8 +74,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
         boolean wasFunction = true;
         for (final ProtelisAST<?> current: protelisStackTrace) {
             if (!(current instanceof All)) {
-                longTrace.append("\n\tat: ")
-                    .append(current + extractLines(current));
+                longTrace.append("\n\tat: ").append(current).append(extractLines(current));
             }
             if (wasFunction) {
                 origin = current;
