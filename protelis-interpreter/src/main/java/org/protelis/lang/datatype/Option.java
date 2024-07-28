@@ -205,7 +205,7 @@ public final class Option<E> implements Serializable {
                     .orElseThrow(() -> new IllegalStateException("No method in " + value.getClass()
                         + " has name in " + TESTERS.keySet()
                         + ", expects no parameter, and returns boolean."));
-                boolean isPresent;
+                final boolean isPresent;
                 try {
                     isPresent = Boolean.TRUE.equals(TESTERS.get(tester.getName())) == (boolean) tester.invoke(value);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -219,7 +219,7 @@ public final class Option<E> implements Serializable {
                         .orElseThrow(() ->
                             new IllegalStateException("No method in " + value.getClass() + " named get with no parameter")
                         );
-                    Object result;
+                    final Object result;
                     try {
                         result = getter.invoke(value);
                     } catch (IllegalAccessException | InvocationTargetException e) {
