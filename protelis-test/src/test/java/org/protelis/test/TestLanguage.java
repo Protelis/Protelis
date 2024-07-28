@@ -821,7 +821,7 @@ public class TestLanguage {
      */
     @Test
     public void testTuple01() {
-        final Tuple expectedResult = DatatypeFactory.createTuple(new Object[] { 5.0, 4.0, 3.0, 2.0, 1.0, 0.0 });
+        final Tuple expectedResult = DatatypeFactory.createTuple(5.0, 4.0, 3.0, 2.0, 1.0, 0.0);
         runFileWithExplicitResult("/tuple01.pt", expectedResult);
     }
 
