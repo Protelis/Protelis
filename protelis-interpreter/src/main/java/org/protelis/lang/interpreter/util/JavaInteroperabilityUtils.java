@@ -182,10 +182,10 @@ public final class JavaInteroperabilityUtils {
             final AtomicInteger counter = new AtomicInteger();
             return (first, second) -> {
                 final List<ProtelisAST<?>> arguments = ImmutableList.of(
-                    new Constant<>(JavaInteroperabilityUtils.METADATA, first),
-                    new Constant<>(JavaInteroperabilityUtils.METADATA, second)
+                    new Constant<>(METADATA, first),
+                    new Constant<>(METADATA, second)
                 );
-                final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, binaryOperator, arguments);
+                final FunctionCall call = new FunctionCall(METADATA, binaryOperator, arguments);
                 return context.runInNewStackFrame(counter.getAndIncrement(), call::eval);
             };
         }
@@ -208,9 +208,9 @@ public final class JavaInteroperabilityUtils {
             final AtomicInteger counter = new AtomicInteger();
             return (argument) -> {
                 final List<ProtelisAST<?>> arguments = ImmutableList.of(
-                    new Constant<>(JavaInteroperabilityUtils.METADATA, argument)
+                    new Constant<>(METADATA, argument)
                 );
-                final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, function, arguments);
+                final FunctionCall call = new FunctionCall(METADATA, function, arguments);
                 return (R) context.runInNewStackFrame(counter.getAndIncrement(), call::eval);
             };
         }
