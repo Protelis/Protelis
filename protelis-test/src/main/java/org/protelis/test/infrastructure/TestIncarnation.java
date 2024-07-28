@@ -99,7 +99,7 @@ public final class TestIncarnation implements Incarnation<Object> {
         if (param == null) {
             return new ExponentialTime<>(Double.POSITIVE_INFINITY, rand);
         }
-        double frequency;
+        double frequency; // NOPMD: false positive, declaring final does not compile.
         try {
             frequency = Double.parseDouble(param);
         } catch (final NumberFormatException e) {

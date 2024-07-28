@@ -237,7 +237,7 @@ public final class InfrastructureTester {
         if (is == null) {
             throw new IllegalArgumentException(resource + " is not an accessible resource.");
         }
-        String test;
+        final String test;
         try {
             test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final YamlLoader loader = new YamlLoader(test);
