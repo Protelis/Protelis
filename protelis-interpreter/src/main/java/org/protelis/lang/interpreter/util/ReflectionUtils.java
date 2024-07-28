@@ -55,6 +55,7 @@ public final class ReflectionUtils {
     private static final LoadingCache<Triple<Class<?>, String, List<Class<?>>>, Method> METHOD_CACHE = CacheBuilder
             .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(1, TimeUnit.HOURS)
             .build(new CacheLoader<>() {
+                @Nonnull
                 @Override
                 public Method load(@Nonnull final Triple<Class<?>, String, List<Class<?>>> key) {
                     final List<Class<?>> al = key.getRight();
@@ -112,7 +113,7 @@ public final class ReflectionUtils {
         return Primitives.allWrapperTypes().contains(clazz);
     }
 
-    private static boolean compatibleLength(@Nonnull final Method m, final int args, @Nullable final boolean toBeInjected) {
+    private static boolean compatibleLength(@Nonnull final Method m, final int args, final boolean toBeInjected) {
         final Class<?>[] paramTypes = Objects.requireNonNull(m, "Invoked method cannot be null.")
                 .getParameterTypes();
         /*
