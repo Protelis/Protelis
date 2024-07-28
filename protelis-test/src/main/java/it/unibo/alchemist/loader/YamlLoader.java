@@ -862,7 +862,7 @@ public final class YamlLoader implements Loader, Serializable {
                                 return 1;
                             }
                             L.trace("Fall back to lexicographic comparison for {} and {}", p1, p2);
-                            if (p1.getSimpleName().equals(p1.getSimpleName())) {
+                            if (p1.getSimpleName().equals(p2.getSimpleName())) {
                                 return p1.toString().compareTo(p2.toString());
                             }
                             return p1.getSimpleName().compareTo(p2.getSimpleName());
