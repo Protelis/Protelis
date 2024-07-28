@@ -43,8 +43,9 @@ public final class LazyField<T> extends AbstractField<T> {
     @Nonnull
     private transient LoadingCache<DeviceUID, T> neighbors = CacheBuilder.newBuilder()
             .build(new CacheLoader<>() {
+                @Nonnull
                 @Override
-                public T load(final DeviceUID key) {
+                public T load(@Nonnull final DeviceUID key) {
                     return mapper.apply(key);
                 }
             });
@@ -124,6 +125,7 @@ public final class LazyField<T> extends AbstractField<T> {
         return result;
     }
 
+    @Nonnull
     @Override
     public DeviceUID getLocalDevice() {
         return localDevice;
