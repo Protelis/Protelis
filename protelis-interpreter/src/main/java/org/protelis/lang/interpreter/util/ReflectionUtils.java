@@ -213,13 +213,14 @@ public final class ReflectionUtils {
         }
         if (fieldTarget || !fieldIndexes.isEmpty()) {
             return Fields.apply(
-                    (actualT, actualA) -> ReflectionUtils.invokeMethod(context, toInvoke, actualT, actualA),
-                    fieldTarget,
-                    fieldIndexes.toArray(),
-                    target,
-                    args);
+                (actualT, actualA) -> invokeMethod(context, toInvoke, actualT, actualA),
+                fieldTarget,
+                fieldIndexes.toArray(),
+                target,
+                args
+            );
         }
-        return ReflectionUtils.invokeMethod(context, toInvoke, target, args);
+        return invokeMethod(context, toInvoke, target, args);
     }
 
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "we need to intercept all runtime events")
