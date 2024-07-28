@@ -202,7 +202,7 @@ public enum Op2 implements WithBytecode {
         return unsupported(op, a, b);
     }
 
-    private static <T> T selection(final String op, final T a, final T b, final BinaryOperator<T> selector) {
+    private static <T> T selection(final T a, final T b, final BinaryOperator<T> selector) {
         final boolean aNum = a instanceof Number;
         final boolean bNum = b instanceof Number;
         if (aNum && bNum) {
@@ -239,11 +239,11 @@ public enum Op2 implements WithBytecode {
     }
 
     private static Object min(final Object a, final Object b) {
-        return selection("min", a, b, (v1, v2) -> v2);
+        return selection(a, b, (v1, v2) -> v2);
     }
 
     private static Object max(final Object a, final Object b) {
-        return selection("max", a, b, (v1, v2) -> v1);
+        return selection(a, b, (v1, v2) -> v1);
     }
 
     private static Object minus(final Object a, final Object b) {
