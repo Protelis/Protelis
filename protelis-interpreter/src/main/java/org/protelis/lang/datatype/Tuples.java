@@ -81,8 +81,8 @@ public final class Tuples {
         final boolean t1Bigger = t1.size() > t2.size();
         final Tuple big = t1Bigger ? t1 : t2;
         final Tuple small = t1Bigger ? t2 : t1;
-        final int max = (int) big.size();
-        final int min = (int) small.size();
+        final int max = big.size();
+        final int min = small.size();
         final Object[] res = new Object[max];
         for (int i = 0; i < max; i++) {
             res[i] = i < min ? fun.apply(t1.get(i), t2.get(i)) : big.get(i);
