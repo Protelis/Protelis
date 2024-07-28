@@ -542,7 +542,7 @@ public final class YamlLoader implements Loader, Serializable {
                     }
                 }
                 final List<Map<String, Object>> programs = StreamSupport.stream((List<List<Map<String, Object>>>) programsObj)
-                        .flatMap(pool -> StreamSupport.stream(pool))
+                        .flatMap(StreamSupport::stream)
                         .collect(Collectors.toList());
                 final Object nodeDescriptor = displacement.get(NODE);
                 final Supplier<Node<T>> nodeSupplier = makeSupplier(
