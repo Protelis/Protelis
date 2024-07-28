@@ -32,7 +32,7 @@ import org.protelis.vm.NetworkManager;
  * device and the most recent messages received from each neighbor.
  */
 public class CachingNetworkManager implements NetworkManager {
-    private ImmutableMap<CodePath, Object> sendCache; // NOPMD: the type is meant to be immutable
+    private ImmutableMap<CodePath, Object> sendCache;
     private final Map<DeviceUID, Map<CodePath, Object>> receiveCache = new HashMap<>();
 
     /**
