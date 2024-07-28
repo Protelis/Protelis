@@ -814,7 +814,7 @@ public final class YamlLoader implements Loader, Serializable {
     }
     private static Stream<Class<?>> makeClassStream(final Object... objects) {
         return J8Arrays.stream(objects)
-            .filter(o -> o != null)
+            .filter(Objects::nonNull)
             .map(Object::getClass);
     }
     private static <O> O create(
