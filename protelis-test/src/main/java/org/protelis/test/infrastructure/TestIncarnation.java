@@ -90,8 +90,12 @@ public final class TestIncarnation implements Incarnation<Object> {
     }
 
     @Override
-    public TimeDistribution<Object> createTimeDistribution(final RandomGenerator rand, final Environment<Object> env,
-                    final Node<Object> node, final String param) {
+    public TimeDistribution<Object> createTimeDistribution(
+        final RandomGenerator rand,
+        final Environment<Object> env,
+        final Node<Object> node,
+        final String param
+    ) {
         if (param == null) {
             return new ExponentialTime<>(Double.POSITIVE_INFINITY, rand);
         }
