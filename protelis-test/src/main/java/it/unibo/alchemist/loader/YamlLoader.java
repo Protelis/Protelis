@@ -377,7 +377,7 @@ public final class YamlLoader implements Loader, Serializable {
                     }
                     throw new IllegalAlchemistYAMLException("Could not create an exporter with " + obj);
                 })
-                .filter(e -> e != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList())
             );
         } else {
