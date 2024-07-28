@@ -132,7 +132,7 @@ public final class LazyField<T> extends AbstractField<T> {
     }
 
     private <R> Iterable<R> iterateWith(@Nonnull final Function<DeviceUID, R> extractor) {
-        return () -> new Iterator<R>() {
+        return () -> new Iterator<>() {
             private final Iterator<DeviceUID> originKeys = keys().iterator();
 
             @Override
