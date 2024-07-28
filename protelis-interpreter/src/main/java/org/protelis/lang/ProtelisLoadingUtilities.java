@@ -48,7 +48,7 @@ public final class ProtelisLoadingUtilities {
 
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<Object, Reference>() {
+            .build(new CacheLoader<>() {
                 @Override
                 @Nonnull
                 public Reference load(@Nonnull final Object key) {
