@@ -7,6 +7,7 @@
 package org.protelis.lang.interpreter.impl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Map;
 import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.interpreter.ProtelisAST;
@@ -15,7 +16,6 @@ import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,7 +75,7 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
              * All branches must get evaluated **before** their result are pushed to the variables map.
              * Otherwise, subsequent branch evaluation may overwrite previous variable assignments.
              */
-            final HashMap<Reference, Object> arguments = newLinkedHashMapWithExpectedSize(getBranchesNumber());
+            final Map<Reference, Object> arguments = newLinkedHashMapWithExpectedSize(getBranchesNumber());
             for (int i = 0; i < getBranchesNumber(); i++) {
                 arguments.put(functionDefinition.getArgumentByPosition(i), context.runInNewStackFrame(i, getBranch(i)::eval));
             }
