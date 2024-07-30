@@ -1,3 +1,14 @@
+## [17.3.40](https://github.com/Protelis/Protelis/compare/17.3.39...17.3.40) (2024-07-30)
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.93 ([4e985b5](https://github.com/Protelis/Protelis/commit/4e985b5d7dc2b6db347dbe179d1987184316d9a3))
+* **deps:** update node.js to 20.16 ([f069536](https://github.com/Protelis/Protelis/commit/f0695367a6a18521a19447e4fd924a78e748d4cd))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.53 ([1113fa9](https://github.com/Protelis/Protelis/commit/1113fa9c7627f69b5c0a0d8f8e14e28b45a8fe98))
+
 ## [17.3.39](https://github.com/Protelis/Protelis/compare/17.3.38...17.3.39) (2024-07-26)
 
 ### Dependency updates
