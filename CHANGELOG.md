@@ -1,3 +1,14 @@
+## [17.3.42](https://github.com/Protelis/Protelis/compare/17.3.41...17.3.42) (2024-07-31)
+
+### Dependency updates
+
+* **deps:** update plugin java-qa to v1.60.2 ([ed8a734](https://github.com/Protelis/Protelis/commit/ed8a734b20b6b300a95571fa269323b57728e173))
+* **deps:** update plugin kotlin-qa to v0.64.3 ([01846c4](https://github.com/Protelis/Protelis/commit/01846c4224f745de0812de2c77aef63da4237f78))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.54 ([713b707](https://github.com/Protelis/Protelis/commit/713b707bb166850a4670f8e35b262b53a744a5d8))
+
 ## [17.3.41](https://github.com/Protelis/Protelis/compare/17.3.40...17.3.41) (2024-07-31)
 
 ### Dependency updates
