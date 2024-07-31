@@ -1,3 +1,9 @@
+## [17.3.43](https://github.com/Protelis/Protelis/compare/17.3.42...17.3.43) (2024-07-31)
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.55 ([2499dd1](https://github.com/Protelis/Protelis/commit/2499dd1a2c06b08b4a6167b6a877db749c1628bd))
+
 ## [17.3.42](https://github.com/Protelis/Protelis/compare/17.3.41...17.3.42) (2024-07-31)
 
 ### Dependency updates
