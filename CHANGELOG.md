@@ -1,3 +1,90 @@
+## [17.3.41](https://github.com/Protelis/Protelis/compare/17.3.40...17.3.41) (2024-07-31)
+
+### Dependency updates
+
+* **deps:** update org.danilopianini.gradle-java-qa to 1.60.1 ([97db12e](https://github.com/Protelis/Protelis/commit/97db12e1518d909ad612b5249d43c5e6d04373cc))
+* **deps:** update org.danilopianini.gradle-java-qa to 1.60.2-dev03-737f1da and remove redundant suppressions ([e3583d5](https://github.com/Protelis/Protelis/commit/e3583d5e303ec8b812f6303d4021de64ea32329b))
+* **deps:** update org.danilopianini.gradle-java-qa to 1.60.2-dev04-1928fe1 ([68b232d](https://github.com/Protelis/Protelis/commit/68b232d32e1efcb36dfb5fd2430de4fe4ff85bbf))
+* **deps:** update plugin java-qa to v1.59.0 ([547c5bb](https://github.com/Protelis/Protelis/commit/547c5bb0d8ccd5d75de568233f51ceb83efad111))
+* **deps:** update plugin kotlin-qa to v0.64.1 ([6e00921](https://github.com/Protelis/Protelis/commit/6e009210fa5ae1e9fc4893942152f0c3544d70b0))
+
+### Bug Fixes
+
+* **interpreter:** declare compatibility with Protelis parser 11 ([f7d2f7b](https://github.com/Protelis/Protelis/commit/f7d2f7ba28525dce81b51bc41392291e12d3c219))
+* **test:** fix bug in lexicographic ordering of class names ([97d7034](https://github.com/Protelis/Protelis/commit/97d7034343d466ea0de2e83db7dd1c53af3d2a81))
+
+### Documentation
+
+* **interpreter:** add a `<p>` tag to prevent white spaces from being ignored ([b4f88ec](https://github.com/Protelis/Protelis/commit/b4f88ec72fed4c4d2cb863c52c9da54ab7a181f3))
+* **interpreter:** add a `<p>` tag to prevent white spaces from being ignored ([a28c7ba](https://github.com/Protelis/Protelis/commit/a28c7ba615bb387d39c04aedb1df26211d72f33f))
+
+### Performance improvements
+
+* **interpreter:** avoid concatenating nonliterals in a String Buffer ([8f45833](https://github.com/Protelis/Protelis/commit/8f4583394d6a8af61766e93215d0e37c2ebdb0c3))
+* **interpreter:** initialize a larger StringBuilder ([e6fc531](https://github.com/Protelis/Protelis/commit/e6fc53194874af0eb0a97642bdee40177ddcb129))
+* **interpreter:** remove dangling javadoc comment in `ProtelisRuntimeException` ([1c2a627](https://github.com/Protelis/Protelis/commit/1c2a627dcce029d8eeee6ed033deae8cbe88383b))
+* **interpreter:** use a larger string buffer in `OpUtils` ([2923ac0](https://github.com/Protelis/Protelis/commit/2923ac07d8cbb0400d0cc79d0c00a02355554547))
+
+### Revert previous changes
+
+* **interpreter:** fix Protelis exception management error introduced with a style-fix commit ([0239b33](https://github.com/Protelis/Protelis/commit/0239b3352aa8319f276ef66481398b0355bbc751))
+
+### Tests
+
+* **test:** fix broken debug logging call ([6aca47b](https://github.com/Protelis/Protelis/commit/6aca47b3d23236cff67b0492fc54993ea1ea1a2b))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.1 ([8c22005](https://github.com/Protelis/Protelis/commit/8c22005e478d38e6df095e2b0499bb950b7ca3eb))
+
+### Style improvements
+
+* **interpreter:** add missing @Nonnull annotations in `LazyField` ([f011707](https://github.com/Protelis/Protelis/commit/f011707778211851376a89d498eebc4971c5b68f))
+* **interpreter:** avoid concatenating nonliterals in a StringBuffer/StringBuilder constructor or append() ([8237a99](https://github.com/Protelis/Protelis/commit/8237a99bb9e4bbdc3c71e443251a5620d0cf46ec))
+* **interpreter:** avoid unnecessary qualifier ([2d02fa6](https://github.com/Protelis/Protelis/commit/2d02fa6e429daacebfe305dc08876e90b062486f))
+* **interpreter:** fix usage of nullability annotations in `ReflectionUtils` ([38de187](https://github.com/Protelis/Protelis/commit/38de187142b225a15f3d025ca86b1b94758653ea))
+* **interpreter:** make local variable final ([55de6e6](https://github.com/Protelis/Protelis/commit/55de6e6c2b3a5cd8c2422c6edb5f7e71ea64fe76))
+* **interpreter:** make local variable final in `Option` ([d1244c3](https://github.com/Protelis/Protelis/commit/d1244c39f9c1be0fa03712a7f690bdaf0cc3026e))
+* **interpreter:** prefer `Map` over `HashMap` in `FunctionCall` ([f0dd9b4](https://github.com/Protelis/Protelis/commit/f0dd9b46da984db2975dc54fde42e94121de573b))
+* **interpreter:** prefer method chaining for string buffer ([3f133fd](https://github.com/Protelis/Protelis/commit/3f133fd0484128158a33d918a8e05c6a300f42da))
+* **interpreter:** remove never thrown exception from the method signature in `LazyField` ([9860f76](https://github.com/Protelis/Protelis/commit/9860f767a2e917f660e8a0226dd6fb41e60d1268))
+* **interpreter:** remove unnecessary casts in `Tuples` ([98b1c54](https://github.com/Protelis/Protelis/commit/98b1c54fc3f71196eb2f6c51be1155a7e045da60))
+* **interpreter:** remove unnecessary qualifier `JavaInteroperabilityUtils` ([7672fd0](https://github.com/Protelis/Protelis/commit/7672fd0709e0465b953f696cb074c53ffec18b7f))
+* **interpreter:** remove unnecessary qualifier `Op2` ([7b47e05](https://github.com/Protelis/Protelis/commit/7b47e05aa5a7b01dc95fa080e95fea8ba60ed4ff))
+* **interpreter:** remove unused formal parameter in `Op2`'s method ([9e1beba](https://github.com/Protelis/Protelis/commit/9e1bebafe02f629f45e38d3e6f91db7f867e0471))
+* **interpreter:** remove unused formal parameter in `Op2`'s method ([24e04a9](https://github.com/Protelis/Protelis/commit/24e04a97988b7bede05b5591e7d9e4307bf2d33b))
+* **interpreter:** remove unused import in `ReflectionUtils` ([2ad9a65](https://github.com/Protelis/Protelis/commit/2ad9a655d720a2bcb74c13a671fbc8bebb0ea839))
+* **interpreter:** replace explicit type arguments with a diamond ([39c598d](https://github.com/Protelis/Protelis/commit/39c598d16c910c2065630c5d7292079b786d6360))
+* **interpreter:** replace explicit type arguments with a diamond: `new CacheLoader<>()` ([eda110b](https://github.com/Protelis/Protelis/commit/eda110b8d4fc52f99ad648817cc20f6f9aa5fba5))
+* **interpreter:** replace lambdas with method references in `Op2` ([af91c17](https://github.com/Protelis/Protelis/commit/af91c17f88d3e27ead41288e3a06b0c33acc0e1a))
+* **interpreter:** simplify optional chain ([51f7e96](https://github.com/Protelis/Protelis/commit/51f7e968bcd4f18797a9e83681e74b6352c7a15d))
+* **interpreter:** suppress PMD warning on Protelis Exception creation ([c314c3a](https://github.com/Protelis/Protelis/commit/c314c3aa3bcf315497813c8a719e80181fe9d959))
+* **interpreter:** suppress PMD warning on unused parameter ([ec35e12](https://github.com/Protelis/Protelis/commit/ec35e127f8c2b24747c4793c823fe736b4388377))
+* **interpreter:** use `Optional.of` in `LazyField` ([067d800](https://github.com/Protelis/Protelis/commit/067d80087932905a72f553628269dfbec5fa3680))
+* **interpreter:** use diamond operator in `LazyField` ([e6e8aac](https://github.com/Protelis/Protelis/commit/e6e8aac018273d1224448f959b0bd95084c4fa69))
+* **interpreter:** use diamond operator in `LazyField` ([1b051dd](https://github.com/Protelis/Protelis/commit/1b051dd5bb7eabe3f983d74af11ca16544aaa4c5))
+* **interpreter:** use diamond operator in `LazyField` ([837ab36](https://github.com/Protelis/Protelis/commit/837ab36b948097fa24fe5983623cf4d5d71408fb))
+* **interpreter:** use diamond operator in `ReflectionUtils` ([90e905f](https://github.com/Protelis/Protelis/commit/90e905f70b9781a85bd7d12640a15e398692c864))
+* **test:** deal with variables that PMD thinks are final ([2ecc11d](https://github.com/Protelis/Protelis/commit/2ecc11d4195f764b6d2132fdf51fc12301eb1966))
+* **test:** do not use unnecessary qualifier `ReflectionUtils` inside the same class ([8adc07c](https://github.com/Protelis/Protelis/commit/8adc07cadb82268d392ecb7f5a38591746c61662))
+* **test:** fix "Unnecessary explicit array creation for varargs method call" ([fa1b1d8](https://github.com/Protelis/Protelis/commit/fa1b1d817c859806ed1979088cde5ea8bc70bfb0))
+* **test:** fix "Unnecessary explicit array creation for varargs method call" ([6273acb](https://github.com/Protelis/Protelis/commit/6273acb94bae1b3e60fbacb5c805da87a9314057))
+* **test:** fix "Unnecessary explicit boxing" ([cecfd31](https://github.com/Protelis/Protelis/commit/cecfd31028c25def862aae8ba80baffcaaea33f7))
+* **test:** fix indentation ([81cb2d7](https://github.com/Protelis/Protelis/commit/81cb2d7d1dc2d44b48be717b2a6813354a011b55))
+* **test:** fix wrong method indentation ([f195c03](https://github.com/Protelis/Protelis/commit/f195c0330a909c714e54415f0310af83faadde55))
+* **test:** make local variable final ([762c8c1](https://github.com/Protelis/Protelis/commit/762c8c17cff2a3047a34845277cd409c32ae45de))
+* **test:** make test result parsing cleaner ([711008f](https://github.com/Protelis/Protelis/commit/711008fc680a0f37688f0963eb533693787aa7f3))
+* **test:** remove redundant casts ([a8b6c55](https://github.com/Protelis/Protelis/commit/a8b6c5501a32304687aa2b15bd0e459d5c1a7593))
+* **test:** remove singular field ([dc74c56](https://github.com/Protelis/Protelis/commit/dc74c561821733f944138d4826bbb08340179ad4))
+* **test:** remove unnecessary double conversion ([6a7b29f](https://github.com/Protelis/Protelis/commit/6a7b29fd95a0c65ffd1baaf90c0294f7dbbac53a))
+* **test:** replace instanceof with null checks ([d23ceb5](https://github.com/Protelis/Protelis/commit/d23ceb58a06542bb933b546aa0a2469b056bb3cb))
+* **test:** replace lambda with method reference ([e18b67d](https://github.com/Protelis/Protelis/commit/e18b67dc4ba7fa1d4f613a2298477ac0494eb8b8))
+* **test:** replace lambda with method reference ([ca75e12](https://github.com/Protelis/Protelis/commit/ca75e124052a9b532e8625e97f4ecdf42e242710))
+* **test:** replace lambda with method reference ([c907a3c](https://github.com/Protelis/Protelis/commit/c907a3ccb4eb563fa8fecdf9050a986455d24eab))
+* **test:** replace lambda with method reference ([33b980d](https://github.com/Protelis/Protelis/commit/33b980d7e602982371437149897b26378de3f88e))
+* **test:** replace URL with HTML link ([d4456d8](https://github.com/Protelis/Protelis/commit/d4456d86f7b8cafbac077310d7b40513c0349218))
+* **test:** suppress PMD warning on ImmutableMap used as type ([ceb7eea](https://github.com/Protelis/Protelis/commit/ceb7eea1e18530e75bc883413099051b9436167d))
+
 ## [17.3.40](https://github.com/Protelis/Protelis/compare/17.3.39...17.3.40) (2024-07-30)
 
 ### Dependency updates
