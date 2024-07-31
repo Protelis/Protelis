@@ -1,3 +1,14 @@
+## [17.3.44](https://github.com/Protelis/Protelis/compare/17.3.43...17.3.44) (2024-07-31)
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.94 ([c623c5b](https://github.com/Protelis/Protelis/commit/c623c5b1b9e9b13cc149d35ef12b8de33bfad3a3))
+* **deps:** update plugin kotlin-qa to v0.65.0 ([080a377](https://github.com/Protelis/Protelis/commit/080a377edd99892289280d53f7d85c87c5b6dc5f))
+
+### Documentation
+
+* **deps:** update plugin protelisdoc to v3.0.56 ([6f89cf9](https://github.com/Protelis/Protelis/commit/6f89cf9b4d0164ba7d4bcd9ce13f87e05b9a8470))
+
 ## [17.3.43](https://github.com/Protelis/Protelis/compare/17.3.42...17.3.43) (2024-07-31)
 
 ### Documentation
