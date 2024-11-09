@@ -1,3 +1,10 @@
+## [17.5.0](https://github.com/Protelis/Protelis/compare/17.4.0...17.5.0) (2024-11-09)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.1.0 ([#1576](https://github.com/Protelis/Protelis/issues/1576)) ([6632403](https://github.com/Protelis/Protelis/commit/663240389014d5d20e60ef090dc63f42d9acdfcc))
+* **deps:** update plugin multijvmtesting to v1.3.0 ([#1574](https://github.com/Protelis/Protelis/issues/1574)) ([3400972](https://github.com/Protelis/Protelis/commit/34009726611a21a6d2a3e47091c553368282f526))
+
 ## [17.4.0](https://github.com/Protelis/Protelis/compare/17.3.47...17.4.0) (2024-11-08)
 
 ### Dependency updates
