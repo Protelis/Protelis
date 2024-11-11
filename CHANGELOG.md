@@ -1,3 +1,9 @@
+## [17.6.0](https://github.com/Protelis/Protelis/compare/17.5.0...17.6.0) (2024-11-11)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.1.1 ([#1577](https://github.com/Protelis/Protelis/issues/1577)) ([0ac8773](https://github.com/Protelis/Protelis/commit/0ac8773ed74cabfc9fda779b47fd4bf1bf3bc59a))
+
 ## [17.5.0](https://github.com/Protelis/Protelis/compare/17.4.0...17.5.0) (2024-11-09)
 
 ### Dependency updates
