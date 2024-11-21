@@ -1,3 +1,10 @@
+## [17.7.0](https://github.com/Protelis/Protelis/compare/17.6.1...17.7.0) (2024-11-21)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.2.0 ([#1597](https://github.com/Protelis/Protelis/issues/1597)) ([95a9de2](https://github.com/Protelis/Protelis/commit/95a9de24a2b5ddd8684f70b998ce62e20324c9dc))
+* **deps:** update plugin kotlin-qa to v0.70.2 ([#1601](https://github.com/Protelis/Protelis/issues/1601)) ([3ca82a3](https://github.com/Protelis/Protelis/commit/3ca82a3f2843762cc610a79ee6c132ab33adc2cf))
+
 ## [17.6.1](https://github.com/Protelis/Protelis/compare/17.6.0...17.6.1) (2024-11-21)
 
 ### Dependency updates
