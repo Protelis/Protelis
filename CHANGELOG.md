@@ -1,3 +1,29 @@
+## [17.6.1](https://github.com/Protelis/Protelis/compare/17.6.0...17.6.1) (2024-11-21)
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v8.11 ([#1578](https://github.com/Protelis/Protelis/issues/1578)) ([3f9cd9d](https://github.com/Protelis/Protelis/commit/3f9cd9dfedb5880e32a48f6fee65a48162b6a38f))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.179 ([#1579](https://github.com/Protelis/Protelis/issues/1579)) ([78b3206](https://github.com/Protelis/Protelis/commit/78b3206b0d6b430cca1c9366992a9a66ced24028))
+* **deps:** update dependency it.unibo.alchemist:alchemist-loading to v35 ([#1580](https://github.com/Protelis/Protelis/issues/1580)) ([4bcc86d](https://github.com/Protelis/Protelis/commit/4bcc86d64fc875c337fc9fc74eaaacceb4c057d3))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.115 ([#1581](https://github.com/Protelis/Protelis/issues/1581)) ([489ff59](https://github.com/Protelis/Protelis/commit/489ff59bf3bec45a5bafd88db37d49468d439a4d))
+* **deps:** update plugin com.gradle.develocity to v3.18.2 ([#1583](https://github.com/Protelis/Protelis/issues/1583)) ([59ac538](https://github.com/Protelis/Protelis/commit/59ac538aff47b8e20858d5929318f550c937f633))
+* **deps:** update plugin kotlin-qa to v0.70.0 ([#1588](https://github.com/Protelis/Protelis/issues/1588)) ([e5acf5d](https://github.com/Protelis/Protelis/commit/e5acf5d37c9f054a2a477386b239172d503f7b0d))
+* **deps:** update plugin kotlin-qa to v0.70.1 ([#1590](https://github.com/Protelis/Protelis/issues/1590)) ([4f4542f](https://github.com/Protelis/Protelis/commit/4f4542f19c216becd432b0bc0531b2ed75c5e7a4))
+* **deps:** update plugin protelisdoc to v3.0.73 ([#1589](https://github.com/Protelis/Protelis/issues/1589)) ([13bc742](https://github.com/Protelis/Protelis/commit/13bc74237d3c0dd94c8644e5fb6232cf0f78e74f))
+* **deps:** update plugin publishoncentral to v5.1.10 ([#1592](https://github.com/Protelis/Protelis/issues/1592)) ([6aa5337](https://github.com/Protelis/Protelis/commit/6aa5337c811f1bd9067d1d86ac21efad248c6575))
+
+### Revert previous changes
+
+* Revert "chore(deps): update dependency it.unibo.alchemist:alchemist-loading to v35" ([#1602](https://github.com/Protelis/Protelis/issues/1602)) ([d7fbbee](https://github.com/Protelis/Protelis/commit/d7fbbee3e1767bdbed0840078c3598bb40dc3958))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.13 ([#1582](https://github.com/Protelis/Protelis/issues/1582)) ([2763520](https://github.com/Protelis/Protelis/commit/2763520aa2d78afb0b20d80c2322899dac340ed0))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.14 ([#1584](https://github.com/Protelis/Protelis/issues/1584)) ([7a27079](https://github.com/Protelis/Protelis/commit/7a270795cb704b0e7af934c22de0aa4f0a3ffa44))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.15 ([#1585](https://github.com/Protelis/Protelis/issues/1585)) ([5686243](https://github.com/Protelis/Protelis/commit/5686243d1518b7992595940b0e7c697bbe5bae7c))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.16 ([#1586](https://github.com/Protelis/Protelis/issues/1586)) ([afa39e4](https://github.com/Protelis/Protelis/commit/afa39e48ea704d76a4913584de54a2281b75ac33))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.5.17 ([#1587](https://github.com/Protelis/Protelis/issues/1587)) ([fb5cebb](https://github.com/Protelis/Protelis/commit/fb5cebb97307a13e534d76d36a34954e1add399d))
+
 ## [17.6.0](https://github.com/Protelis/Protelis/compare/17.5.0...17.6.0) (2024-11-11)
 
 ### Dependency updates
