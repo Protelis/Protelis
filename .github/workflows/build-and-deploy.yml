@@ -24,7 +24,7 @@ jobs:
           build-command: >-
             ./gradlew assemble shadowJar
           deploy-command: >-
-            ./gradlew uploadKotlin close drop --parallel
+            ./gradlew uploadKotlin close dropStagingRepositoryOnMavenCentral --parallel
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: >-
             ${{
