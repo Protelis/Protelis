@@ -35,9 +35,6 @@ protelisdoc {
     debug.set(false)
 }
 
-val dokkaOutput = tasks.protelisdoc.get().outputDirectory
-
-tasks.withType<org.danilopianini.gradle.mavencentral.JavadocJar> {
-    dependsOn(tasks.protelisdoc)
-    from(dokkaOutput)
+tasks.javadocJar.configure {
+    from(tasks.protelisdoc)
 }

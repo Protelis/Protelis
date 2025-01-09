@@ -3,10 +3,10 @@ echo 'Creating shadowJar and protelisdoc...'
 ./gradlew protelisdoc shadowJar --parallel || ./gradlew shadowJar --parallel || exit 2
 echo '...assemblage done.'
 echo 'Releasing on Maven Central...'
-./gradlew uploadKotlin releaseStagingRepositoryOnMavenCentral --parallel || exit 3
+./gradlew uploadAll releaseStagingRepositoryOnMavenCentral --parallel || exit 3
 echo '...released.'
 echo 'Releasing on GitHub packages...'
-./gradlew publishKotlinOSSRHPublicationToGithubRepository --continue || true
+./gradlew publishAllToGithubRepository --continue || true
 echo '...released.'
 #echo 'Publishing the javadocs on Surge...'
 #surge build/docs/javadoc/ protelis-doc.surge.sh || exit 4
