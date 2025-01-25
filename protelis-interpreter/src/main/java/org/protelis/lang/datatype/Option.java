@@ -10,6 +10,7 @@ package org.protelis.lang.datatype;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.protelis.vm.ExecutionContext;
 
@@ -412,6 +413,10 @@ public final class Option<E> implements Serializable {
      * be thrown
      * @return the present value
      */
+    @SuppressFBWarnings(
+        value = "THROWS_METHOD_THROWS_RUNTIMEEXCEPTION",
+        justification = "False positive, the RuntimeException is provided by the supplier."
+    )
     public <X extends RuntimeException> E orElseThrow(final Supplier<? extends X> exceptionSupplier) {
         if (isPresent()) {
             return get();
