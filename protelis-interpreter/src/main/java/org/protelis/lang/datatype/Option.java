@@ -37,8 +37,8 @@ import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runPr
  * <p>A non-null {@code Option<E>} reference can be used as a replacement for a nullable {@code T}
  * reference. It allows you to represent "a {@code T} that must be present" and a "a {@code T} that
  * might be absent" as two distinct types in your program, which can aid clarity.
- * 
- * Protelis recommends to import and use Option when interacting with Java methods that may return null.
+ *
+ * <p>Protelis recommends to import and use Option when interacting with Java methods that may return null.</p>
  *
  * @param <E> the type of instance that can be contained. {@code Option} is naturally covariant on
  *     this type, so it is safe to cast an {@code Option<T>} to {@code Option<S>} for any
