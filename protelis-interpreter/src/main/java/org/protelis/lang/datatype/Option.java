@@ -455,7 +455,7 @@ public final class Option<E> implements Serializable {
 
     @Override
     public String toString() {
-        return isEmpty() ? "Option.None" : "Option.Some(" + internal.get() + ')';
+        return internal.transform(it -> "Option.Some(" + it + ')').or("Option.None");
     }
 
     /**
