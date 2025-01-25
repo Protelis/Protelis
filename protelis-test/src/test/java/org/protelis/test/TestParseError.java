@@ -105,7 +105,7 @@ public class TestParseError {
      *             in case test does not fail
      */
     @Test(expected = AssertionError.class)
-    public void testParseError6() throws Exception {
+    public void testParseError6() {
         test("parseError6");
     }
 
