@@ -86,7 +86,7 @@ public final class JVMEntity implements Serializable {
     public Object getValue() {
         if (value == null) {
             try {
-                switch (memberType) {
+                switch (memberType) { // NOPMD: exhaustive switch checks are not available in Java 11
                     case FIELD:
                         final java.lang.reflect.Field field = getType().getField(memberName);
                         if (Modifier.isStatic(field.getModifiers())) {
