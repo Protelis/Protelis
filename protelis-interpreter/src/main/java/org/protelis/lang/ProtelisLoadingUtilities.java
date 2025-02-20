@@ -172,7 +172,7 @@ public final class ProtelisLoadingUtilities {
     public static Reference referenceFor(final Object o) {
         try {
             return REFERENCES.get(o);
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             throw new IllegalStateException("Unable to create a reference for " + o, e);
         }
     }

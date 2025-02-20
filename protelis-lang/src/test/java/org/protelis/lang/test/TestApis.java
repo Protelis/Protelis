@@ -21,6 +21,18 @@ import org.slf4j.LoggerFactory;
  * Testing Protelis core libraries.
  */
 public class TestApis {
+
+    /**
+     * Print the current method name.
+     */
+    @ClassRule
+    public static final TestRule WATCHER = new TestWatcher() {
+        @Override
+        protected void starting(final Description description) {
+            L.info(description.getMethodName());
+        }
+    };
+
     private static final Logger L = LoggerFactory.getLogger(TestApis.class);
 
     private static void test(final String file) {
@@ -38,17 +50,6 @@ public class TestApis {
     private static void testProgram(final String file) {
         ProgramTester.runFileWithMultipleRuns(file);
     }
-
-    /**
-     * Print the current method name.
-     */
-    @ClassRule
-    public static final TestRule WATCHER = new TestWatcher() {
-        @Override
-        protected void starting(final Description description) {
-            L.info(description.getMethodName());
-        }
-    };
 
     /**
      * Test aggregation.pt.

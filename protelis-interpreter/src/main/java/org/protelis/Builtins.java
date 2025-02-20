@@ -37,7 +37,6 @@ import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runPr
  */
 public final class Builtins {
 
-    private static final String UNCHECKED = "unchecked";
     /**
      * This variable is used by the interpreter for providing compatibility hints in the Eclipse plugin.
      * See <a href="https://github.com/Protelis/Protelis/issues/245">https://github.com/Protelis/Protelis/issues/245</a>.
@@ -48,6 +47,9 @@ public final class Builtins {
      * See <a href="https://github.com/Protelis/Protelis/issues/245">https://github.com/Protelis/Protelis/issues/245</a>.
      */
     public static final ImmutableList<Integer> MAXIMUM_PARSER_VERSION = ImmutableList.of(11, 1, 0);
+
+    private static final String OF_TYPE = " of type ";
+    private static final String UNCHECKED = "unchecked";
 
     private Builtins() { }
 
@@ -122,8 +124,8 @@ public final class Builtins {
      * Reifies a Field into a Java Map for interoperability and debug purposes.
      *
      * @param field the field to reify
-     * @return a map having {@link DeviceUID}s as keys and field values as values
      * @param <T> the field (and return map values) type
+     * @return a map having {@link DeviceUID}s as keys and field values as values
      */
     public static <T> Map<DeviceUID, T> fieldToMap(final Field<T> field) {
         return field.toMap();
@@ -131,7 +133,7 @@ public final class Builtins {
 
     /**
      * Folds a field, <b>excluding the local value</b>. This method requires a base
-     * value to begin the computation with. The base value is used as initial
+     * value to begin the computation with. The base value is used as the initial
      * element. If the field only contains the local value, then the base value is
      * returned.
      *
@@ -139,9 +141,8 @@ public final class Builtins {
      * @param context           {@link ExecutionContext}
      * @param target            the field to be reduced
      * @param reductionFunction the reduction function
-     * @return an {@link Option} with the result of the field reduction, or an empty
-     *         option.
      * @param base the base value
+     * @return an {@link Option} with the result of the field reduction, or an empty option.
      */
     public static <T> T foldHood(
         @Nonnull final ExecutionContext context,
@@ -197,14 +198,14 @@ public final class Builtins {
     /**
      * Folds a field by picking the maximum of its values, <b>excluding the local
      * value</b>. This method requires a base value to begin the computation with.
-     * The base value is used as initial element. If the field only contains the
+     * The base value is used as the initial element. If the field only contains the
      * local value, then the base value is returned. This method requires the field
      * elements to implement {@link Comparable}.
      *
      * @param <T>    field and result type
      * @param target the field to be reduced
-     * @return the maximum value among the field values and base.
      * @param base the base value
+     * @return the maximum value among the field values and base.
      */
     public static <T extends Comparable<T>> T foldMax(final T base, final Field<T> target) {
         return target.foldValuesExcludingLocal(base, Builtins::max);
@@ -236,14 +237,14 @@ public final class Builtins {
     /**
      * Folds a field by picking the minimum of its values, <b>excluding the local
      * value</b>. This method requires a base value to begin the computation with.
-     * The base value is used as initial element. If the field only contains the
+     * The base value is used as the initial element. If the field only contains the
      * local value, then the base value is returned. This method requires the field
      * elements to implement {@link Comparable}.
      *
      * @param <T>               field and result type
      * @param target            the field to be reduced
-     * @return the minimum value among the field values and base.
      * @param base the base value
+     * @return the minimum value among the field values and base.
      */
     public static <T extends Comparable<T>> T foldMin(final T base, final Field<T> target) {
         return target.foldValuesExcludingLocal(base, Builtins::min);
@@ -251,7 +252,7 @@ public final class Builtins {
 
     /**
      * Folds the field, including the local value, by computing the sum.
-     * The sum operation must be well defined for the field type.
+     * The sum operation must be well-defined for the field type.
      *
      * @param <T>               field and result type
      * @param target            target field
@@ -264,14 +265,13 @@ public final class Builtins {
     /**
      * Folds a field by computing the sum of its values, <b>excluding the local
      * value</b>. This method requires a base value to begin the computation with.
-     * The base value is used as initial element. If the field only contains the
-     * local value, then the base value is returned. The sum operation must be well
-     * defined for the field type.
+     * The base value is used as the initial element. If the field only contains the
+     * local value, then the base value is returned. The sum operation must be well-defined for the field type.
      *
      * @param <T>    field and result type
      * @param target the field to be reduced
-     * @return the sum of the field values and base
      * @param base the base value
+     * @return the sum of the field values and base
      */
     public static <T> T foldSum(final T base, final Field<T> target) {
         return target.foldValuesExcludingLocal(base, Builtins::sum);
@@ -279,7 +279,7 @@ public final class Builtins {
 
     /**
      * Folds the field, including the local value, by computing the union. The union
-     * operation must be well defined for the field type, e.g., this operation can
+     * operation must be well-defined for the field type, e.g., this operation can
      * work on a field of tuples.
      *
      * @param <T>    field and result type
@@ -293,14 +293,14 @@ public final class Builtins {
     /**
      * Folds a field by computing the union, <b>excluding the local value</b>. This
      * method requires a base value to begin the computation with. The base value is
-     * used as initial element. If the field only contains the local value, then the
-     * base value is returned. The union operation must be well defined for the
+     * used as the initial element. If the field only contains the local value, then the
+     * base value is returned. The union operation must be well-defined for the
      * field type, e.g., this operation can work on a field of tuples.
      *
      * @param <T>    field and result type
      * @param target the field to be reduced
-     * @return the sum of the field values and base
      * @param base the base value
+     * @return the sum of the field values and base
      */
     public static <T> T foldUnion(final T base, final Field<T> target) {
         return target.foldValuesExcludingLocal(base, Builtins::union);
@@ -339,8 +339,8 @@ public final class Builtins {
      *
      * @param a a comparable
      * @param b another comparable
-     * @return the smallest between the two parameters
      * @param <T> the type of objects being compared
+     * @return the smallest between the two parameters
      */
     public static <T extends Comparable<T>> T min(final T a, final T b) {
         return selectComparable(a, b, c -> c < 0);
@@ -348,11 +348,11 @@ public final class Builtins {
 
     private static <T extends Comparable<T>> T selectComparable(final T a, final T b, final IntPredicate selector) {
         if (a.getClass() == b.getClass() || a.getClass().isAssignableFrom(b.getClass())) {
-            // Same types, or A is superclass (hence should be comparable with B)
+            // Same types, or A is a superclass (hence should be comparable with B)
             return selector.test(a.compareTo(b)) ? a : b;
         }
         if (b.getClass().isAssignableFrom(a.getClass())) {
-            // B is superclass of A
+            // B is a superclass of A
             return selector.test(b.compareTo(a)) ? b : a;
         }
         // Compare different numbers as double
@@ -511,10 +511,10 @@ public final class Builtins {
                 "Reduction operation over target field " + target
                     + " with type " + target.getExpectedType()
                     + " failed because the provided reduction function reduced "
-                    + a + " of type " + a.getClass().getName()
-                    + " and " + b + " of type " + b.getClass().getName()
+                    + a + OF_TYPE + a.getClass().getName()
+                    + " and " + b + OF_TYPE + b.getClass().getName()
                     + " into " + reductionResult
-                    + " of type " + reductionResult.getClass().getName()
+                    + OF_TYPE + reductionResult.getClass().getName()
                     + " which does not conform to expected type "
                     + expectedType.getName()
             );

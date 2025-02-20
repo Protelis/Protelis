@@ -42,9 +42,6 @@ public class TestParseError {
 
     /**
      * Test parseError1.
-     * 
-     * @throws Exception
-     *             in case test does not fail
      */
     @Test(expected = Exception.class)
     public void testParseError1() {
@@ -61,9 +58,6 @@ public class TestParseError {
 
     /**
      * Test parseError3.
-     * 
-     * @throws Exception
-     *             in case test does not fail
      */
     @Test(expected = AssertionError.class)
     public void testParseError3() {
@@ -72,37 +66,14 @@ public class TestParseError {
 
     /**
      * Test parseError4.
-     * 
-     * @throws Exception
-     *             in case test does not fail
      */
     @Test(expected = AssertionError.class)
     public void testParseError4() {
         test("parseError4");
     }
 
-// TODO check this error
-//    /**
-//     * Test parseError5.
-//     * 
-//     * @throws Exception
-//     *             in case test does not fail
-//     */
-//    @Test
-//    public void testParseError5() throws Exception {
-//        try {
-//            test("parseError5");
-//            throw e;
-//        } catch (AssertionError e) {
-//            assertFalse(e.getMessage().isEmpty());
-//        }
-//    }
-
     /**
      * Test parseError6.
-     * 
-     * @throws Exception
-     *             in case test does not fail
      */
     @Test(expected = AssertionError.class)
     public void testParseError6() {

@@ -13,12 +13,14 @@ import java.io.Serializable;
  * A CodePath is a trace from the root to some node in a VM execution tree. Its
  * use is to allow particular execution locations to be serialized and compared
  * between different VMs, thereby enabling code alignment.
- * 
+ *
+ * <p>
  * It MUST be immutable.
- * 
- * equals and hashCode must be correctly
- * implemented.
- * 
+ *
+ * <p>
+ * equals and hashCode must be correctly implemented.
+ *
+ * <p>
  * The specific implementation of this class is critical for the Protelis
  * generated packet size. Prefer quick implementations for simulated
  * environment, and space efficient implementations for networked systems.

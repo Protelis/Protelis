@@ -100,6 +100,7 @@ public final class Either<L, R> implements Serializable {
 
     /**
      * Factory method for a left {@link Either}.
+     *
      * @param value the left of this {@link Either}
      * @param <L> the left type
      * @param <R> the right type
@@ -111,6 +112,7 @@ public final class Either<L, R> implements Serializable {
 
     /**
      * Factory method for a right {@link Either}.
+     *
      * @param value the right of this {@link Either}
      * @param <L> the left type
      * @param <R> the right type

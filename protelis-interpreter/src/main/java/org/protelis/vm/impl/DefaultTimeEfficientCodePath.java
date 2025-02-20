@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.vm.impl;
 
 import java.nio.ByteBuffer;
@@ -25,13 +26,14 @@ import gnu.trove.list.TIntList;
 
 /**
  * A CodePath whose focus is on time performance. Not space efficient, not meant
- * to be used for real world networking.
+ * to be used for real-world networking.
  */
 public final class DefaultTimeEfficientCodePath implements CodePath {
 
     private static final long serialVersionUID = 2L;
     private static final Map<Integer, Bytecode> REVERSE_LOOKUP_BYTECODE = Arrays.stream(Bytecode.values())
           .collect(Collectors.toMap(Bytecode::getCode, Function.identity()));
+    private static final String RIGHT_ARROW = "->";
     private final int[] repr;
     @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient int lazyHash;
@@ -51,10 +53,11 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
             && Arrays.equals(repr, ((DefaultTimeEfficientCodePath) obj).repr);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public int hashCode() {
         if (lazyHash == 0) {
-            final Hasher murmur = Hashing.murmur3_32().newHasher();
+            final Hasher murmur = Hashing.murmur3_32_fixed().newHasher();
             for (final int x: repr) {
                 murmur.putInt(x);
             }
@@ -69,11 +72,11 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
             lazyString = "CodePath" + Arrays.stream(repr)
                 .mapToObj(code ->
                     Optional.ofNullable(REVERSE_LOOKUP_BYTECODE.get(code))
-                        .map(it -> "->" + it.toString() + "->")
+                        .map(it -> RIGHT_ARROW + it + RIGHT_ARROW)
                         .orElse(intToAscii(code))
                 )
                 .collect(Collectors.joining("", "[", "]"))
-                .replace("->->", "->")
+                .replace("->->", RIGHT_ARROW)
                 .replaceFirst("^\\[->", "[")
                 .replaceFirst("->]$", "]");
         }

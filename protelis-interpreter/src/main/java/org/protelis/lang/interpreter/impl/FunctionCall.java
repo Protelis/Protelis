@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -72,8 +73,8 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
             context.putVariable(ProtelisLoadingUtilities.IT, context.runInNewStackFrame(0, getBranch(0)::eval));
         } else {
             /*
-             * All branches must get evaluated **before** their result are pushed to the variables map.
-             * Otherwise, subsequent branch evaluation may overwrite previous variable assignments.
+             * All branches must get evaluated **before** their result is pushed to the variables' map.
+             * Otherwise, further branch evaluation may overwrite previous variable assignments.
              */
             final Map<Reference, Object> arguments = newLinkedHashMapWithExpectedSize(getBranchesNumber());
             for (int i = 0; i < getBranchesNumber(); i++) {

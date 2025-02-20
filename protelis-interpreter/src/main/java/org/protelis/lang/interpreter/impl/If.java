@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Field;
@@ -36,9 +37,9 @@ public final class If<T> extends AbstractProtelisAST<T> {
      * @param cond
      *            condition
      * @param then
-     *            branch to execute if condition is true (erase otherwise)
+     *            branch to execute if the condition is true (erase otherwise)
      * @param otherwise
-     *            branch to execute if condition is false (erase otherwise)
+     *            branch to execute if the condition is false (erase otherwise)
      */
     public If(
             @Nonnull final Metadata metadata,
@@ -51,7 +52,6 @@ public final class If<T> extends AbstractProtelisAST<T> {
         elseExpression = otherwise;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T evaluate(final ExecutionContext context) {
         return ensureNotAField(

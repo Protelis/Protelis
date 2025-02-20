@@ -21,7 +21,7 @@ public interface CodePathFactory extends Serializable {
 
     /**
      * Creates a {@link CodePath} for the current stack status.
-     * 
+     *
      * @param callStackIdentifiers the stack frames identifiers
      * @param callStackSizes       the stack frame sizes, by frame
      * @return a new {@link CodePath}

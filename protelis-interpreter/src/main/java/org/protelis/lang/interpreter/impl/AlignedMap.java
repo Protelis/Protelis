@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.DatatypeFactory;
@@ -80,13 +81,13 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
         final Field<?> origin = context.runInNewStackFrame(ALIGNED_MAP_GENERATOR.getCode(), fieldGenerator::eval);
         /*
          * Extract one field for each key.
-         * 
+         *
          * This operation translates a field of tuples of tuples of the form:
-         * 
+         *
          * {ID0 : [[key1, val1], [key2, val2]], ID2 : [[key3, val3], [key2, val4]]}
-         * 
+         *
          * into a collection such as:
-         * 
+         *
          * key1 : {ID0 : val1}
          * key2 : {ID0 : val2, ID2 : val4}
          * key3 : {ID2: val3}
@@ -127,12 +128,12 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
          * Get or initialize the mapping between keys and functions
          */
         final List<Tuple> resultList = new ArrayList<>(keyToField.size());
-        final Object defaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), this.defaultValue::eval);
+        final Object actualDefaultValue = context.runInNewStackFrame(ALIGNED_MAP_DEFAULT.getCode(), this.defaultValue::eval);
         for (final Entry<Object, Map<DeviceUID, Object>> keyFieldPair : keyToField.entrySet()) {
             final Object key = keyFieldPair.getKey();
             final Map<DeviceUID, Object> preField = keyFieldPair.getValue();
             final DeviceUID localDeviceUID = context.getDeviceUID();
-            final Object localValue = Optional.ofNullable(preField.remove(localDeviceUID)).orElse(defaultValue);
+            final Object localValue = Optional.ofNullable(preField.remove(localDeviceUID)).orElse(actualDefaultValue);
             final Field.Builder<Object> builder = DatatypeFactory.createFieldBuilder();
             for (final Entry<DeviceUID, Object> entry: preField.entrySet()) {
                 builder.add(entry.getKey(), entry.getValue());

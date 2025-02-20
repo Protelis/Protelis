@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.util;
 
 import java.io.Serializable;
@@ -55,11 +56,11 @@ public enum Op3 implements WithBytecode {
      *         {@link Field}.
      */
     public Object run(final Object a, final Object b, final Object c) {
-        final Object[] args = { a, b, c };
+        final Object[] args = {a, b, c};
         Optional<TIntList> idx = Optional.empty();
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof Field) {
-                if (!idx.isPresent()) {
+                if (idx.isEmpty()) {
                     idx = Optional.of(new TIntArrayList(3));
                 }
                 idx.get().add(i);
@@ -84,7 +85,11 @@ public enum Op3 implements WithBytecode {
     public static Op3 getOp(final String name) {
         Op3 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst().get();
+            final var maybeOp = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst();
+            if (maybeOp.isEmpty()) {
+                throw new IllegalArgumentException("Unknown ternary operation: " + name);
+            }
+            op = maybeOp.get();
             MAP.put(name, op);
         }
         return op;

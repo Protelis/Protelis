@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
@@ -29,7 +30,7 @@ public class TestLoadingInSeparateThreads {
 
     /**
      * Creates a new folder, copies resources, then tries to load a valid module in a fresh thread.
-     * 
+     *
      * @throws IOException failure
      * @throws URISyntaxException failure
      * @throws InterruptedException failure
@@ -53,7 +54,8 @@ public class TestLoadingInSeparateThreads {
     private File createDependenciesDirectory() throws IOException, URISyntaxException {
         final File d = Files.createTempDirectory("protelis").toFile();
         FileUtils.copyDirectory(
-            new File(Thread.currentThread().getContextClassLoader().getResource("orgoriginal").toURI()),
+            new File(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("orgoriginal"))
+                .toURI()),
             new File(d, "org")
         );
         return d;

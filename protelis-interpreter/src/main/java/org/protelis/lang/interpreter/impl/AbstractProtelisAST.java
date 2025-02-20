@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.ProtelisAST;
@@ -59,25 +60,23 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
      *         format (b1, b2, ..., bn).
      */
     protected final String branchesToString() {
-        return branchesToString(", ", "(", ")");
+        return branchesToString("(", ")");
     }
 
     /**
      * Returns a {@link String} representing the branches of this tree with the
      * specified format.
-     * 
-     * @param separator the separator {@link CharSequence}
-     * @param prefix    the prefix
-     * @param postfix   the postfix
-     * @return a {@link String} representing the branches of this tree with the
-     *         specified format.
+     *
+     * @param prefix  the prefix
+     * @param postfix the postfix
+     * @return a {@link String} representing the branches of this tree with the specified format.
      */
-    protected final String branchesToString(final CharSequence separator, final CharSequence prefix, final CharSequence postfix) {
+    protected final String branchesToString(final CharSequence prefix, final CharSequence postfix) {
         final StringBuilder sb = new StringBuilder(prefix);
         forEachWithIndex((i, branch) -> {
             sb.append(stringFor(branch));
             if (i < branches.size() - 1) {
-                sb.append(separator);
+                sb.append((CharSequence) ", ");
             }
         });
         return sb.append(postfix).toString();
@@ -97,10 +96,12 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
                     this
                 );
             }
-        } catch (ProtelisRuntimeException e) { // NOPMD: this is wanted.
+        } catch (final ProtelisRuntimeException e) { // NOPMD: this is wanted.
             e.fillInStackFrame(this); // Annotate this frame
             throw e; // Go up the AST
-        } catch (Exception e) { // NOPMD: this is wanted.
+            // CHECKSTYLE: IllegalCatch OFF
+        } catch (final Exception e) { // NOPMD: this is wanted.
+            // CHECKSTYLE: IllegalCatch ON
             throw new ProtelisRuntimeException(e, this);
         }
     }
@@ -108,7 +109,7 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
     /**
      * Evaluates this AST node. This method can throw any exception,
      * {@link AbstractProtelisAST} takes care of storing the necessary metadata.
-     * 
+     *
      * @param context the execution context
      * @return the result of the evaluation
      */
@@ -116,7 +117,7 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
 
     /**
      * Facility to run lambdas across all the branches.
-     * 
+     *
      * @param action
      *            the Consumer to execute
      */
@@ -135,7 +136,7 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
 
     /**
      * Facility to run lambdas across all the branches.
-     * 
+     *
      * @param action
      *            the Consumer to execute
      */
@@ -185,13 +186,13 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
 
     /**
      * A String representation of an {@link ProtelisAST}. I
-     * 
+     *
      * @param tree the tree to stringify
      * @return if the tree it is not erased (i.e., contains a value), returns a
      *         stringified version of such value. Otherwise, returns the branch name
      *         via {@link #getName()}
      */
-    protected static final String stringFor(final ProtelisAST<?> tree) {
+    protected static String stringFor(final ProtelisAST<?> tree) {
         return Objects.requireNonNull(tree, "Impossible to convert a null ProtelisAST to a String").getName();
     }
 }

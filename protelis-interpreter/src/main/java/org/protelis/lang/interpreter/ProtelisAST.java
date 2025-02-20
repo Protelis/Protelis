@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter;
 
 import java.io.Serializable;
@@ -15,14 +16,14 @@ import org.protelis.vm.ExecutionContext;
 /**
  * Data structure representing the field calculus semantics of annotating
  * expressions with their evaluated values.
- * 
+ *
  * @param <T> return type of this sub-program
  */
 public interface ProtelisAST<T> extends Serializable {
 
     /**
      * Evaluates the program using the passed {@link ExecutionContext}.
-     * 
+     *
      * @param context
      *            the execution context
      * @return the AST evaluation

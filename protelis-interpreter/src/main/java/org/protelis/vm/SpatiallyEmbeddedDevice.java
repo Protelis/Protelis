@@ -19,7 +19,7 @@ public interface SpatiallyEmbeddedDevice<D extends Number> extends ExecutionCont
     /**
      * Get the distance between the current device and its neighbors. Distance
      * must be positive.
-     * 
+     *
      * @return field of distances
      */
     Field<D> nbrRange();

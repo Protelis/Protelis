@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.datatype.impl;
 
 import java.util.Map;
@@ -45,10 +46,11 @@ public abstract class AbstractField<T> implements Field<T> {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public final int hashCode() {
         if (hash == 0) {
-            final Hasher hasher = Hashing.murmur3_32().newHasher();
+            final Hasher hasher = Hashing.murmur3_32_fixed().newHasher();
             for (final Map.Entry<DeviceUID, T> pv : iterable()) {
                 hasher.putInt(pv.hashCode());
             }

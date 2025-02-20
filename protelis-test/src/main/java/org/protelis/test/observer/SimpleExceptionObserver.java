@@ -17,12 +17,11 @@ import java.util.Optional;
  * Simple exception observer.
  */
 public final class SimpleExceptionObserver implements ExceptionObserver {
-    private final List<Exception> exceptions = new LinkedList<>();
+    private final LinkedList<Exception> exceptions = new LinkedList<>(); // NOPMD methods getFirst and getLast
 
     @Override
-    public Exception exceptionThrown(final Exception ex) {
+    public void exceptionThrown(final Exception ex) {
         exceptions.add(ex);
-        return ex;
     }
 
     @Override
@@ -33,8 +32,8 @@ public final class SimpleExceptionObserver implements ExceptionObserver {
     @Override
     public Optional<Exception> getLastException() {
         try {
-            return Optional.of(((LinkedList<Exception>) exceptions).getLast());
-        } catch (NoSuchElementException e) {
+            return Optional.of(exceptions.getLast());
+        } catch (final NoSuchElementException e) {
             return Optional.empty();
         }
     }
@@ -42,8 +41,8 @@ public final class SimpleExceptionObserver implements ExceptionObserver {
     @Override
     public Optional<Exception> getFirstException() {
         try {
-            return Optional.of(((LinkedList<Exception>) exceptions).getFirst());
-        } catch (NoSuchElementException e) {
+            return Optional.of(exceptions.getFirst());
+        } catch (final NoSuchElementException e) {
             return Optional.empty();
         }
     }

@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.vm;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -26,7 +27,7 @@ public class ProtelisVM {
     /**
      * Create a virtual machine for executing a Protelis program in a particular
      * context.
-     * 
+     *
      * @param program
      *            Protelis program to be executed
      * @param context
@@ -55,7 +56,7 @@ public class ProtelisVM {
 
     /**
      * Return the value computed in the most recent execution cycle.
-     * 
+     *
      * @return Last value computed
      */
     @Nonnull

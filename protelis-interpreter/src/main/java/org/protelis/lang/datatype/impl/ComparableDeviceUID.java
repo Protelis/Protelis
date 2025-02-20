@@ -13,24 +13,23 @@ import org.protelis.lang.datatype.DeviceUID;
 
 /**
  * Simple container class for immutable, comparable UIDs.
+ *
  * @param <T>  Type to be used for storing UID
  */
-public class AbstractComparableDeviceUID<T extends Comparable<T>>
-    implements DeviceUID, Comparable<AbstractComparableDeviceUID<T>> {
+public class ComparableDeviceUID<T extends Comparable<T>>
+    implements DeviceUID, Comparable<ComparableDeviceUID<T>> {
 
     private static final long serialVersionUID = 1L;
     private final T uid;
 
     /**
-     * @param uid
-     *            the string to use as the UID
+     * @param uid the string to use as the UID
      */
-    public AbstractComparableDeviceUID(final T uid) {
+    public ComparableDeviceUID(final T uid) {
         this.uid = Objects.requireNonNull(uid);
     }
 
     /**
-     * 
      * @return the underlying UID
      */
     public T getUID() {
@@ -43,7 +42,7 @@ public class AbstractComparableDeviceUID<T extends Comparable<T>>
             if (this == alt) {
                 return true;
             } else if (this.getClass() == alt.getClass()) {
-                return this.uid.equals(((AbstractComparableDeviceUID<?>) alt).uid);
+                return this.uid.equals(((ComparableDeviceUID<?>) alt).uid);
             }
         }
         return false;
@@ -60,7 +59,7 @@ public class AbstractComparableDeviceUID<T extends Comparable<T>>
     }
 
     @Override
-    public final int compareTo(final AbstractComparableDeviceUID<T> other) {
+    public final int compareTo(final ComparableDeviceUID<T> other) {
         return uid.compareTo(other.uid);
     }
 }

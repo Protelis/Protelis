@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import java.util.Objects;
@@ -35,20 +36,22 @@ public final class TernaryOp extends AbstractProtelisAST<Object> {
      *            third argument
      */
     public TernaryOp(
-            final Metadata metadata,
-            final String name,
-            final ProtelisAST<?> branch1,
-            final ProtelisAST<?> branch2,
-            final ProtelisAST<?> branch3) {
+        final Metadata metadata,
+        final String name,
+        final ProtelisAST<?> branch1,
+        final ProtelisAST<?> branch2,
+        final ProtelisAST<?> branch3
+    ) {
         this(metadata, Op3.getOp(name), branch1, branch2, branch3);
     }
 
     private TernaryOp(
-            final Metadata metadata, 
-            final Op3 operator,
-            final ProtelisAST<?> branch1,
-            final ProtelisAST<?> branch2,
-            final ProtelisAST<?> branch3) {
+        final Metadata metadata,
+        final Op3 operator,
+        final ProtelisAST<?> branch1,
+        final ProtelisAST<?> branch2,
+        final ProtelisAST<?> branch3
+    ) {
         super(metadata, branch1, branch2, branch3);
         Objects.requireNonNull(branch1);
         Objects.requireNonNull(branch2);

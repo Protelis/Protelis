@@ -38,11 +38,12 @@ import com.google.common.base.Optional;
  * @param <S> superscript / export type
  * @param <T> returned type
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Google Optionals are Serializable
 public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     private static final long serialVersionUID = 1L;
     private final Optional<Reference> fieldName;
     private final Optional<Reference> localName;
-    private final Optional<AbstractProtelisAST<T>> yield;
+    private final Optional<AbstractProtelisAST<T>> yields;
     private final ProtelisAST<S> init;
     private final ProtelisAST<S> body;
 
@@ -59,17 +60,18 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
      *            initial value
      * @param body
      *            body
-     * @param yield
+     * @param yields
      *            body
      */
     public ShareCall(
-            @Nonnull final Metadata metadata,
-            @Nonnull final java.util.Optional<Reference> localName,
-            @Nonnull final java.util.Optional<Reference> fieldName,
-            @Nonnull final ProtelisAST<S> init,
-            @Nonnull final ProtelisAST<S> body,
-            @Nonnull final java.util.Optional<ProtelisAST<T>> yield) {
-        this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yield));
+        @Nonnull final Metadata metadata,
+        @Nonnull final java.util.Optional<Reference> localName,
+        @Nonnull final java.util.Optional<Reference> fieldName,
+        @Nonnull final ProtelisAST<S> init,
+        @Nonnull final ProtelisAST<S> body,
+        @Nonnull final java.util.Optional<ProtelisAST<T>> yields
+    ) {
+        this(metadata, toGuava(localName), toGuava(fieldName), init, body, toGuava(yields));
     }
 
     /**
@@ -83,16 +85,17 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
      *            initial value
      * @param body
      *            body
-     * @param yield
+     * @param yields
      *            body
      */
     public ShareCall(
-            @Nonnull final Metadata metadata,
-            @Nonnull final Optional<Reference> localName,
-            @Nonnull final Optional<Reference> fieldName,
-            @Nonnull final ProtelisAST<S> init,
-            @Nonnull final ProtelisAST<S> body,
-            @Nonnull final Optional<ProtelisAST<T>> yield) {
+        @Nonnull final Metadata metadata,
+        @Nonnull final Optional<Reference> localName,
+        @Nonnull final Optional<Reference> fieldName,
+        @Nonnull final ProtelisAST<S> init,
+        @Nonnull final ProtelisAST<S> body,
+        @Nonnull final Optional<ProtelisAST<T>> yields
+    ) {
         super(metadata, init, body);
         if (!(localName.isPresent() || fieldName.isPresent())) {
             throw new IllegalArgumentException("Share cannot get initialized without at least a variable bind.");
@@ -101,20 +104,25 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         this.fieldName = fieldName;
         this.init = init;
         this.body = body;
-        this.yield = yield.transform(it ->  {
+        this.yields = yields.transform(it -> {
             if (it instanceof AbstractProtelisAST) {
                 return (AbstractProtelisAST<T>) it;
             }
-            throw new IllegalStateException("class type " + it.getClass().getName() + " unkown and unsupported");
+            throw new IllegalStateException("class type " + it.getClass().getName() + " unknown and unsupported");
         });
     }
 
-    private Field<S> alignField(final DeviceUID localDevice, final Field<S> init, final Field<S> local, final Field<S> nbr) {
+    private Field<S> alignField(
+        final DeviceUID localDevice,
+        final Field<S> initial,
+        final Field<S> local,
+        final Field<S> nbr
+    ) {
         final Builder<S> builder = new Builder<>();
         for (final Map.Entry<DeviceUID, S> entry : nbr.iterable()) {
             final DeviceUID otherDevice = entry.getKey();
             if (!localDevice.equals(otherDevice)) {
-                final S value = local.containsKey(otherDevice) ? local.get(otherDevice) : init.get(otherDevice);
+                final S value = local.containsKey(otherDevice) ? local.get(otherDevice) : initial.get(otherDevice);
                 builder.add(otherDevice, value);
             }
         }
@@ -147,8 +155,8 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         final java.util.Optional<Field<S>> initAsField = asFieldOrEmpty(initValue, localIsField);
         assert !localIsField || localAsField.isPresent() && initAsField.isPresent();
         /*
-         * Three cases:
-         * 1. rep. No fieldName, no field should get build
+         * three cases:
+         * 1. rep. no fieldName, no field should get build
          * 2. share/classic: local is not a field, fieldName is present, build field as usual
          * 3. share/new: local is a field, fieldName is present, build a field with extractValueFromField
          */
@@ -169,8 +177,10 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         ifPresent(
             localName,
             localIsField
-                ? it -> context.putVariable(it, alignField(myId, initAsField.get(), localAsField.get(), nbr))
-                : it -> context.putVariable(it, localValue)
+                ? it ->
+                    context.putVariable(it, alignField(myId, initAsField.get(), localAsField.get(), Objects.requireNonNull(nbr)))
+                : it ->
+                    context.putVariable(it, localValue)
         );
         ifPresent(fieldName, it -> context.putVariable(it, nbr));
         context.newCallStackFrame(SHARE_BODY.getCode());
@@ -198,11 +208,11 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     }
 
     private Optional<T> evaluateYield(final ExecutionContext context) {
-        return yield.transform(it -> context.runInNewStackFrame(SHARE_YIELD.getCode(), it::eval));
+        return yields.transform(it -> context.runInNewStackFrame(SHARE_YIELD.getCode(), it::eval));
     }
 
-    private S extractValueFromField(final Field<S> init, final Field<S> other, final DeviceUID id) {
-        return other.containsKey(id) ? other.get(id) : init.get(other.getLocalDevice());
+    private S extractValueFromField(final Field<S> initial, final Field<S> other, final DeviceUID id) {
+        return other.containsKey(id) ? other.get(id) : initial.get(other.getLocalDevice());
     }
 
     @Override
@@ -217,10 +227,10 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
 
     /**
      * @return an {@link Optional} containing the {@link ProtelisAST} representing the yield expression,
-     * or an {@link Optional#absent()} otherwise.
+     *     or an {@link Optional#absent()} otherwise.
      */
     public Optional<AbstractProtelisAST<T>> getYieldExpression() {
-        return yield;
+        return yields;
     }
 
     @Override
@@ -235,12 +245,12 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
             + ") { "
             + stringFor(body)
             + " }"
-            + yield.transform(it -> " yield { " + stringFor(it) + '}').or("");
+            + yields.transform(it -> " yield { " + stringFor(it) + '}').or("");
     }
 
-    private static <T> void ifPresent(final Optional<T> var, final Consumer<T> todo) {
-        if (var.isPresent()) {
-            todo.accept(var.get());
+    private static <T> void ifPresent(final Optional<T> optional, final Consumer<T> todo) {
+        if (optional.isPresent()) {
+            todo.accept(optional.get());
         }
     }
 
@@ -249,7 +259,9 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     }
 
     private static final class BodyResult<S> {
+
         private S result;
+
         private S getResult() { // NOPMD: false positive, method used as function reference
             return result;
         }

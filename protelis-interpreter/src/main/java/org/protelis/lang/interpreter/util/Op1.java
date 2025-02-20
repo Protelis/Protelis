@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.util;
 
 import static org.protelis.lang.interpreter.util.Bytecode.UNARY_MINUS;
@@ -33,7 +34,7 @@ public enum Op1 implements WithBytecode {
      */
     NOT(UNARY_NOT, "!", Op1::not);
 
-    private static final int[] FIELDS = { 0 };
+    private static final int[] FIELDS = {0};
     private static final Map<String, Op1> MAP = new ConcurrentHashMap<>();
     private final Bytecode bytecode;
     private final UnaryOperation fun;
@@ -69,7 +70,7 @@ public enum Op1 implements WithBytecode {
 
     /**
      * Translates a name into an operator.
-     * 
+     *
      * @param name
      *            operator name
      * @return an {@link Op1}
@@ -77,7 +78,11 @@ public enum Op1 implements WithBytecode {
     public static Op1 getOp(final String name) {
         Op1 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst().get();
+            final var maybeOp = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst();
+            if (maybeOp.isEmpty()) {
+                throw new IllegalStateException("Unknown unary operator: " + name);
+            }
+            op = maybeOp.get();
             MAP.put(name, op);
         }
         return op;

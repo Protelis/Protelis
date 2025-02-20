@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
 
 import static org.junit.Assert.assertNotNull;
@@ -30,6 +31,8 @@ import java8.util.stream.IntStreams;
  */
 public class TestLanguage {
 
+    private static final String DOES_NOT_EXIST = "does not exist";
+
     /**
      * Test the alignedMap construct.
      */
@@ -46,7 +49,7 @@ public class TestLanguage {
         runFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
     }
 
-     /**
+    /**
      * Test Boolean logic operators.
      */
     @Test
@@ -62,9 +65,9 @@ public class TestLanguage {
         runFile("/closure01.pt");
     }
 
-    /**
-     * Test closures.
-     */
+     /**
+      * Test closures.
+      */
      @Test
      public void testClosure02() {
          runFile("/closure02.pt");
@@ -87,8 +90,7 @@ public class TestLanguage {
     }
 
     /**
-     * Tests that failures in invoking static methods because of parameter type are
-     * reported clearly.
+     * Tests that failures in invoking static methods report the parameter type clearly.
      */
     @Test
     public void testErrorMessage01() {
@@ -96,14 +98,14 @@ public class TestLanguage {
             "/errorMessage01.pt",
             ProtelisRuntimeException.class,
             "log",
-            "does not exist",
+                DOES_NOT_EXIST,
             "java.lang.Math"
         );
         runExpectingErrors(
             "/errorMessage01.pt",
             ProtelisRuntimeException.class,
             true,
-            "does not exist",
+                DOES_NOT_EXIST,
             "java.lang.Math"
         );
     }
@@ -119,12 +121,12 @@ public class TestLanguage {
             ProtelisRuntimeException.class,
             "log",
             "java.lang.Double",
-            "does not exist"
+                DOES_NOT_EXIST
         );
     }
 
     /**
-     * Tests that failures in linking non existing modules (#156) complain about
+     * Tests that failures in linking non-existing modules (#156) complain about
      * the missing module.
      */
     @Test
@@ -180,7 +182,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test simple function call with no arguments.
+     * Test a simple function call with no arguments.
      */
     @Test
     public void testFunction01() {
@@ -188,7 +190,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test simple function call with one argument.
+     * Test a simple function call with one argument.
      */
     @Test
     public void testFunction02() {
@@ -196,7 +198,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test simple function call with two arguments.
+     * Test a simple function call with two arguments.
      */
     @Test
     public void testFunction03() {
@@ -277,7 +279,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test simple use of apply.
+     * Test the simple use of {@code apply}.
      */
     @Test
     public void testHof01() {
@@ -293,7 +295,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test to make sure that each apply call bounds to a different instance of
+     * Test to make sure that each {@code apply} call bounds to a different instance of
      * the function.
      */
     @Test
@@ -318,7 +320,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test direct usage of a Java method as higher order function.
+     * Test direct usage of a Java method as a higher order function.
      */
     @Test
     public void testHof06() {
@@ -441,7 +443,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test loading of a file from name without explicit classpath statement.
+     * Test loading of a file from a name without an explicit classpath statement.
      */
     @Test
     public void testLoadFile() {
@@ -449,7 +451,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test loading of a file with explicit classpath statement.
+     * Test loading of a file with an explicit classpath statement.
      */
     @Test
     public void testLoadFromClasspath() {
@@ -457,7 +459,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test loading from a module name with default package.
+     * Test loading from a module name with the default package.
      */
     @Test
     public void testLoadFromModuleName01() {
@@ -497,7 +499,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test localHood without self (which should be the same of localHoodPlusSelf).
+     * Test localHood without {@code self} (which should be the same of localHoodPlusSelf).
      */
     @Test
     public void testLocalHood01() {
@@ -553,7 +555,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test fully-qualified call of individually imported static Java method.
+     * Test fully qualified call of individually imported static Java method.
      */
     @Test
     public void testMethod01() {
@@ -567,14 +569,6 @@ public class TestLanguage {
     public void testMethod02() {
         runFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
     }
-
-//    /**
-//     * Test minHood.
-//     */
-//    @Test
-//    public void testMinHood03() {
-//        runFile("/minhood03.pt");
-//    }
 
     /**
      * Test unqualified call of batch-imported static Java methods.
@@ -625,7 +619,7 @@ public class TestLanguage {
     }
 
     /**
-     * Make sure that exceptions in method calls are passed up, rather than being
+     * Make sure that exceptions in method calls are passed up rather than being
      * transformed into a "cannot call" exception.
      */
     @Test
@@ -717,7 +711,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test assignment within nested lexical scope.
+     * Test assignment within a nested lexical scope.
      */
     @Test
     public void testMultiStatement04() {
@@ -851,7 +845,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test the Tuple.fill method.
+     * Test the {@code Tuple.fill} method.
      */
     @Test
     public void testTuple05() {
@@ -906,7 +900,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test the Tuple.filter method.
+     * Test the {@code Tuple.filter} method.
      */
     @Test
     public void testTupleFilter01() {
@@ -914,7 +908,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test the Tuple.map method.
+     * Test the {@code Tuple.map} method.
      */
     @Test
     public void testTupleMap01() {
@@ -922,7 +916,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test the Tuple.map method.
+     * Test the {@code Tuple.map} method.
      */
     @Test
     public void testTupleMap02() {
@@ -930,7 +924,7 @@ public class TestLanguage {
     }
 
     /**
-     * Tests that the Tuple.map method can retain state.
+     * Tests that the {@code Tuple.map} method can retain state.
      */
     @Test
     public void testTupleMapRetainsState() {
@@ -938,7 +932,7 @@ public class TestLanguage {
     }
 
     /**
-     * Test the Tuple.reduce method.
+     * Test the {@code Tuple.reduce} method.
      */
     @Test
     public void testTupleReduce01() {

@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -40,7 +41,7 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
         final String currentProgram = programText().eval(context).toString();
         final Pair<String, ProtelisProgram> previous = loadState(context, () -> createState(currentProgram));
         /*
-         * Preserve state if program is constant
+         * Preserve state if the program is constant
          */
         final Pair<String, ProtelisProgram> actualState = currentProgram.equals(previous.getKey())
                 ? previous
@@ -56,7 +57,7 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
     private Pair<String, ProtelisProgram> createState(final String program) {
         try {
             return new ImmutablePair<>(program, ProtelisLoader.parseAnonymousModule(program));
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new IllegalStateException("The following program can't be parsed:\n" + program, e);
         }
     }

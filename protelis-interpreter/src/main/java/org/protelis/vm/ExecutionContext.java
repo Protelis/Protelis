@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.vm;
 
 import java.util.Map;
@@ -15,13 +16,16 @@ import org.protelis.lang.datatype.Field;
 import org.protelis.lang.interpreter.util.Reference;
 
 /**
- * Interface between a ProtelisVM and environment in which it is executing. The
- * ExecutionContext is responsible for three things:
- * 
+ * Interface between a ProtelisVM and the environment in which it is executing.
+ * The {@link org.protelis.vm.ExecutionContext} is responsible for three things:
+ *
+ * <p>
  * 1. Tracking local persistent state from evaluation to evaluation
- * 
+ *
+ * <p>
  * 2. Tracking evaluation state shared by neighbors
- * 
+ *
+ * <p>
  * 3. The state of the device in its external environment (time, space, sensors,
  * etc.)
  */
@@ -29,15 +33,15 @@ public interface ExecutionContext {
 
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
-     * A neighbor is considered to be aligned it it has reached the exact same
+     * A neighbor is considered to be aligned if it has reached the exact same
      * {@link org.protelis.vm.impl.DefaultTimeEfficientCodePath}. The field will always contain at least one value,
      * namely the value of the local device.
-     * 
+     *
      * @param computeValue
      *            a function that will be applied to localValue and the
      *            equivalents shared from neighbors in the process of
      *            constructing this field: the field consists of the values
-     *            returned from applying computeValue to each of device's value
+     *            returned from applying computeValue to each of device's values
      * @param localValue
      *            the local value for this field
      * @param <T>
@@ -51,19 +55,19 @@ public interface ExecutionContext {
 
     /**
      * Builds a new {@link Field}, fetching data from all the aligned neighbors.
-     * A neighbor is considered to be aligned it it has reached the exact same
+     * A neighbor is considered to be aligned if it has reached the exact same
      * {@link org.protelis.vm.impl.DefaultTimeEfficientCodePath}. The field will always contain at least one value,
      * namely the value of the local device. The deferred version does not immediately schedule
      * the local value for being sent away. Rather, it schedules the provided {@link Supplier}
-     * to be executed at the end of the round for obtaining the value to be shared. This
+     * to be executed at the end of the round for getting the value to be shared. This
      * function is the base upon which the {@link org.protelis.lang.interpreter.impl.ShareCall}
      * is built.
-     * 
+     *
      * @param computeValue
      *            a function that will be applied to localValue and the
      *            equivalents shared from neighbors in the process of
      *            constructing this field: the field consists of the values
-     *            returned from applying computeValue to each of device's value
+     *            returned from applying computeValue to each of device's values
      * @param currentLocal
      *            the value to be used as local for this field
      * @param toBeSent
@@ -90,7 +94,7 @@ public interface ExecutionContext {
     Number getCurrentTime();
 
     /**
-     * @return the current time, relative to last round
+     * @return the current time, relative to the last round
      */
     Number getDeltaTime();
 
@@ -118,7 +122,7 @@ public interface ExecutionContext {
 
     /**
      * Look up the value of a variable from the local environment.
-     * 
+     *
      * @param reference
      *            The variable to be looked up
      * @return Value of the variable, or null if it cannot be found.
@@ -148,14 +152,14 @@ public interface ExecutionContext {
 
     /**
      * Obtain a system-independent (pseudo)random number.
-     * 
+     *
      * @return a uniformly distributed value between 0.0 and 1.0
      */
     double nextRandomDouble();
 
     /**
      * Pushes multiple variables.
-     * 
+     *
      * @param map
      *            the variables to push
      */
@@ -163,7 +167,7 @@ public interface ExecutionContext {
 
     /**
      * Puts a variable value, overwriting the previous one, if any.
-     * 
+     *
      * @param name
      *            variable reference
      * @param value
@@ -173,7 +177,7 @@ public interface ExecutionContext {
 
     /**
      * Give a field, returns a new {@link ExecutionContext} whose domain is the same of the field one.
-     * 
+     *
      * @param f the field
      * @return the restricted domain
      */
@@ -187,10 +191,8 @@ public interface ExecutionContext {
     /**
      * Used internally to support first-class functions by make the functions of
      * a program accessible for reflection at runtime.
-     * 
-     * @param knownFunctions
-     *            Collection of accessible functions, associating function name
-     *            and value.
+     *
+     * @param knownFunctions Collection of accessible functions, associating function name and value.
      */
     void setGloballyAvailableReferences(Map<Reference, ?> knownFunctions);
 

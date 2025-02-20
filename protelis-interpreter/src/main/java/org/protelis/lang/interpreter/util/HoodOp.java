@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.util;
 
 import static com.google.common.collect.ImmutableList.of;
@@ -38,6 +39,8 @@ import org.protelis.lang.datatype.Tuples;
 /**
  * Collection of functions and helper methods for reducing fields into local
  * values.
+ *
+ * @deprecated Use {@link org.protelis.Builtins} instead.
  */
 @Deprecated
 public enum HoodOp implements WithBytecode {
@@ -138,7 +141,7 @@ public enum HoodOp implements WithBytecode {
         final List<Pair<Class<?>, Function<Object, Object>>> cloners
     ) {
         function = fun;
-        defs = (field) -> {
+        defs = field -> {
             /*
              * Field empty: generate a default.
              */

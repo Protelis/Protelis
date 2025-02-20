@@ -22,13 +22,15 @@ import org.protelis.vm.NetworkManager;
  * round, the VM needs to be able to access the most recent state received from
  * neighbors and to be able to update the state that it is exporting to
  * neighbors.
+ *
  * <p>
  * Note, however, that there is no requirement that state actually be sent or
  * received in each round: it is up to the individual implementation of a
- * NetworkManager to best optimize in order to best trade off between effective
+ * NetworkManager to best optimize to best trade off between effective
  * state sharing and efficiency.
- * <p>
- * This simple implementation just tracks the most recent message sent from this
+ *
+ *  <p>
+ * This implementation just tracks the most recent message sent from this
  * device and the most recent messages received from each neighbor.
  */
 public class CachingNetworkManager implements NetworkManager {
@@ -37,7 +39,7 @@ public class CachingNetworkManager implements NetworkManager {
 
     /**
      * External access to sending cache.
-     * 
+     *
      * @return cache
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
@@ -46,12 +48,12 @@ public class CachingNetworkManager implements NetworkManager {
     }
 
     /**
-     * External access to put messages into receive cache.
-     * 
+     * External access to put messages into the received messages cache.
+     *
      * @param neighbor
      *            sender
      * @param message
-     *            messege to be received
+     *            message to be received
      */
     public void receiveFromNeighbor(final DeviceUID neighbor, final Map<CodePath, Object> message) {
         receiveCache.put(neighbor, message);
@@ -60,7 +62,7 @@ public class CachingNetworkManager implements NetworkManager {
     /**
      * External access to note when a device is no longer a neighbor, wiping
      * cache.
-     * 
+     *
      * @param neighbor
      *            to be removed
      */
@@ -73,7 +75,7 @@ public class CachingNetworkManager implements NetworkManager {
      * information available from neighbors. The call is serial within the
      * execution, so this should probably poll state maintained by a separate
      * thread, rather than gathering state during this call.
-     * 
+     *
      * @return A map associating each neighbor with its shared state. The object
      *         returned should not be modified, and {@link org.protelis.vm.ProtelisVM} will not
      *         change it either.
@@ -87,8 +89,8 @@ public class CachingNetworkManager implements NetworkManager {
      * Called by {@link org.protelis.vm.ProtelisVM} during execution to send its current shared
      * state to neighbors. The call is serial within the execution, so this
      * should probably queue up a message to be sent, rather than actually
-     * carrying out a lengthy operations during this call.
-     * 
+     * carrying out a lengthy operation during this call.
+     *
      * @param toSend
      *            Shared state to be transmitted to neighbors.
      */

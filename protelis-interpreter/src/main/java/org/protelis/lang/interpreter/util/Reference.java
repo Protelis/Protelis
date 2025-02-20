@@ -37,10 +37,10 @@ public final class Reference implements Serializable {
         if (obj instanceof String) {
             strRep = obj.toString();
             uid = strRep;
-        } else  if (obj instanceof VarDef) {
-            final VarDef var = (VarDef) obj;
-            final ITextRegionWithLineInformation node = NodeModelUtils.getNode(var).getTextRegionWithLineInformation();
-            EObject container = var.eContainer();
+        } else if (obj instanceof VarDef) {
+            final VarDef varDef = (VarDef) obj;
+            final ITextRegionWithLineInformation node = NodeModelUtils.getNode(varDef).getTextRegionWithLineInformation();
+            EObject container = varDef.eContainer();
             while (!(container.eContainer() == null || container instanceof ProtelisModule)) {
                 container = container.eContainer();
             }
@@ -50,9 +50,9 @@ public final class Reference implements Serializable {
                     node.getEndLineNumber(),
                     node.getOffset(),
                     node.getLength(),
-                    var.getName(),
+                    varDef.getName(),
                     module));
-            strRep = var.getName();
+            strRep = varDef.getName();
         } else if (obj instanceof JvmIdentifiableElement) {
             final JvmIdentifiableElement method = (JvmIdentifiableElement) obj;
             strRep = method.getIdentifier();
@@ -89,13 +89,17 @@ public final class Reference implements Serializable {
     }
 
     private static final class Handler<T, S extends Serializable> implements Serializable {
+
         private static final long serialVersionUID = 1L;
+
         private final S serializableState;
         private final Class<?> targetClass;
+
         private Handler(final T target, final S state) {
             targetClass = Objects.requireNonNull(target).getClass();
             serializableState = Objects.requireNonNull(state);
         }
+
         @Override
         public boolean equals(final Object obj) {
             if (obj instanceof Handler) {
@@ -105,6 +109,7 @@ public final class Reference implements Serializable {
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return serializableState.hashCode();

@@ -31,7 +31,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
     /**
      * Builds a new {@link ProtelisRuntimeException}, happening due to the specified
      * Java exception, into the origin node of the Protelis AST.
-     * 
+     *
      * @param javaCause the java {@link Throwable} generating the exception
      * @param origin    the point in the Protelis program in which the Java
      *                  exception was thrown
@@ -43,7 +43,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
 
     /**
      * Populates the exception stack with a new caller.
-     * 
+     *
      * @param element the Protelis node which called the failing one
      */
     public void fillInStackFrame(final ProtelisAST<?> element) {
@@ -58,7 +58,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
     }
 
     /**
-     * @return A stringyfied version of the Protelis stack trace that caused the issue
+     * @return A stringified version of the Protelis stack trace that caused the issue
      */
     public String getProtelisStacktrace() {
         final StringBuilder trace = header(); // NOPMD: False positive, the StringBuilder does not have size 16.

@@ -40,11 +40,14 @@ public final class JavaInteroperabilityUtils {
      * A fake Metadata object to be used when no data or original source code is available.
      */
     public static final Metadata METADATA = new Metadata() {
+
         private static final long serialVersionUID = 1L;
+
         @Override
         public int getStartLine() {
             return -1;
         }
+
         @Override
         public int getEndLine() {
             return -1;
@@ -78,7 +81,7 @@ public final class JavaInteroperabilityUtils {
     }
 
     /**
-     * Executes a Java method on a reiceiver Java object computed by Protelis using Protelis-produced arguments.
+     * Executes a Java method on a receiver Java object computed by Protelis using Protelis-produced arguments.
      *
      * @param context
      *            {@link ExecutionContext}
@@ -170,6 +173,7 @@ public final class JavaInteroperabilityUtils {
 
     /**
      * Converts a protelis {@link FunctionDefinition} to a Java {@link BinaryOperator}.
+     *
      * @param context the {@link ExecutionContext}
      * @param binaryOperator the {@link FunctionDefinition} to convert to Java
      * @return a java {@link BinaryOperator}
@@ -194,6 +198,7 @@ public final class JavaInteroperabilityUtils {
 
     /**
      * Converts a protelis {@link FunctionDefinition} to a Java {@link Function}.
+     *
      * @param context the {@link ExecutionContext}
      * @param function the {@link FunctionDefinition} to convert to Java
      * @param <R> Return type of the function
@@ -206,7 +211,7 @@ public final class JavaInteroperabilityUtils {
     ) {
         if (function.getParameterCount() <= 1) {
             final AtomicInteger counter = new AtomicInteger();
-            return (argument) -> {
+            return argument -> {
                 final List<ProtelisAST<?>> arguments = ImmutableList.of(
                     new Constant<>(METADATA, argument)
                 );

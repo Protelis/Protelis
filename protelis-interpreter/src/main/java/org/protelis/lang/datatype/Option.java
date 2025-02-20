@@ -31,14 +31,14 @@ import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runPr
 
 /**
  * An immutable object that may contain a non-null reference to another object. Each instance of
- * this type either contains a non-null reference, or contains nothing (in which case we say that
+ * this type either contains a non-null reference or contains nothing (in which case we say that
  * the reference is "absent"); it is never said to "contain {@code null}".
  *
  * <p>A non-null {@code Option<E>} reference can be used as a replacement for a nullable {@code T}
  * reference. It allows you to represent "a {@code T} that must be present" and a "a {@code T} that
  * might be absent" as two distinct types in your program, which can aid clarity.
  *
- * <p>Protelis recommends to import and use Option when interacting with Java methods that may return null.</p>
+ * <p>Protelis recommends importing and use Option when interacting with Java methods that may return null.</p>
  *
  * @param <E> the type of instance that can be contained. {@code Option} is naturally covariant on
  *     this type, so it is safe to cast an {@code Option<T>} to {@code Option<S>} for any
@@ -97,7 +97,7 @@ public final class Option<E> implements Serializable {
 
     /**
      * Filter operation using Protelis functions.
-     * 
+     *
      * @param ctx {@link ExecutionContext}  the execution context
      * @param test the function used as predicate. Must return boolean.
      * @return If the test passes, the Option is unchanged. Otherwise, it's emptied.
@@ -116,12 +116,11 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * @see java.util.Optional#filter(Predicate)
-     * 
      * @param test predicate to test
      * @return an {@code Option} describing the value of this {@code Option} if a
      *         value is present and the value matches the given predicate, otherwise
      *         an empty {@code Option}
+     * @see java.util.Optional#filter(Predicate)
      */
     public Option<E> filter(final Predicate<? super E> test) {
         if (isPresent() && test.test(get())) {
@@ -132,10 +131,10 @@ public final class Option<E> implements Serializable {
 
     /**
      * Inverse filter operation using Protelis functions.
-     * 
+     *
      * @param ctx {@link ExecutionContext}  the execution context
      * @param test the function used as predicate. Must return boolean.
-     * @return If the test passes, the Option is emptied, otherwise, it's left
+     * @return If the test passes, the Option is emptied; otherwise, it's left
      *         unchanged.
      */
     public Option<E> filterNot(final ExecutionContext ctx, final FunctionDefinition test) {
@@ -144,13 +143,12 @@ public final class Option<E> implements Serializable {
 
     /**
      * Inverse of {@link #filter(Predicate)}.
-     * 
-     * @see java.util.Optional#filter(Predicate)
-     * 
+     *
      * @param test predicate to test
      * @return an {@code Option} describing the value of this {@code Option} if a
      *         value is present and the value does not match the given predicate,
      *         otherwise an empty {@code Option}
+     * @see java.util.Optional#filter(Predicate)
      */
     public Option<E> filterNot(final Predicate<? super E> test) {
         return filter(e -> !test.test(e));
@@ -158,7 +156,7 @@ public final class Option<E> implements Serializable {
 
     /**
      * {@link java.util.Optional#flatMap(Function)} function callable via Protelis.
-     * 
+     *
      * @param <X> The type parameter to the {@code Optional} returned
      * @param ctx {@link ExecutionContext}
      * @param fun Function to run. Must accept a single parameter and return an
@@ -239,14 +237,13 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * @see java.util.Optional#flatMap(Function)
-     * 
      * @param <X> The type parameter to the {@code Optional} returned
      * @param fun a mapping function to apply to the value, if present the mapping
      *            function
      * @return the result of applying an {@code Optional}-bearing mapping function
      *         to the value of this {@code Optional}, if a value is present,
      *         otherwise an empty {@code Optional}
+     * @see java.util.Optional#flatMap(Function)
      */
     public <X> Option<X> flatMap(final Function<? super E, Option<X>> fun) {
         if (isPresent()) {
@@ -301,23 +298,22 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * @see java.util.Optional#map(Function)
-     * 
-     * @param <X>    The type of the result of the mapping function
+     * @param <X>    The mapping function result type
      * @param mapper a mapping function to apply to the value, if present
      * @return an {@code Option} describing the result of applying a mapping
      *         function to the value of this {@code Option}, if a value is present,
      *         otherwise an empty {@code Option}
+     * @see java.util.Optional#map(Function)
      */
     public <X> Option<X> map(final Function<? super E, ? extends X> mapper) {
         return flatMap(it -> of(mapper.apply(it)));
     }
 
     /**
-     * If both options are present, the combiner function is executed on the Option
+     * If both options are present, the {@code combiner} function is executed on the Option
      * contents. Otherwise, if an Option is present, it is returned. Finally, if
      * both are empty, an empty Option is returned.
-     * 
+     *
      * @param other    the other option
      * @param combiner the combining (reduction) function
      * @return Option.of(combiner(this.get(), other.get()) if both are present, the
@@ -409,8 +405,7 @@ public final class Option<E> implements Serializable {
      * to be created by the provided supplier.
      *
      * @param <X> Type of the exception to be thrown
-     * @param exceptionSupplier The supplier which will return the exception to
-     * be thrown
+     * @param exceptionSupplier The supplier which will return the exception to be thrown
      * @return the present value
      */
     @SuppressFBWarnings(
@@ -470,13 +465,12 @@ public final class Option<E> implements Serializable {
     }
 
     /**
-     * @see java.util.Optional#map(Function)
-     * 
-     * @param <X>    The type of the result of the mapping function
+     * @param <X>    The mapping function result type
      * @param mapper a mapping function to apply to the value, if present
      * @return an {@code Option} describing the result of applying a mapping
      *         function to the value of this {@code Option}, if a value is present,
      *         otherwise an empty {@code Option}
+     * @see java.util.Optional#map(Function)
      */
     public <X> Option<X> transform(final Function<? super E, ? extends X> mapper) {
         return map(mapper);
@@ -528,7 +522,7 @@ public final class Option<E> implements Serializable {
      * otherwise returns an empty {@code Option}.
      *
      * @param <E>   the class of the value
-     * @param value the possibly-null value to describe
+     * @param value the possibly null value to describe
      * @return an {@code Option} with a present value if the specified value is
      *         non-null, otherwise an empty {@code Option}
      */
@@ -541,7 +535,7 @@ public final class Option<E> implements Serializable {
      * otherwise returns an empty {@code Option}.
      *
      * @param <E>   the class of the value
-     * @param value the possibly-null value to describe
+     * @param value the possibly null value to describe
      * @return an {@code Option} with a present value if the specified value is
      *         non-null, otherwise an empty {@code Option}
      */
@@ -554,7 +548,7 @@ public final class Option<E> implements Serializable {
      * otherwise returns an empty {@code Option}.
      *
      * @param <E>   the class of the value
-     * @param value the possibly-null value to describe
+     * @param value the possibly null value to describe
      * @return an {@code Option} with a present value if the specified value is
      *         non-null, otherwise an empty {@code Option}
      */

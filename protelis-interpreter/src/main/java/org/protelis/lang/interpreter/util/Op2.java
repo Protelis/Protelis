@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.util;
 
 import static org.protelis.lang.interpreter.util.Bytecode.BINARY_AND;
@@ -80,9 +81,9 @@ public enum Op2 implements WithBytecode {
     TIMES(BINARY_TIMES, "*", Op2::times);
 
     private static final String UNCHECKED = "unchecked";
-    private static final int[] BOTH = { 0, 1 };
-    private static final int[] LEFT = { 0 };
-    private static final int[] RIGHT = { 1 };
+    private static final int[] BOTH = {0, 1};
+    private static final int[] LEFT = {0};
+    private static final int[] RIGHT = {1};
     private static final int[] NONE = {};
     private static final Map<String, Op2> MAP = new ConcurrentHashMap<>();
     private final BinaryOperation fun;
@@ -105,7 +106,7 @@ public enum Op2 implements WithBytecode {
     /**
      * Compute the value of applying the two-argument operator to inputs a and
      * b.
-     * 
+     *
      * @param a
      *            First input
      * @param b
@@ -129,7 +130,7 @@ public enum Op2 implements WithBytecode {
 
     /**
      * Translates a name into an operator.
-     * 
+     *
      * @param name
      *            operator name
      * @return an {@link Op2}
@@ -137,8 +138,12 @@ public enum Op2 implements WithBytecode {
     public static Op2 getOp(final String name) {
         Op2 op = MAP.get(name);
         if (op == null) {
-            op = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst().get();
-            MAP.put(name, op);
+            final var maybeOp = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst();
+            if (maybeOp.isEmpty()) {
+                throw new IllegalStateException("Unknown operator: " + name);
+            }
+            op = maybeOp.get();
+            MAP.put(name, maybeOp.get());
         }
         return op;
     }
@@ -186,7 +191,12 @@ public enum Op2 implements WithBytecode {
             if (a instanceof Comparable && b instanceof Comparable) {
                 return f.apply((double) ((Comparable) a).compareTo(b), 0d);
             }
-        } catch (RuntimeException e) { // NOPMD: comparison of different types
+            // CHECKSTYLE: IllegalCatch OFF
+        } catch (final RuntimeException e) { // NOPMD: comparison of different types
+            // CHECKSTYLE: IllegalCatch ON
+            /*
+             * Comparison of different types, fallback to lexicographic comparison
+             */
         }
         /*
          * Fall back to lexicographic comparison
@@ -221,7 +231,9 @@ public enum Op2 implements WithBytecode {
                     return selector.apply(a, b);
                 }
                 return selector.apply(b, a);
-            } catch (RuntimeException e) { // NOPMD: RuntimeException caught willingly
+                // CHECKSTYLE: IllegalCatch OFF
+            } catch (final RuntimeException e) { // NOPMD: RuntimeException caught willingly
+                // CHECKSTYLE: IllegalCatch ON
                 /*
                  * Comparison of different types, fallback to lexicographic
                  * comparison
@@ -264,9 +276,9 @@ public enum Op2 implements WithBytecode {
         }
         try {
             return arithmetic("+", a, b, Double::sum);
-        } catch (UnsupportedOperationException e) {
+        } catch (final UnsupportedOperationException e) {
             /*
-             * Sum falls back to string sum.
+             * Sum falls back to a string sum.
              */
             return a.toString() + b.toString();
         }

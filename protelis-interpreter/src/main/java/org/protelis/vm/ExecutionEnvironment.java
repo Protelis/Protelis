@@ -25,7 +25,7 @@ public interface ExecutionEnvironment {
     /**
      * @param id
      *            the variable name
-     * @return the value of the variable if present, false otherwise
+     * @return the value of the variable
      */
     Object get(String id);
 
@@ -72,6 +72,4 @@ public interface ExecutionEnvironment {
      * in the environment.
      */
     void setup();
-
-
 }

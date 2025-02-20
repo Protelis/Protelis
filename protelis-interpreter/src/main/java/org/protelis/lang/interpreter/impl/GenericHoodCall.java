@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import com.google.common.collect.ImmutableList;
@@ -24,6 +25,8 @@ import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_FUNC
 
 /**
  * Reduce a field into a local value by reduction using a {@link org.protelis.lang.interpreter.util.HoodOp}.
+ *
+ * @deprecated Use {@link org.protelis.Builtins} instead.
  */
 @Deprecated
 public final class GenericHoodCall extends AbstractProtelisAST<Object> {
@@ -76,11 +79,12 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
      *            the argument to evaluate (must return a {@link Field}).
      */
     public GenericHoodCall(
-            final Metadata metadata, 
-            final boolean includeSelf,
-            final JvmOperation fun,
-            final ProtelisAST<?> nullResult,
-            final ProtelisAST<Field<Object>> arg) {
+        final Metadata metadata,
+        final boolean includeSelf,
+        final JvmOperation fun,
+        final ProtelisAST<?> nullResult,
+        final ProtelisAST<Field<Object>> arg
+    ) {
         super(metadata, nullResult, arg);
         body = arg;
         empty = nullResult;
@@ -88,7 +92,7 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
         methodName = fun.getSimpleName();
         try {
             clazz = Class.forName(fun.getDeclaringType().getQualifiedName());
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
         function = null;
@@ -104,7 +108,7 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
         final BinaryOperator<Object> merger;
         if (function == null) {
             merger = (a, b) -> ReflectionUtils
-                    .invokeFieldable(context, clazz, methodName, null, new Object[] { a, b });
+                .invokeFieldable(context, clazz, methodName, null, new Object[] {a, b});
         } else {
             merger = (a, b) -> makeCall(context, a, b).eval(context);
         }

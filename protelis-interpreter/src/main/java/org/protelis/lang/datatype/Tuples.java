@@ -20,8 +20,8 @@ public final class Tuples {
     }
 
     /**
-     * Set arithmetic: compute union of set of tuple elements in t1 and t2.
-     * 
+     * Set arithmetic: compute union of the set of tuple elements in t1 and t2.
+     *
      * @param t1
      *            First tuple to union
      * @param t2
@@ -34,9 +34,9 @@ public final class Tuples {
     }
 
     /**
-     * Set arithmetic: compute intersection of set of tuple elements in t1 and
+     * Set arithmetic: compute intersection of the set of tuple elements in t1 and
      * t2.
-     * 
+     *
      * @param t1
      *            First tuple to intersect
      * @param t2
@@ -49,9 +49,9 @@ public final class Tuples {
     }
 
     /**
-     * Set arithmetic: compute subtraction of set of tuple elements in t2 from
+     * Set arithmetic: compute subtraction of the set of tuple elements in t2 from
      * elements in t1.
-     * 
+     *
      * @param t1
      *            Base tuple
      * @param t2
@@ -67,7 +67,7 @@ public final class Tuples {
      * Apply fun to pairs of elements from t1 and t2. If one tuple is longer,
      * then its unmatched elements will be added to the output e.g.,
      * pairOperation([1,2,3],[4,5],max) -&gt; [4,5,3]
-     * 
+     *
      * @param t1
      *            Tuple of first arguments
      * @param t2
@@ -92,7 +92,7 @@ public final class Tuples {
 
     /**
      * Create a Tuple with all elements initialized to the same value.
-     * 
+     *
      * @param value
      *            Value to which all elements will be initialized
      * @param length
@@ -102,6 +102,4 @@ public final class Tuples {
     public static Tuple fill(final Object value, final int length) {
         return new ArrayTupleImpl(value, length);
     }
-
-
 }

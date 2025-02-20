@@ -22,8 +22,9 @@ import java8.util.function.BiConsumer;
  * Check if the simulation and expected results match.
  */
 public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pair<String, String>>> {
-    private final ExceptionObserver obs;
     private static final String ERROR_TEMPLATE = "%n --- Simulation result%n --- %s%n[N%s] expected: %s, found: %s";
+    private final ExceptionObserver obs;
+
     /**
      * @param obs
      *            exception observer
@@ -35,7 +36,7 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
     @Override
     public void accept(final Map<String, Object> simulationRes, final List<Pair<String, String>> expectedResult) {
         try {
-            assertEquals(expectedResult.size(), simulationRes.values().size());
+            assertEquals(expectedResult.size(), simulationRes.size());
             for (final Pair<String, String> pair : expectedResult) {
                 if (!InfrastructureTester.DC.equals(pair.getRight())) {
                     final Object singleNodeResult = simulationRes.get(pair.getLeft());
@@ -63,11 +64,13 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                         } else {
                             assertEquals(pair.getRight(), singleNodeResult);
                         }
+                        // CHECKSTYLE: IllegalCatch OFF
                     } catch (Exception | AssertionError e) { // NOPMD
+                        // CHECKSTYLE: IllegalCatch ON
                         final var expected = pair.getRight() + " (type: " + pair.getRight().getClass().getSimpleName() + ")";
                         final var actual = singleNodeResult == null
                             ? "null"
-                            : singleNodeResult  + " (type: " + singleNodeResult.getClass().getSimpleName() + ")";
+                            : singleNodeResult + " (type: " + singleNodeResult.getClass().getSimpleName() + ")";
                         obs.exceptionThrown(
                             new IllegalStateException(
                                 String.format(
@@ -83,11 +86,11 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                     }
                 }
             }
-        } catch (AssertionError e) {
+        } catch (final AssertionError e) {
             obs.exceptionThrown(
                 new IllegalStateException(
                     "expectedResult.length [" + expectedResult.size() + "] != simulationResult.length ["
-                        + simulationRes.values().size() + "]"
+                        + simulationRes.size() + "]"
                 )
             );
         }

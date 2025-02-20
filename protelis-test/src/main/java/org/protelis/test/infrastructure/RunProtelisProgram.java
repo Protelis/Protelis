@@ -37,14 +37,15 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
      */
     public static final String RESULT = "$$result";
     private static final long serialVersionUID = 2207914086772704332L;
+    private static final Logger L = LoggerFactory.getLogger(RunProtelisProgram.class);
+
     private final Environment<Object> environment;
     private final ProtelisNode node;
     private final org.protelis.vm.ProtelisProgram program;
     private final RandomGenerator random;
     private final ProtelisVM vm;
-    private final CachingNetworkManager netmgr;
+    private final CachingNetworkManager networkManager;
     private int round;
-    private static final Logger L = LoggerFactory.getLogger(RunProtelisProgram.class);
 
     /**
      * @param env
@@ -73,9 +74,9 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
         environment = env;
         node = n;
         random = rand;
-        this.netmgr = new CachingNetworkManager();
-        node.setNetworkManger(netmgr);
-        final ExecutionContext ctx = new DummyDevice(env, n, r, rand, netmgr);
+        this.networkManager = new CachingNetworkManager();
+        node.setNetworkManger(networkManager);
+        final ExecutionContext ctx = new DummyDevice(env, n, r, rand, networkManager);
         vm = new ProtelisVM(prog, ctx);
         round = 0;
     }
@@ -84,28 +85,14 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
     public void execute() {
         vm.runCycle();
         node.setConcentration(this, vm.getCurrentValue());
-        L.debug(" [node{}-rnd:{}]: {}", node.toString(), round, vm.getCurrentValue());
+        L.debug(" [node{}-rnd:{}]: {}", node, round, vm.getCurrentValue());
         round++;
         environment.getNeighborhood(node).getNeighbors().forEach(n -> {
             final ProtelisNode pNode = (ProtelisNode) n;
             final CachingNetworkManager cnm = (CachingNetworkManager) pNode.getNetworkManager();
-            cnm.receiveFromNeighbor(node, netmgr.getSendCache());
+            cnm.receiveFromNeighbor(node, networkManager.getSendCache());
         });
         node.put(RESULT, vm.getCurrentValue());
-    }
-
-    /**
-     * @return the environment
-     */
-    protected Environment<Object> getEnvironment() {
-        return environment;
-    }
-
-    /**
-     * @return the node
-     */
-    protected ProtelisNode getNode() {
-        return node;
     }
 
     @Override

@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.datatype.impl;
 
 import com.google.common.collect.ImmutableList;
@@ -44,7 +45,9 @@ public final class ArrayTupleImpl implements Tuple {
         if (a instanceof Comparable && b instanceof Comparable) {
             try {
                 return ((Comparable<Object>) a).compareTo(b);
-            } catch (RuntimeException e) { // NOPMD: this is done by purpose
+                // CHECKSTYLE: IllegalCatch OFF
+            } catch (final RuntimeException e) { // NOPMD: done by purpose
+                // CHECKSTYLE: IllegalCatch ON
                 return compareLexicographically(a, b);
             }
         }
@@ -100,17 +103,17 @@ public final class ArrayTupleImpl implements Tuple {
             if (o1 instanceof Comparable && o2 instanceof Comparable) {
                 try {
                     res = ((Comparable<Object>) o1).compareTo(o2);
-                } catch (ClassCastException ex) {
+                } catch (final ClassCastException ex) {
                     /*
-                     * Uncomparable, go lexicographically
+                     * Incomparable, go lexicographically
                      */
-                    res = o1.toString().compareTo(o2.toString());
+                    res = compareLexicographically(o1, o2);
                 }
             } else {
                 /*
                  * Fall back to lexicographic comparison
                  */
-                return o1.toString().compareTo(o2.toString());
+                return compareLexicographically(o1, o2);
             }
         }
         if (res == 0 && arrayContents.length != otherSize) {
@@ -359,6 +362,13 @@ public final class ArrayTupleImpl implements Tuple {
         throw new IllegalArgumentException("Reducing function must take two parameters.");
     }
 
+    @Override
+    public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
+        return Arrays.stream(arrayContents)
+                .reduce(Objects.requireNonNull(fun))
+                .orElse(Objects.requireNonNull(defVal));
+    }
+
     private Object runBinaryFunctionWithElement(
             final ExecutionContext ctx,
             final FunctionDefinition fun,
@@ -371,13 +381,6 @@ public final class ArrayTupleImpl implements Tuple {
         );
         final FunctionCall call = new FunctionCall(JavaInteroperabilityUtils.METADATA, fun, arguments);
         return ctx.runInNewStackFrame(elementPosition, call::eval);
-    }
-
-    @Override
-    public Object reduce(final Object defVal, final BinaryOperator<Object> fun) {
-        return Arrays.stream(arrayContents)
-            .reduce(Objects.requireNonNull(fun))
-            .orElse(Objects.requireNonNull(defVal));
     }
 
     @Override
@@ -470,7 +473,7 @@ public final class ArrayTupleImpl implements Tuple {
 
     @Override
     public Tuple unwrap(final int i) {
-        return DatatypeFactory.createTuple(Arrays.stream(arrayContents).map((o) -> {
+        return DatatypeFactory.createTuple(Arrays.stream(arrayContents).map(o -> {
             if (o instanceof Tuple) {
                 return ((Tuple) o).get(i);
             }
@@ -482,7 +485,7 @@ public final class ArrayTupleImpl implements Tuple {
     public Tuple zip(final Tuple other) {
         final Object[] result = new Object[Math.min(size(), other.size())];
         for (int i = 0; i < result.length; i++) {
-            result[i] = new ArrayTupleImpl(new Object[]{ get(i), other.get(i) }, false);
+            result[i] = new ArrayTupleImpl(new Object[]{get(i), other.get(i)}, false);
         }
         return new ArrayTupleImpl(result, false);
     }

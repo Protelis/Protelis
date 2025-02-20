@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.vm.impl;
 
 import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
@@ -35,7 +36,6 @@ import org.protelis.vm.NetworkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -50,17 +50,18 @@ import gnu.trove.stack.array.TIntArrayStack;
  * generally extend this class.
  *
  * @param <S> self-type. Subclasses must parameterize AbstractExecutionContext
- *            with themselves, and return themselves in instance(). This forces
+ *            with themselves and return themselves in instance(). This forces
  *            a compiler check on the type of instanced contexts, ensuring (if
  *            no foolish cast is used) that restricted contexts have all the
  *            methods available in the main {@link ExecutionContext}. For
  *            instance, if your class is MyContext, it should be written as
- *            MyContext extends AbstractExecutionContext&lt;MyContext&gt;.
+ *            {@code MyContext extends AbstractExecutionContext<MyContext>}.
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public abstract class AbstractExecutionContext<S extends AbstractExecutionContext<S>> implements ExecutionContext {
 
     private static final int MASK = 0xFF;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContext.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExecutionContext.class);
     private final TIntStack callFrameSizes = new TIntArrayStack();
     private final TIntList callStack = new TIntArrayList(10, -1);
     private final CodePathFactory codePathFactory;
@@ -84,11 +85,11 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
      *
      * @param execenv
      *            The execution environment
-     * @param netmgr
+     * @param networkManager
      *            Abstract network interface to be used
      */
-    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager netmgr) {
-        this(execenv, netmgr, (stack, sizes) -> new DefaultTimeEfficientCodePath(stack));
+    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager networkManager) {
+        this(execenv, networkManager, (stack, sizes) -> new DefaultTimeEfficientCodePath(stack));
     }
 
     /**
@@ -130,8 +131,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
          */
         final CodePath codePath = codePathFactory.createCodePath(callStack, callFrameSizes);
         /*
-         * If there is a request to build a field, then it means this is a
-         * nbr-like operation
+         * If there is a request to build a field, then it means this is an nbr-like operation
          */
         final Field.Builder<R> builder = DatatypeFactory.createFieldBuilder();
         for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
@@ -141,10 +141,10 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
             }
         }
         /*
-         * If a field is computed locally, the local value should get echoed to
-         * neighbors. However, such operation must be performed *after* the build
-         * construction has been proved successful, in order to prevent errors due to a
-         * bugged NetworkManager to propagate within the intepreter, giving rise to very
+         * If a field is computed locally, the local value should get echoed to neighbors.
+         * However, such an operation must be performed *after* the build
+         * construction has been proved successful, to prevent errors due to a
+         * bugged NetworkManager to propagate within the interpreter, giving rise to very
          * unclear exception messages.
          */
         if (destination.putIfAbsent(codePath, toBeSent) != null) {
@@ -167,14 +167,14 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
 
     @Override
     public final void commit() {
-        // send precisely once
+        // send it precisely once
         tobeComputedBeforeSending.forEach((codepath, supplier) -> {
             final Object computed = supplier.get();
             final Object previous = toSend.putIfAbsent(codepath, computed);
             if (previous != null) {
-                throw new IllegalStateException("Duplicated field entry with the same codepath "
+                throw new IllegalStateException("Duplicated field entry with the same code-path "
                     + "caused by the computation of a deferred build field: this is likely a bug in Protelis.\n"
-                    + "codepath: " + codepath + '\n'
+                    + "code-path: " + codepath + '\n'
                     + "previously: " + previous + '\n'
                     + "computed: " + computed + '\n'
                     + "overall exports: " + toSend + '\n'
@@ -186,7 +186,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         exportsSize = toSend.size();
         variablesSize = gamma.size();
         deferredExportSize = tobeComputedBeforeSending.size();
-        // commit and clear including recursion into restricted contexts
+        // commit and clear, including recursion into restricted contexts
         commitRecursively();
     }
 
@@ -209,8 +209,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
         lastStored = Collections.unmodifiableMap(toStore);
         toStore = null;
         tobeComputedBeforeSending = null;
-        for (final AbstractExecutionContext<S> rctx: restrictedContexts) {
-            rctx.commitRecursively();
+        for (final AbstractExecutionContext<S> restrictedContext: restrictedContexts) {
+            restrictedContext.commitRecursively();
         }
         restrictedContexts.clear();
     }
@@ -277,8 +277,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     }
 
     /**
-     * Produce a child execution context, for encapsulated evaluation of
-     * sub-programs.
+     * Produce a child execution context for encapsulated evaluation of subprograms.
      *
      * @return Child execution context
      */
@@ -408,7 +407,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
             LOGGER.warn("Local device UID {} was included in the set of received messages, "
                     + "indicating that an auto-arc was present in your network configuration. "
                     + "This is being worked around by not considering such information, "
-                    + "however, you should fix your logical netowrk.", getDeviceUID());
+                    + "however, you should fix your logical network.", getDeviceUID());
             final ImmutableMap.Builder<DeviceUID, Map<CodePath, Object>> immutableMap = ImmutableMap
                     .builderWithExpectedSize(theta.size() - 1);
             theta.forEach((id, object) -> {

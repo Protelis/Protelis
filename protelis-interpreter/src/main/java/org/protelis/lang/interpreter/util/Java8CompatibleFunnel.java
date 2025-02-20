@@ -30,7 +30,7 @@ public final class Java8CompatibleFunnel implements HashingFunnel {
         } else if (key instanceof Float) {
             return Either.left(Float.floatToRawIntBits((float) key));
         } else if (key instanceof Boolean) {
-            return Either.right(new byte[] { (byte) ((Boolean) key ? -1 : 0) });
+            return Either.right(new byte[] {(byte) ((Boolean) key ? -1 : 0) });
         } else if (key instanceof String) {
             return Either.right(((String) key).getBytes(StandardCharsets.UTF_8));
         } else if (key instanceof BigInteger) {

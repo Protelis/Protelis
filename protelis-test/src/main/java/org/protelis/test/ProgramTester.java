@@ -55,7 +55,6 @@ public final class ProgramTester {
     }
 
     /**
-     * 
      * @param file
      *            file to be tested
      * @param expectedResult
@@ -66,7 +65,6 @@ public final class ProgramTester {
     }
 
     /**
-     * 
      * @param file
      *            file to be tested
      */
@@ -75,9 +73,58 @@ public final class ProgramTester {
     }
 
     /**
-     * Tests a program expecting an error, and checks its message contents.
-     * 
-     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * @param file
+     *            file to be tested
+     * @param runs
+     *            number of runs
+     * @param expectedResult
+     *            expected result
+     */
+    public static void runFile(final String file, final int runs, final Object expectedResult) {
+        assertEquals(expectedResult, runProgram(file, runs));
+    }
+
+    /**
+     * @param file
+     *            file to be tested
+     * @param runs
+     *            number of runs
+     */
+    public static void runFile(final String file, final int runs) {
+        final Object execResult = runProgram(Objects.requireNonNull(file, "File in test cannot be null"), runs);
+        final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
+        @SuppressWarnings("DataFlowIssue")
+        final var fileResource = Objects.requireNonNull(
+                ProgramTester.class.getResource(fileWithExt),
+                "Unable to load resource: " + file + " (transformed in: " + fileWithExt + ')'
+        );
+        try (InputStream is = fileResource.openStream()) {
+            final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
+            final Matcher extractor = EXTRACT_RESULT.matcher(test);
+            if (extractor.find()) {
+                String result = extractor.group(ML_NAME);
+                if (result == null) {
+                    result = extractor.group(SL_NAME);
+                }
+                final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
+                final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
+                vm.runCycle();
+                assertEquals(
+                        vm.getCurrentValue(),
+                        execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult
+                );
+            } else {
+                fail("Your test does not include the expected result");
+            }
+        } catch (final IOException e) {
+            fail(LangUtils.stackTraceToString(e));
+        }
+    }
+
+    /**
+     * Tests a program expecting an error and checks its message contents.
+     *
+     * @param program the program to execute. If it ends in ".pt", it will be loaded as a Protelis script from the classpath
      * @param expectedExceptionType the type of exception to be thrown
      * @param searchCause if true, the message contents are searched for in the cause exception message
      * @param messageContents the strings that the exception message must include
@@ -102,10 +149,10 @@ public final class ProgramTester {
     }
 
     /**
-     * Tests a program expecting an error, and checks its message contents.
-     * 
+     * Tests a program expecting an error and checks its message contents.
+     *
      * @param <E> exception type (static)
-     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * @param program the program to execute. If it ends in ".pt", it will be loaded as a Protelis script from the classpath
      * @param expectedExceptionType the type of exception to be thrown
      * @param analyzer the actions to perform on the exception
      */
@@ -124,9 +171,9 @@ public final class ProgramTester {
     }
 
     /**
-     * Tests a program expecting an error, and checks its message contents.
-     * 
-     * @param program the program to execute. It it ends in ".pt", it will be loaded as Protelis script from classpath
+     * Tests a program expecting an error and checks its message contents.
+     *
+     * @param program the program to execute. If it ends in ".pt", it will be loaded as a Protelis script from the classpath
      * @param expectedExceptionType the type of exception to be thrown
      * @param messageContents the strings that the exception message must include
      */
@@ -138,7 +185,6 @@ public final class ProgramTester {
     }
 
     /**
-     * 
      * @param file
      *            file to be tested
      */
@@ -147,7 +193,6 @@ public final class ProgramTester {
     }
 
     /**
-     * 
      * @param file
      *            file to be tested
      * @param min
@@ -160,7 +205,6 @@ public final class ProgramTester {
     }
 
     /**
-     * 
      * @param file
      *            file to be tested
      * @param stream
@@ -171,57 +215,6 @@ public final class ProgramTester {
     }
 
     /**
-     * 
-     * @param file
-     *            file to be tested
-     * @param runs
-     *            number of runs
-     */
-    public static void runFile(final String file, final int runs) {
-        final Object execResult = runProgram(Objects.requireNonNull(file, "File in test cannot be null"), runs);
-        final String fileWithExt = file.endsWith(".pt") ? file : "/" + file + ".pt";
-        final var fileResource = Objects.requireNonNull(
-            ProgramTester.class.getResource(fileWithExt),
-            "Unable to load resource: " + file + " (transformed in: " + fileWithExt + ')'
-        );
-        try (InputStream is = fileResource.openStream()) {
-            final String test = IOUtils.toString(is, StandardCharsets.UTF_8);
-            final Matcher extractor = EXTRACT_RESULT.matcher(test);
-            if (extractor.find()) {
-                String result = extractor.group(ML_NAME);
-                if (result == null) {
-                    result = extractor.group(SL_NAME);
-                }
-                final String toCheck = CYCLE.matcher(result).replaceAll(Integer.toString(runs));
-                final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(toCheck), new DummyContext());
-                vm.runCycle();
-                assertEquals(
-                    vm.getCurrentValue(),
-                    execResult instanceof Number ? ((Number) execResult).doubleValue() : execResult
-                );
-            } else {
-                fail("Your test does not include the expected result");
-            }
-        } catch (IOException e) {
-            fail(LangUtils.stackTraceToString(e));
-        }
-    }
-
-    /**
-     * 
-     * @param file
-     *            file to be tested
-     * @param runs
-     *            number of runs
-     * @param expectedResult
-     *            expected result
-     */
-    public static void runFile(final String file, final int runs, final Object expectedResult) {
-        assertEquals(expectedResult, runProgram(file, runs));
-    }
-
-    /**
-     * 
      * @param s
      *            program to run
      * @param runs
@@ -232,7 +225,9 @@ public final class ProgramTester {
         final ProtelisProgram program = ProtelisLoader.parse(s);
         try {
             FileUtilities.serializeObject(program);
-        } catch (Exception e) { // NOPMD: Done by purpose
+            // CHECKSTYLE: IllegalCatch OFF
+        } catch (final Exception e) { // NOPMD: Done by purpose
+            // CHECKSTYLE: IllegalCatch ON
             LOGGER.error(e.getMessage(), e);
             fail(e.getMessage());
         }

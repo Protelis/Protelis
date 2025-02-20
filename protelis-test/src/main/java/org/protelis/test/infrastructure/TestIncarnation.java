@@ -140,7 +140,9 @@ public final class TestIncarnation implements Incarnation<Object> {
             final ProtelisNode pNode = (ProtelisNode) node;
             try {
                 return new RunProtelisProgram(env, pNode, reaction, rand, param);
-            } catch (RuntimeException e) { // NOPMD: we want to catch any runtime exception
+                // CHECKSTYLE: IllegalCatch OFF
+            } catch (final RuntimeException e) { // NOPMD: we want to catch any runtime exception
+                // CHECKSTYLE: IllegalCatch ON
                 throw new IllegalArgumentException("Could not create the requested Protelis program: " + param, e);
             }
         }
@@ -155,7 +157,7 @@ public final class TestIncarnation implements Incarnation<Object> {
             final ProtelisVM vm = new ProtelisVM(program, new DummyContext());
             vm.runCycle();
             return vm.getCurrentValue();
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             /*
              * Not a valid program: inject the String itself
              */

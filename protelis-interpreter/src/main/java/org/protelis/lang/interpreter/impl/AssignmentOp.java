@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.ProtelisAST;
@@ -18,7 +19,7 @@ import org.protelis.vm.ExecutionContext;
 public final class AssignmentOp extends AbstractProtelisAST<Object> {
 
     private static final long serialVersionUID = -7298208661255971616L;
-    private final Reference var;
+    private final Reference reference;
 
     /**
      * @param metadata
@@ -30,13 +31,13 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
      */
     public AssignmentOp(final Metadata metadata, final Reference name, final ProtelisAST<?> value) {
         super(metadata, value);
-        var = name;
+        reference = name;
     }
 
     @Override
     public Object evaluate(final ExecutionContext context) {
         final Object res = getValue().eval(context);
-        context.putVariable(var, res);
+        context.putVariable(reference, res);
         return res;
     }
 
@@ -53,7 +54,7 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
      */
     @Override
     public String toString() {
-        return getName() + ' ' + var + " = " + stringFor(getValue());
+        return getName() + ' ' + reference + " = " + stringFor(getValue());
     }
 
     @Override

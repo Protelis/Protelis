@@ -24,22 +24,22 @@ import gnu.trove.stack.TIntStack;
 
 /**
  * A hash-based {@link CodePath} factory. It allows for predictable packet
- * sizes, as codepath length is no affected by the evaluation tree depth at
+ * sizes, as code path length is not affected by the evaluation tree depth at
  * which the field was built. It is arguably more secure than the default option
  * (if a cryptographic hashing function is used) as receivers cannot deduce the
  * code that generated some values. The provided factory is configurable by
- * using an {@link HashFunction} from Guava. Being hash based, it has a non-zero
- * probability of collision. Using decent hash functions (e.g. SHA) should
- * however make the event very unlikely. In any case, there is a trade-off
+ * using an {@link HashFunction} from Guava. Being hash-based, it has a non-zero
+ * probability of collision. Using decent hash functions (e.g., SHA) should, however,
+ * make the event very unlikely. In any case, there is a trade-off
  * between collision probability and packet size.
- * 
+ *
+ * <p>
  * Implementations of {@link AbstractExecutionContext} can use it by passing the
  * factory instance in the super constructor call, e.g.:
- * 
+ *
  * <pre>
- * super(execenv, netmgr, new HashingCodePathFactory(Hashing.sha256()));
+ * super(execenv, networkManager, new HashingCodePathFactory(Hashing.sha256()));
  * </pre>
- * 
  */
 @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "False positive, checked by a test.")
 public class HashingCodePathFactory implements CodePathFactory {
@@ -57,10 +57,12 @@ public class HashingCodePathFactory implements CodePathFactory {
     /**
      * @param hashFunction the hashing algorithm to use
      */
+    @SuppressWarnings("UnstableApiUsage")
     public HashingCodePathFactory(final HashFunction hashFunction) {
         this(hashFunction::newHasher);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public final CodePath createCodePath(final TIntList callStackIdentifiers, final TIntStack callStackSizes) {
         final Hasher hasher = algorithm.get();
@@ -74,6 +76,7 @@ public class HashingCodePathFactory implements CodePathFactory {
     /**
      * Serializable supplier, because Java 8 lambdas are not.
      */
+    @SuppressWarnings("UnstableApiUsage")
     @FunctionalInterface
     public interface HasherSupplier extends Supplier<Hasher>, Serializable { }
 
@@ -86,8 +89,8 @@ public class HashingCodePathFactory implements CodePathFactory {
 
         /**
          * Builds a new {@link HashingCodePath} based on the provided hash.
-         * 
-         * @param hash a byte array representing the hash it must be at least four bytes
+         *
+         * @param hash a byte array representing the hash, it must be at least four bytes
          *             (though longer hashes are warmly recommended to avoid collisions)
          */
         public HashingCodePath(final byte[] hash) {

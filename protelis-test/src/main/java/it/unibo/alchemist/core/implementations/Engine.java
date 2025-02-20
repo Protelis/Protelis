@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package it.unibo.alchemist.core.implementations;
 
 import com.google.common.collect.MapMaker;
@@ -47,6 +48,10 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @param <T> ignored
  */
+// CHECKSTYLE: InnerTypeLast OFF
+// CHECKSTYLE: IllegalCatch OFF
+// CHECKSTYLE: OverloadMethodsDeclarationOrder OFF
+// CHECKSTYLE: DeclarationOrder OFF
 @SuppressFBWarnings
 public final class Engine<T> implements Simulation<T> {
 
@@ -95,7 +100,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * Statically searches for the simulation running some environment, and adds
+     * Statically searches for the simulation running some environment and adds
      * an OutputMonitor to it.
      *
      * @param env
@@ -243,7 +248,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * This method provide a facility for adding all the reactions of a node to
+     * This method provides a facility for adding all the reactions of a node to
      * the current simulation, creating also the dependencies. This method must
      * be called only when it is possible for the environment to successfully
      * compute the neighborhood for the new node.
@@ -266,7 +271,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * This method provide a facility for removing all the reactions of a node
+     * This method provides a facility for removing all the reactions of a node
      * from the current simulation, along with their dependencies. This method
      * must be called when it is still possible for the environment to
      * successfully compute the neighborhood for the removed node.
@@ -360,7 +365,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * Builds a simulation for a given environment. By default it uses a
+     * Builds a simulation for a given environment. By default, it uses a
      * DependencyGraph and an IndexedPriorityQueue internally. If you want to
      * use your own implementations of DependencyGraph and ReactionManager
      * interfaces, don't use this constructor.
@@ -375,7 +380,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * Builds a simulation for a given environment. By default it uses a
+     * Builds a simulation for a given environment. By default, it uses a
      * DependencyGraph and an IndexedPriorityQueue internally. If you want to
      * use your own implementations of DependencyGraph and ReactionManager
      * interfaces, don't use this constructor.
@@ -383,14 +388,14 @@ public final class Engine<T> implements Simulation<T> {
      * @param e
      *            the environment at the initial time
      * @param maxSteps
-     *            the maximum number of steps to do
+     *            the maximum number of steps to take
      */
     public Engine(final Environment<T> e, final long maxSteps) {
         this(e, maxSteps, new DoubleTime(Double.POSITIVE_INFINITY));
     }
 
     /**
-     * Builds a simulation for a given environment. By default it uses a
+     * Builds a simulation for a given environment. By default, it uses a
      * DependencyGraph and an IndexedPriorityQueue internally. If you want to
      * use your own implementations of DependencyGraph and ReactionManager
      * interfaces, don't use this constructor.
@@ -398,7 +403,7 @@ public final class Engine<T> implements Simulation<T> {
      * @param e
      *            the environment at the initial time
      * @param maxSteps
-     *            the maximum number of steps to do
+     *            the maximum number of steps to take
      * @param t
      *            the maximum time to reach
      */
@@ -417,7 +422,6 @@ public final class Engine<T> implements Simulation<T> {
         monitors.add(op);
         monitorLock.release();
     }
-
 
     @Override
     public void removeOutputMonitor(final OutputMonitor<T> op) {
@@ -497,7 +501,7 @@ public final class Engine<T> implements Simulation<T> {
 
     private void newStatus(final Status s) {
         if (this.compareStatuses(s) > 0) {
-            L.error("Attempt to enter in an illegal status: " + s);
+            L.error("Attempt to enter in an illegal status: {}", s);
         } else {
             statusLock.lock();
             try {
@@ -512,7 +516,7 @@ public final class Engine<T> implements Simulation<T> {
     @Override
     public Status waitFor(final Status s, final long timeout, final TimeUnit tu) {
         if (this.compareStatuses(s) > 0) {
-            L.error("Attempt to wait for an illegal status: " + s + " (current state is: " + getStatus() + ")");
+            L.error("Attempt to wait for an illegal status: {} (current state is: {})", s, getStatus());
         } else {
             statusLock.lock();
             try {
@@ -531,8 +535,7 @@ public final class Engine<T> implements Simulation<T> {
                                     exit = true;
                                 }
                             }
-                        } catch (InterruptedException e) {
-                            exit = false;
+                        } catch (final InterruptedException e) {
                             L.info("A wild spurious wakeup appears! Go, Catch Block! (wild 8-bit music rushes in background)");
                         }
                     }
@@ -543,7 +546,6 @@ public final class Engine<T> implements Simulation<T> {
         }
         return getStatus();
     }
-
 
     private int compareStatuses(final Status o) {
         if ((status == Status.RUNNING || status == Status.PAUSED) && (o == Status.RUNNING || o == Status.PAUSED)) {
@@ -602,7 +604,7 @@ public final class Engine<T> implements Simulation<T> {
             try {
                 nextCommand = commands.take();
                 nextCommand.execute(this);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 L.debug("Look! A spurious wakeup! :-)");
             }
         }
@@ -624,7 +626,7 @@ public final class Engine<T> implements Simulation<T> {
             currentTime = t;
             if (root.canExecute()) {
                 /*
-                 * This must be taken before execution, because the reaction
+                 * This must be taken before execution because the reaction
                  * might remove itself (or its node) from the environment.
                  */
                 final List<DependencyHandler<T>> deps = handlers.get(root).influences();
@@ -632,12 +634,9 @@ public final class Engine<T> implements Simulation<T> {
                 for (final DependencyHandler<T> r : deps) {
                     updateReaction(r, t, ipq, env);
                 }
-                root.update(currentTime, true, env);
-                ipq.updateReaction(root);
-            } else {
-                root.update(currentTime, true, env);
-                ipq.updateReaction(root);
             }
+            root.update(currentTime, true, env);
+            ipq.updateReaction(root);
             monitorLock.read();
             for (final OutputMonitor<T> m : monitors) {
                 m.stepDone(env, root, currentTime, curStep);
@@ -667,7 +666,7 @@ public final class Engine<T> implements Simulation<T> {
 
     /**
      * This class provides a flexible Builder to create a new Command
-     * whose aim is to change the status of a Engine.
+     * whose aim is to change the status of an Engine.
      *
      * @param <T> concentration
      */
@@ -678,7 +677,7 @@ public final class Engine<T> implements Simulation<T> {
 
         /**
          * Sets the desired status to RUNNING.
-         * Calling this method overrides an eventual previous call to 
+         * Calling this method overrides an eventual previous call to
          * {@link #pause()} and\or {@link #stop()}.
          *
          * @return the current builder with the updated status
@@ -690,8 +689,8 @@ public final class Engine<T> implements Simulation<T> {
         }
 
         /**
-         * Sets the desired status to PAUSED.
-         * Calling this method overrides an eventual previous call to 
+         * Sets the desired status to {@code PAUSED}.
+         * Calling this method overrides an eventual previous call to
          * {@link #run()} and\or {@link #stop()}.
          *
          * @return the current builder with the updated status
@@ -704,7 +703,7 @@ public final class Engine<T> implements Simulation<T> {
 
         /**
          * Sets the desired status to {#@link Status#STOPPED}.
-         * Calling this method overrides an eventual previous call to 
+         * Calling this method overrides an eventual previous call to
          * {@link #pause()} and\or {@link #run()}.
          *
          * @return the current builder with the updated status
@@ -730,7 +729,7 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
-     * @return the error, or null if there is none
+     * @return the error or null if there is none
      */
     public Throwable getError() {
         return error;

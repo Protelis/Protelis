@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.util;
 
 import java.lang.reflect.Array;
@@ -149,7 +150,7 @@ public final class ReflectionUtils {
     /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
-     * 
+     *
      * @param context
      *            the current {@link ExecutionContext}
      * @param clazz
@@ -182,7 +183,7 @@ public final class ReflectionUtils {
     /**
      * Invokes a method. If there are fields involved, field operations are
      * applied
-     * 
+     *
      * @param context
      *            the current {@link ExecutionContext}
      * @param toInvoke
@@ -232,9 +233,13 @@ public final class ReflectionUtils {
         final Object[] useArgs = repackageIfRequired(context, method, args);
         try {
             return invokePossiblyVoidMethod(method, target, useArgs);
-        } catch (Exception exc) { // NOPMD: Generic exception caught by purpose
+            // CHECKSTYLE: IllegalCatch OFF
+        } catch (final Exception exc) { // NOPMD: Generic exception caught by purpose
+            // CHECKSTYLE: IllegalCatch ON
             /*
-             * Failure: maybe some cast was required, if arguments were actually passed?
+             * Failure:
+             * maybe some cast was required
+             * if arguments were actually passed?
              */
             if (useArgs.length == 0) {
                 throw new IllegalStateException(exc);
@@ -251,10 +256,10 @@ public final class ReflectionUtils {
             }
             try {
                 return invokePossiblyVoidMethod(method, target, useArgs);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 throw new UnsupportedOperationException("Method " + method // NOPMD: false positive
-                        + " cannot get invoked because it is not accessible.", e); 
-            } catch (IllegalArgumentException e) {
+                    + " cannot get invoked because it is not accessible.", e);
+            } catch (final IllegalArgumentException e) {
                 final boolean isStatic = target == null;
                 final String errorMessage = Optional.ofNullable(e.getMessage())
                         .orElse("Probable argument type mismatch")
@@ -263,7 +268,7 @@ public final class ReflectionUtils {
                     + " with arguments " + formatArguments(useArgs)
                     + (isStatic ? "" : " on " + target);
                 throw new UnsupportedOperationException(errorMessage, e); // NOPMD: false positive
-            } catch (InvocationTargetException e) {
+            } catch (final InvocationTargetException e) {
                 final Throwable rootCause = e.getCause();
                 final String errorMessage = "Invocation of "
                     + method
@@ -301,7 +306,7 @@ public final class ReflectionUtils {
             .filter(m -> compatibleLength(m, argClass.length, argClass.length > 0 ? argClass[0] : null))
             // Method name
             .filter(m -> m.getName().equals(methodName))
-            // Only pick accessibile methods, mapping to superclass/interfaces if needed
+            // Only pick accessible methods, mapping to superclass/interfaces if needed
             .map(MethodUtils::getAccessibleMethod)
             .filter(Objects::nonNull)
             .toArray(Method[]::new);
@@ -311,7 +316,7 @@ public final class ReflectionUtils {
         }
         if (candidates.length == 1 && argClass.length == 0) {
             /*
-             * In case of 0-arity, the single candidate can be selected directly
+             * In the case of 0-arity, the single candidate can be selected directly
              */
             return candidates[0];
         }
@@ -324,7 +329,7 @@ public final class ReflectionUtils {
             final Class<?>[] actualArgClass; // NOPMD: false positive
             if (shouldPushContext(expectedParameters, argClass)) {
                 /*
-                 * Push "self" as implicit parameter
+                 * Push "self" as an implicit parameter
                  */
                 actualArgClass = new Class<?>[argClass.length + 1];
                 actualArgClass[0] = ExecutionContext.class;
@@ -337,7 +342,7 @@ public final class ReflectionUtils {
             for (int i = 0; compatible && i < actualArgClass.length; i++) {
                 final Class<?> expected = nthArgumentType(m, i);
                 final Class<?> actual = actualArgClass[i];
-                if (actual == null && !classIsPrimitive(expected) || expected.isAssignableFrom(actual)) {
+                if (actual == null && !classIsPrimitive(expected) || expected.isAssignableFrom(Objects.requireNonNull(actual))) {
                     /*
                      * No downcast nor coercion required, there is compatibility
                      */
@@ -360,7 +365,7 @@ public final class ReflectionUtils {
             }
             if (compatible) {
                 /*
-                 * Early intercept the case of single candidate
+                 * Early intercept the case of a single candidate
                  */
                 if (candidates.length == 1) {
                     return m;
@@ -399,17 +404,17 @@ public final class ReflectionUtils {
         final boolean pushContext = shouldPushContext(expectedArgs, args);
         if (m.isVarArgs() || pushContext) {
             // We will repackage into an array of the expected length
-            final Object[] newargs = new Object[expectedArgs.length];
+            final Object[] newArgs = new Object[expectedArgs.length];
             // repackage all the base args
             final int start; // NOPMD: false positive
             if (pushContext) {
-                newargs[0] = context;
+                newArgs[0] = context;
                 start = 1;
             } else {
                 start = 0;
             }
             final int copiedArgCount = expectedArgs.length - start - (m.isVarArgs() ? 1 : 0);
-            System.arraycopy(args, 0, newargs, start, Math.max(copiedArgCount, 0));
+            System.arraycopy(args, 0, newArgs, start, Math.max(copiedArgCount, 0));
             if (m.isVarArgs()) {
                 // Determine how many arguments need repackaging
                 final int numVarArgs = args.length - copiedArgCount;
@@ -420,9 +425,9 @@ public final class ReflectionUtils {
                     System.arraycopy(args, expectedArgs.length - 1, vararg, 0, numVarArgs);
                 }
                 // Put the new array in the last argument and return
-                newargs[newargs.length - 1] = vararg;
+                newArgs[newArgs.length - 1] = vararg;
             }
-            return newargs;
+            return newArgs;
         } else {
             return args;
         }
@@ -464,7 +469,7 @@ public final class ReflectionUtils {
             if (atLeastOneField) {
                 try {
                     return METHOD_CACHE.get(new ImmutableTriple<>(clazz, methodName, fieldedClasses));
-                } catch (ExecutionException e) {
+                } catch (final ExecutionException e) {
                     throw new UnsupportedOperationException("No" + methodName + originalClasses // NOPMD: false positive
                             + " nor " + methodName + fieldedClasses + " exist in " + clazz
                             + ".\nYou tried to invoke it with arguments " + args, e);

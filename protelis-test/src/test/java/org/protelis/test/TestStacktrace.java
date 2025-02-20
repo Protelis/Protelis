@@ -23,17 +23,25 @@ import static org.junit.Assert.assertTrue;
  */
 public final class TestStacktrace {
     private static final Pattern EXCEPTION_FORMAT_OPENJ9 = Pattern.compile(".*Tuple.*incompatible\\swith.*Field.*");
+
     /**
-     * Test error in main script.
+     * Test error in the main script.
      */
     @Test
     public void testErrorInMainModule() {
-        ProgramTester.runExpectingErrors("/errorTrace01.pt", ProtelisRuntimeException.class, e -> {
-            assertTrue("Exception does not include main script identification", e.toString().contains("main script"));
-        });
+        ProgramTester.runExpectingErrors(
+            "/errorTrace01.pt",
+            ProtelisRuntimeException.class,
+            e ->
+                    assertTrue(
+                        "Exception does not include main script identification",
+                        e.toString().contains("main script")
+                    )
+        );
     }
+
     /**
-     * Test stacktrace in chained call.
+     * Test stacktrace in a chained call.
      */
     @Test
     public void testErrorTraceModule() {

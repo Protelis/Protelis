@@ -11,17 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * This observer intercepts exception thrown during the tests.
+ * This observer intercepts an exception thrown during the tests.
  */
 public interface ExceptionObserver {
+
     /**
      * An exception has been thrown.
-     * 
-     * @param ex
-     *            exception
-     * @return the same exception
+     *
+     * @param ex exception
      */
-    Exception exceptionThrown(Exception ex);
+    void exceptionThrown(Exception ex);
 
     /**
      * @return list of all the thrown exception

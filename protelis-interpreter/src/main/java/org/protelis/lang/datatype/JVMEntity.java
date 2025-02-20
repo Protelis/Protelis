@@ -72,7 +72,7 @@ public final class JVMEntity implements Serializable {
         if (type == null) {
             try {
                 type = Class.forName(typeName);
-            } catch (ClassNotFoundException e) {
+            } catch (final ClassNotFoundException e) {
                 throw new IllegalStateException(e);
             }
         }
@@ -98,7 +98,7 @@ public final class JVMEntity implements Serializable {
                     case METHOD:
                         value = this;
                         break;
-                    default: throw new  IllegalStateException("Fix Protelis code, it's bugged.");
+                    default: throw new IllegalStateException("Fix Protelis code, it's bugged.");
                 }
             } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
                 throw new IllegalStateException(e);

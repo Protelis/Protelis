@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang;
 
 import com.google.common.base.Splitter;
@@ -125,7 +126,7 @@ import static org.protelis.lang.ProtelisLoadingUtilities.referenceFor;
 import static org.protelis.lang.ProtelisLoadingUtilities.referenceListFor;
 
 /**
- * Main entry-point class for loading/parsing Protelis programs.
+ * The main entry-point class for loading/parsing Protelis programs.
  */
 public final class ProtelisLoader {
 
@@ -264,11 +265,14 @@ public final class ProtelisLoader {
         final int startLine = grammarElement.getStartLine();
         final int endLine = grammarElement.getEndLine();
         return new Metadata() {
+
             private static final long serialVersionUID = 1L;
+
             @Override
             public int getEndLine() {
                 return endLine;
             }
+
             @Override
             public int getStartLine() {
                 return startLine;
@@ -284,35 +288,32 @@ public final class ProtelisLoader {
     public static ProtelisProgram parse(@Nonnull final Resource resource) {
         try {
             return FLYWEIGHT.get(resource);
-        } catch (Exception e) { // NOPMD: this is intentional.
+            // CHECKSTYLE: IllegalCatch OFF
+        } catch (final Exception e) { // NOPMD: this is intentional.
+            // CHECKSTYLE: IllegalCatch ON
             throw new IllegalArgumentException(e);
         }
     }
 
     /**
      * @param program
-     *            Protelis module, program file or program to be prepared for
-     *            execution. It must be one of:
-     * <p>
-     *            i) a valid Protelis qualifier name (Java like name, colon
-     *            separated);
-     * <p>
-     *            ii) a valid {@link URI} string;
-     * <p>
-     *            iii) a valid Protelis program.
-     * <p>
-     *            Those possibilities are checked in order.
-     * <p>
-     *            The URI String can be in the form of a URL like
-     *            "file:///home/user/protelis/myProgram" or a location relative
-     *            to the classpath. In case, for instance,
-     *            "/my/package/myProgram.pt" is passed, it will be automatically
-     *            get converted to "classpath:/my/package/myProgram.pt". All the
-     *            Protelis modules your program relies upon must be included in
-     *            your Java classpath. The Java classpath scanning is done
-     *            automatically by this constructor, linking is performed by
-     *            Xtext transparently. {@link URI}s of type "platform:/" are
-     *            supported, for those who work within an Eclipse environment.
+     *     Protelis module, program file or program to be prepared for execution.
+     *     It must be one of:
+     *     i)
+     *     A valid Protelis qualifier name (Java like name, colon separated);
+     *     ii)
+     *     A valid {@link URI} string;
+     *     iii)
+     *     A valid Protelis program.
+     *     Those possibilities are checked in order.
+     *     The URI String can be in the form of a URL like "file:///home/user/protelis/myProgram" or a location relative
+     *     to the classpath.
+     *     In case, for instance, "/my/package/myProgram.pt" is passed, it will be automatically
+     *     getting converted to "classpath:/my/package/myProgram.pt".
+     *     All the Protelis modules your program relies upon must be included in your Java classpath.
+     *     This constructor does the Java classpath scanning automatically, linking is performed by
+     *     Xtext transparently.
+     *     Links of the type "platform:/" are supported for those who work within an Eclipse environment.
      * @return an {@link ProtelisProgram} comprising the constructed program
      * @throws IllegalArgumentException
      *             when the program has errors
@@ -333,21 +334,17 @@ public final class ProtelisLoader {
             return resourceFromURIString(program)
                 .map(ProtelisLoader::parse)
                 .orElseGet(() -> parseAnonymousModule(program));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(program + " looks like an URI, but its resolution failed (see cause)", e);
         }
     }
 
     /**
-     * @param program
-     *            A valid Protelis program to be prepared for execution.
-     * <p>
-     *            All the Protelis modules your program relies upon must be
-     *            included in your Java classpath. The Java classpath scanning
-     *            is done automatically by this constructor, linking is
-     *            performed by Xtext transparently. {@link URI}s of type
-     *            "platform:/" are supported, for those who work within an
-     *            Eclipse environment.
+     * @param program A valid Protelis program to be prepared for execution.
+     *     All the Protelis modules your program relies upon must be included in your Java classpath.
+     *     This constructor does the Java classpath scanning automatically,
+     *     linking is performed by Xtext transparently.
+     *     Links of the type "platform:/" are supported for those who work within an Eclipse environment.
      * @return a {@link ProtelisProgram}
      * @throws IllegalArgumentException
      *             when the program has errors
@@ -359,14 +356,14 @@ public final class ProtelisLoader {
     /**
      * @param programURI
      *            Protelis program file to be prepared for execution. It must be
-     *            a either a valid {@link URI} string, for instance
+     *             either a valid {@link URI} string, for instance
      *            "file:///home/user/protelis/myProgram" or a location relative
      *            to the classpath. In case, for instance,
      *            "/my/package/myProgram.pt" is passed, it will be automatically
-     *            get converted to "classpath:/my/package/myProgram.pt". All the
+     *            getting converted to "classpath:/my/package/myProgram.pt". All the
      *            Protelis modules your program relies upon must be included in
-     *            your Java classpath. The Java classpath scanning is done
-     *            automatically by this constructor, linking is performed by
+     *            your Java classpath. This constructor does the Java classpath scanning
+     *            automatically, linking is performed by
      *            Xtext transparently. {@link URI}s of type "platform:/" are
      *            supported, for those who work within an Eclipse environment.
      * @return a new {@link ProtelisProgram}
@@ -403,14 +400,14 @@ public final class ProtelisLoader {
             if (r == null) {
                 try (InputStream in = new StringInputStream(program)) {
                     loadStringResources(XTEXT.get(), in);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new IllegalStateException("Couldn't get resource associated with anonymous program: "
                             + e.getMessage(), e);
                 }
                 r = XTEXT.get().createResource(uri);
                 try (InputStream in = new StringInputStream(program)) {
                     r.load(in, XTEXT.get().getLoadOptions());
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new IllegalStateException("I/O error while reading in RAM: this must be tough.", e);
                 }
             }
@@ -432,7 +429,7 @@ public final class ProtelisLoader {
     private static <R> R workAroundOpenJ9EMFBug(final Supplier<R> fun) {
         try {
             return fun.get();
-        } catch (AssertionError e) {
+        } catch (final AssertionError e) {
             LOGGER.warn(OPEN_J9_EMF_WORKED_AROUND, e);
             return fun.get();
         }
@@ -443,6 +440,7 @@ public final class ProtelisLoader {
         private static final Cache<EObject, FunctionDefinition> VIRTUAL_METHOD_TABLE =
             CacheBuilder.newBuilder().weakKeys().build();
         private static final HashingFunnel FUNNEL = new Java8CompatibleFunnel();
+
         private static ProtelisAST<?> alignedMap(@Nonnull final org.protelis.parser.protelis.AlignedMap alMap) {
             return new AlignedMap(
                 FUNNEL,
@@ -571,7 +569,7 @@ public final class ProtelisLoader {
             final Metadata meta = metadataFor(expression);
             switch (elements.size()) {
                 case 1: return new UnaryOp(meta, expression.getName(), expression((Expression) elements.get(0)));
-                case 2: 
+                case 2:
                     final ProtelisAST<?> first = expression((Expression) expression.getElements().get(0));
                     final EObject second = expression.getElements().get(1);
                     if (expression.getName() == null && second instanceof InvocationArguments) {
@@ -645,10 +643,10 @@ public final class ProtelisLoader {
             final Metadata meta = metadataFor(rep);
             final RepInitialize init = rep.getInit();
             final Optional<Reference> local = Optional.of(referenceFor(init.getX()));
-            final Optional<ProtelisAST<Object>> yield = Optional.ofNullable(rep.getYields())
+            final Optional<ProtelisAST<Object>> yields = Optional.ofNullable(rep.getYields())
                     .map(Yield::getBody)
                     .map(Dispatch::blockUnsafe);
-            return new ShareCall<>(meta, local, Optional.empty(), expression(init.getW()), block(rep.getBody()), yield);
+            return new ShareCall<>(meta, local, Optional.empty(), expression(init.getW()), block(rep.getBody()), yields);
         }
 
         private static ProtelisAST<?> scalar(@Nonnull final Scalar expression) {
@@ -672,10 +670,10 @@ public final class ProtelisLoader {
             final ShareInitialize init = share.getInit();
             final Optional<Reference> local = Optional.ofNullable(init.getLocal()).map(ProtelisLoadingUtilities::referenceFor);
             final Optional<Reference> field = Optional.ofNullable(init.getField()).map(ProtelisLoadingUtilities::referenceFor);
-            final Optional<ProtelisAST<Object>> yield = Optional.ofNullable(share.getYields())
+            final Optional<ProtelisAST<Object>> yields = Optional.ofNullable(share.getYields())
                     .map(Yield::getBody)
                     .map(Dispatch::blockUnsafe);
-            return new ShareCall<>(metadataFor(share), local, field, expression(init.getW()), block(share.getBody()), yield);
+            return new ShareCall<>(metadataFor(share), local, field, expression(init.getW()), block(share.getBody()), yields);
         }
 
         private static ProtelisAST<?> statement(@Nonnull final Statement statement) {
@@ -697,13 +695,13 @@ public final class ProtelisLoader {
         private static ProtelisAST<?> variable(@Nonnull final VarUse expression) {
             /*
              * VarUse can reference:
-             * 
+             *
              * - JvmFeature (imported methods or fields)
-             * 
+             *
              * - FunctionDef (imported or locally defined Protelis functions)
-             * 
+             *
              * - VarDef (variables defined in scope, parameters in scope)
-             * 
+             *
              * The former can be treated as constants. They are immutable and do not require restriction
              * (as they cannot bind a Field).
              */
@@ -726,7 +724,7 @@ public final class ProtelisLoader {
                         )
                     );
                     return new Constant<>(meta, target);
-                } catch (ExecutionException e) {
+                } catch (final ExecutionException e) {
                     throw new IllegalStateException(e);
                 }
             }
@@ -749,19 +747,25 @@ public final class ProtelisLoader {
     }
 
     private static final class ResolvedResource {
+
         private static final String CLASSPATH_PROTOCOL = "classpath:";
+
         private final String classpathURL;
         private final String realURI;
+
         private ResolvedResource(final String programURI) {
             realURI = (programURI.startsWith("/") ? CLASSPATH_PROTOCOL : "") + programURI;
             classpathURL = realURI.startsWith(CLASSPATH_PROTOCOL) ? realURI.substring(CLASSPATH_PROTOCOL.length() + 1) : realURI;
         }
+
         private boolean exists() {
             return Thread.currentThread().getContextClassLoader().getResource(classpathURL) != null;
         }
+
         private InputStream openStream() {
             return Thread.currentThread().getContextClassLoader().getResourceAsStream(classpathURL);
         }
+
         @Override
         public String toString() {
             return "From classpath: " + classpathURL + ", complete URI: " + realURI;

@@ -10,7 +10,7 @@ package org.protelis.lang.datatype.impl;
 import java.util.UUID;
 
 /** DeviceUID based on UUIDs. */
-public class DeviceUUID extends AbstractComparableDeviceUID<UUID> {
+public class DeviceUUID extends ComparableDeviceUID<UUID> {
     private static final long serialVersionUID = 1L;
 
     /**

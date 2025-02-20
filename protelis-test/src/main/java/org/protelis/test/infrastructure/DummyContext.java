@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.test.infrastructure;
 
 import java.util.Random;
@@ -23,13 +24,13 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java8.util.stream.IntStreams;
 
 /**
- * A **dummy** Protelis VM to be used for testing.
+ * A **fake** Protelis VM to be used for testing.
  *
  */
 @SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
-    private static final DeviceUID DUMMYUID = new DeviceUID() {
+    private static final DeviceUID DUMMY_UID = new DeviceUID() {
         private static final long serialVersionUID = 1L;
         @Override
         public String toString() {
@@ -60,11 +61,11 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
     /*
      * ATTENTION: getDeltaTime has been overridden for testing purpose. If you
-     * need to estimate the actual difference between two reactions you can
-     * comment this method as it is already implemented in
+     * need to estimate the actual difference between two reactions, you can
+     *  comment on this method as it is already implemented in
      * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
      * getDeltaTime will fail.
-     * 
+     *
      * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */
     @Override
@@ -74,7 +75,7 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
     @Override
     public DeviceUID getDeviceUID() {
-        return DUMMYUID;
+        return DUMMY_UID;
     }
 
     @Override
@@ -84,7 +85,7 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
     /**
      * Test utility.
-     * 
+     *
      * @param entries
      *            how many entries for the field
      * @return a field with populated with numbers from 0 to 99
@@ -99,7 +100,21 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
 
     /**
      * Test utility.
-     * 
+     *
+     * @param self the current Context
+     * @return a field with populated with numbers from 0 to 99
+     */
+    public static Field<Double> makeTestField(final ExecutionContext self) {
+        final Field.Builder<Double> res = DatatypeFactory.createFieldBuilder();
+        IntStreams.range(1, 100)
+                .mapToDouble(it -> it)
+                .forEach(n -> res.add(new DeviceUID() { private static final long serialVersionUID = 1L; }, n));
+        return res.build(self.getDeviceUID(), 0.0);
+    }
+
+    /**
+     * Test utility.
+     *
      * @param entries
      *            how many entries for the field
      * @return a field with populated with tuples of numbers from 0 to 99
@@ -121,20 +136,6 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
     @Override
     public String toString() {
         return getClass().getSimpleName() + hashCode();
-    }
-
-    /**
-     * Test utility.
-     * 
-     * @param self the current Context
-     * @return a field with populated with numbers from 0 to 99
-     */
-    public static Field<Double> makeTestField(final ExecutionContext self) {
-        final Field.Builder<Double> res = DatatypeFactory.createFieldBuilder();
-        IntStreams.range(1, 100)
-                .mapToDouble(it -> it)
-                .forEach(n -> res.add(new DeviceUID() { private static final long serialVersionUID = 1L; }, n));
-        return res.build(self.getDeviceUID(), 0.0);
     }
 
     /**

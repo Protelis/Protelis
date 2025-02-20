@@ -15,9 +15,7 @@ import java.util.Set;
 import org.protelis.vm.ExecutionEnvironment;
 
 /**
- *
  * Simple implementation of {@link ExecutionEnvironment}.
- *
  */
 public final class SimpleExecutionEnvironment implements ExecutionEnvironment {
 
@@ -64,6 +62,4 @@ public final class SimpleExecutionEnvironment implements ExecutionEnvironment {
     @Override
     public void setup() {
     }
-
-
 }

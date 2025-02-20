@@ -35,10 +35,9 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
     private final ProtelisNode node;
     private final Environment<Object> env;
     private final Reaction<Object> react;
-    private final NetworkManager netmgr;
+    private final NetworkManager networkManager;
 
     /**
-     * 
      * @param environment
      *            environment
      * @param node
@@ -47,16 +46,16 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
      *            reaction
      * @param random
      *            random
-     * @param netmgr
-     *            netmgr
+     * @param networkManager
+     *            networkManager
      */
     public DummyDevice(final Environment<Object> environment, final ProtelisNode node, final Reaction<Object> reaction,
-                    final RandomGenerator random, final NetworkManager netmgr) {
-        super(node, netmgr);
+                    final RandomGenerator random, final NetworkManager networkManager) {
+        super(node, networkManager);
         r = random;
         this.react = reaction;
         this.env = environment;
-        this.netmgr = netmgr;
+        this.networkManager = networkManager;
         this.node = node;
     }
 
@@ -74,11 +73,11 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
 
     /*
      * ATTENTION: getDeltaTime has been overridden for testing purpose. If you
-     * need to estimate the actual difference between two reactions you can
-     * comment this method as it is already implemented in
+     * need to estimate the actual difference between two reactions, you can
+     *  comment on this method as it is already implemented in
      * org.protelis.vm.impl.AbstractExecutionContext. Doing so, tests related to
      * getDeltaTime will fail.
-     * 
+     *
      * @see org.protelis.vm.impl.AbstractExecutionContext#getDeltaTime()
      */
     @Override
@@ -88,13 +87,13 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
 
     @Override
     protected DummyDevice instance() {
-        return new DummyDevice(env, node, react, r, netmgr);
+        return new DummyDevice(env, node, react, r, networkManager);
     }
 
     /**
      * Note: this should be going away in the future, to be replaced by standard
      * Java random.
-     * 
+     *
      * @return a double random value
      */
     @Override

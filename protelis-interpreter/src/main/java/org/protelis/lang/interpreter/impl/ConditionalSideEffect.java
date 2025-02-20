@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.Unit;
@@ -30,7 +31,7 @@ public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
      * @param cond
      *            condition
      * @param then
-     *            branch to execute if condition is true (erase otherwise)
+     *            branch to execute if the condition is true (erase otherwise)
      */
     public ConditionalSideEffect(
             @Nonnull final Metadata metadata,
@@ -39,7 +40,6 @@ public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
         super(metadata, cond, then);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Unit evaluate(final ExecutionContext context) {
         if (condition().eval(context)) {

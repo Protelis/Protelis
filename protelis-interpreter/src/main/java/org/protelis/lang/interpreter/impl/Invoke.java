@@ -4,8 +4,8 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
-package org.protelis.lang.interpreter.impl;
 
+package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.datatype.FunctionDefinition;
 import org.protelis.lang.datatype.JVMEntity;
@@ -29,7 +29,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
 
     /**
      * Special method name, that causes a Protelis function invocation if the
-     * left hand side of the {@link Invoke} is a {@link FunctionDefinition}.
+     * left-hand side of the {@link Invoke} is a {@link FunctionDefinition}.
      */
     public static final String APPLY = "apply";
     private static final long serialVersionUID = 1L;
@@ -57,7 +57,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
      * @param name
      *            function (or method) name
      * @param target
-     *            Protelis sub-program that annotates itself with the target of
+     *            Protelis subprogram that annotates itself with the target of
      *            this call
      * @param args
      *            arguments of the function
@@ -74,7 +74,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     /**
      * Builds a new {@link #APPLY}.
      *
-     * @param target the target of the invocation, must evaluate to either a {@link FunctionDefinition}
+     * @param target the target of the invocation must evaluate to either a {@link FunctionDefinition}
      *               or a @{@link JVMEntity} of type Method.
      * @param args the arguments
      */
@@ -91,7 +91,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
         if (isApply && target instanceof FunctionDefinition) {
             final FunctionDefinition fd = (FunctionDefinition) target;
             /*
-             * Currently, there is no change in the codepath when superscript is
+             * Currently, there is no change in the code-path when superscript is
              * executed: f.apply(...) is exactly equivalent to f(...).
              */
             return makeFunctionCall(fd).eval(context);

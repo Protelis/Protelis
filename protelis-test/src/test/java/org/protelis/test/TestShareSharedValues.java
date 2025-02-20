@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.test;
 
 import java.util.Collections;
@@ -38,11 +39,13 @@ public class TestShareSharedValues {
     public void testLatestHasBeenShared() {
         final MutableInt cycle = new MutableInt(0);
         final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(PROGRAM), new DummyContext(new NetworkManager() {
+
             @Override
             public void shareState(final Map<CodePath, Object> toSend) {
                 Assert.assertEquals(1, toSend.size());
                 Assert.assertEquals(cycle.doubleValue() + 1, toSend.values().iterator().next());
             }
+
             @Override
             public Map<DeviceUID, Map<CodePath, Object>> getNeighborState() {
                 return Collections.emptyMap();

@@ -5,9 +5,6 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-/**
- * 
- */
 package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -47,6 +44,4 @@ public final class Env extends AbstractProtelisAST<ExecutionEnvironment> {
     public String toString() {
         return getName();
     }
-
-
 }

@@ -26,15 +26,15 @@ import java8.util.stream.StreamSupport;
  */
 public final class ProtelisNode extends GenericNode<Object> implements DeviceUID, ExecutionEnvironment {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This class is not meant to be serialized.")
-    private NetworkManager netmgr;
+    private NetworkManager networkManager;
 
     /**
      * Builds a new {@link ProtelisNode}.
-     * 
+     *
      * @param env
      *            the environment
      */
@@ -93,20 +93,21 @@ public final class ProtelisNode extends GenericNode<Object> implements DeviceUID
     }
 
     /**
-     * 
-     * @param netmgr
+     * @param networkManager
      *            network manager
      */
-    public void setNetworkManger(final NetworkManager netmgr) {
-        this.netmgr = netmgr;
+    // CHECKSTYLE: HiddenField OFF
+    // False positive, it is a setter
+    public void setNetworkManger(final NetworkManager networkManager) {
+        // CHECKSTYLE: HiddenField ON
+        this.networkManager = networkManager;
     }
 
     /**
-     * 
      * @return network manager
      */
     public NetworkManager getNetworkManager() {
-        return netmgr;
+        return networkManager;
     }
 
     @Override

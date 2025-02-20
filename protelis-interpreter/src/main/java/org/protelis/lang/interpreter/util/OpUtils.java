@@ -4,6 +4,7 @@
  * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
+
 package org.protelis.lang.interpreter.util;
 
 /**
@@ -23,12 +24,13 @@ public final class OpUtils {
      *            The arguments that have been passed, and that made the
      *            operation fail.
      * @param <T>
-     *            Return type. This function never returns, this type is a
+     *            Return type.
+     *            This function never returns; this type is a
      *            placeholder that allows you to write stuff like
      *            "return unsupported(op, args)".
+     * @return Nothing, since it throws an exception
      * @throws UnsupportedOperationException
      *             ALWAYS
-     * @return Nothing, since it throws an exception
      */
     public static <T> T unsupported(final String op, final Object... a) {
         final StringBuilder msg = new StringBuilder(100)
