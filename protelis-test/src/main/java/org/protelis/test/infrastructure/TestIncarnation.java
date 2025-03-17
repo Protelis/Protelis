@@ -9,7 +9,6 @@ package org.protelis.test.infrastructure;
 
 import java.util.Objects;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.danilopianini.lang.LangUtils;
@@ -35,12 +34,12 @@ import it.unibo.alchemist.model.interfaces.TimeDistribution;
 
 /**
  */
-@SuppressFBWarnings(
-    { "SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR", "SING_SINGLETON_GETTER_NOT_SYNCHRONIZED" }
-)
 public final class TestIncarnation implements Incarnation<Object> {
 
     private static final TestIncarnation SINGLETON = new TestIncarnation();
+
+    private TestIncarnation() {
+    }
 
     @Override
     public double getProperty(final Node<Object> node, final Molecule mol, final String prop) {

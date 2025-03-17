@@ -18,7 +18,6 @@ import org.protelis.vm.CodePathFactory;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gnu.trove.list.TIntList;
 import gnu.trove.stack.TIntStack;
 
@@ -41,7 +40,6 @@ import gnu.trove.stack.TIntStack;
  * super(execenv, networkManager, new HashingCodePathFactory(Hashing.sha256()));
  * </pre>
  */
-@SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "False positive, checked by a test.")
 public class HashingCodePathFactory implements CodePathFactory {
 
     private static final long serialVersionUID = 1L;

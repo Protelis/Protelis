@@ -61,13 +61,23 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
      * @throws SecurityException
      *             if you are not authorized to load required classes
      */
-    public RunProtelisProgram(final Environment<Object> env, final ProtelisNode n, final Reaction<Object> r,
-                    final RandomGenerator rand, final String prog) {
+    public RunProtelisProgram(
+        final Environment<Object> env,
+        final ProtelisNode n,
+        final Reaction<Object> r,
+        final RandomGenerator rand,
+        final String prog
+    ) {
         this(env, n, r, rand, ProtelisLoader.parse(prog));
     }
 
-    private RunProtelisProgram(final Environment<Object> env, final ProtelisNode n, final Reaction<Object> r,
-                    final RandomGenerator rand, final org.protelis.vm.ProtelisProgram prog) {
+    private RunProtelisProgram(
+        final Environment<Object> env,
+        final ProtelisNode n,
+        final Reaction<Object> r,
+        final RandomGenerator rand,
+        final org.protelis.vm.ProtelisProgram prog
+    ) {
         super(prog.getName());
         LangUtils.requireNonNull(env, r, n, prog, rand);
         program = prog;

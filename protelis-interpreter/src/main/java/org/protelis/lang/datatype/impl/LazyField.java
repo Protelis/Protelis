@@ -88,7 +88,6 @@ public final class LazyField<T> extends AbstractField<T> {
     }
 
     @Override
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public Iterable<DeviceUID> keys() {
         return origin;
     }

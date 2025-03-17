@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.vm.CodePath;
 import org.protelis.vm.NetworkManager;
@@ -42,7 +41,6 @@ public class CachingNetworkManager implements NetworkManager {
      *
      * @return cache
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")
     public Map<CodePath, Object> getSendCache() {
         return sendCache;
     }

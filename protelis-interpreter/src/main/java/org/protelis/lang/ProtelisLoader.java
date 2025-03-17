@@ -17,7 +17,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.inject.Injector;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -220,7 +219,6 @@ public final class ProtelisLoader {
         loadResourcesRecursively(target, programURI, new LinkedHashSet<>());
     }
 
-    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", justification = "False positive")
     private static void loadResourcesRecursively(
             final XtextResourceSet target,
             final String programURI,
