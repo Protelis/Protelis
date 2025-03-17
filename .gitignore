@@ -8,6 +8,7 @@ build/
 /src-gen/
 **/out/
 *.directory
-gradle.prefs
-version.info
 */*/.settings/*.prefs
+gradle.prefs
+hs_err_pid*.log
+version.info
