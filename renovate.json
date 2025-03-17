@@ -6,6 +6,11 @@
   "includeForks": true,
   "packageRules": [
     {
+      "description": "Ignore Alchemist dependencies",
+      "matchPackagePatterns": ["^it\\.unibo\\.alchemist:alchemist-"],
+      "enabled": false
+    },
+    {
       "description": "Trigger a minor update on some dependencies",
       "matchPackageNames": [
         "org.protelis:protelis.parser"
