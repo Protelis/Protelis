@@ -1,3 +1,12 @@
+## [17.7.5](https://github.com/Protelis/Protelis/compare/17.7.4...17.7.5) (2025-03-25)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.4.6-jre ([#1751](https://github.com/Protelis/Protelis/issues/1751)) ([76e4e4e](https://github.com/Protelis/Protelis/commit/76e4e4e03e56cdda22aacb2eed568a3d67175935))
+* **deps:** update plugin multijvmtesting to v3.3.0 ([#1756](https://github.com/Protelis/Protelis/issues/1756)) ([619af83](https://github.com/Protelis/Protelis/commit/619af83d33cc5056a42c504cf89a772e5139b668))
+* **deps:** update plugin protelisdoc to v3.0.85 ([#1764](https://github.com/Protelis/Protelis/issues/1764)) ([c248d41](https://github.com/Protelis/Protelis/commit/c248d4114e7973562893232e98d849816b412174))
+* **deps:** update plugin publishoncentral to v8.0.5 ([#1755](https://github.com/Protelis/Protelis/issues/1755)) ([5a279cb](https://github.com/Protelis/Protelis/commit/5a279cb449080c22a5c9da9ea9fc7e2fd150dc22))
+
 ## [17.7.4](https://github.com/Protelis/Protelis/compare/17.7.3...17.7.4) (2025-03-25)
 
 ### Dependency updates
