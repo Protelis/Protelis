@@ -1,3 +1,21 @@
+## [17.7.4](https://github.com/Protelis/Protelis/compare/17.7.3...17.7.4) (2025-03-25)
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.jvm to v2.1.20 ([a947e15](https://github.com/Protelis/Protelis/commit/a947e15c86bc42b04ab7325db9050a7987d78a17))
+* **deps:** update plugin kotlin-qa to v0.81.1 ([#1759](https://github.com/Protelis/Protelis/issues/1759)) ([df5bebf](https://github.com/Protelis/Protelis/commit/df5bebf3e3ef1f5c82c8a0df097bfe59315eb1cf))
+* **deps:** update plugin kotlin-qa to v0.82.0 ([#1760](https://github.com/Protelis/Protelis/issues/1760)) ([10f5f0f](https://github.com/Protelis/Protelis/commit/10f5f0f55e163aed4da10af82cbf8ff48b7eb76d))
+* **deps:** update plugin kotlin-qa to v0.83.1 ([#1761](https://github.com/Protelis/Protelis/issues/1761)) ([b121af0](https://github.com/Protelis/Protelis/commit/b121af0a1d66eb81e9554c6850872324e95c16eb))
+
+### Build and continuous integration
+
+* **renovate:** use the shared configuration for kotlin-based projects ([c0aa9a0](https://github.com/Protelis/Protelis/commit/c0aa9a02b362daae45d7483170b1b56488499f8f))
+
+### General maintenance
+
+* removed useless file meant to track a folder ([08cdab7](https://github.com/Protelis/Protelis/commit/08cdab70f7ff5070d734b9755db12a47f76c786f))
+* update copyright notice in `build.gradle.kts` ([b825f17](https://github.com/Protelis/Protelis/commit/b825f17fb6db0f2525b29726762a6d8c73d38f8b))
+
 ## [17.7.3](https://github.com/Protelis/Protelis/compare/17.7.2...17.7.3) (2025-03-25)
 
 ### Dependency updates
