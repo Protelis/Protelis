@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (c) 2025, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
- * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
- * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ *  This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ *  with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
 package org.protelis.lang.datatype.impl;
@@ -13,7 +13,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
@@ -42,6 +41,12 @@ public final class LazyField<T> extends AbstractField<T> {
 
     private static final long serialVersionUID = 1L;
     @Nonnull
+    private final ImmutableCollection<DeviceUID> origin;
+    @Nonnull
+    private final DeviceUID localDevice;
+    @Nullable
+    private transient Function<DeviceUID, T> mapper;
+    @Nonnull
     private transient LoadingCache<DeviceUID, T> neighbors = CacheBuilder.newBuilder()
             .build(new CacheLoader<>() {
                 @Nonnull
@@ -50,12 +55,6 @@ public final class LazyField<T> extends AbstractField<T> {
                     return mapper.apply(key);
                 }
             });
-    @Nullable
-    private transient Function<DeviceUID, T> mapper;
-    @Nonnull
-    private final ImmutableCollection<DeviceUID> origin;
-    @Nonnull
-    private final DeviceUID localDevice;
 
     /**
      * @param origin the field on which this lazy field is mapping
@@ -169,7 +168,6 @@ public final class LazyField<T> extends AbstractField<T> {
         neighbors = CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
             @Nonnull
-            @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
             public T load(@Nonnull final DeviceUID key) {
                 return Objects.requireNonNull(
                     allValues.get(key),
