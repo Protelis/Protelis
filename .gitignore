@@ -1,5 +1,5 @@
 .gradle/
-.idea/
+.idea/*
 .kotlin/
 .metadata/
 .recommenders/
@@ -12,3 +12,4 @@ build/
 gradle.prefs
 hs_err_pid*.log
 version.info
+!.idea/copyright/

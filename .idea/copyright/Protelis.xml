@@ -1,0 +1,6 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="Copyright (c) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;, &quot;&amp;#36;today.year&quot;)&amp;#36;today.year, Danilo Pianini and contributors listed in the project's build.gradle.kts file.&#10;&#10; This file is part of Protelis, and is distributed under the terms of the GNU General Public License,&#10; with a linking exception, as described in the file LICENSE.txt in this project's top directory." />
+    <option name="myName" value="Protelis" />
+  </copyright>
+</component>
