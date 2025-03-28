@@ -1,15 +1,14 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (c) 2025, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
- * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
- * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ *  This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ *  with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
 package org.protelis.lang.interpreter.util;
 
-import static org.protelis.lang.interpreter.util.Bytecode.UNARY_MINUS;
-import static org.protelis.lang.interpreter.util.Bytecode.UNARY_NOT;
-import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
+import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -17,8 +16,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.UnaryOperator;
 
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.Fields;
+import static org.protelis.lang.interpreter.util.Bytecode.UNARY_MINUS;
+import static org.protelis.lang.interpreter.util.Bytecode.UNARY_NOT;
+import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
 
 /**
  * Collection of functions and helper methods for unary operators.
@@ -44,28 +44,6 @@ public enum Op1 implements WithBytecode {
         fun = function;
         opName = name;
         this.bytecode = bytecode;
-    }
-
-    @Override
-    public Bytecode getBytecode() {
-        return bytecode;
-    }
-
-    /**
-     * @param a
-     *            the object on which the {@link Op1} should be run
-     * @return the result of the evaluation
-     */
-    public Object run(final Object a) {
-        if (a instanceof Field) {
-            return Fields.applyWithSingleParam(fun, FIELDS, a);
-        }
-        return fun.apply(a);
-    }
-
-    @Override
-    public String toString() {
-        return opName;
     }
 
     /**
@@ -102,5 +80,28 @@ public enum Op1 implements WithBytecode {
         return unsupported("!", o);
     }
 
+    @Override
+    public Bytecode getBytecode() {
+        return bytecode;
+    }
+
+    /**
+     * @param a
+     *            the object on which the {@link Op1} should be run
+     * @return the result of the evaluation
+     */
+    public Object run(final Object a) {
+        if (a instanceof Field) {
+            return Fields.applyWithSingleParam(fun, FIELDS, a);
+        }
+        return fun.apply(a);
+    }
+
+    @Override
+    public String toString() {
+        return opName;
+    }
+
+    @FunctionalInterface
     private interface UnaryOperation extends UnaryOperator<Object>, Serializable { }
 }

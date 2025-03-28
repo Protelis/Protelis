@@ -1,11 +1,26 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (c) 2025, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
- * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
- * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ *  This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ *  with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
 package org.protelis.lang.interpreter.util;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.math3.util.FastMath;
+import org.protelis.lang.datatype.DatatypeFactory;
+import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
+import org.protelis.lang.datatype.Tuple;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.stream.IntStream;
 
 import static org.protelis.lang.interpreter.util.Bytecode.BINARY_AND;
 import static org.protelis.lang.interpreter.util.Bytecode.BINARY_DIFFERS;
@@ -24,22 +39,6 @@ import static org.protelis.lang.interpreter.util.Bytecode.BINARY_SMALLER;
 import static org.protelis.lang.interpreter.util.Bytecode.BINARY_SMALLER_EQUAL;
 import static org.protelis.lang.interpreter.util.Bytecode.BINARY_TIMES;
 import static org.protelis.lang.interpreter.util.OpUtils.unsupported;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.stream.IntStream;
-
-import org.apache.commons.math3.util.FastMath;
-import org.protelis.lang.datatype.DatatypeFactory;
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.Fields;
-import org.protelis.lang.datatype.Tuple;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Infix operator that takes two inputs, such as addition, division, or
@@ -94,38 +93,6 @@ public enum Op2 implements WithBytecode {
         this.bytecode = bytecode;
         fun = function;
         opName = name;
-    }
-
-    /**
-     * @return The function implementing this operator
-     */
-    public BinaryOperator<Object> getFunction() {
-        return fun;
-    }
-
-    /**
-     * Compute the value of applying the two-argument operator to inputs a and
-     * b.
-     *
-     * @param a
-     *            First input
-     * @param b
-     *            Second input
-     * @return result of applying the operator to a and b
-     */
-    public Object run(final Object a, final Object b) {
-        final boolean afield = a instanceof Field;
-        final boolean bfield = b instanceof Field;
-        final int[] fields = afield && bfield ? BOTH : afield ? LEFT : bfield ? RIGHT : NONE;
-        if (fields.length > 0) {
-            return Fields.apply(fun, fields, a, b);
-        }
-        return fun.apply(a, b);
-    }
-
-    @Override
-    public String toString() {
-        return opName;
     }
 
     /**
@@ -342,11 +309,44 @@ public enum Op2 implements WithBytecode {
         return arithmetic("*", a, b, (v1, v2) -> v1 * v2);
     }
 
+    /**
+     * @return The function implementing this operator
+     */
+    public BinaryOperator<Object> getFunction() {
+        return fun;
+    }
+
+    /**
+     * Compute the value of applying the two-argument operator to inputs a and
+     * b.
+     *
+     * @param a
+     *            First input
+     * @param b
+     *            Second input
+     * @return result of applying the operator to a and b
+     */
+    public Object run(final Object a, final Object b) {
+        final boolean afield = a instanceof Field;
+        final boolean bfield = b instanceof Field;
+        final int[] fields = afield && bfield ? BOTH : afield ? LEFT : bfield ? RIGHT : NONE;
+        if (fields.length > 0) {
+            return Fields.apply(fun, fields, a, b);
+        }
+        return fun.apply(a, b);
+    }
+
+    @Override
+    public String toString() {
+        return opName;
+    }
+
     @Override
     public Bytecode getBytecode() {
         return bytecode;
     }
 
+    @FunctionalInterface
     private interface BinaryOperation extends BinaryOperator<Object>, Serializable { }
 
 }

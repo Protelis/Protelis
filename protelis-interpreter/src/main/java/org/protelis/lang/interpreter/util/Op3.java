@@ -1,23 +1,22 @@
 /*
- * Copyright (C) 2021, Danilo Pianini and contributors listed in the project's build.gradle.kts or pom.xml file.
+ * Copyright (c) 2025, Danilo Pianini and contributors listed in the project's build.gradle.kts file.
  *
- * This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
- * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
+ *  This file is part of Protelis, and is distributed under the terms of the GNU General Public License,
+ *  with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
 package org.protelis.lang.interpreter.util;
+
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
+import org.protelis.lang.datatype.Field;
+import org.protelis.lang.datatype.Fields;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.Fields;
-
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
 
 /**
  * Collection of functions and helper methods for ternary syntactic operators.
@@ -38,6 +37,38 @@ public enum Op3 implements WithBytecode {
         fun = function;
         opName = name;
         this.bytecode = bytecode;
+    }
+
+    /**
+     * @param name
+     *            the operation name
+     * @return the corresponding {@link Op3}
+     */
+    public static Op3 getOp(final String name) {
+        Op3 op = MAP.get(name);
+        if (op == null) {
+            final var maybeOp = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst();
+            if (maybeOp.isEmpty()) {
+                throw new IllegalArgumentException("Unknown ternary operation: " + name);
+            }
+            op = maybeOp.get();
+            MAP.put(name, op);
+        }
+        return op;
+    }
+
+    private static Object mux(final Object a, final Object b, final Object c) {
+        if (a instanceof Boolean) {
+            if ((Boolean) a) {
+                return b;
+            }
+            return c;
+        } else {
+            if (a != null) {
+                return b;
+            }
+            return c;
+        }
     }
 
     @Override
@@ -77,38 +108,7 @@ public enum Op3 implements WithBytecode {
         return opName;
     }
 
-    /**
-     * @param name
-     *            the operation name
-     * @return the corresponding {@link Op3}
-     */
-    public static Op3 getOp(final String name) {
-        Op3 op = MAP.get(name);
-        if (op == null) {
-            final var maybeOp = Arrays.stream(values()).filter(o -> o.opName.equals(name)).findFirst();
-            if (maybeOp.isEmpty()) {
-                throw new IllegalArgumentException("Unknown ternary operation: " + name);
-            }
-            op = maybeOp.get();
-            MAP.put(name, op);
-        }
-        return op;
-    }
-
-    private static Object mux(final Object a, final Object b, final Object c) {
-        if (a instanceof Boolean) {
-            if ((Boolean) a) {
-                return b;
-            }
-            return c;
-        } else {
-            if (a != null) {
-                return b;
-            }
-            return c;
-        }
-    }
-
+    @FunctionalInterface
     private interface TernaryOperation extends TriFunction<Object, Object, Object, Object>, Serializable { }
 
 }
