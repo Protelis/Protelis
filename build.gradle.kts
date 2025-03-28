@@ -5,6 +5,7 @@
  *  with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -28,6 +29,8 @@ apply(plugin = "com.github.johnrengelman.shadow")
 val scmUrl = "git:git@github.com:Protelis/Protelis"
 
 val Provider<PluginDependency>.id get() = get().pluginId
+
+val minJavaVersion = 17
 
 allprojects {
 
@@ -61,19 +64,19 @@ allprojects {
     }
 
     multiJvm {
-        jvmVersionForCompilation.set(11)
+        jvmVersionForCompilation.set(minJavaVersion)
         maximumSupportedJvmVersion.set(latestJava)
     }
 
-    tasks.withType<JavaCompile> {
+    tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
     }
 
-    tasks.withType<AbstractCopyTask> {
+    tasks.withType<AbstractCopyTask>().configureEach {
         duplicatesStrategy = DuplicatesStrategy.WARN
     }
 
-    tasks.withType<Test> {
+    tasks.withType<Test>().configureEach {
         failFast = true
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
@@ -81,15 +84,18 @@ allprojects {
         }
     }
 
-    tasks.withType<Javadoc> {
+    tasks.withType<Javadoc>().configureEach {
         isFailOnError = true
         options {
+            check(this is CoreJavadocOptions)
             javadocTool.set(
                 javaToolchains.javadocToolFor {
-                    languageVersion.set(JavaLanguageVersion.of(11))
+                    languageVersion.set(JavaLanguageVersion.of(minJavaVersion))
                 },
             )
+            addStringOption("Xdoclint:all", "-Xdoclint:-missing")
             encoding = "UTF-8"
+            memberLevel = JavadocMemberLevel.PROTECTED
             val title = "Protelis ${project.version} Javadoc API"
             windowTitle(title)
         }
@@ -118,7 +124,7 @@ allprojects {
     }
 
     publishing.publications {
-        withType<MavenPublication> {
+        withType<MavenPublication>().configureEach {
             pom {
                 developers {
                     developer {
@@ -161,16 +167,16 @@ dependencies {
     api(project(":protelis-lang"))
 }
 
-tasks.withType<Javadoc> {
+tasks.withType<Javadoc>().configureEach {
     subprojects.forEach { subproject ->
-        val subJavadoc = subproject.tasks.javadoc.get()
+        val subJavadoc = subproject.tasks.javadoc
         dependsOn(subJavadoc)
-        source(subJavadoc.source)
-        options.classpath(subJavadoc.classpath.files.toList())
+        source(subJavadoc.map { it.source })
+        options.classpath(subJavadoc.map { it.classpath.files.toList() }.get())
     }
 }
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+tasks.withType<ShadowJar>().configureEach {
     manifest {
         attributes(
             mapOf(
