@@ -1,3 +1,23 @@
+## [18.0.0](https://github.com/Protelis/Protelis/compare/17.7.5...18.0.0) (2025-03-30)
+
+### ⚠ BREAKING CHANGES
+
+* require Java 17, update dependency org.protelis:protelis.parser to v12.3.0
+
+### Features
+
+* require Java 17, update dependency org.protelis:protelis.parser to v12.3.0 ([252001e](https://github.com/Protelis/Protelis/commit/252001e35604d0dfbfe2e9105823fa9d3e6cb6e7))
+
+### Dependency updates
+
+* **deps:** update plugin java-qa to v1.105.0 ([203ad72](https://github.com/Protelis/Protelis/commit/203ad72299a7c6fb945e25d9ec18eba379609b73))
+* **deps:** update plugin kotlin-qa to v0.85.0 ([#1767](https://github.com/Protelis/Protelis/issues/1767)) ([c2bfdc7](https://github.com/Protelis/Protelis/commit/c2bfdc7608e8a1eb828461c7fb78dd36a4e7cba1))
+* **deps:** update plugin protelisdoc to v3.0.86 ([#1768](https://github.com/Protelis/Protelis/issues/1768)) ([f713f91](https://github.com/Protelis/Protelis/commit/f713f91b50052393dfe5c6938c2ba0801ec4db80))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.14 ([#1765](https://github.com/Protelis/Protelis/issues/1765)) ([7ef08be](https://github.com/Protelis/Protelis/commit/7ef08be8cd8d052e6dcf2085b3c28f5339df853a))
+
 ## [17.7.5](https://github.com/Protelis/Protelis/compare/17.7.4...17.7.5) (2025-03-25)
 
 ### Dependency updates
