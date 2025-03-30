@@ -4,7 +4,7 @@ alchemist = "4.0.0"
 [libraries]
 alchemist-interfaces = { module = "it.unibo.alchemist:alchemist-interfaces", version.ref = "alchemist" }
 alchemist-loading = { module = "it.unibo.alchemist:alchemist-loading", version.ref = "alchemist" }
-asm = "org.ow2.asm:asm:9.7.1"
+asm = "org.ow2.asm:asm:9.8"
 commons-codec = "commons-codec:commons-codec:1.18.0"
 commons-io = "commons-io:commons-io:2.18.0"
 commons-lang = "org.apache.commons:commons-lang3:3.17.0"
