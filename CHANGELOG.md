@@ -1,3 +1,9 @@
+## [18.0.1](https://github.com/Protelis/Protelis/compare/18.0.0...18.0.1) (2025-03-30)
+
+### Dependency updates
+
+* **core-deps:** update dependency org.ow2.asm:asm to v9.8 ([#1769](https://github.com/Protelis/Protelis/issues/1769)) ([ceab514](https://github.com/Protelis/Protelis/commit/ceab51406f80035150ceacb83fbc6f3e72679b41))
+
 ## [18.0.0](https://github.com/Protelis/Protelis/compare/17.7.5...18.0.0) (2025-03-30)
 
 ### ⚠ BREAKING CHANGES
