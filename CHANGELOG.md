@@ -1,3 +1,13 @@
+## [18.0.2](https://github.com/Protelis/Protelis/compare/18.0.1...18.0.2) (2025-04-08)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.4.7-android ([#1774](https://github.com/Protelis/Protelis/issues/1774)) ([7cd106b](https://github.com/Protelis/Protelis/commit/7cd106b7da39365d4ab39276c8052f48629adf7c))
+* **deps:** update plugin java-qa to v1.106.0 ([#1770](https://github.com/Protelis/Protelis/issues/1770)) ([dd3b523](https://github.com/Protelis/Protelis/commit/dd3b523285678ee7d134897c17cb552a6fc68a3f))
+* **deps:** update plugin java-qa to v1.107.0 ([#1771](https://github.com/Protelis/Protelis/issues/1771)) ([7638843](https://github.com/Protelis/Protelis/commit/76388439aae1ba40558b53d3c3adb50408693612))
+* **deps:** update plugin java-qa to v1.108.0 ([#1772](https://github.com/Protelis/Protelis/issues/1772)) ([c469b47](https://github.com/Protelis/Protelis/commit/c469b4716a56baf4f4e598cfd3505061fe0d074d))
+* **deps:** update plugin publishoncentral to v8.0.6 ([#1773](https://github.com/Protelis/Protelis/issues/1773)) ([c5b9ea1](https://github.com/Protelis/Protelis/commit/c5b9ea1f901a77dcbd7ec7ab6cdc4b33dfca639a))
+
 ## [18.0.1](https://github.com/Protelis/Protelis/compare/18.0.0...18.0.1) (2025-03-30)
 
 ### Dependency updates
