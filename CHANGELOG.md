@@ -1,3 +1,14 @@
+## [18.0.3](https://github.com/Protelis/Protelis/compare/18.0.2...18.0.3) (2025-04-09)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.4.7-jre ([#1777](https://github.com/Protelis/Protelis/issues/1777)) ([e54dd93](https://github.com/Protelis/Protelis/commit/e54dd93438f4349078993b1a9f553ba1e8dc9a12))
+* **deps:** update plugin com.gradle.develocity to v4 ([#1775](https://github.com/Protelis/Protelis/issues/1775)) ([e48004c](https://github.com/Protelis/Protelis/commit/e48004cbb6b05990e1863876f9ac974012a17381))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.15 ([#1776](https://github.com/Protelis/Protelis/issues/1776)) ([a108632](https://github.com/Protelis/Protelis/commit/a1086327cf76b913e3e89dc402f7684ca91717bd))
+
 ## [18.0.2](https://github.com/Protelis/Protelis/compare/18.0.1...18.0.2) (2025-04-08)
 
 ### Dependency updates
