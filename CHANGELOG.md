@@ -1,3 +1,18 @@
+## [18.0.4](https://github.com/Protelis/Protelis/compare/18.0.3...18.0.4) (2025-04-15)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.4.8-jre ([#1783](https://github.com/Protelis/Protelis/issues/1783)) ([4b1fe48](https://github.com/Protelis/Protelis/commit/4b1fe483c431b26e2eb0ca45c7786072b510815c))
+* **deps:** update dependency commons-io:commons-io to v2.19.0 ([#1781](https://github.com/Protelis/Protelis/issues/1781)) ([da6bed6](https://github.com/Protelis/Protelis/commit/da6bed620cfed349fe3330188a2332f58ceef25f))
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v0.10.0 ([#1780](https://github.com/Protelis/Protelis/issues/1780)) ([41c17d1](https://github.com/Protelis/Protelis/commit/41c17d104856b6dc7bfc1742dbd4704e0eee2914))
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v4.4.0 ([#1782](https://github.com/Protelis/Protelis/issues/1782)) ([cf1a244](https://github.com/Protelis/Protelis/commit/cf1a2442e0062d1a6fab813e642202a16d2804da))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.16 ([#1779](https://github.com/Protelis/Protelis/issues/1779)) ([9b05e75](https://github.com/Protelis/Protelis/commit/9b05e75ef80f6ef0193308c7f98b357aa5610eb3))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.17 ([#1784](https://github.com/Protelis/Protelis/issues/1784)) ([b659738](https://github.com/Protelis/Protelis/commit/b659738154ecb90d9b0656a85e6035cfa21257ab))
+* **deps:** update dependency windows github actions runner to v2025 ([#1778](https://github.com/Protelis/Protelis/issues/1778)) ([54bd2d1](https://github.com/Protelis/Protelis/commit/54bd2d13650168a6416305052a7df6d6ed4558b7))
+
 ## [18.0.3](https://github.com/Protelis/Protelis/compare/18.0.2...18.0.3) (2025-04-09)
 
 ### Dependency updates
