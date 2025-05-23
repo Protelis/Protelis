@@ -1,3 +1,39 @@
+## [18.0.6](https://github.com/Protelis/Protelis/compare/18.0.5...18.0.6) (2025-05-23)
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v8.14.1 ([#1818](https://github.com/Protelis/Protelis/issues/1818)) ([e24aebd](https://github.com/Protelis/Protelis/commit/e24aebd14c98136dce817bcea58d52328fb144ee))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.128 ([#1810](https://github.com/Protelis/Protelis/issues/1810)) ([6ee2f9d](https://github.com/Protelis/Protelis/commit/6ee2f9d2ded6eb013b129b0801c7155bdebd7044))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.129 ([#1823](https://github.com/Protelis/Protelis/issues/1823)) ([1b17185](https://github.com/Protelis/Protelis/commit/1b171850e49a0225b3e1aadd921b9cbab598b0ed))
+* **deps:** update node.js to 22.16 ([#1825](https://github.com/Protelis/Protelis/issues/1825)) ([0a01fdf](https://github.com/Protelis/Protelis/commit/0a01fdfa355f58fe31133578c4e0480ce8e09dea))
+* **deps:** update plugin java-qa to v1.114.0 ([#1816](https://github.com/Protelis/Protelis/issues/1816)) ([1b01ace](https://github.com/Protelis/Protelis/commit/1b01aceaba5a3c94513e6e2e9b78b7b30fb6543d))
+* **deps:** update plugin java-qa to v1.115.0 ([#1817](https://github.com/Protelis/Protelis/issues/1817)) ([fd68dfc](https://github.com/Protelis/Protelis/commit/fd68dfce38ea1303a99d5b2617efa134eafde5b8))
+* **deps:** update plugin kotlin-qa to v0.87.0 ([#1814](https://github.com/Protelis/Protelis/issues/1814)) ([84eb0b6](https://github.com/Protelis/Protelis/commit/84eb0b64431eada2e1d249488719a1b900c49f49))
+* **deps:** update plugin kotlin-qa to v0.87.1 ([#1819](https://github.com/Protelis/Protelis/issues/1819)) ([ab6e69f](https://github.com/Protelis/Protelis/commit/ab6e69f6ad9be7feb45ab450a680f6fe3063ba00))
+* **deps:** update plugin kotlin-qa to v0.88.0 ([#1827](https://github.com/Protelis/Protelis/issues/1827)) ([e0be4b2](https://github.com/Protelis/Protelis/commit/e0be4b22d10ca692bdf708a0e4d355a195c46d23))
+* **deps:** update plugin multijvmtesting to v3.4.2 ([#1807](https://github.com/Protelis/Protelis/issues/1807)) ([831dd23](https://github.com/Protelis/Protelis/commit/831dd231d358420d9dda931a21daa65d4d9142aa))
+* **deps:** update plugin multijvmtesting to v3.4.3 ([#1820](https://github.com/Protelis/Protelis/issues/1820)) ([52167f6](https://github.com/Protelis/Protelis/commit/52167f6cfcea23090a643b965aeae194bb7327b9))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.25 ([#1821](https://github.com/Protelis/Protelis/issues/1821)) ([3acc278](https://github.com/Protelis/Protelis/commit/3acc278cc306f602f748aac42e7d4e1e815bc383))
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v1 ([#1813](https://github.com/Protelis/Protelis/issues/1813)) ([bfa811a](https://github.com/Protelis/Protelis/commit/bfa811a5db991f4c6161f4c581733b23bc350a66))
+* **deps:** update plugin protelisdoc to v3.0.88 ([#1809](https://github.com/Protelis/Protelis/issues/1809)) ([0c1764d](https://github.com/Protelis/Protelis/commit/0c1764d6053662e14d633d1f9b88ae4d6baf2654))
+* **deps:** update plugin protelisdoc to v3.0.89 ([#1815](https://github.com/Protelis/Protelis/issues/1815)) ([65293a2](https://github.com/Protelis/Protelis/commit/65293a2dc3a643ac902b668cbb312730846f39b0))
+* **deps:** update plugin protelisdoc to v3.0.90 ([#1822](https://github.com/Protelis/Protelis/issues/1822)) ([894f4c3](https://github.com/Protelis/Protelis/commit/894f4c3193a8d738198a140752062261a59691af))
+* **deps:** update plugin protelisdoc to v3.0.91 ([#1824](https://github.com/Protelis/Protelis/issues/1824)) ([fde09f4](https://github.com/Protelis/Protelis/commit/fde09f4715871344c43d2b65e3ac004f5c62fcde))
+* **deps:** update plugin protelisdoc to v3.0.92 ([#1826](https://github.com/Protelis/Protelis/issues/1826)) ([8dbd673](https://github.com/Protelis/Protelis/commit/8dbd673e11ccb1ed24535c90ad5ca97d39a3f5e2))
+
+### Documentation
+
+* update commit guidelines ([#1829](https://github.com/Protelis/Protelis/issues/1829)) ([a38a26e](https://github.com/Protelis/Protelis/commit/a38a26e10484df2a1cd814091f0be540861436ae))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.19 ([#1811](https://github.com/Protelis/Protelis/issues/1811)) ([ef60174](https://github.com/Protelis/Protelis/commit/ef60174e47390f79890ecd5b285539b7789fd8b1))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.7.20 ([#1812](https://github.com/Protelis/Protelis/issues/1812)) ([98d0054](https://github.com/Protelis/Protelis/commit/98d005476cdb1ba1d8de1aca79e88aa50e179f5d))
+
+### General maintenance
+
+* **test:** fix typos in test messages ([#1828](https://github.com/Protelis/Protelis/issues/1828)) ([18aef1d](https://github.com/Protelis/Protelis/commit/18aef1df934973a53e03888436f7d9f1756b0437))
+
 ## [18.0.5](https://github.com/Protelis/Protelis/compare/18.0.4...18.0.5) (2025-05-13)
 
 ### Dependency updates
