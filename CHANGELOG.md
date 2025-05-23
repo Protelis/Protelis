@@ -1,3 +1,13 @@
+## [18.0.8](https://github.com/Protelis/Protelis/compare/18.0.7...18.0.8) (2025-05-23)
+
+### Bug Fixes
+
+* **interpreter:** lazily evaluate Option.orElseGet ([#1833](https://github.com/Protelis/Protelis/issues/1833)) ([258acd2](https://github.com/Protelis/Protelis/commit/258acd223c2a34b8d8a1046c1abf8a5e1f2a2240))
+
+### Build and continuous integration
+
+* **codex:** introduce a script for the initialization of the external resources ([51aabb3](https://github.com/Protelis/Protelis/commit/51aabb362e6ba0db4fa0c6b9534f08864c3baaa8))
+
 ## [18.0.7](https://github.com/Protelis/Protelis/compare/18.0.6...18.0.7) (2025-05-23)
 
 ### Documentation
