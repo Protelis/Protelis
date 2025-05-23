@@ -397,7 +397,7 @@ public final class Option<E> implements Serializable {
      * @return the value if present otherwise the result of {@code other.get()}
      */
     public E orElseGet(final Supplier<? extends E> other) {
-        return internal.or(other.get());
+        return internal.or(other);
     }
 
     /**
