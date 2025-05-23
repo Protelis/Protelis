@@ -28,6 +28,11 @@ Valid scopes are the names of the Gradle modules of this project:
 If a change spans multiple modules or modifies the root project, the scope may be omitted.
 The dependency update scopes `api-deps`, `core-deps`, and `deps` are also allowed for the `chore` type.
 
+## Pull requests
+
+Pull request titles should be formatted as conventional commits.
+A typical good pull request will contain a single commit whose message first line is the same of the PR title.
+
 ## Verification
 
 Before submitting a pull request, verify the project builds successfully:
