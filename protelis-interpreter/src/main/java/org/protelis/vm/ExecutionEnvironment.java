@@ -68,7 +68,7 @@ public interface ExecutionEnvironment {
     void commit();
 
     /**
-     * Called just before the VM is executed, to enable and preparations needed
+     * Called just before the VM is executed, to enable any preparations needed
      * in the environment.
      */
     void setup();
