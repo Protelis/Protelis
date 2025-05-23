@@ -208,7 +208,7 @@ public final class ProgramTester {
      * @param file
      *            file to be tested
      * @param stream
-     *            stream of run
+     *            stream of runs
      */
     public static void runFileWithMultipleRuns(final String file, final IntStream stream) {
         stream.forEach(i -> runFile(file, i));
