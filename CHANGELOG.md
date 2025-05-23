@@ -1,3 +1,13 @@
+## [18.0.7](https://github.com/Protelis/Protelis/compare/18.0.6...18.0.7) (2025-05-23)
+
+### Documentation
+
+* **test:** clarify javadoc wording ([#1831](https://github.com/Protelis/Protelis/issues/1831)) ([6c5d21d](https://github.com/Protelis/Protelis/commit/6c5d21db02bc9626ee6a556bc067e6436a738a5c))
+
+### General maintenance
+
+* update AGENTS.md ([df55987](https://github.com/Protelis/Protelis/commit/df5598770867b09f32e653a7d06b93708cdd6c7b))
+
 ## [18.0.6](https://github.com/Protelis/Protelis/compare/18.0.5...18.0.6) (2025-05-23)
 
 ### Dependency updates
