@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Count the occurences of a given value.
+ * Count the occurrences of a given value.
  */
 public final class TestCount implements Function<Map<String, Object>, Integer> {
     private final Object expectedValue;
