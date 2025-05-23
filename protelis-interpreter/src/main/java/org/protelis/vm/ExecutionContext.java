@@ -176,7 +176,8 @@ public interface ExecutionContext {
     void putVariable(Reference name, Object value);
 
     /**
-     * Give a field, returns a new {@link ExecutionContext} whose domain is the same of the field one.
+     * Given a field, returns a new {@link ExecutionContext} whose domain matches
+     * that of the field.
      *
      * @param f the field
      * @return the restricted domain
@@ -184,13 +185,13 @@ public interface ExecutionContext {
     ExecutionContext restrictDomain(Field<?> f);
 
     /**
-     * returns from the last frame.
+     * Return from the last frame.
      */
     void returnFromCallFrame();
 
     /**
-     * Used internally to support first-class functions by make the functions of
-     * a program accessible for reflection at runtime.
+     * Used internally to support first-class functions by making the functions
+     * of a program accessible for reflection at runtime.
      *
      * @param knownFunctions Collection of accessible functions, associating function name and value.
      */
@@ -204,7 +205,7 @@ public interface ExecutionContext {
     void setPersistent(Object o);
 
     /**
-     * Called just before the VM is executed, to enable and preparations needed
+     * Called just before the VM is executed, to enable any preparations needed
      * in the environment.
      */
     void setup();
