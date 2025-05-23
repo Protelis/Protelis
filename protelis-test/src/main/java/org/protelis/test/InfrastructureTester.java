@@ -102,7 +102,7 @@ public final class InfrastructureTester {
                     assertEquals(occ, found);
                 } catch (final AssertionError e) {
                     obs.exceptionThrown(
-                        new IllegalArgumentException("Expected occurences [" + occ + "] != Occurences found [" + found + "]")
+                        new IllegalArgumentException("Expected occurrences [" + occ + "] != occurrences found [" + found + "]")
                     );
                 }
             } else {
