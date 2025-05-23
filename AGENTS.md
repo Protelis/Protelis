@@ -32,6 +32,7 @@ The dependency update scopes `api-deps`, `core-deps`, and `deps` are also allowe
 
 Pull request titles should be formatted as conventional commits.
 A typical good pull request will contain a single commit whose message first line is the same of the PR title.
+All pull requests should be assigned the `auto-update-rebase` label to let mergify keep them in sync with the default branch.
 
 ## Verification
 
