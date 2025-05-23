@@ -1,3 +1,9 @@
+## [18.0.9](https://github.com/Protelis/Protelis/compare/18.0.8...18.0.9) (2025-05-23)
+
+### Documentation
+
+* **interpreter:** fix javadocs ([#1834](https://github.com/Protelis/Protelis/issues/1834)) ([fdf83b9](https://github.com/Protelis/Protelis/commit/fdf83b9ac36cf994980ce140f5ae8c112c81d65e))
+
 ## [18.0.8](https://github.com/Protelis/Protelis/compare/18.0.7...18.0.8) (2025-05-23)
 
 ### Bug Fixes
