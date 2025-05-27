@@ -1,3 +1,15 @@
+## [18.1.0](https://github.com/Protelis/Protelis/compare/18.0.9...18.1.0) (2025-05-27)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.4.0 ([#1839](https://github.com/Protelis/Protelis/issues/1839)) ([8124f1d](https://github.com/Protelis/Protelis/commit/8124f1d8e1dffd6d903feaec9e05197ad54e0a7a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.130 ([#1836](https://github.com/Protelis/Protelis/issues/1836)) ([ef06f6e](https://github.com/Protelis/Protelis/commit/ef06f6ece4b981c79f6c113f04bc094a7c5ea049))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.131 ([#1837](https://github.com/Protelis/Protelis/issues/1837)) ([088798b](https://github.com/Protelis/Protelis/commit/088798bf5782a2efb07f2ef86c010629ee7bcf84))
+
+### Refactoring
+
+* **interpreter:** convert SimpleNetworkManager to Kotlin ([#1835](https://github.com/Protelis/Protelis/issues/1835)) ([46afeb2](https://github.com/Protelis/Protelis/commit/46afeb29d06d3ef634a4142d256c9f0183bfbc10))
+
 ## [18.0.9](https://github.com/Protelis/Protelis/compare/18.0.8...18.0.9) (2025-05-23)
 
 ### Documentation
