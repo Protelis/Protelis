@@ -1,11 +1,11 @@
+import org.gradle.api.plugins.quality.AbstractCodeQualityTask
+
 allprojects {
     val javaLaunchers = mutableSetOf<Provider<JavaLauncher>>()
-    var additional = false
     tasks.withType<Test>().configureEach {
-        if (additional) {
-            enabled = false
-        }
-        additional = true
+        javaLaunchers.add(javaLauncher)
+    }
+    tasks.withType<AbstractCodeQualityTask>().configureEach {
         javaLaunchers.add(javaLauncher)
     }
 
@@ -13,18 +13,22 @@ allprojects {
         group = "build"
         description = "Resolve all dependencies"
         doLast {
+            println("Resolving all dependencies...")
             configurations.forEach { configuration ->
                 if (configuration.isCanBeResolved) {
                     configuration.resolve()
                 }
             }
+            println("Resolving all toolchains...")
             javaLaunchers.forEach { javaLauncher ->
                 javaLauncher.get() // Force download
             }
         }
     }
 
-    tasks.findByName("build")?.configure<Task> {
-        dependsOn(resolveAllDependencies)
+    tasks.configureEach {
+        if (this != resolveAllDependencies.get()) {
+            enabled = false
+        }
     }
 }
