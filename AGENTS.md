@@ -39,5 +39,5 @@ All pull requests should be assigned the `auto-update-rebase` label to let mergi
 Before submitting a pull request, verify the project builds successfully:
 
 ```bash
-./gradlew build assemble --offline
+./gradlew build assemble
 ```
