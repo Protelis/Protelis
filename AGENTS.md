@@ -36,8 +36,17 @@ All pull requests should be assigned the `auto-update-rebase` label to let mergi
 
 ## Verification
 
-Before submitting a pull request, verify the project builds successfully:
+Always run:
+```bash
+./gradlew ktlintF
+```
+After a modification of a Kotlin file to ensure that formatting is correct.
 
+Before submitting a pull request, verify the project builds successfully:
 ```bash
 ./gradlew build assemble
+```
+This process can take quite some time. If it takes too long, faster verification can be performed using:
+```bash
+./gradlew ktlintCheck detektMain detektTest test
 ```
