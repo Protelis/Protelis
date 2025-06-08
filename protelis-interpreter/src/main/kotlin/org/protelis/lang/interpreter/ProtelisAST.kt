@@ -5,51 +5,47 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-package org.protelis.lang.interpreter;
+package org.protelis.lang.interpreter
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.protelis.lang.loading.Metadata;
-import org.protelis.vm.ExecutionContext;
+import org.protelis.lang.loading.Metadata
+import org.protelis.vm.ExecutionContext
+import java.io.Serializable
 
 /**
  * Data structure representing the field calculus semantics of annotating
  * expressions with their evaluated values.
  *
- * @param <T> return type of this sub-program
+ * @param T return type of this sub-program
  */
-public interface ProtelisAST<T> extends Serializable {
+interface ProtelisAST<T> : Serializable {
 
     /**
-     * Evaluates the program using the passed {@link ExecutionContext}.
+     * Evaluates the program using the passed [ExecutionContext].
      *
-     * @param context
-     *            the execution context
+     * @param context the execution context
      * @return the AST evaluation
      */
-    T eval(ExecutionContext context);
+    fun eval(context: ExecutionContext): T
 
     /**
-     * @param i
-     *            the index
+     * @param i the index
      * @return the i-th branch of the evaluation tree
      */
-    ProtelisAST<?> getBranch(int i);
+    fun getBranch(i: Int): ProtelisAST<*>
 
     /**
      * @return a view of the branches of the tree
      */
-    List<ProtelisAST<?>> getBranches();
+    fun getBranches(): List<ProtelisAST<*>>
 
     /**
-     * @return A {@link Metadata} object containing information about the code that generated this AST node.
+     * @return A [Metadata] object containing information about the code that generated this AST node.
      */
-    Metadata getMetadata();
+    fun getMetadata(): Metadata
 
     /**
      * @return The name of the operation
      */
-    String getName();
-
+    fun getName(): String
 }
+
