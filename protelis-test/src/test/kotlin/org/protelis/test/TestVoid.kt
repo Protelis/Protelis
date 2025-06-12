@@ -5,19 +5,16 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-package org.protelis.test;
+package org.protelis.test
 
 /**
  * Support class with void methods.
  */
-public final class TestVoid {
-
-    private TestVoid() {
+class TestVoid private constructor() {
+    companion object {
+        @JvmStatic
+        fun main(vararg args: String) {
+            // no-op
+        }
     }
-
-    /**
-     * @param args unused
-     */
-    public static void main(final String... args) { }
-
 }
