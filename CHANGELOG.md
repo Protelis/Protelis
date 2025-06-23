@@ -1,3 +1,34 @@
+## [18.1.1](https://github.com/Protelis/Protelis/compare/18.1.0...18.1.1) (2025-06-23)
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v2.2.0 ([#1861](https://github.com/Protelis/Protelis/issues/1861)) ([6338e9b](https://github.com/Protelis/Protelis/commit/6338e9bd5bc7d450f114eba7b2adb4fc3a6604cf))
+* **deps:** update dependency gradle to v8.14.2 ([#1848](https://github.com/Protelis/Protelis/issues/1848)) ([47f64f3](https://github.com/Protelis/Protelis/commit/47f64f3c33ffcd57da054dd0203737890b8b7c1c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.132 ([#1842](https://github.com/Protelis/Protelis/issues/1842)) ([79745ab](https://github.com/Protelis/Protelis/commit/79745ab013dc9b18733488dda2ecff8db897ea48))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.133 ([#1847](https://github.com/Protelis/Protelis/issues/1847)) ([639e351](https://github.com/Protelis/Protelis/commit/639e3513adeece5681b9c96bb3484d92cb4be236))
+* **deps:** update plugin com.gradle.develocity to v4.0.2 ([#1838](https://github.com/Protelis/Protelis/issues/1838)) ([8315ebd](https://github.com/Protelis/Protelis/commit/8315ebd6e8d760545e560b808ffae7651a32c649))
+* **deps:** update plugin gitsemver to v5.1.4 ([#1849](https://github.com/Protelis/Protelis/issues/1849)) ([9adbac0](https://github.com/Protelis/Protelis/commit/9adbac08f14fb35cb4ea4a01f6e3905fd0d480f3))
+* **deps:** update plugin java-qa to v1.116.0 ([#1840](https://github.com/Protelis/Protelis/issues/1840)) ([680faa9](https://github.com/Protelis/Protelis/commit/680faa9bbfe506dd18bbf5d646306531369844e6))
+* **deps:** update plugin kotlin-qa to v0.89.0 ([#1844](https://github.com/Protelis/Protelis/issues/1844)) ([da62808](https://github.com/Protelis/Protelis/commit/da6280833c97c6a7693bcdd37a7efd543898a31a))
+* **deps:** update plugin kotlin-qa to v0.89.1 ([#1852](https://github.com/Protelis/Protelis/issues/1852)) ([c1d0d04](https://github.com/Protelis/Protelis/commit/c1d0d0440c972f73d2d2bf71760aa3f9c9217e11))
+* **deps:** update plugin multijvmtesting to v3.5.0 ([#1841](https://github.com/Protelis/Protelis/issues/1841)) ([e86367e](https://github.com/Protelis/Protelis/commit/e86367e6bf1f3b5321c86d25ea8a69c71d8ab33f))
+* **deps:** update plugin multijvmtesting to v3.5.1 ([#1850](https://github.com/Protelis/Protelis/issues/1850)) ([9282f74](https://github.com/Protelis/Protelis/commit/9282f7423a201ea74531957f4c35fd81d027c26d))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.26 ([#1853](https://github.com/Protelis/Protelis/issues/1853)) ([aaef14d](https://github.com/Protelis/Protelis/commit/aaef14d61e30324033709ba613e31d367e0799c4))
+* **deps:** update plugin protelisdoc to v3.0.93 ([#1845](https://github.com/Protelis/Protelis/issues/1845)) ([4e75c16](https://github.com/Protelis/Protelis/commit/4e75c16b20f640bd430ed240b6985b0dc89740e1))
+* **deps:** update plugin protelisdoc to v3.0.94 ([#1851](https://github.com/Protelis/Protelis/issues/1851)) ([822989b](https://github.com/Protelis/Protelis/commit/822989b63012032401010eb2f9ee7873847feefa))
+* **deps:** update plugin protelisdoc to v3.0.95 ([#1854](https://github.com/Protelis/Protelis/issues/1854)) ([bcc4e0d](https://github.com/Protelis/Protelis/commit/bcc4e0d478b50f02a0d6a553516713d042ad8a51))
+
+### Build and continuous integration
+
+* **codex:** improve the dependency resolution script ([586c904](https://github.com/Protelis/Protelis/commit/586c904cd964fd7561e5ada7106f05a0bf0bff9e))
+* **codex:** run the code QA tasks with the same JVM of the build ([d193d3e](https://github.com/Protelis/Protelis/commit/d193d3ef20cc98eb15fc51769c2100eab702add9))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4 ([#1859](https://github.com/Protelis/Protelis/issues/1859)) ([4c1605b](https://github.com/Protelis/Protelis/commit/4c1605bf52ea20269ec3a01cb5df457c1ff69002))
+
+### General maintenance
+
+* **agents:** allow connections on checks ([907fc5a](https://github.com/Protelis/Protelis/commit/907fc5a4cb4bd6bd0dea3b8a6e8c0b00b10aefbc))
+* **agents:** provide a faster verification option ([0eed49c](https://github.com/Protelis/Protelis/commit/0eed49c8eb872ab81c8d106fd499ecd5e00b84f9))
+
 ## [18.1.0](https://github.com/Protelis/Protelis/compare/18.0.9...18.1.0) (2025-05-27)
 
 ### Dependency updates
