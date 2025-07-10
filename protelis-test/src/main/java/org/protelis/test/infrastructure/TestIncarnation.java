@@ -55,8 +55,7 @@ public final class TestIncarnation implements Incarnation<Object> {
                 }
                 return 0;
             }
-        } else if (val instanceof Boolean) {
-            final Boolean cond = (Boolean) val;
+        } else if (val instanceof Boolean cond) {
             if (cond) {
                 return 1d;
             } else {
@@ -98,7 +97,7 @@ public final class TestIncarnation implements Incarnation<Object> {
         if (param == null) {
             return new ExponentialTime<>(Double.POSITIVE_INFINITY, rand);
         }
-        double frequency; // NOPMD: false positive, declaring final does not compile.
+        double frequency;
         try {
             frequency = Double.parseDouble(param);
         } catch (final NumberFormatException e) {
@@ -135,8 +134,7 @@ public final class TestIncarnation implements Incarnation<Object> {
                     final Node<Object> node, final TimeDistribution<Object> time, final Reaction<Object> reaction,
                     final String param) {
         Objects.requireNonNull(param);
-        if (node instanceof ProtelisNode) {
-            final ProtelisNode pNode = (ProtelisNode) node;
+        if (node instanceof ProtelisNode pNode) {
             try {
                 return new RunProtelisProgram(env, pNode, reaction, rand, param);
                 // CHECKSTYLE: IllegalCatch OFF

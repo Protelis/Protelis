@@ -5,7 +5,7 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-package org.protelis.test; // NOPMD by jakebeal on 8/25/15 12:41 PM
+package org.protelis.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.protelis.test.ProgramTester.runExpectingErrors;
@@ -887,7 +887,7 @@ public class TestLanguage {
         Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] <= [1, 2]", 1));
         Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0, 0] <= [1, 2, -1]", 1));
         // comparison involving infinity
-        final String prefix = "import java.lang.Double.POSITIVE_INFINITY let Infinity = POSITIVE_INFINITY; "; // NOPMD
+        final String prefix = "import java.lang.Double.POSITIVE_INFINITY let Infinity = POSITIVE_INFINITY; ";
         Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] == [Infinity]", 1));
         Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity, 1] < [Infinity, 2]", 1));
         Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[1, Infinity] < [2, 0]", 1));

@@ -13,6 +13,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.SHARE_BODY;
 import static org.protelis.lang.interpreter.util.Bytecode.SHARE_INIT;
 import static org.protelis.lang.interpreter.util.Bytecode.SHARE_YIELD;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -40,6 +41,7 @@ import com.google.common.base.Optional;
  */
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Google Optionals are Serializable
 public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
+    @Serial
     private static final long serialVersionUID = 1L;
     private final Optional<Reference> fieldName;
     private final Optional<Reference> localName;
@@ -185,8 +187,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
         ifPresent(fieldName, it -> context.putVariable(it, nbr));
         context.newCallStackFrame(SHARE_BODY.getCode());
         final Optional<T> yieldResult;
-        if (body instanceof All) {
-            final All multilineBody = (All) body;
+        if (body instanceof All multilineBody) {
             multilineBody.forEachWithIndex((i, b) -> {
                 context.newCallStackFrame(i);
                 bodyResult.result = (S) b.eval(context);
@@ -262,7 +263,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
 
         private S result;
 
-        private S getResult() { // NOPMD: false positive, method used as function reference
+        private S getResult() {
             return result;
         }
     }

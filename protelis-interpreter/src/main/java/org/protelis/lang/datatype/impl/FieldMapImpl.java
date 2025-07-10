@@ -14,6 +14,7 @@ import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.lang.datatype.Field;
 
 import javax.annotation.Nonnull;
+import java.io.Serial;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -23,8 +24,9 @@ import java.util.stream.Stream;
  *
  * @param <T> field type
  */
-public final class FieldMapImpl<T> extends AbstractField<T> { // NOPMD: a builder is used
+public final class FieldMapImpl<T> extends AbstractField<T> {
 
+    @Serial
     private static final long serialVersionUID = -2947000086262191216L;
     @Nonnull
     private final DeviceUID local;

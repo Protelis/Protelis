@@ -270,14 +270,10 @@ public enum Op2 implements WithBytecode {
         if (aNum && bTup || aTup && bNum) {
             return (O) tupleArithmetic(op, aNum, aNum ? a : b, (Tuple) (aTup ? a : b), f);
         }
-        if (a instanceof Tuple && b instanceof Tuple) {
-            final Tuple ta = (Tuple) a;
-            final Tuple tb = (Tuple) b;
-            if (ta.size() == tb.size()) { // NOPMD: ints are compare with ==
-                return (O) DatatypeFactory.createTuple(IntStream.range(0, ta.size())
-                        .mapToObj(i -> arithmetic(op, (I) ta.get(i), (I) tb.get(i), f))
-                        .toArray());
-            }
+        if (a instanceof Tuple ta && b instanceof Tuple tb && ta.size() == tb.size()) {
+            return (O) DatatypeFactory.createTuple(IntStream.range(0, ta.size())
+                .mapToObj(i -> arithmetic(op, (I) ta.get(i), (I) tb.get(i), f))
+                .toArray());
         }
         return unsupported(op, a, b);
     }

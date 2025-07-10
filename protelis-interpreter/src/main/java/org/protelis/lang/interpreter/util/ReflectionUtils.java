@@ -326,7 +326,7 @@ public final class ReflectionUtils {
         final List<Pair<Integer, Method>> lm = new ArrayList<>(candidates.length);
         for (final Method m: candidates) {
             final Class<?>[] expectedParameters = m.getParameterTypes();
-            final Class<?>[] actualArgClass; // NOPMD: false positive
+            final Class<?>[] actualArgClass;
             if (shouldPushContext(expectedParameters, argClass)) {
                 /*
                  * Push "self" as an implicit parameter
@@ -406,7 +406,7 @@ public final class ReflectionUtils {
             // We will repackage into an array of the expected length
             final Object[] newArgs = new Object[expectedArgs.length];
             // repackage all the base args
-            final int start; // NOPMD: false positive
+            final int start;
             if (pushContext) {
                 newArgs[0] = context;
                 start = 1;

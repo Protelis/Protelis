@@ -119,7 +119,7 @@ public enum HoodOp implements WithBytecode {
     );
 
     private final Bytecode bytecode;
-    private final SerializableFunction defs; // NOPMD false positive, not a singular field
+    private final SerializableFunction defs;
     private final SerializableBiFunction function;
 
     /**

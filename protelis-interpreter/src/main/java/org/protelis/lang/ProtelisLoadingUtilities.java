@@ -93,8 +93,7 @@ public final class ProtelisLoadingUtilities {
         if (container instanceof MethodCall) {
             return ((MethodCall) container).getName();
         }
-        if (container instanceof Expression) {
-            final Expression exp = (Expression) container;
+        if (container instanceof Expression exp) {
             if (exp.getName() == null && exp.getElements().size() == 2) {
                 return qualifiedNameFor(((VarUse) exp.getElements().get(0)).getReference(), "");
             }
@@ -149,8 +148,8 @@ public final class ProtelisLoadingUtilities {
         return Optional.ofNullable(module)
                 .map(ProtelisModule::getName)
                 .map(it -> it
-                        .replace("protelis:state:time", "⏱") // NOPMD: false positive
-                        .replace("protelis:state:nonselfstabilizing:time", "⍼⏱") // NOPMD: false positive
+                        .replace("protelis:state:time", "⏱")
+                        .replace("protelis:state:nonselfstabilizing:time", "⍼⏱")
                         .replace("protelis:lang:utils", "⚒")
                         .replace("protelis:coord:meta:timereplication", "⎇⏳")
                         .replace("protelis:coord:nonselfstabilizing:accumulation", "⍼⍖")

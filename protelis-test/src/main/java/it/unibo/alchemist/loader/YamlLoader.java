@@ -16,10 +16,12 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
 import it.unibo.alchemist.SupportedIncarnations;
@@ -92,6 +93,7 @@ public final class YamlLoader implements Loader, Serializable {
     /**
      * 
      */
+    @Serial
     private static final long serialVersionUID = -8503453282930319680L;
     private static final String ALCHEMIST_PACKAGE_ROOT = "it.unibo.alchemist.";
     private static final String SYNTAX_NAME = "YamlSyntax";
@@ -158,7 +160,7 @@ public final class YamlLoader implements Loader, Serializable {
     private static final Class<? extends Position> DEFAULT_POSITION_CLASS = Continuous2DEuclidean.class;
     private static final Shape IN_ALL = (p) -> true;
 
-    private Object simulationSeed;
+    private final Object simulationSeed;
     private final Map<Long, String> reverseLookupTable;
     private final Map<String, Variable> lookupTable;
     private final Map<String, DependentVariable> computableVariables;
@@ -168,7 +170,7 @@ public final class YamlLoader implements Loader, Serializable {
     private final Class<? extends LinkingRule<?>> linkingClass;
     private final List<?> envArgs;
     private final List<?> linkingArgs;
-    private List<?> layersList = new ArrayList<>(); // NOPMD: false positive
+    private List<?> layersList = new ArrayList<>();
 
     private final List<Map<String, Object>> displacements;
 
@@ -196,7 +198,7 @@ public final class YamlLoader implements Loader, Serializable {
      *            the YAML file
      */
     public YamlLoader(final InputStream source) {
-        this(new BufferedReader(new InputStreamReader(source, Charsets.UTF_8)));
+        this(new BufferedReader(new InputStreamReader(source, StandardCharsets.UTF_8)));
     }
 
     /**
@@ -317,8 +319,7 @@ public final class YamlLoader implements Loader, Serializable {
          */
         final Object dispObj = contents.get(DISPLACEMENTS);
         List<Map<String, Object>> tmpDisp = Collections.emptyList();
-        if (dispObj instanceof List) {
-            final List<?> dispList = (List<?>) dispObj;
+        if (dispObj instanceof List<?> dispList) {
             if (!dispList.isEmpty()) {
                 if (dispList.get(0) instanceof Map) {
                     tmpDisp = (List<Map<String, Object>>) contents.get(DISPLACEMENTS);
@@ -341,8 +342,7 @@ public final class YamlLoader implements Loader, Serializable {
         if (extrObj instanceof List) {
             extractors = Collections.unmodifiableList(StreamSupport.parallelStream((List<?>) extrObj)
                 .map(obj -> {
-                    if (obj instanceof String) {
-                        final String strDesc = (String) obj;
+                    if (obj instanceof String strDesc) {
                         if (TIME.equalsIgnoreCase(strDesc)) {
                             return new it.unibo.alchemist.loader.export.Time();
                         }
@@ -527,8 +527,7 @@ public final class YamlLoader implements Loader, Serializable {
                 final List<?> programsList = (List<?>) programsObj;
                 if (!programsList.isEmpty()) {
                     final Object programObj = programsList.get(0);
-                    if (programObj instanceof List) {
-                        final List<?> programList = (List<?>) programObj;
+                    if (programObj instanceof List<?> programList) {
                         if (!programList.isEmpty()) {
                             final Object reactionObj = programList.get(0);
                             if (!(reactionObj instanceof Map)) {
@@ -743,11 +742,13 @@ public final class YamlLoader implements Loader, Serializable {
         return extracted instanceof PlaceHolder ? resolvePlaceHolder(variables, extracted) : extracted;
     }
 
+    @Serial
     private void writeObject(final ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
         oos.writeObject(incarnation.toString());
     }
 
+    @Serial
     private void readObject(final ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
         incarnation = SupportedIncarnations.get((String) ois.readObject()).get();
@@ -755,8 +756,7 @@ public final class YamlLoader implements Loader, Serializable {
 
     @SuppressWarnings(UNCHECKED)
     private static Optional<Map<?, Double>> aVariable(final Object o) {
-        if (o instanceof Map<?, ?>) {
-            final Map<?, ?> var = (Map<?, ?>) o;
+        if (o instanceof Map<?, ?> var) {
             final Object maybeVar = var.get(VARIABLE);
             if (maybeVar instanceof Boolean) {
                 final boolean isVar = (boolean) maybeVar;
@@ -975,8 +975,7 @@ public final class YamlLoader implements Loader, Serializable {
                 if (Molecule.class.isAssignableFrom(expectedClass) && param instanceof String) {
                     return incarnation.createMolecule(param.toString());
                 }
-                if (Position.class.isAssignableFrom(expectedClass) && param instanceof List) {
-                    final List<?> coordList = (List<?>) param;
+                if (Position.class.isAssignableFrom(expectedClass) && param instanceof List<?> coordList) {
                     if (coordList.stream().allMatch(n -> n instanceof Number)) {
                         return posMaker.makePosition(coordList.stream().map(v -> (Number) v).toArray(Number[]::new));
                     }

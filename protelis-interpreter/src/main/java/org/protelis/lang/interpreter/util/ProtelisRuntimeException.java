@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.util;
 
+import java.io.Serial;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import org.protelis.lang.loading.Metadata;
  */
 public final class ProtelisRuntimeException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final Deque<ProtelisAST<?>> protelisStackTrace = new LinkedList<>();
 
@@ -61,7 +63,7 @@ public final class ProtelisRuntimeException extends RuntimeException {
      * @return A stringified version of the Protelis stack trace that caused the issue
      */
     public String getProtelisStacktrace() {
-        final StringBuilder trace = header(); // NOPMD: False positive, the StringBuilder does not have size 16.
+        final StringBuilder trace = header();
         if (stream().noneMatch(it -> it instanceof FunctionCall)) {
             trace.append("\n\tin main script ")
                 .append(extractLines(protelisStackTrace.getFirst()));
