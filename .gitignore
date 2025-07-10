@@ -5,6 +5,7 @@
 .recommenders/
 bin/
 build/
+node_modules/
 /src-gen/
 **/out/
 *.directory
