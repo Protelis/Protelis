@@ -24,7 +24,10 @@ jobs:
           build-command: >-
             ./gradlew assemble shadowJar
           deploy-command: >-
-            ./gradlew uploadAll close dropStagingRepositoryOnMavenCentral --parallel
+            ./gradlew 
+            publishAllPublicationsToProjectLocalRepository 
+            zipMavenCentralPortalPublication 
+            releaseMavenCentralPortalPublication
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: >-
             ${{

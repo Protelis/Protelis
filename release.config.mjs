@@ -3,7 +3,7 @@ echo 'Creating shadowJar and protelisdoc...'
 ./gradlew protelisdoc shadowJar --parallel || ./gradlew shadowJar --parallel || exit 2
 echo '...assemblage done.'
 echo 'Releasing on Maven Central...'
-./gradlew uploadAll releaseStagingRepositoryOnMavenCentral --parallel || exit 3
+./gradlew publishAllPublicationsToProjectLocalRepository zipMavenCentralPortalPublication releaseMavenCentralPortalPublication || exit 3
 echo '...released.'
 echo 'Releasing on GitHub packages...'
 ./gradlew publishAllToGithubRepository --continue || true
