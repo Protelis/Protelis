@@ -28,6 +28,7 @@ jobs:
             publishAllPublicationsToProjectLocalRepository 
             zipMavenCentralPortalPublication 
             releaseMavenCentralPortalPublication
+            --dry-run
           should-run-codecov: ${{ runner.os == 'Linux' }}
           should-deploy: >-
             ${{
