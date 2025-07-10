@@ -12,9 +12,6 @@ jobs:
         os: [ windows-2025, macos-14, ubuntu-24.04 ]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
-    concurrency:
-      group: ${{ github.workflow }}-build-${{ matrix.os }}-${{ github.event.number || github.ref }}
-      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: DanySK/action-checkout@0.2.22
@@ -50,9 +47,6 @@ jobs:
     if: >-
       !github.event.repository.fork
       && github.event_name != 'pull_request'
-    concurrency:
-      group: release-${{ github.event.number || github.ref }}
-      cancel-in-progress: false
     timeout-minutes: 120
     steps:
       - name: Checkout
