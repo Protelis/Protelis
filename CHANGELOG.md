@@ -1,3 +1,30 @@
+## [18.2.0](https://github.com/Protelis/Protelis/compare/18.1.2...18.2.0) (2025-07-22)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.4.1 ([#1895](https://github.com/Protelis/Protelis/issues/1895)) ([5942d09](https://github.com/Protelis/Protelis/commit/5942d09aa05456234f6ce0442cc0f0d0af51fbf8))
+* **deps:** update dependency commons-codec:commons-codec to v1.19.0 ([#1896](https://github.com/Protelis/Protelis/issues/1896)) ([cb5cabc](https://github.com/Protelis/Protelis/commit/cb5cabc5381c75ff7df135dd2b997baaa94a2d7d))
+* **deps:** update dependency commons-io:commons-io to v2.20.0 ([#1894](https://github.com/Protelis/Protelis/issues/1894)) ([4300360](https://github.com/Protelis/Protelis/commit/4300360df8e356b45091e8237651f3a69bc13555))
+* **deps:** update dependency gradle to v8.14.3 ([#1881](https://github.com/Protelis/Protelis/issues/1881)) ([d4c5700](https://github.com/Protelis/Protelis/commit/d4c5700ecad82082cf4a6f10dd063c21142406dd))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.181 ([#1890](https://github.com/Protelis/Protelis/issues/1890)) ([125670a](https://github.com/Protelis/Protelis/commit/125670a6dd6ed69dc7a1914412ed046fb838fce9))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.18.0 ([#1885](https://github.com/Protelis/Protelis/issues/1885)) ([7402b0f](https://github.com/Protelis/Protelis/commit/7402b0f180f5e9b40c4ee16c8b534be7cfa3b716))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.136 ([#1880](https://github.com/Protelis/Protelis/issues/1880)) ([aa586d4](https://github.com/Protelis/Protelis/commit/aa586d413d4acacfd956d086b9512e92a7ae1b6a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.137 ([#1891](https://github.com/Protelis/Protelis/issues/1891)) ([6c7d9df](https://github.com/Protelis/Protelis/commit/6c7d9dfe9de4bc890ec67303673de5de23b43966))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.138 ([#1893](https://github.com/Protelis/Protelis/issues/1893)) ([29dbccb](https://github.com/Protelis/Protelis/commit/29dbccbbf5f42c8eb97f13be82a02c6de1eb544f))
+* **deps:** update plugin com.gradle.develocity to v4.1 ([#1889](https://github.com/Protelis/Protelis/issues/1889)) ([3d5e71a](https://github.com/Protelis/Protelis/commit/3d5e71a8e640628fae36de6d2e2bc3bb70cedafc))
+* **deps:** update plugin gitsemver to v5.1.7 ([#1878](https://github.com/Protelis/Protelis/issues/1878)) ([43ba446](https://github.com/Protelis/Protelis/commit/43ba4469146fbc5622314edbdee8de49216f75a5))
+* **deps:** update plugin java-qa to v1.124.0 ([4f3a7f0](https://github.com/Protelis/Protelis/commit/4f3a7f0dd695cb570ccef0410020a92662dcf352))
+* **deps:** update plugin java-qa to v1.125.0 ([#1886](https://github.com/Protelis/Protelis/issues/1886)) ([4839a16](https://github.com/Protelis/Protelis/commit/4839a168cd24bcaf05936954d434b3b219c58182))
+* **deps:** update plugin multijvmtesting to v3.5.4 ([#1879](https://github.com/Protelis/Protelis/issues/1879)) ([4fc74dc](https://github.com/Protelis/Protelis/commit/4fc74dc47b23666970a111762db5f360a0386d37))
+* **deps:** update plugin multijvmtesting to v3.6.0 ([#1892](https://github.com/Protelis/Protelis/issues/1892)) ([48f665f](https://github.com/Protelis/Protelis/commit/48f665fdb4d65810df2c3607bf742a0f750741aa))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.28 ([#1887](https://github.com/Protelis/Protelis/issues/1887)) ([c3be26b](https://github.com/Protelis/Protelis/commit/c3be26b65f8c8aee42634af882a2324297a98c77))
+* **deps:** update plugin protelisdoc to v3.0.101 ([#1883](https://github.com/Protelis/Protelis/issues/1883)) ([b73fae9](https://github.com/Protelis/Protelis/commit/b73fae96d909c9e605072d97826b9cbe8502a723))
+* **deps:** update plugin publishoncentral to v9.0.8 ([#1888](https://github.com/Protelis/Protelis/issues/1888)) ([25b94a0](https://github.com/Protelis/Protelis/commit/25b94a0008759a87b9263357d03cb9e27a045704))
+
+### Build and continuous integration
+
+* move concurrency control to the dispatcher workflow ([f5c5aca](https://github.com/Protelis/Protelis/commit/f5c5acab3eb0306641c1ee145d87065de8ed5629))
+
 ## [18.1.2](https://github.com/Protelis/Protelis/compare/18.1.1...18.1.2) (2025-07-10)
 
 ### Dependency updates
