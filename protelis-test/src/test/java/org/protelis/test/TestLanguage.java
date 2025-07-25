@@ -981,10 +981,8 @@ public class TestLanguage {
 
     /**
      * Test calling a void method.
+     *
+     * Moved to Kotlin.
      */
-    @Test
-    public void testUnit01() {
-        runFile("/unit01.pt");
-    }
 
 }
