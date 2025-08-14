@@ -1,3 +1,38 @@
+## [18.2.1](https://github.com/Protelis/Protelis/compare/18.2.0...18.2.1) (2025-08-14)
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v2.2.10 ([#1923](https://github.com/Protelis/Protelis/issues/1923)) ([7ea427c](https://github.com/Protelis/Protelis/commit/7ea427cf0d2af7724293d93e9a744e9e6a0af512))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.9.4 ([#1912](https://github.com/Protelis/Protelis/issues/1912)) ([b075aef](https://github.com/Protelis/Protelis/commit/b075aef771d51f080e6cecb089a1cb631a6c039a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.139 ([#1907](https://github.com/Protelis/Protelis/issues/1907)) ([659d0de](https://github.com/Protelis/Protelis/commit/659d0de63f0c281d5b69659bfa06b3d7fb77ffac))
+* **deps:** update node.js to 22.18 ([#1904](https://github.com/Protelis/Protelis/issues/1904)) ([3c495ce](https://github.com/Protelis/Protelis/commit/3c495cee5702b6c24008a61180985b140b149ef2))
+* **deps:** update plugin gitsemver to v5.1.8 ([#1919](https://github.com/Protelis/Protelis/issues/1919)) ([55b7e69](https://github.com/Protelis/Protelis/commit/55b7e699a2a4e835b1eefdcf1075b72e3e4de8cf))
+* **deps:** update plugin gitsemver to v6 ([#1920](https://github.com/Protelis/Protelis/issues/1920)) ([0bc9691](https://github.com/Protelis/Protelis/commit/0bc96919b9b5bf7e9fe606e9fe5aa45fd6ea1c88))
+* **deps:** update plugin java-qa to v1.126.0 ([#1897](https://github.com/Protelis/Protelis/issues/1897)) ([f75dc8f](https://github.com/Protelis/Protelis/commit/f75dc8f1bab967b1e15f8a0604ec35c1689d4693))
+* **deps:** update plugin java-qa to v1.127.0 ([#1905](https://github.com/Protelis/Protelis/issues/1905)) ([267f4f5](https://github.com/Protelis/Protelis/commit/267f4f5ec06c7cefdebc7c87ca572af74c47eb45))
+* **deps:** update plugin java-qa to v1.128.0 ([#1908](https://github.com/Protelis/Protelis/issues/1908)) ([7fc8bee](https://github.com/Protelis/Protelis/commit/7fc8bee884a8e51c8f83eb88cd368410504e3f35))
+* **deps:** update plugin java-qa to v1.129.0 ([#1913](https://github.com/Protelis/Protelis/issues/1913)) ([561323c](https://github.com/Protelis/Protelis/commit/561323cc99e6e37a6a1c14875fb0aab805c98ecd))
+* **deps:** update plugin java-qa to v1.130.0 ([#1914](https://github.com/Protelis/Protelis/issues/1914)) ([9b31450](https://github.com/Protelis/Protelis/commit/9b314509f18a238fc6d9b219666c1bd1f372ca10))
+* **deps:** update plugin kotlin-qa to v0.92.0 ([#1898](https://github.com/Protelis/Protelis/issues/1898)) ([76ea334](https://github.com/Protelis/Protelis/commit/76ea334198ab05076097155c1f1cbbf2313cb5a7))
+* **deps:** update plugin kotlin-qa to v0.93.0 ([#1902](https://github.com/Protelis/Protelis/issues/1902)) ([6c1d1e4](https://github.com/Protelis/Protelis/commit/6c1d1e412eb04ce3158e2d1ac03760503d9a57ac))
+* **deps:** update plugin kotlin-qa to v0.93.1 ([#1924](https://github.com/Protelis/Protelis/issues/1924)) ([ee22f70](https://github.com/Protelis/Protelis/commit/ee22f7051b07e0968602db88a44ecdf1ec5c2db3))
+* **deps:** update plugin multijvmtesting to v3.6.1 ([#1910](https://github.com/Protelis/Protelis/issues/1910)) ([c8eb240](https://github.com/Protelis/Protelis/commit/c8eb2406f42c1d52a91eb848b6d0646fa9648286))
+* **deps:** update plugin multijvmtesting to v4 ([#1911](https://github.com/Protelis/Protelis/issues/1911)) ([0dbabec](https://github.com/Protelis/Protelis/commit/0dbabec71bcf7304d925ed188447e079437c87c4))
+* **deps:** update plugin multijvmtesting to v4.0.2 ([#1922](https://github.com/Protelis/Protelis/issues/1922)) ([b6dcee1](https://github.com/Protelis/Protelis/commit/b6dcee1942133d10486f071e74a8f4115d60cda6))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.29 ([#1925](https://github.com/Protelis/Protelis/issues/1925)) ([3a5588b](https://github.com/Protelis/Protelis/commit/3a5588be5c314908eb567e4efe817448184ae698))
+* **deps:** update plugin protelisdoc to v3.0.102 ([#1899](https://github.com/Protelis/Protelis/issues/1899)) ([87be594](https://github.com/Protelis/Protelis/commit/87be59441f05f3a4e9d15a5ea2ce55fd40eb42ca))
+* **deps:** update plugin protelisdoc to v3.0.103 ([#1901](https://github.com/Protelis/Protelis/issues/1901)) ([c608403](https://github.com/Protelis/Protelis/commit/c608403d5cfad525be4b1ae5b1804ca35e891860))
+* **deps:** update plugin protelisdoc to v3.0.105 ([#1926](https://github.com/Protelis/Protelis/issues/1926)) ([2ec4bb7](https://github.com/Protelis/Protelis/commit/2ec4bb72f8e5f69fec62eff4ff07221afbe89cb7))
+* **deps:** update plugin publishoncentral to v9.1.0 ([#1900](https://github.com/Protelis/Protelis/issues/1900)) ([ea5c542](https://github.com/Protelis/Protelis/commit/ea5c542034748818c5b77454cb26ee69386fb081))
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v5 ([#1917](https://github.com/Protelis/Protelis/issues/1917)) ([37d89b5](https://github.com/Protelis/Protelis/commit/37d89b56230bd8f38a06d23073170a64b2a3b81b))
+* **deps:** update danysk/action-checkout action to v0.2.23 ([#1915](https://github.com/Protelis/Protelis/issues/1915)) ([dd50059](https://github.com/Protelis/Protelis/commit/dd500592d3ffa6bc172328c0fe5ccf9aa5f0e184))
+* **deps:** update danysk/action-checkout action to v0.2.24 ([#1918](https://github.com/Protelis/Protelis/issues/1918)) ([8f841b3](https://github.com/Protelis/Protelis/commit/8f841b3a576e6eff2f8942cbaa4a519977ce1023))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.2 ([#1906](https://github.com/Protelis/Protelis/issues/1906)) ([0bcfe69](https://github.com/Protelis/Protelis/commit/0bcfe696ef31509f482f57272293b425c88fe9e6))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.3 ([#1909](https://github.com/Protelis/Protelis/issues/1909)) ([dc4859f](https://github.com/Protelis/Protelis/commit/dc4859f57c5b8a8a444e4d6ffc6df77d17debd33))
+
 ## [18.2.0](https://github.com/Protelis/Protelis/compare/18.1.2...18.2.0) (2025-07-22)
 
 ### Dependency updates
