@@ -161,18 +161,22 @@ allprojects {
 
 subprojects.forEach { subproject -> rootProject.evaluationDependsOn(subproject.path) }
 
+val globalJavadoc by configurations.registering
+
 dependencies {
     api(project(":protelis-interpreter"))
     api(project(":protelis-lang"))
+    subprojects.forEach { globalJavadoc(it) }
 }
 
 tasks.withType<Javadoc>().configureEach {
+    enabled = true
     subprojects.forEach { subproject ->
         val subJavadoc = subproject.tasks.javadoc
-        dependsOn(subJavadoc)
+        dependsOn(subJavadoc, subproject.tasks.classes)
         source(subJavadoc.map { it.source })
-        options.classpath(subJavadoc.map { it.classpath.files.toList() }.get())
     }
+    classpath = files(globalJavadoc)
 }
 
 tasks.withType<ShadowJar>().configureEach {
