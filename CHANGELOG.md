@@ -1,3 +1,30 @@
+## [18.2.2](https://github.com/Protelis/Protelis/compare/18.2.1...18.2.2) (2025-08-17)
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.140 ([#1935](https://github.com/Protelis/Protelis/issues/1935)) ([118ab64](https://github.com/Protelis/Protelis/commit/118ab64668683d9a879e746baba420d414171b0e))
+* **deps:** update plugin gitsemver to v6.0.1 ([#1930](https://github.com/Protelis/Protelis/issues/1930)) ([38407d2](https://github.com/Protelis/Protelis/commit/38407d26e8447ddd7d3e41f4b69b635c86938322))
+* **deps:** update plugin kotlin-qa to v0.93.2 ([#1931](https://github.com/Protelis/Protelis/issues/1931)) ([ac817d8](https://github.com/Protelis/Protelis/commit/ac817d8c6f64aea11050f4c86322b0c1d82ce13e))
+* **deps:** update plugin kotlin-qa to v0.93.3 ([#1934](https://github.com/Protelis/Protelis/issues/1934)) ([0d0b0b9](https://github.com/Protelis/Protelis/commit/0d0b0b97a91ee562911b7e327e64eb78e953420c))
+* **deps:** update plugin multijvmtesting to v4.0.3 ([#1927](https://github.com/Protelis/Protelis/issues/1927)) ([7e5f28f](https://github.com/Protelis/Protelis/commit/7e5f28f53e573dee361780ecfa3467cd08940247))
+* **deps:** update plugin multijvmtesting to v4.1.0 ([#1929](https://github.com/Protelis/Protelis/issues/1929)) ([727d8ee](https://github.com/Protelis/Protelis/commit/727d8ee40e5812bb1cbc4a3ff1401e701563a3a6))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.30 ([#1932](https://github.com/Protelis/Protelis/issues/1932)) ([8c38434](https://github.com/Protelis/Protelis/commit/8c38434f0100da7638569abba1121cf78fb178bf))
+* **deps:** update plugin protelisdoc to v3.0.106 ([#1928](https://github.com/Protelis/Protelis/issues/1928)) ([1f952d3](https://github.com/Protelis/Protelis/commit/1f952d3af33bc7f46f8586db2fe31a2aef58254d))
+* **deps:** update plugin protelisdoc to v3.0.107 ([#1933](https://github.com/Protelis/Protelis/issues/1933)) ([4040a06](https://github.com/Protelis/Protelis/commit/4040a06424392b2af8a7d15369e1173c0ce04e3f))
+* **deps:** update plugin protelisdoc to v3.0.108 ([#1936](https://github.com/Protelis/Protelis/issues/1936)) ([ea70cdc](https://github.com/Protelis/Protelis/commit/ea70cdc47c8e58b975683390316dc7d4eed245dc))
+
+### Documentation
+
+* use a dedicated configuration for the global Javadoc, and always enable it ([f9fe2ad](https://github.com/Protelis/Protelis/commit/f9fe2add53a8f9d90cb7f23730871ab6fd7dc9c1))
+
+### Tests
+
+* **test:** move test utility class from test sources to the main sources of test-support module ([696060d](https://github.com/Protelis/Protelis/commit/696060d20055512af5bfece1b27b20b075b423ae))
+
+### Build and continuous integration
+
+* remove useless suppression ([ea663f1](https://github.com/Protelis/Protelis/commit/ea663f1a20ff094201057003ac9263c2c77b9012))
+
 ## [18.2.1](https://github.com/Protelis/Protelis/compare/18.2.0...18.2.1) (2025-08-14)
 
 ### Dependency updates
