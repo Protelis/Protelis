@@ -8,7 +8,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
     signing
