@@ -1,3 +1,23 @@
+## [18.3.0](https://github.com/Protelis/Protelis/compare/18.2.2...18.3.0) (2025-08-25)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.5.0 ([#1946](https://github.com/Protelis/Protelis/issues/1946)) ([0c4a75a](https://github.com/Protelis/Protelis/commit/0c4a75a433c503abf7de7cafc864634fc8009add))
+* **deps:** update dependency gradle to v9 ([#1903](https://github.com/Protelis/Protelis/issues/1903)) ([cc056c2](https://github.com/Protelis/Protelis/commit/cc056c20610e65176a40d2bb6e35824ad320c4d7))
+* **deps:** update plugin com.gradle.develocity to v4.1.1 ([#1938](https://github.com/Protelis/Protelis/issues/1938)) ([73ae1b7](https://github.com/Protelis/Protelis/commit/73ae1b7dea0e9dd6413d0ee3cbffea4d0025b266))
+* **deps:** update plugin gitsemver to v7 ([#1940](https://github.com/Protelis/Protelis/issues/1940)) ([c96f641](https://github.com/Protelis/Protelis/commit/c96f6415d7880297b4ecb45e3b26242d35c0fe17))
+* **deps:** update plugin gitsemver to v7.0.2 ([#1942](https://github.com/Protelis/Protelis/issues/1942)) ([746b537](https://github.com/Protelis/Protelis/commit/746b5372fa3693ab789d55ff253849684e641340))
+* **deps:** update plugin java-qa to v1.131.0 ([#1937](https://github.com/Protelis/Protelis/issues/1937)) ([da8bd35](https://github.com/Protelis/Protelis/commit/da8bd35cf5556e8a32db09b58024113acc09a909))
+* **deps:** update plugin kotlin-qa to v0.94.0 ([#1945](https://github.com/Protelis/Protelis/issues/1945)) ([e42725f](https://github.com/Protelis/Protelis/commit/e42725f16da59d6fbe17fe049d01b896b80aa799))
+* **deps:** update plugin protelisdoc to v3.0.109 ([#1944](https://github.com/Protelis/Protelis/issues/1944)) ([783a277](https://github.com/Protelis/Protelis/commit/783a2773657b3f3e8f05c87d651c7d356bceb21d))
+* **deps:** update plugin publishoncentral to v9.1.3 ([#1921](https://github.com/Protelis/Protelis/issues/1921)) ([e01b6b9](https://github.com/Protelis/Protelis/commit/e01b6b95c1d0ae7ac50bdc384d2af4028d438799))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.4 ([#1941](https://github.com/Protelis/Protelis/issues/1941)) ([1806c9e](https://github.com/Protelis/Protelis/commit/1806c9eeece5ce95103c08290cfac1f2af09913a))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.5 ([#1943](https://github.com/Protelis/Protelis/issues/1943)) ([34cdb1c](https://github.com/Protelis/Protelis/commit/34cdb1c91a61424176eaf0ab63d4e4cc40fe2e1c))
+* migrate to `com.gradleup.shadow` ([051263a](https://github.com/Protelis/Protelis/commit/051263a6e15bf22fc92e94746a8ab3e13f1772fb))
+
 ## [18.2.2](https://github.com/Protelis/Protelis/compare/18.2.1...18.2.2) (2025-08-17)
 
 ### Dependency updates
