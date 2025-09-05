@@ -5,15 +5,14 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-package org.protelis.lang.datatype;
+package org.protelis.lang.datatype
 
 /**
  * Special type holding a single possible value. See https://en.wikipedia.org/wiki/Unit_type
- *
  */
-public enum Unit {
+enum class Unit {
     /**
      * Unit type of Protelis. https://en.wikipedia.org/wiki/Unit_type
      */
-    UNIT
+    UNIT,
 }
