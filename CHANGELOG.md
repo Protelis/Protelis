@@ -1,3 +1,22 @@
+## [18.4.0](https://github.com/Protelis/Protelis/compare/18.3.0...18.4.0) (2025-09-05)
+
+### Features
+
+* **interpreter:** convert Unit.java to Kotlin ([#1954](https://github.com/Protelis/Protelis/issues/1954)) ([e1eac4b](https://github.com/Protelis/Protelis/commit/e1eac4ba88bf118f7e51d699be4e80bbac8a3032))
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.141 ([#1952](https://github.com/Protelis/Protelis/issues/1952)) ([f82034e](https://github.com/Protelis/Protelis/commit/f82034e6df1366550517cac9bae7a5c5cd111628))
+* **deps:** update node.js to 22.19 ([#1947](https://github.com/Protelis/Protelis/issues/1947)) ([ebf1053](https://github.com/Protelis/Protelis/commit/ebf105355ceb52c461cd1456d9e2b8929014e2da))
+* **deps:** update plugin java-qa to v1.132.0 ([#1948](https://github.com/Protelis/Protelis/issues/1948)) ([bdd01c0](https://github.com/Protelis/Protelis/commit/bdd01c0f81083c947bfb4dfc86f429f3f6133517))
+* **deps:** update plugin java-qa to v1.133.0 ([#1950](https://github.com/Protelis/Protelis/issues/1950)) ([dd59f22](https://github.com/Protelis/Protelis/commit/dd59f22b5acc584d5be99de7d2341e1f31f5aa74))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.0 ([#1951](https://github.com/Protelis/Protelis/issues/1951)) ([210bc95](https://github.com/Protelis/Protelis/commit/210bc95365a749125639bc7313f9e679627b6576))
+* **deps:** update plugin shadowjar to v9.1.0 ([#1949](https://github.com/Protelis/Protelis/issues/1949)) ([00317df](https://github.com/Protelis/Protelis/commit/00317df152334034f2a04f6c837dd77bc62e1a73))
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v5 ([#1953](https://github.com/Protelis/Protelis/issues/1953)) ([3a9c740](https://github.com/Protelis/Protelis/commit/3a9c7406e52792d2b0b9ed3db51cb968f396a1d2))
+
 ## [18.3.0](https://github.com/Protelis/Protelis/compare/18.2.2...18.3.0) (2025-08-25)
 
 ### Dependency updates
