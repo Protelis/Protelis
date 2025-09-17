@@ -1,3 +1,23 @@
+## [18.4.2](https://github.com/Protelis/Protelis/compare/18.4.1...18.4.2) (2025-09-17)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.5.0-jre ([#1981](https://github.com/Protelis/Protelis/issues/1981)) ([8fd8010](https://github.com/Protelis/Protelis/commit/8fd8010afd578bffd6c3ed2629b435bbd96cca46))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.9.5 ([#1971](https://github.com/Protelis/Protelis/issues/1971)) ([02df27d](https://github.com/Protelis/Protelis/commit/02df27d76299f8c5c83c02f4865aa861eb699961))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.9.6 ([#1976](https://github.com/Protelis/Protelis/issues/1976)) ([e9fbf25](https://github.com/Protelis/Protelis/commit/e9fbf25fca04668b77bdbe7908b30012dedd4e72))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.142 ([#1966](https://github.com/Protelis/Protelis/issues/1966)) ([1555b8a](https://github.com/Protelis/Protelis/commit/1555b8ab6adb1da33136fb1659ec740dcc038440))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.143 ([#1967](https://github.com/Protelis/Protelis/issues/1967)) ([9180923](https://github.com/Protelis/Protelis/commit/9180923de52b051dd1b14cb901f4aab54b0e9b71))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.144 ([#1977](https://github.com/Protelis/Protelis/issues/1977)) ([bcc1b3b](https://github.com/Protelis/Protelis/commit/bcc1b3bdae2bbf5a88ed53e7473a2c64dd88d06c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.145 ([#1978](https://github.com/Protelis/Protelis/issues/1978)) ([5620435](https://github.com/Protelis/Protelis/commit/5620435d6d067d8844559d17753b871ce86ccfd7))
+* **deps:** update plugin com.gradle.develocity to v4.2 ([#1975](https://github.com/Protelis/Protelis/issues/1975)) ([e255b34](https://github.com/Protelis/Protelis/commit/e255b3423a193fceea74b51a613b5318324e834b))
+* **deps:** update plugin gitsemver to v7.0.3 ([#1963](https://github.com/Protelis/Protelis/issues/1963)) ([0b7c2f6](https://github.com/Protelis/Protelis/commit/0b7c2f6ef43c54bdd211402276d196e2ef51467b))
+* **deps:** update plugin kotlin-qa to v0.94.1 ([#1960](https://github.com/Protelis/Protelis/issues/1960)) ([d8560d7](https://github.com/Protelis/Protelis/commit/d8560d7a9823adccfbbf3324ec68bf578c1c5d80))
+* **deps:** update plugin kotlin-qa to v0.95.0 ([#1969](https://github.com/Protelis/Protelis/issues/1969)) ([d762c03](https://github.com/Protelis/Protelis/commit/d762c031e3a3797f6388fd5d9109420cce2fec9a))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.1 ([#1964](https://github.com/Protelis/Protelis/issues/1964)) ([7559832](https://github.com/Protelis/Protelis/commit/75598328fe743c2a25ba729543b0d0cd609006b3))
+* **deps:** update plugin protelisdoc to v3.0.111 ([#1965](https://github.com/Protelis/Protelis/issues/1965)) ([7293e09](https://github.com/Protelis/Protelis/commit/7293e0996cb2c074b917ee543ef260a6ad7e94a1))
+* **deps:** update plugin protelisdoc to v3.0.112 ([#1970](https://github.com/Protelis/Protelis/issues/1970)) ([84f04ec](https://github.com/Protelis/Protelis/commit/84f04ecc351d52a1c73a4c8d6e481e59cd8e3ca4))
+* **deps:** update plugin publishoncentral to v9.1.4 ([#1962](https://github.com/Protelis/Protelis/issues/1962)) ([4aea643](https://github.com/Protelis/Protelis/commit/4aea643924f9f71b3964170e2eabe16a4c02735e))
+
 ## [18.4.1](https://github.com/Protelis/Protelis/compare/18.4.0...18.4.1) (2025-09-10)
 
 ### Dependency updates
