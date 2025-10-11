@@ -22,7 +22,7 @@ public class ProtelisVM {
     private final ProtelisProgram program;
     private final ExecutionContext context;
 
-    private @Nullable Object lastValue;
+    @Nullable private Object lastValue;
 
     /**
      * Create a virtual machine for executing a Protelis program in a particular
