@@ -1,3 +1,34 @@
+## [18.4.4](https://github.com/Protelis/Protelis/compare/18.4.3...18.4.4) (2025-10-23)
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v2.2.21 ([#2022](https://github.com/Protelis/Protelis/issues/2022)) ([19b8ac4](https://github.com/Protelis/Protelis/commit/19b8ac47fb8af5154fa2f299fd0b28e95a8a4e8e))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.20 ([#2017](https://github.com/Protelis/Protelis/issues/2017)) ([42e09e6](https://github.com/Protelis/Protelis/commit/42e09e6ffe2f788d4e19ad6e8551b07f73673276))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.9.7 ([#2011](https://github.com/Protelis/Protelis/issues/2011)) ([03374c7](https://github.com/Protelis/Protelis/commit/03374c7fec63ad3cc3c5427435d883cf1fc3cedf))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.9.8 ([#2014](https://github.com/Protelis/Protelis/issues/2014)) ([7b74250](https://github.com/Protelis/Protelis/commit/7b742506e58fb2f737510b9d76938f95ef604f92))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.184 ([#2006](https://github.com/Protelis/Protelis/issues/2006)) ([3aeb468](https://github.com/Protelis/Protelis/commit/3aeb468b1a492f3135238439d5f435adb6e27306))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.148 ([#2019](https://github.com/Protelis/Protelis/issues/2019)) ([1a4be2b](https://github.com/Protelis/Protelis/commit/1a4be2b85b188672f5fb22c43715b51e07dc6012))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.149 ([#2020](https://github.com/Protelis/Protelis/issues/2020)) ([32b5eca](https://github.com/Protelis/Protelis/commit/32b5eca0e75ba6e2478fb48adf7b2199814c3f0d))
+* **deps:** update node.js to 22.21 ([#2021](https://github.com/Protelis/Protelis/issues/2021)) ([1962237](https://github.com/Protelis/Protelis/commit/1962237b47f4e7c3b34d1baa5f528e8ea9e1416a))
+* **deps:** update plugin com.gradle.develocity to v4.2.2 ([#2009](https://github.com/Protelis/Protelis/issues/2009)) ([41cdb07](https://github.com/Protelis/Protelis/commit/41cdb0716be59c4de8992d8fefaa650013674d8c))
+* **deps:** update plugin java-qa to v1.136.0 ([#1968](https://github.com/Protelis/Protelis/issues/1968)) ([adcacd7](https://github.com/Protelis/Protelis/commit/adcacd7ec0ce10beafd15c17ec10ef434ed821ef))
+* **deps:** update plugin java-qa to v1.138.0 ([#1973](https://github.com/Protelis/Protelis/issues/1973)) ([ac046f1](https://github.com/Protelis/Protelis/commit/ac046f1d7198ca45f7927d06660144037fc93afb))
+* **deps:** update plugin java-qa to v1.142.0 ([#1998](https://github.com/Protelis/Protelis/issues/1998)) ([ed8b13d](https://github.com/Protelis/Protelis/commit/ed8b13d1f1b64ee1f16f96f5666a7e1ba3e69776))
+* **deps:** update plugin java-qa to v1.145.0 ([#2008](https://github.com/Protelis/Protelis/issues/2008)) ([b3b50e6](https://github.com/Protelis/Protelis/commit/b3b50e6a442eeaad5f008626f9763b4b46a652b7))
+* **deps:** update plugin java-qa to v1.146.0 ([#2012](https://github.com/Protelis/Protelis/issues/2012)) ([9b7215a](https://github.com/Protelis/Protelis/commit/9b7215a291c8c462338ee0ef082d42d5e2d6756b))
+* **deps:** update plugin java-qa to v1.147.0 ([#2013](https://github.com/Protelis/Protelis/issues/2013)) ([a729ac8](https://github.com/Protelis/Protelis/commit/a729ac82575ed4a68d954558963724b4765d787b))
+* **deps:** update plugin java-qa to v1.148.0 ([#2015](https://github.com/Protelis/Protelis/issues/2015)) ([b99c972](https://github.com/Protelis/Protelis/commit/b99c972cb87ab21e187b8574b4d8fe9edeb65405))
+* **deps:** update plugin java-qa to v1.149.0 ([#2016](https://github.com/Protelis/Protelis/issues/2016)) ([98e1164](https://github.com/Protelis/Protelis/commit/98e1164c722835808eadce9a8b9f354501c0c154))
+* **deps:** update plugin java-qa to v1.150.0 ([#2018](https://github.com/Protelis/Protelis/issues/2018)) ([630f83b](https://github.com/Protelis/Protelis/commit/630f83b75df8ac7e9dfb73cc432058f1863bd78b))
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v6 ([#2010](https://github.com/Protelis/Protelis/issues/2010)) ([c0ada83](https://github.com/Protelis/Protelis/commit/c0ada83bcae1f68da07c00353002cfa0229dd5a9))
+
+### General maintenance
+
+* reorder annotation for lastValue variable ([edf3a36](https://github.com/Protelis/Protelis/commit/edf3a36499d16083e1c58782a5602d8b39e1bb41))
+
 ## [18.4.3](https://github.com/Protelis/Protelis/compare/18.4.2...18.4.3) (2025-10-04)
 
 ### Dependency updates
