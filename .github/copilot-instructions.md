@@ -37,6 +37,10 @@ Protelis is a Java-hosted execution environment for Protelis programs, a languag
 ./gradlew detektTest     # Run Detekt static analysis on test code
 ./gradlew spotbugsMain   # Run SpotBugs on main code
 ./gradlew spotbugsTest   # Run SpotBugs on test code
+./gradlew checkstyleMain # Run Checkstyle on main code
+./gradlew checkstyleTest # Run Checkstyle on test code
+./gradlew pmdMain        # Run PMD on main code
+./gradlew pmdTest        # Run PMD on test code
 ```
 
 **Important**: Always run `./gradlew ktlintFormat` after modifying Kotlin files to ensure proper formatting.
