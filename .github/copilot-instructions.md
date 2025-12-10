@@ -131,7 +131,8 @@ This project uses [git flow](https://github.com/nvie/gitflow):
 - Write tests for all new functionality
 - Tests should follow existing patterns in the repository
 - All tests must pass before merging
-- Multi-JVM testing is supported (Java 10-24+)
+- Multi-JVM testing is supported (Java 8-25)
+  - Note: While the minimum build requirement is Java 17, tests can be run on various JVM versions for compatibility verification
 
 ## Documentation
 
