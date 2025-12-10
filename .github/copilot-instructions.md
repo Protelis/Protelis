@@ -10,9 +10,11 @@ Protelis is a Java-hosted execution environment for Protelis programs, a languag
 
 ## Language and Build System
 
-- **Primary Languages**: Java (17+) and Kotlin
+- **Primary Languages**: Java and Kotlin
 - **Build System**: Gradle with Kotlin DSL
-- **Minimum Java Version**: Java 17
+- **Java Version Requirements**:
+  - Java 17+ required to build the project
+  - Compiled code runs on Java 8+ (backward compatible bytecode)
 
 ## Building and Testing
 
@@ -132,7 +134,8 @@ This project uses [git flow](https://github.com/nvie/gitflow):
 - Tests should follow existing patterns in the repository
 - All tests must pass before merging
 - Multi-JVM testing is supported (Java 8-25)
-  - Note: While the minimum build requirement is Java 17, tests can be run on various JVM versions for compatibility verification
+  - Tests can be run on various JVM versions to verify backward compatibility
+  - Use `./gradlew testWithJvm<version>` to test on a specific Java version (e.g., `testWithJvm17`)
 
 ## Documentation
 
@@ -147,9 +150,10 @@ This project uses [git flow](https://github.com/nvie/gitflow):
 
 ## License and Copyright
 
-- All files must include the GPL v3 license header
-- Copyright: "Danilo Pianini and contributors listed in the project's build.gradle.kts file"
-- See LICENSE.txt for full license details
+- All new files must include the GPL v3 license header with the linking exception
+- Copyright format for new files: "Copyright (C) <YEAR>, Danilo Pianini and contributors listed in the project's build.gradle.kts file."
+- See LICENSE.txt for full license terms including the special linking exception
+- Protelis is distributed under GPL v3 with a linking exception that allows combining with independent modules
 
 ## Versioning
 
