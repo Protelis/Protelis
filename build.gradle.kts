@@ -87,7 +87,7 @@ allprojects {
     tasks.withType<Checkstyle>().configureEach {
         javaLauncher.set(
             javaToolchains.launcherFor {
-                languageVersion.set(JavaLanguageVersion.of(minJavaVersion))
+                languageVersion.set(JavaLanguageVersion.of(21))
             },
         )
     }
