@@ -1,11 +1,11 @@
 package org.protelis.lang.datatype
 
-import org.eclipse.xtext.common.types.JvmFeature
-import org.eclipse.xtext.common.types.JvmField
-import org.eclipse.xtext.common.types.JvmOperation
 import java.io.Serializable
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import org.eclipse.xtext.common.types.JvmFeature
+import org.eclipse.xtext.common.types.JvmField
+import org.eclipse.xtext.common.types.JvmOperation
 
 /**
  * A runtime Protelis view of a [JvmFeature].
