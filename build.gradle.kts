@@ -6,6 +6,7 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
@@ -81,6 +82,14 @@ allprojects {
             exceptionFormat = TestExceptionFormat.FULL
             events("passed", "skipped", "failed", "standardError")
         }
+    }
+
+    tasks.withType<Checkstyle>().configureEach {
+        javaLauncher.set(
+            javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            },
+        )
     }
 
     tasks.withType<Javadoc>().configureEach {
