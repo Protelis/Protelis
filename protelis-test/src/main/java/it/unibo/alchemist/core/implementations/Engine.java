@@ -328,7 +328,7 @@ public final class Engine<T> implements Simulation<T> {
          */
         for (final Node<T> n : oldNeighborhood) {
             for (final Reaction<T> r : n.getReactions()) {
-                if (r.getInputContext().equals(Context.NEIGHBORHOOD)) {
+                if (r.getInputContext() == Context.NEIGHBORHOOD) {
                     updateReaction(sim.handlers.get(r), sim.currentTime, sim.ipq, sim.env);
                 }
             }
@@ -339,7 +339,7 @@ public final class Engine<T> implements Simulation<T> {
          */
         for (final Node<T> n : env) {
             for (final Reaction<T> r : n.getReactions()) {
-                if (r.getInputContext().equals(Context.GLOBAL)) {
+                if (r.getInputContext() == Context.GLOBAL) {
                     updateReaction(sim.handlers.get(r), sim.currentTime, sim.ipq, sim.env);
                 }
             }
@@ -348,7 +348,7 @@ public final class Engine<T> implements Simulation<T> {
 
     private static <T> void updateNeighborhood(final Engine<T> sim, final Node<T> n) {
         for (final Reaction<T> r : n.getReactions()) {
-            if (r.getInputContext().equals(Context.NEIGHBORHOOD)) {
+            if (r.getInputContext() == Context.NEIGHBORHOOD) {
                 updateReaction(sim.handlers.get(r), sim.currentTime, sim.ipq, sim.env);
             }
         }
@@ -520,18 +520,18 @@ public final class Engine<T> implements Simulation<T> {
         } else {
             statusLock.lock();
             try {
-                if (!getStatus().equals(s)) {
+                if (getStatus() != s) {
                     boolean exit = false;
                     while (!exit) {
                         try {
                             if (timeout > 0) {
                                 final boolean isOnTime = statusCondition.await(timeout, tu);
-                                if (!isOnTime || getStatus().equals(s)) {
+                                if (!isOnTime || getStatus() == s) {
                                     exit = true;
                                 }
                             } else {
                                 statusCondition.awaitUninterruptibly();
-                                if (getStatus().equals(s)) {
+                                if (getStatus() == s) {
                                     exit = true;
                                 }
                             }
@@ -565,18 +565,18 @@ public final class Engine<T> implements Simulation<T> {
                 m.initialized(env);
             }
             monitorLock.release();
-            while (status.equals(Status.READY)) {
+            while (status == Status.READY) {
                 idleProcessSingleCommand();
             }
             try {
                 while (status != Status.STOPPED && curStep < steps && currentTime.compareTo(finalTime) < 0) {
-                    if (status.equals(Status.RUNNING)) {
+                    if (status == Status.RUNNING) {
                         while (!commands.isEmpty()) {
                             commands.poll().execute(this);
                         }
                         doStep();
                     }
-                    while (status.equals(Status.PAUSED)) {
+                    while (status == Status.PAUSED) {
                         idleProcessSingleCommand();
                     }
                 }
