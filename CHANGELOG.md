@@ -1,3 +1,69 @@
+## [18.5.3](https://github.com/Protelis/Protelis/compare/18.5.2...18.5.3) (2026-02-05)
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v2.3.10 ([#2149](https://github.com/Protelis/Protelis/issues/2149)) ([b082252](https://github.com/Protelis/Protelis/commit/b082252aa52a75b683dec602d96e3ecb202ba4dd))
+* **deps:** bump tar and npm ([1292fc0](https://github.com/Protelis/Protelis/commit/1292fc0b61622900e363fea8b3d0bd31d66a0b41))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.23 ([#2103](https://github.com/Protelis/Protelis/issues/2103)) ([18a97de](https://github.com/Protelis/Protelis/commit/18a97de83d2d74d2a9cd602f4a2d481ce3ede3c8))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.24 ([#2109](https://github.com/Protelis/Protelis/issues/2109)) ([cce3995](https://github.com/Protelis/Protelis/commit/cce3995dc4197a806df1ae2626a1a559b7eb2e1d))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.25 ([#2120](https://github.com/Protelis/Protelis/issues/2120)) ([dd06d3f](https://github.com/Protelis/Protelis/commit/dd06d3f84a8030834d724e1431dc77ff417473fd))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.26 ([#2134](https://github.com/Protelis/Protelis/issues/2134)) ([35d3b50](https://github.com/Protelis/Protelis/commit/35d3b50a8d767543d6ae643d5b30480bb2ed6043))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.27 ([#2145](https://github.com/Protelis/Protelis/issues/2145)) ([4552e97](https://github.com/Protelis/Protelis/commit/4552e9777b7f9fcb6c7a51c2fbaa54e68216bdb9))
+* **deps:** update dependency commons-codec:commons-codec to v1.21.0 ([#2143](https://github.com/Protelis/Protelis/issues/2143)) ([bc1cfce](https://github.com/Protelis/Protelis/commit/bc1cfcebd0202f40d2ec3ea0518339e31ba77bd0))
+* **deps:** update gradle to v9.3.0 ([#2115](https://github.com/Protelis/Protelis/issues/2115)) ([11bee77](https://github.com/Protelis/Protelis/commit/11bee77240b4b4a887ed6b8a607de34eb86bf2e7))
+* **deps:** update gradle to v9.3.1 ([#2138](https://github.com/Protelis/Protelis/issues/2138)) ([745f453](https://github.com/Protelis/Protelis/commit/745f453f69698969c754e10f21ce33b2eb684909))
+* **deps:** update node.js to 24.13 ([#2111](https://github.com/Protelis/Protelis/issues/2111)) ([98f4c92](https://github.com/Protelis/Protelis/commit/98f4c92b93df56a9fd938b73b7ee46a8d3146584))
+* **deps:** update plugin com.gradle.develocity to v4.3.1 ([#2113](https://github.com/Protelis/Protelis/issues/2113)) ([6368532](https://github.com/Protelis/Protelis/commit/6368532357d8ba6a64e3fcde2d83f7f46b41153d))
+* **deps:** update plugin com.gradle.develocity to v4.3.2 ([#2135](https://github.com/Protelis/Protelis/issues/2135)) ([48b84ae](https://github.com/Protelis/Protelis/commit/48b84aeae4e22501b9f36db00977b7bc99cf0171))
+* **deps:** update plugin gitsemver to v7.0.10 ([#2133](https://github.com/Protelis/Protelis/issues/2133)) ([4b1f662](https://github.com/Protelis/Protelis/commit/4b1f6620bd01fd3f1a86660969b9b5d18d4146f5))
+* **deps:** update plugin gitsemver to v7.0.11 ([#2140](https://github.com/Protelis/Protelis/issues/2140)) ([f0846ce](https://github.com/Protelis/Protelis/commit/f0846ced84e9df7247007143309da134481b2af6))
+* **deps:** update plugin gitsemver to v7.0.8 ([#2099](https://github.com/Protelis/Protelis/issues/2099)) ([dc0ff2e](https://github.com/Protelis/Protelis/commit/dc0ff2e0d1d14b92502042e535cf17c30cde5d07))
+* **deps:** update plugin gitsemver to v7.0.9 ([#2116](https://github.com/Protelis/Protelis/issues/2116)) ([c19765b](https://github.com/Protelis/Protelis/commit/c19765b4e29a657325f126442e3fe420fac32ce8))
+* **deps:** update plugin java-qa to v1.159.0 ([#2079](https://github.com/Protelis/Protelis/issues/2079)) ([7e308e9](https://github.com/Protelis/Protelis/commit/7e308e94f5e7faa5bf830e8df5f995c2065adae4)), closes [#2088](https://github.com/Protelis/Protelis/issues/2088)
+* **deps:** update plugin java-qa to v1.163.0 ([#2106](https://github.com/Protelis/Protelis/issues/2106)) ([d0d40a4](https://github.com/Protelis/Protelis/commit/d0d40a4fa844d6336049541c65cb69d95aad8a9e))
+* **deps:** update plugin java-qa to v1.164.0 ([#2107](https://github.com/Protelis/Protelis/issues/2107)) ([0d3292d](https://github.com/Protelis/Protelis/commit/0d3292d195f8f68d3ed5d1b2baebce3d2cf23cee)), closes [#2121](https://github.com/Protelis/Protelis/issues/2121)
+* **deps:** update plugin java-qa to v1.165.0 ([#2148](https://github.com/Protelis/Protelis/issues/2148)) ([c26b4dd](https://github.com/Protelis/Protelis/commit/c26b4dd0b11e21dc6b51fdabf3342d56e837d3eb))
+* **deps:** update plugin kotlin-qa to v0.100.1 ([#2105](https://github.com/Protelis/Protelis/issues/2105)) ([2d3ac8b](https://github.com/Protelis/Protelis/commit/2d3ac8bee12bace8aebfef2a73b359df8d6f253d))
+* **deps:** update plugin kotlin-qa to v0.100.2 ([#2125](https://github.com/Protelis/Protelis/issues/2125)) ([4da2cbc](https://github.com/Protelis/Protelis/commit/4da2cbc28a3745b632bbbb7f5425ea8583e82a3e))
+* **deps:** update plugin kotlin-qa to v0.100.3 ([#2141](https://github.com/Protelis/Protelis/issues/2141)) ([d464921](https://github.com/Protelis/Protelis/commit/d464921495dc41d50befc747430c1b252c99cd85))
+* **deps:** update plugin kotlin-qa to v0.101.0 ([#2146](https://github.com/Protelis/Protelis/issues/2146)) ([6460b92](https://github.com/Protelis/Protelis/commit/6460b92ef09c6252f3128506e506a686539cd877))
+* **deps:** update plugin kotlin-qa to v0.98.2 ([#2062](https://github.com/Protelis/Protelis/issues/2062)) ([006d271](https://github.com/Protelis/Protelis/commit/006d2712fb8aae9a31ef3c69fca1b046857de2ff))
+* **deps:** update plugin kotlin-qa to v0.99.0 ([#2077](https://github.com/Protelis/Protelis/issues/2077)) ([4bcd6d1](https://github.com/Protelis/Protelis/commit/4bcd6d1871dbc7736f7d9d8b64d35f159c1a801b))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.6 ([#2100](https://github.com/Protelis/Protelis/issues/2100)) ([838cbc5](https://github.com/Protelis/Protelis/commit/838cbc5ac489aa0139984b43c20b7cb4c271db41))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.7 ([#2114](https://github.com/Protelis/Protelis/issues/2114)) ([0c22579](https://github.com/Protelis/Protelis/commit/0c22579a9e85e0fbb4695859f08734fc8610e31e))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.8 ([#2139](https://github.com/Protelis/Protelis/issues/2139)) ([09970bf](https://github.com/Protelis/Protelis/commit/09970bfb4af98ab2e1e877639af5e0d09133d1f3))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.9 ([#2150](https://github.com/Protelis/Protelis/issues/2150)) ([9a81cbe](https://github.com/Protelis/Protelis/commit/9a81cbe3056a52774f05e076bd7464e1faa84ede))
+* **deps:** update plugin protelisdoc to v3.0.122 ([#2101](https://github.com/Protelis/Protelis/issues/2101)) ([bcb5c2f](https://github.com/Protelis/Protelis/commit/bcb5c2f13a6710413c36d36612301508f0720a99))
+* **deps:** update plugin protelisdoc to v3.0.123 ([#2117](https://github.com/Protelis/Protelis/issues/2117)) ([c512939](https://github.com/Protelis/Protelis/commit/c512939741025ff7d5a56b39a34a343d4e963e57))
+* **deps:** update plugin protelisdoc to v3.0.124 ([#2142](https://github.com/Protelis/Protelis/issues/2142)) ([9e240bc](https://github.com/Protelis/Protelis/commit/9e240bc914cdc0651b44c4ac5a8224085dcbb825))
+* **deps:** update plugin publishoncentral to v9.1.10 ([#2118](https://github.com/Protelis/Protelis/issues/2118)) ([c9be2f4](https://github.com/Protelis/Protelis/commit/c9be2f4bdb20502a5bd4f6a69f15a433cf5f9f7d))
+* **deps:** update plugin publishoncentral to v9.1.11 ([#2126](https://github.com/Protelis/Protelis/issues/2126)) ([8ef844c](https://github.com/Protelis/Protelis/commit/8ef844c28d9410807414758f19d65665a1419a2f))
+* **deps:** update plugin publishoncentral to v9.1.12 ([#2144](https://github.com/Protelis/Protelis/issues/2144)) ([7e797ce](https://github.com/Protelis/Protelis/commit/7e797cea827b73e076a484e70dd041f61de742e3))
+* **deps:** update plugin publishoncentral to v9.1.9 ([#2102](https://github.com/Protelis/Protelis/issues/2102)) ([e190d16](https://github.com/Protelis/Protelis/commit/e190d1654819194a25fa071820ffa43f95f88e99))
+* **deps:** update plugin shadowjar to v9.3.1 ([#2108](https://github.com/Protelis/Protelis/issues/2108)) ([ec72644](https://github.com/Protelis/Protelis/commit/ec726443b3222ee29b7e3a53bbdcf7786f8229da))
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v6.0.2 ([#2131](https://github.com/Protelis/Protelis/issues/2131)) ([cfa9af2](https://github.com/Protelis/Protelis/commit/cfa9af2c9fb642150ef8700241681e72ba340a07))
+* **deps:** update actions/setup-node action to v6.2.0 ([#2112](https://github.com/Protelis/Protelis/issues/2112)) ([93cdff7](https://github.com/Protelis/Protelis/commit/93cdff7c05bb3f0aa3c21cd78c203b0a39dc38c0))
+* **deps:** update danysk/action-checkout action to v0.2.28 ([#2132](https://github.com/Protelis/Protelis/issues/2132)) ([6c74ce1](https://github.com/Protelis/Protelis/commit/6c74ce18eae96c224231ee27139ba74ce0d6ca61))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.18 ([#2110](https://github.com/Protelis/Protelis/issues/2110)) ([d4afae5](https://github.com/Protelis/Protelis/commit/d4afae51e91d047b4d3b6e27128143fa94695c9f))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.19 ([#2119](https://github.com/Protelis/Protelis/issues/2119)) ([fd0b62e](https://github.com/Protelis/Protelis/commit/fd0b62e17f382d4bf191292c332c938813bb48c9))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.20 ([#2130](https://github.com/Protelis/Protelis/issues/2130)) ([6a16f71](https://github.com/Protelis/Protelis/commit/6a16f71bfe12c20d9c92b384ee3c78f0fa8b0068))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.21 ([#2136](https://github.com/Protelis/Protelis/issues/2136)) ([8fe69cf](https://github.com/Protelis/Protelis/commit/8fe69cfac89fa1bce93f3df41afd03f314a00017))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.22 ([#2137](https://github.com/Protelis/Protelis/issues/2137)) ([fa27f59](https://github.com/Protelis/Protelis/commit/fa27f59e9aeaf6dba68d1ddd2502f17e5c60d520))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.23 ([#2147](https://github.com/Protelis/Protelis/issues/2147)) ([ced9a2a](https://github.com/Protelis/Protelis/commit/ced9a2ae4abf52cd56057a7d40fca9416413ab3c))
+
+### General maintenance
+
+* Add GitHub Copilot instructions ([#2090](https://github.com/Protelis/Protelis/issues/2090)) ([2db3f6c](https://github.com/Protelis/Protelis/commit/2db3f6ccd6010c0a51da1ba0b2868944eb553d7c))
+* **deps-dev:** bump lodash from 4.17.21 to 4.17.23 ([3dc29f6](https://github.com/Protelis/Protelis/commit/3dc29f67b73b69ef7c524fc57bc07426da6bc988))
+* **deps-dev:** bump lodash-es from 4.17.21 to 4.17.23 ([45e7a74](https://github.com/Protelis/Protelis/commit/45e7a747557572339d0f2b15c4289dab9442d4c6))
+
+### Style improvements
+
+* import `.editorconfig` from  AlchemistSimulator/Alchemist ([#2122](https://github.com/Protelis/Protelis/issues/2122)) ([f3469fb](https://github.com/Protelis/Protelis/commit/f3469fb43627b87b9511502ce79a5e2380441572))
+
 ## [18.5.2](https://github.com/Protelis/Protelis/compare/18.5.1...18.5.2) (2025-12-16)
 
 ### Dependency updates
