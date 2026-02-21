@@ -5,27 +5,27 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-package org.protelis.vm;
+package org.protelis.vm
 
-import org.protelis.lang.datatype.Field;
-import org.protelis.lang.datatype.Tuple;
+import org.protelis.lang.datatype.Field
+import org.protelis.lang.datatype.Tuple
 
 /**
  * A device embedded in a space which allows coordinates.
  */
-public interface LocalizedDevice extends ExecutionContext {
+interface LocalizedDevice : ExecutionContext {
 
     /**
      * TODO: define coordinate.
      *
      * @return coordinates of the current device
      */
-    Tuple getCoordinates();
+    fun getCoordinates(): Tuple
 
     /**
      * TODO: define vector.
      *
      * @return field of directions to other devices
      */
-    Field<Tuple> nbrVector();
+    fun nbrVector(): Field<Tuple>
 }
