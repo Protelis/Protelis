@@ -5,22 +5,21 @@
  * with a linking exception, as described in the file LICENSE.txt in this project's top directory.
  */
 
-package org.protelis.lang.interpreter.util;
+package org.protelis.lang.interpreter.util
 
 /**
  * Represents a function that accepts three arguments and produces a result.
- * This is the three-arity specialization of {@link java.util.function.Function}.
+ * This is the three-arity specialization of [java.util.function.Function].
  *
- * <p>This is a <a href="package-summary.html">functional interface</a>
- * whose functional method is {@link #apply(Object, Object, Object)}.
+ * This is a [functional interface](package-summary.html)
+ * whose functional method is [apply].
  *
- * @param <A> the type of the first argument to the function
- * @param <B> the type of the second argument to the function
- * @param <C> the type of the third argument to the function
- * @param <R> the type of the result of the function
+ * @param A the type of the first argument to the function
+ * @param B the type of the second argument to the function
+ * @param C the type of the third argument to the function
+ * @param R the type of the result of the function
  */
-@FunctionalInterface
-public interface TriFunction<A, B, C, R> {
+fun interface TriFunction<A, B, C, R> {
 
     /**
      * Applies this function to the given arguments.
@@ -30,5 +29,5 @@ public interface TriFunction<A, B, C, R> {
      * @param c the third function argument
      * @return the function result
      */
-    R apply(A a, B b, C c);
+    fun apply(a: A, b: B, c: C): R
 }
