@@ -92,6 +92,10 @@ allprojects {
         )
     }
 
+    tasks.matching { it.name == "dokkaHtml" }.configureEach {
+        enabled = false
+    }
+
     tasks.withType<Javadoc>().configureEach {
         isFailOnError = true
         options {

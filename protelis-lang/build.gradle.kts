@@ -36,5 +36,7 @@ protelisdoc {
 }
 
 tasks.javadocJar.configure {
-    from(tasks.protelisdoc)
+    // The plugin now exposes a `protelisdoc` extension/configuration with the same name as the task,
+    // so Kotlin DSL no longer generates an unambiguous `tasks.protelisdoc` accessor.
+    from(tasks.named("protelisdoc"))
 }
