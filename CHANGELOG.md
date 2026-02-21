@@ -1,3 +1,28 @@
+## [18.6.0](https://github.com/Protelis/Protelis/compare/18.5.3...18.6.0) (2026-02-21)
+
+### Features
+
+* **interpreter:** port Self.java to Kotlin ([#2165](https://github.com/Protelis/Protelis/issues/2165)) ([cd1a1cb](https://github.com/Protelis/Protelis/commit/cd1a1cbafad93a3a7dc40e2759a8aea8021332fa))
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.28 ([#2154](https://github.com/Protelis/Protelis/issues/2154)) ([b495c7b](https://github.com/Protelis/Protelis/commit/b495c7ba6e28b825d4d329bd96a39953217a596f))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.29 ([#2155](https://github.com/Protelis/Protelis/issues/2155)) ([81fab5f](https://github.com/Protelis/Protelis/commit/81fab5fc0c0fa2ba165ccea50e3bfb40ff2e9cae))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.31 ([#2161](https://github.com/Protelis/Protelis/issues/2161)) ([224d100](https://github.com/Protelis/Protelis/commit/224d10042a7289322da31f637985d240a6e1255d))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.32 ([#2162](https://github.com/Protelis/Protelis/issues/2162)) ([3d361b3](https://github.com/Protelis/Protelis/commit/3d361b338124fed664ff055035311bcc67573d37))
+* **deps:** update plugin gitsemver to v7.0.12 ([#2158](https://github.com/Protelis/Protelis/issues/2158)) ([dd21289](https://github.com/Protelis/Protelis/commit/dd21289370a6e0e86c15d2b744cd66e7d7ca7050))
+* **deps:** update plugin java-qa to v1.166.0 ([#2152](https://github.com/Protelis/Protelis/issues/2152)) ([4223bc6](https://github.com/Protelis/Protelis/commit/4223bc6871b2f0dda46dfda2944f286ea780c700))
+* **deps:** update plugin kotlin-qa to v0.101.1 ([#2156](https://github.com/Protelis/Protelis/issues/2156)) ([b426bad](https://github.com/Protelis/Protelis/commit/b426baddea194663f5df727e2de1e52b83bd1ecb))
+* **deps:** update plugin kotlin-qa to v1 ([#2157](https://github.com/Protelis/Protelis/issues/2157)) ([a1e0867](https://github.com/Protelis/Protelis/commit/a1e0867dd93570c2577e9afab567d64d6b7d669b))
+* **deps:** update plugin kotlin-qa to v1.0.1 ([#2160](https://github.com/Protelis/Protelis/issues/2160)) ([90151a3](https://github.com/Protelis/Protelis/commit/90151a3ac385fae4d66e27ce19ecf4af47aefa49))
+* **deps:** update plugin protelisdoc to v3.0.125 ([#2151](https://github.com/Protelis/Protelis/issues/2151)) ([824310c](https://github.com/Protelis/Protelis/commit/824310ccae975a2bb3401f4510ab4bff82a38061))
+* **deps:** update plugin publishoncentral to v9.1.13 ([#2159](https://github.com/Protelis/Protelis/issues/2159)) ([283b144](https://github.com/Protelis/Protelis/commit/283b144729a29aad3b80f5dd90a14dad7abfa300))
+
+### Refactoring
+
+* **interpreter:** convert LocalizedDevice to Kotlin ([#2164](https://github.com/Protelis/Protelis/issues/2164)) ([813bf07](https://github.com/Protelis/Protelis/commit/813bf0732e71c1a3a06484ae863479d6da5c7c26))
+* **interpreter:** convert TriFunction from Java to Kotlin ([#2163](https://github.com/Protelis/Protelis/issues/2163)) ([de8e970](https://github.com/Protelis/Protelis/commit/de8e970e83dead30150b4b95dd1707779207e996))
+
 ## [18.5.3](https://github.com/Protelis/Protelis/compare/18.5.2...18.5.3) (2026-02-05)
 
 ### Dependency updates
