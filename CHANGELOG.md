@@ -1,3 +1,10 @@
+## [18.7.0](https://github.com/Protelis/Protelis/compare/18.6.0...18.7.0) (2026-02-23)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.7.0 ([#2167](https://github.com/Protelis/Protelis/issues/2167)) ([11d9d5e](https://github.com/Protelis/Protelis/commit/11d9d5e6c9f19a3097e13accb1e27596d19cb5d1))
+* **deps:** update plugin protelisdoc to 3.0.131 ([#2166](https://github.com/Protelis/Protelis/issues/2166)) ([399e7df](https://github.com/Protelis/Protelis/commit/399e7df3133e7fd205ce4bc2eb6aa5eac38332a5))
+
 ## [18.6.0](https://github.com/Protelis/Protelis/compare/18.5.3...18.6.0) (2026-02-21)
 
 ### Features
