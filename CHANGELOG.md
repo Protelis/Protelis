@@ -1,3 +1,9 @@
+## [18.8.1](https://github.com/Protelis/Protelis/compare/18.8.0...18.8.1) (2026-04-23)
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v2.3.21 ([#2223](https://github.com/Protelis/Protelis/issues/2223)) ([f80cb3e](https://github.com/Protelis/Protelis/commit/f80cb3e252b4cde6d42b615cc31673f3e56a521d))
+
 ## [18.8.0](https://github.com/Protelis/Protelis/compare/18.7.2...18.8.0) (2026-04-20)
 
 ### Dependency updates
