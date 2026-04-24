@@ -23,7 +23,7 @@ alchemist = ["alchemist-interfaces", "alchemist-loading"]
 
 [plugins]
 gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:7.0.17"
-java-qa = "org.danilopianini.gradle-java-qa:1.173.1"
+java-qa = "org.danilopianini.gradle-java-qa:1.174.0"
 kotlin-jvm = "org.jetbrains.kotlin.jvm:2.3.21"
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:1.5.1"
 multiJvmTesting = "org.danilopianini.multi-jvm-test-plugin:4.3.2"
