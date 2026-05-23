@@ -1,3 +1,15 @@
+## [18.8.3](https://github.com/Protelis/Protelis/compare/18.8.2...18.8.3) (2026-05-23)
+
+### Dependency updates
+
+* **core-deps:** update dependency org.ow2.asm:asm to v9.10.1 ([#2261](https://github.com/Protelis/Protelis/issues/2261)) ([42ec9c2](https://github.com/Protelis/Protelis/commit/42ec9c25965df67158c1825bad1b544a88c9ce29))
+* **deps:** update plugin gitsemver to v7.0.20 ([#2258](https://github.com/Protelis/Protelis/issues/2258)) ([194d792](https://github.com/Protelis/Protelis/commit/194d7923de878689bf4986a540a9433b10d93aeb))
+* **deps:** update plugin java-qa to v1.179.0 ([#2260](https://github.com/Protelis/Protelis/issues/2260)) ([0eb2292](https://github.com/Protelis/Protelis/commit/0eb22928042c985cbc54e6ca22bd6540dd834595))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.33 ([#2259](https://github.com/Protelis/Protelis/issues/2259)) ([8910e68](https://github.com/Protelis/Protelis/commit/8910e68732b49d335d4ba0a07b3b1bc3d20c16a1))
+
 ## [18.8.2](https://github.com/Protelis/Protelis/compare/18.8.1...18.8.2) (2026-05-14)
 
 ### Dependency updates
