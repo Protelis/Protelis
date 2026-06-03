@@ -1,3 +1,25 @@
+## [18.8.4](https://github.com/Protelis/Protelis/compare/18.8.3...18.8.4) (2026-06-03)
+
+### Dependency updates
+
+* **core-deps:** update kotlin monorepo to v2.4.0 ([#2276](https://github.com/Protelis/Protelis/issues/2276)) ([50a4c15](https://github.com/Protelis/Protelis/commit/50a4c15f1e4350450047b0b5b466402dc9987f9a))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.33 ([#2267](https://github.com/Protelis/Protelis/issues/2267)) ([a9e50e2](https://github.com/Protelis/Protelis/commit/a9e50e2107b12bb2d5a61f9abe5c40723f188097))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.5.34 ([#2273](https://github.com/Protelis/Protelis/issues/2273)) ([6164662](https://github.com/Protelis/Protelis/commit/6164662cb7ff0ce99677ba99cb02fd229cfc4e2b))
+* **deps:** update node.js to 24.16 ([#2262](https://github.com/Protelis/Protelis/issues/2262)) ([fa0f086](https://github.com/Protelis/Protelis/commit/fa0f08696b51a66d24a6d7f5e8201fe0aff9e568))
+* **deps:** update plugin com.gradle.develocity to v4.4.2 ([#2265](https://github.com/Protelis/Protelis/issues/2265)) ([e14cbd0](https://github.com/Protelis/Protelis/commit/e14cbd053ac806a676ffc9a77482aea69053a9f0))
+* **deps:** update plugin java-qa to v1.180.0 ([#2270](https://github.com/Protelis/Protelis/issues/2270)) ([be4b6e2](https://github.com/Protelis/Protelis/commit/be4b6e2851cba055af3b4e369f629ed76c678323))
+* **deps:** update plugin java-qa to v1.181.0 ([#2272](https://github.com/Protelis/Protelis/issues/2272)) ([d514fcf](https://github.com/Protelis/Protelis/commit/d514fcf5ffe6a4f3ae8ea530724630ac9a7051a6))
+* **deps:** update plugin kotlin-qa to v1.7.0 ([#2271](https://github.com/Protelis/Protelis/issues/2271)) ([88577eb](https://github.com/Protelis/Protelis/commit/88577ebe9faaf37725bbf4795b3646e8ba1c6028))
+* **deps:** update plugin multijvmtesting to v4.4.0 ([#2263](https://github.com/Protelis/Protelis/issues/2263)) ([86274d7](https://github.com/Protelis/Protelis/commit/86274d7b7034bbc61107295f2463dae0f8f5fa1d))
+* **deps:** update plugin multijvmtesting to v4.5.0 ([#2264](https://github.com/Protelis/Protelis/issues/2264)) ([fa96523](https://github.com/Protelis/Protelis/commit/fa965233c80a248e543b2b1720998aa70f8e799e))
+* **deps:** update plugin protelisdoc to v3.0.141 ([#2269](https://github.com/Protelis/Protelis/issues/2269)) ([ab82a84](https://github.com/Protelis/Protelis/commit/ab82a843a781d73bde71d8e6bea4daefe03f25c0))
+* **deps:** update plugin shadowjar to v9.4.2 ([#2268](https://github.com/Protelis/Protelis/issues/2268)) ([89a2a8a](https://github.com/Protelis/Protelis/commit/89a2a8ac8937117f1f4b978ed87960450d55eedd))
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v6.0.3 ([#2274](https://github.com/Protelis/Protelis/issues/2274)) ([407bbff](https://github.com/Protelis/Protelis/commit/407bbffe9efcc1a84dbfc02981a83229aab76005))
+* **deps:** update danysk/action-checkout action to v0.2.29 ([#2275](https://github.com/Protelis/Protelis/issues/2275)) ([1fff591](https://github.com/Protelis/Protelis/commit/1fff591a2eb4123c9f8211a79b9eebc21657870b))
+
 ## [18.8.3](https://github.com/Protelis/Protelis/compare/18.8.2...18.8.3) (2026-05-23)
 
 ### Dependency updates
