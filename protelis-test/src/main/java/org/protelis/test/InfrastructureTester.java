@@ -41,11 +41,11 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test protelis simulations.
@@ -129,7 +129,7 @@ public final class InfrastructureTester {
             test = IOUtils.toString(is, StandardCharsets.UTF_8);
             final YamlLoader loader = new YamlLoader(test);
             if (!multirun) {
-                assertTrue(simulationSteps + " is an invalid number of runs", simulationSteps >= 0);
+                assertTrue(simulationSteps >= 0, simulationSteps + " is an invalid number of runs");
                 final Environment<Object> env = loader.getWith(null);
                 final List<Pair<String, String>> expectedResult = TestMatcher.getResult(obs, test);
                 testSingleRun(obs, simulationSteps, stabilitySteps, env, expectedResult, f);
@@ -272,8 +272,8 @@ public final class InfrastructureTester {
         simulation.addCommand(new StateCommand<>().run().build());
         simulation.run();
         assertFalse(
-            obs.getFirstException().isPresent() ? obs.getFirstException().get().getMessage() : "",
-            obs.getFirstException().isPresent()
+            obs.getFirstException().isPresent(),
+            obs.getFirstException().isPresent() ? obs.getFirstException().get().getMessage() : ""
         );
     }
 

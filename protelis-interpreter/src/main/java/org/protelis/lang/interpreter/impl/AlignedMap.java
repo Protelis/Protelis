@@ -77,7 +77,7 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     }
 
     @Override
-    public Tuple evaluate(final ExecutionContext context) {
+    protected Tuple evaluate(final ExecutionContext context) {
         final Field<?> origin = context.runInNewStackFrame(ALIGNED_MAP_GENERATOR.getCode(), fieldGenerator::eval);
         /*
          * Extract one field for each key.

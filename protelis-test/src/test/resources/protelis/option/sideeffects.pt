@@ -2,8 +2,8 @@
  * EXPECTED_RESULT: false
  */
 module protelis:option:sideeffects
-import org.protelis.test.TestJavaNull.returnsVoid
-import org.protelis.test.TestJavaNull.expectsNull
+import org.protelis.test.TestJavaNullFunctions.returnsVoid
+import org.protelis.test.TestJavaNullFunctions.expectsNull
 
 returnsVoid();
 returnsVoid();

@@ -8,7 +8,7 @@
 package org.protelis.test;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.protelis.lang.ProtelisLoader;
 
 import java.io.File;
@@ -26,7 +26,7 @@ import java.util.concurrent.FutureTask;
  * resource loading. This way, Protelis code can be injected in a multithreaded
  * environment, such as advanced and distributed simulation engines.
  */
-public class TestLoadingInSeparateThreads {
+class TestLoadingInSeparateThreads {
 
     /**
      * Creates a new folder, copies resources, then tries to load a valid module in a fresh thread.
@@ -37,7 +37,7 @@ public class TestLoadingInSeparateThreads {
      * @throws ExecutionException failure
      */
     @Test
-    public void testThreadDependentLoadModule() throws IOException, URISyntaxException, InterruptedException, ExecutionException {
+    void testThreadDependentLoadModule() throws IOException, URISyntaxException, InterruptedException, ExecutionException {
         final Runnable c = () -> ProtelisLoader.parse("org:protelis:test");
         final File d1 = createDependenciesDirectory();
         try {

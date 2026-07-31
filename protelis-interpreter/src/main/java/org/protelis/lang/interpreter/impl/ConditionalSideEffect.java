@@ -41,7 +41,7 @@ public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
     }
 
     @Override
-    public Unit evaluate(final ExecutionContext context) {
+    protected Unit evaluate(final ExecutionContext context) {
         if (condition().eval(context)) {
             context.runInNewStackFrame(IF_THEN.getCode(), then()::eval);
         }

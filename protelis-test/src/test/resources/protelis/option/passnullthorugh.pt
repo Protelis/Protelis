@@ -2,8 +2,8 @@
  * EXPECTED_RESULT: true
  */
 module protelis:option:passnullthrough
-import org.protelis.test.TestJavaNull.returnsNull
-import org.protelis.test.TestJavaNull.expectsNull
+import org.protelis.test.TestJavaNullFunctions.returnsNull
+import org.protelis.test.TestJavaNullFunctions.expectsNull
 import org.protelis.lang.datatype.Option.fromNullable
 
 optionally(expectsNull(expectsNull(returnsNull()))).isEmpty()

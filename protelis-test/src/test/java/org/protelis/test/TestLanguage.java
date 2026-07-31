@@ -7,7 +7,7 @@
 
 package org.protelis.test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.protelis.test.ProgramTester.runExpectingErrors;
 import static org.protelis.test.ProgramTester.runFile;
 import static org.protelis.test.ProgramTester.runFileWithExplicitResult;
@@ -15,8 +15,8 @@ import static org.protelis.test.ProgramTester.runFileWithMultipleRuns;
 
 import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.DatatypeFactory;
 import org.protelis.lang.datatype.Tuple;
@@ -29,7 +29,7 @@ import java8.util.stream.IntStreams;
 /**
  * Main collection of tests for the Protelis language and VM.
  */
-public class TestLanguage {
+class TestLanguage {
 
     private static final String DOES_NOT_EXIST = "does not exist";
 
@@ -37,7 +37,7 @@ public class TestLanguage {
      * Test the alignedMap construct.
      */
     @Test
-    public void testAlignedMap() {
+    void testAlignedMap() {
         runFileWithMultipleRuns("/alignedMap.pt");
     }
 
@@ -45,7 +45,7 @@ public class TestLanguage {
      * Test import of a module as part of an anonymous expression.
      */
     @Test
-    public void testAnonymousLoadModule() {
+    void testAnonymousLoadModule() {
         runFileWithExplicitResult("import protelis:test:circular02\nfun3()", 1d);
     }
 
@@ -53,7 +53,7 @@ public class TestLanguage {
      * Test Boolean logic operators.
      */
     @Test
-    public void testBinary01() {
+    void testBinary01() {
         runFile("/binary01.pt");
     }
 
@@ -61,7 +61,7 @@ public class TestLanguage {
      * Test closures.
      */
     @Test
-    public void testClosure01() {
+    void testClosure01() {
         runFile("/closure01.pt");
     }
 
@@ -69,7 +69,7 @@ public class TestLanguage {
       * Test closures.
       */
      @Test
-     public void testClosure02() {
+     void testClosure02() {
          runFile("/closure02.pt");
      }
 
@@ -77,7 +77,7 @@ public class TestLanguage {
      * Test the cyclic timer.
      */
     @Test
-    public void testCyclicTimer() {
+    void testCyclicTimer() {
         runFileWithMultipleRuns("/cyclicTimer.pt");
     }
 
@@ -85,7 +85,7 @@ public class TestLanguage {
      * Test putting and getting of environment variables.
      */
     @Test
-    public void testEnvironment01() {
+    void testEnvironment01() {
         runFile("/environment01.pt");
     }
 
@@ -93,7 +93,7 @@ public class TestLanguage {
      * Tests that failures in invoking static methods report the parameter type clearly.
      */
     @Test
-    public void testErrorMessage01() {
+    void testErrorMessage01() {
         runExpectingErrors(
             "/errorMessage01.pt",
             ProtelisRuntimeException.class,
@@ -115,7 +115,7 @@ public class TestLanguage {
      * reported clearly.
      */
     @Test
-    public void testErrorMessage02() {
+    void testErrorMessage02() {
         runExpectingErrors(
             "/errorMessage02.pt",
             ProtelisRuntimeException.class,
@@ -130,7 +130,7 @@ public class TestLanguage {
      * the missing module.
      */
     @Test
-    public void testErrorMessage03() {
+    void testErrorMessage03() {
         runExpectingErrors(
             "import non:existent:protelismodule\n1\n",
             IllegalStateException.class,
@@ -144,7 +144,7 @@ public class TestLanguage {
      * Smoke test of basic dynamic program evaluation.
      */
     @Test
-    public void testEval01() {
+    void testEval01() {
         runFile("/eval01.pt");
     }
 
@@ -153,7 +153,7 @@ public class TestLanguage {
      * definitions.
      */
     @Test
-    public void testEval02() {
+    void testEval02() {
         runFile("/eval02.pt");
     }
 
@@ -161,7 +161,7 @@ public class TestLanguage {
      * Exercise method calls on fields.
      */
     @Test
-    public void testFieldMethod01() {
+    void testFieldMethod01() {
         runFile("/fieldMethod01.pt");
     }
 
@@ -169,7 +169,7 @@ public class TestLanguage {
      * Exercise method calls on fields.
      */
     @Test
-    public void testFieldMethod02() {
+    void testFieldMethod02() {
         runFile("/fieldMethod02.pt");
     }
 
@@ -177,7 +177,7 @@ public class TestLanguage {
      * Exercise method calls on fields.
      */
     @Test
-    public void testFieldMethod03() {
+    void testFieldMethod03() {
         runFile("/fieldMethod03.pt");
     }
 
@@ -185,7 +185,7 @@ public class TestLanguage {
      * Test a simple function call with no arguments.
      */
     @Test
-    public void testFunction01() {
+    void testFunction01() {
         runFile("/function01.pt");
     }
 
@@ -193,7 +193,7 @@ public class TestLanguage {
      * Test a simple function call with one argument.
      */
     @Test
-    public void testFunction02() {
+    void testFunction02() {
         runFile("/function02.pt");
     }
 
@@ -201,7 +201,7 @@ public class TestLanguage {
      * Test a simple function call with two arguments.
      */
     @Test
-    public void testFunction03() {
+    void testFunction03() {
         runFile("/function03.pt");
     }
 
@@ -210,7 +210,7 @@ public class TestLanguage {
      * at a time.
      */
     @Test
-    public void testFunction04() {
+    void testFunction04() {
         runFile("/function04.pt");
     }
 
@@ -218,7 +218,7 @@ public class TestLanguage {
      * Test hood with a lambda function.
      */
     @Test
-    public void testGenericHood01() {
+    void testGenericHood01() {
         runFile("/genericHood01.pt");
     }
 
@@ -226,7 +226,7 @@ public class TestLanguage {
      * Test hoodPlusSelf with a function reference.
      */
     @Test
-    public void testGenericHood02() {
+    void testGenericHood02() {
         runFile("/genericHood02.pt");
     }
 
@@ -234,7 +234,7 @@ public class TestLanguage {
      * Test hoodPlusSelf with a Java method reference.
      */
     @Test
-    public void testGenericHood03() {
+    void testGenericHood03() {
         runFile("/genericHood03.pt");
     }
 
@@ -242,7 +242,7 @@ public class TestLanguage {
      * Test hood with a generated field.
      */
     @Test
-    public void testGenericHood04() {
+    void testGenericHood04() {
         runFile("/genericHood04.pt");
     }
 
@@ -250,7 +250,7 @@ public class TestLanguage {
      * Test hood with a generated field.
      */
     @Test
-    public void testGenericHood05() {
+    void testGenericHood05() {
         runFile("/genericHood05.pt");
     }
 
@@ -258,7 +258,7 @@ public class TestLanguage {
      * Test hood with a generated field.
      */
     @Test
-    public void testGenericHood06() {
+    void testGenericHood06() {
         runFile("/genericHood06.pt");
     }
 
@@ -266,7 +266,7 @@ public class TestLanguage {
      * Reverse of test 04.
      */
     @Test
-    public void testGenericHood07() {
+    void testGenericHood07() {
         runFile("/genericHood07.pt");
     }
 
@@ -274,7 +274,7 @@ public class TestLanguage {
      * Attempt at reproducing a bug.
      */
     @Test
-    public void testGenericHood08() {
+    void testGenericHood08() {
         runFile("/genericHood08.pt");
     }
 
@@ -282,7 +282,7 @@ public class TestLanguage {
      * Test the simple use of {@code apply}.
      */
     @Test
-    public void testHof01() {
+    void testHof01() {
         runFileWithMultipleRuns("/hof01.pt");
     }
 
@@ -290,7 +290,7 @@ public class TestLanguage {
      * Test apply on a more complex function.
      */
     @Test
-    public void testHof02() {
+    void testHof02() {
         runFileWithMultipleRuns("/hof02.pt");
     }
 
@@ -299,7 +299,7 @@ public class TestLanguage {
      * the function.
      */
     @Test
-    public void testHof03() {
+    void testHof03() {
         runFileWithMultipleRuns("/hof03.pt");
     }
 
@@ -307,7 +307,7 @@ public class TestLanguage {
      * Test using apply to define a higher-order map function.
      */
     @Test
-    public void testHof04() {
+    void testHof04() {
         runFile("/hof04.pt");
     }
 
@@ -315,7 +315,7 @@ public class TestLanguage {
      * Test multiple applications of a higher-order map function.
      */
     @Test
-    public void testHof05() {
+    void testHof05() {
         runFile("/hof05.pt");
     }
 
@@ -323,7 +323,7 @@ public class TestLanguage {
      * Test direct usage of a Java method as a higher order function.
      */
     @Test
-    public void testHof06() {
+    void testHof06() {
         runFile("/hof06.pt");
     }
 
@@ -331,7 +331,7 @@ public class TestLanguage {
      * Test that plain hood functions don't include local value.
      */
     @Test
-    public void testHood01() {
+    void testHood01() {
         runFile("/hood01.pt");
     }
 
@@ -339,7 +339,7 @@ public class TestLanguage {
      * Test that PlusSelf hood functions do include local value.
      */
     @Test
-    public void testHood02() {
+    void testHood02() {
         runFile("/hood02.pt");
     }
 
@@ -347,7 +347,7 @@ public class TestLanguage {
      * Test a more complex hood function.
      */
     @Test
-    public void testHood03() {
+    void testHood03() {
         runFile("/hood03.pt");
     }
 
@@ -355,7 +355,7 @@ public class TestLanguage {
      * Test operation of "if" restrictive branching.
      */
     @Test
-    public void testIf01() {
+    void testIf01() {
         runFileWithMultipleRuns("/if01.pt");
     }
 
@@ -363,7 +363,7 @@ public class TestLanguage {
      * Make sure if throws exceptions instead of returning fields.
      */
     @Test
-    public void testIf02() {
+    void testIf02() {
         runExpectingErrors("/if02.pt", ProtelisRuntimeException.class, "if", "cannot", "return", "field");
     }
 
@@ -371,7 +371,7 @@ public class TestLanguage {
      * Test operation of "if" without else.
      */
     @Test
-    public void testIf03() {
+    void testIf03() {
         runFile("/if03.pt");
     }
 
@@ -379,7 +379,7 @@ public class TestLanguage {
      * Test operation of "if" without else, ensuring the then intructions are discarded.
      */
     @Test
-    public void testifWithoutElseNotTaken() {
+    void testifWithoutElseNotTaken() {
         runFile("/ifWithoutElseNotTaken.pt");
     }
 
@@ -387,7 +387,7 @@ public class TestLanguage {
      * Test unionHood with only local contribution.
      */
     @Test
-    public void testImplicitSelf() {
+    void testImplicitSelf() {
         for (final String test: ImmutableList.of("Map", "Reduce", "Filter")) {
             runFile("/Tuple" + test + "02.pt");
         }
@@ -397,7 +397,7 @@ public class TestLanguage {
      * Test that the issue described at <a href="https://github.com/Protelis/Protelis/issues/127">...</a> is solved.
      */
     @Test
-    public void testIssue127() {
+    void testIssue127() {
         runFile("/issue127.pt");
     }
 
@@ -405,7 +405,7 @@ public class TestLanguage {
      * Test java static field access.
      */
     @Test
-    public void testJavaField01() {
+    void testJavaField01() {
         runFile("/javaField01.pt");
     }
 
@@ -414,7 +414,7 @@ public class TestLanguage {
      * such modules.
      */
     @Test
-    public void testJavaImportsInExternalModules() {
+    void testJavaImportsInExternalModules() {
         runFile("/useJavaImportedElsewhere.pt");
     }
 
@@ -422,7 +422,7 @@ public class TestLanguage {
      * Test a simple anonymous function inline definition and application.
      */
     @Test
-    public void testLambda01() {
+    void testLambda01() {
         runFile("/lambda01.pt");
     }
 
@@ -430,7 +430,7 @@ public class TestLanguage {
      * Test a complex passing and application of lambdas, including an if.
      */
     @Test
-    public void testLambda02() {
+    void testLambda02() {
         runFileWithMultipleRuns("/lambda02.pt");
     }
 
@@ -438,7 +438,7 @@ public class TestLanguage {
      * Test a complex passing and application of lambdas, including a mux.
      */
     @Test
-    public void testLambda03() {
+    void testLambda03() {
         runFileWithMultipleRuns("/lambda03.pt");
     }
 
@@ -446,7 +446,7 @@ public class TestLanguage {
      * Test loading of a file from a name without an explicit classpath statement.
      */
     @Test
-    public void testLoadFile() {
+    void testLoadFile() {
         runFile("/sum.pt");
     }
 
@@ -454,7 +454,7 @@ public class TestLanguage {
      * Test loading of a file with an explicit classpath statement.
      */
     @Test
-    public void testLoadFromClasspath() {
+    void testLoadFromClasspath() {
         runFileWithExplicitResult("classpath:/sum.pt", 8d);
     }
 
@@ -462,7 +462,7 @@ public class TestLanguage {
      * Test loading from a module name with the default package.
      */
     @Test
-    public void testLoadFromModuleName01() {
+    void testLoadFromModuleName01() {
         runFileWithExplicitResult("modules04", 1d);
     }
 
@@ -470,7 +470,7 @@ public class TestLanguage {
      * Test loading from a module name from a nested package.
      */
     @Test
-    public void testLoadFromModuleName02() {
+    void testLoadFromModuleName02() {
         runFileWithExplicitResult("protelis:test:circular02", 1d);
     }
 
@@ -478,7 +478,7 @@ public class TestLanguage {
      * Test loading from a module name from a nested package.
      */
     @Test
-    public void testLoadFromModuleName03() {
+    void testLoadFromModuleName03() {
         assertNotNull(ProtelisLoader.parse("replicatedgossip"));
     }
 
@@ -486,7 +486,7 @@ public class TestLanguage {
      * Test parsing of anonymous expression.
      */
     @Test
-    public void testLoadModule() {
+    void testLoadModule() {
         runFileWithExplicitResult("5+3", 8d);
     }
 
@@ -494,7 +494,7 @@ public class TestLanguage {
      * Test the ability to load a module by name.
      */
     @Test
-    public void testLoadModule01() {
+    void testLoadModule01() {
         assertNotNull(ProtelisLoader.parse("loadmodule01"));
     }
 
@@ -502,7 +502,7 @@ public class TestLanguage {
      * Test localHood without {@code self} (which should be the same of localHoodPlusSelf).
      */
     @Test
-    public void testLocalHood01() {
+    void testLocalHood01() {
         runFile("/localHood01.pt", 2);
     }
 
@@ -510,7 +510,7 @@ public class TestLanguage {
      * Test constants: -Infinity.
      */
     @Test
-    public void testMath01() {
+    void testMath01() {
         runFile("/math01.pt");
     }
 
@@ -518,7 +518,7 @@ public class TestLanguage {
      * Test constants: -3.
      */
     @Test
-    public void testMath02() {
+    void testMath02() {
         runFile("/math02.pt");
     }
 
@@ -526,7 +526,7 @@ public class TestLanguage {
      * Test arithmetic: addition.
      */
     @Test
-    public void testMath03() {
+    void testMath03() {
         runFile("/math03.pt");
     }
 
@@ -534,7 +534,7 @@ public class TestLanguage {
      * Test arithmetic: equality.
      */
     @Test
-    public void testMath04() {
+    void testMath04() {
         runFile("/math04.pt");
     }
 
@@ -542,7 +542,7 @@ public class TestLanguage {
      * Test maxHood.
      */
     @Test
-    public void testMaxHood01() {
+    void testMaxHood01() {
         runFile("/maxhood01.pt");
     }
 
@@ -550,7 +550,7 @@ public class TestLanguage {
      * Test maxHood.
      */
     @Test
-    public void testMaxHood02() {
+    void testMaxHood02() {
         runFile("/maxhood02.pt");
     }
 
@@ -558,7 +558,7 @@ public class TestLanguage {
      * Test fully qualified call of individually imported static Java method.
      */
     @Test
-    public void testMethod01() {
+    void testMethod01() {
         runFile("/method01.pt");
     }
 
@@ -566,7 +566,7 @@ public class TestLanguage {
      * Test unqualified call of individually imported static Java method.
      */
     @Test
-    public void testMethod02() {
+    void testMethod02() {
         runFileWithExplicitResult("/method02.pt", Collections.EMPTY_LIST);
     }
 
@@ -574,7 +574,7 @@ public class TestLanguage {
      * Test unqualified call of batch-imported static Java methods.
      */
     @Test
-    public void testMethod03() {
+    void testMethod03() {
         runFile("/method03.pt");
     }
 
@@ -582,7 +582,7 @@ public class TestLanguage {
      * Test "dot" call of non-static Java methods.
      */
     @Test
-    public void testMethod04() {
+    void testMethod04() {
         runFile("/method04.pt");
     }
 
@@ -590,7 +590,7 @@ public class TestLanguage {
      * Confirm that qualified and unqualified methods are equal.
      */
     @Test
-    public void testMethod05() {
+    void testMethod05() {
         runFile("/method05.pt");
     }
 
@@ -598,7 +598,7 @@ public class TestLanguage {
      * Ensure that double values are coerced to integers when required.
      */
     @Test
-    public void testMethod06() {
+    void testMethod06() {
         runFile("/method06.pt");
     }
 
@@ -606,7 +606,7 @@ public class TestLanguage {
      * Ensure that doubles are converted to int if needed.
      */
     @Test
-    public void testMethod07() {
+    void testMethod07() {
         runFile("/method07.pt");
     }
 
@@ -614,7 +614,7 @@ public class TestLanguage {
      * Confirm that call can be made to Java functions with varargs.
      */
     @Test
-    public void testMethod08() {
+    void testMethod08() {
         runFile("/method08.pt");
     }
 
@@ -623,7 +623,7 @@ public class TestLanguage {
      * transformed into a "cannot call" exception.
      */
     @Test
-    public void testMethod09() {
+    void testMethod09() {
         runExpectingErrors("/method09.pt", ProtelisRuntimeException.class, "out", "of", "bounds");
     }
 
@@ -631,7 +631,7 @@ public class TestLanguage {
      * Test minHood.
      */
     @Test
-    public void testMinHood01() {
+    void testMinHood01() {
         runFile("/minhood01.pt");
     }
 
@@ -639,7 +639,7 @@ public class TestLanguage {
      * Test minHood.
      */
     @Test
-    public void testMinHood02() {
+    void testMinHood02() {
         runFile("/minhood02.pt");
     }
 
@@ -648,7 +648,7 @@ public class TestLanguage {
      * conflict, first imported shadows later imports.
      */
     @Test
-    public void testModules01() {
+    void testModules01() {
         runFile("/modules01.pt");
     }
 
@@ -656,7 +656,7 @@ public class TestLanguage {
      * Confirm that local definitions shadow imported Protelis definitions.
      */
     @Test
-    public void testModules02() {
+    void testModules02() {
         runFile("/modules02.pt");
     }
 
@@ -665,7 +665,7 @@ public class TestLanguage {
      * their fully qualified names.
      */
     @Test
-    public void testModules03() {
+    void testModules03() {
         runFile("/modules03.pt");
     }
 
@@ -673,7 +673,7 @@ public class TestLanguage {
      * Test that module imports can handle circular references between modules.
      */
     @Test
-    public void testModules04() {
+    void testModules04() {
         runFile("/modules04.pt");
     }
 
@@ -682,7 +682,7 @@ public class TestLanguage {
      * packages.
      */
     @Test
-    public void testModules05() {
+    void testModules05() {
         runFile("/modules05.pt");
     }
 
@@ -690,7 +690,7 @@ public class TestLanguage {
      * Test two statement sequence.
      */
     @Test
-    public void testMultiStatement01() {
+    void testMultiStatement01() {
         runFile("/multistatement01.pt");
     }
 
@@ -698,7 +698,7 @@ public class TestLanguage {
      * Test multiple variable re-assignments.
      */
     @Test
-    public void testMultiStatement02() {
+    void testMultiStatement02() {
         runFile("/multistatement02.pt");
     }
 
@@ -706,7 +706,7 @@ public class TestLanguage {
      * Test independence of sequential invocations of a function.
      */
     @Test
-    public void testMultiStatement03() {
+    void testMultiStatement03() {
         runFile("/multistatement03.pt");
     }
 
@@ -714,7 +714,7 @@ public class TestLanguage {
      * Test assignment within a nested lexical scope.
      */
     @Test
-    public void testMultiStatement04() {
+    void testMultiStatement04() {
         runFile("/multistatement04.pt");
     }
 
@@ -722,7 +722,7 @@ public class TestLanguage {
      * Test operation of "mux" inclusive branching.
      */
     @Test
-    public void testMux01() {
+    void testMux01() {
         runFileWithMultipleRuns("/mux01.pt");
     }
 
@@ -730,7 +730,7 @@ public class TestLanguage {
      * Test rep via a canonical use: creating a counter.
      */
     @Test
-    public void testRep01() {
+    void testRep01() {
         runFileWithMultipleRuns("/rep01.pt", IntStreams.range(0, 4).map(i -> (int) Math.round(Math.pow(10, i))));
     }
 
@@ -738,7 +738,7 @@ public class TestLanguage {
      * Test nested rep statements.
      */
     @Test
-    public void testRep02() {
+    void testRep02() {
         double prev = 1;
         for (int i = 1; i < 100; i++) {
             runFile("/rep02.pt", i, prev);
@@ -750,7 +750,7 @@ public class TestLanguage {
      * Test rep as the only script instruction.
      */
     @Test
-    public void testRep03() {
+    void testRep03() {
         runFileWithMultipleRuns("/rep03.pt");
     }
 
@@ -758,7 +758,7 @@ public class TestLanguage {
      * Test rep / yield.
      */
     @Test
-    public void testRep04() {
+    void testRep04() {
         runFileWithMultipleRuns("/rep04.pt");
     }
 
@@ -766,7 +766,7 @@ public class TestLanguage {
      * Basic test for share.
      */
     @Test
-    public void testShare01() {
+    void testShare01() {
         runFileWithMultipleRuns("/share01.pt");
     }
 
@@ -774,7 +774,7 @@ public class TestLanguage {
      * Basic test for share.
      */
     @Test
-    public void testShare02() {
+    void testShare02() {
         runFileWithMultipleRuns("/share02.pt");
     }
 
@@ -782,7 +782,7 @@ public class TestLanguage {
      * Test yield.
      */
     @Test
-    public void testShare03() {
+    void testShare03() {
         runFileWithMultipleRuns("/share03.pt");
     }
 
@@ -790,7 +790,7 @@ public class TestLanguage {
      * Test previous scope access in share/yield.
      */
     @Test
-    public void testShare04() {
+    void testShare04() {
         runFileWithMultipleRuns("/share04.pt");
     }
 
@@ -798,7 +798,7 @@ public class TestLanguage {
      * Test infix addition.
      */
     @Test
-    public void testStatement0() {
+    void testStatement0() {
         runFile("/statement0.pt");
     }
 
@@ -806,7 +806,7 @@ public class TestLanguage {
      * Test infix addition.
      */
     @Test
-    public void testSum() {
+    void testSum() {
         runFile("/sum.pt");
     }
 
@@ -814,7 +814,7 @@ public class TestLanguage {
      * Test construction of tuple using '[]' syntax.
      */
     @Test
-    public void testTuple01() {
+    void testTuple01() {
         final Tuple expectedResult = DatatypeFactory.createTuple(5.0, 4.0, 3.0, 2.0, 1.0, 0.0);
         runFileWithExplicitResult("/tuple01.pt", expectedResult);
     }
@@ -824,7 +824,7 @@ public class TestLanguage {
      * constants.
      */
     @Test
-    public void testTuple02() {
+    void testTuple02() {
         runFile("/tuple02.pt");
     }
 
@@ -832,7 +832,7 @@ public class TestLanguage {
      * Test calling of tuple methods, in particular Tuple.size().
      */
     @Test
-    public void testTuple03() {
+    void testTuple03() {
         runFileWithExplicitResult("/tuple03.pt", 3);
     }
 
@@ -840,7 +840,7 @@ public class TestLanguage {
      * Test the Tuple.indexof method.
      */
     @Test
-    public void testTuple04() {
+    void testTuple04() {
         runFile("/tuple04.pt");
     }
 
@@ -848,7 +848,7 @@ public class TestLanguage {
      * Test the {@code Tuple.fill} method.
      */
     @Test
-    public void testTuple05() {
+    void testTuple05() {
         final Tuple expectedResult = DatatypeFactory.createTuple(2.0, 2.0, 2.0);
         runFileWithExplicitResult("/tuple05.pt", expectedResult);
     }
@@ -857,7 +857,7 @@ public class TestLanguage {
      * Test the tuple arithmetic.
      */
     @Test
-    public void testTupleArithmetic() {
+    void testTupleArithmetic() {
         runFile("/tuple06.pt");
         runFile("/tuple07.pt");
         runFile("/tuple08.pt");
@@ -867,43 +867,43 @@ public class TestLanguage {
      * Test tuple comparisons.
      */
     @Test
-    public void testTupleComparisons() {
+    void testTupleComparisons() {
         // Single element comparison
-        Assert.assertEquals(false, ProgramTester.runProgram("[1] > [2]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1] > [2]", 1));
         // Multi-element lexicographic comparison
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2] > [1, 3]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2] < [1, 13]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 1] > [1, 2]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, -1] > [1, 2]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] > [1, 2, 0]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2] == [1, 2]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2] == [1, 2, 0]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 0] == [1, 2, 0]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2] > [1, 2, -1]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 0] > [1, 2, -1]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0,  0] < [1, 2, -1]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2] >= [1, 2]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, 2, 1] >= [1, 2, 0]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] <= [1, 2]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0, 0] <= [1, 2, -1]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2] > [1, 3]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2] < [1, 13]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2, 1] > [1, 2]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2, -1] > [1, 2]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] > [1, 2, 0]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2] == [1, 2]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2] == [1, 2, 0]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2, 0] == [1, 2, 0]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2] > [1, 2, -1]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2, 0] > [1, 2, -1]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0,  0] < [1, 2, -1]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2] >= [1, 2]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, 2, 1] >= [1, 2, 0]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2, -1] <= [1, 2]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, 2, -1, 0, 0] <= [1, 2, -1]", 1));
         // comparison involving infinity
         final String prefix = "import java.lang.Double.POSITIVE_INFINITY let Infinity = POSITIVE_INFINITY; ";
-        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] == [Infinity]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity, 1] < [Infinity, 2]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[1, Infinity] < [2, 0]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[-Infinity, 1] < [-Infinity, 2]", 1));
-        Assert.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] > [-Infinity]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram(prefix + "[Infinity] > [Infinity]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] == [Infinity]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity, 1] < [Infinity, 2]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram(prefix + "[1, Infinity] < [2, 0]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram(prefix + "[-Infinity, 1] < [-Infinity, 2]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram(prefix + "[Infinity] > [-Infinity]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram(prefix + "[Infinity] > [Infinity]", 1));
         // comparison of nested tuples
-        Assert.assertEquals(true, ProgramTester.runProgram("[1, [2], 1] >= [1, [2], 0]", 1));
-        Assert.assertEquals(false, ProgramTester.runProgram("[1, [2], 1] >= [1, [2, 1], 0]", 1));
+        Assertions.assertEquals(true, ProgramTester.runProgram("[1, [2], 1] >= [1, [2], 0]", 1));
+        Assertions.assertEquals(false, ProgramTester.runProgram("[1, [2], 1] >= [1, [2, 1], 0]", 1));
     }
 
     /**
      * Test the {@code Tuple.filter} method.
      */
     @Test
-    public void testTupleFilter01() {
+    void testTupleFilter01() {
         runFile("/TupleFilter01.pt");
     }
 
@@ -911,7 +911,7 @@ public class TestLanguage {
      * Test the {@code Tuple.map} method.
      */
     @Test
-    public void testTupleMap01() {
+    void testTupleMap01() {
         runFile("/TupleMap01.pt");
     }
 
@@ -919,7 +919,7 @@ public class TestLanguage {
      * Test the {@code Tuple.map} method.
      */
     @Test
-    public void testTupleMap02() {
+    void testTupleMap02() {
         runFile("/TupleMap02.pt");
     }
 
@@ -927,7 +927,7 @@ public class TestLanguage {
      * Tests that the {@code Tuple.map} method can retain state.
      */
     @Test
-    public void testTupleMapRetainsState() {
+    void testTupleMapRetainsState() {
         runFile("/tupleMapRetainsState.pt");
     }
 
@@ -935,7 +935,7 @@ public class TestLanguage {
      * Test the {@code Tuple.reduce} method.
      */
     @Test
-    public void testTupleReduce01() {
+    void testTupleReduce01() {
         runFile("/TupleReduce01.pt");
     }
 
@@ -943,7 +943,7 @@ public class TestLanguage {
      * Test the Tuple array conversion method.
      */
     @Test
-    public void testTupleToArray() {
+    void testTupleToArray() {
         runFileWithExplicitResult("/TupleArray01.pt", "[2.0, 3.0, 10.0]");
     }
 
@@ -951,7 +951,7 @@ public class TestLanguage {
      * Test the unary '!' operator.
      */
     @Test
-    public void testUnary01() {
+    void testUnary01() {
         runFile("/unary01.pt");
     }
 
@@ -959,7 +959,7 @@ public class TestLanguage {
      * Test the unary '-' operator.
      */
     @Test
-    public void testUnary02() {
+    void testUnary02() {
         runFileWithExplicitResult("/unary02.pt", -Math.PI);
     }
 
@@ -967,7 +967,7 @@ public class TestLanguage {
      * Test unionHood.
      */
     @Test
-    public void testUnionHood01() {
+    void testUnionHood01() {
         runFile("/unionhood01.pt");
     }
 
@@ -975,7 +975,7 @@ public class TestLanguage {
      * Test unionHood with only local contribution.
      */
     @Test
-    public void testUnionHood02() {
+    void testUnionHood02() {
         runFile("/unionhood02.pt");
     }
 
@@ -983,7 +983,7 @@ public class TestLanguage {
      * Test calling a void method.
      */
     @Test
-    public void testUnit01() {
+    void testUnit01() {
         runFile("/unit01.pt");
     }
 

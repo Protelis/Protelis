@@ -37,7 +37,7 @@ public final class CreateTuple extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         final Object[] evaluationResults = new Object[getBranchesNumber()];
         final TIntList fieldIndices = new TIntArrayList(getBranchesNumber());
         forEachWithIndex((i, branch) -> {

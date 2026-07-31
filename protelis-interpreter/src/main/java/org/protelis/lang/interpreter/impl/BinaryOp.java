@@ -45,7 +45,7 @@ public final class BinaryOp extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         return op.run(
             context.runInNewStackFrame(0, getBranch(0)::eval),
             context.runInNewStackFrame(1, getBranch(1)::eval)

@@ -7,11 +7,10 @@
 
 package org.protelis.lang.test;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.protelis.test.InfrastructureTester;
 import org.protelis.test.ProgramTester;
 import org.slf4j.Logger;
@@ -20,18 +19,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Testing Protelis core libraries.
  */
-public class TestApis {
-
-    /**
-     * Print the current method name.
-     */
-    @ClassRule
-    public static final TestRule WATCHER = new TestWatcher() {
-        @Override
-        protected void starting(final Description description) {
-            L.info(description.getMethodName());
-        }
-    };
+@ExtendWith(TestApis.LoggingExtension.class)
+class TestApis {
 
     private static final Logger L = LoggerFactory.getLogger(TestApis.class);
 
@@ -55,7 +44,7 @@ public class TestApis {
      * Test aggregation.pt.
      */
     @Test
-    public void testAggregation() {
+    void testAggregation() {
         test("aggregation");
     }
 
@@ -63,7 +52,7 @@ public class TestApis {
      * Test addRange.pt.
      */
     @Test
-    public void testAddRange() {
+    void testAddRange() {
         test("addRange");
     }
 
@@ -71,7 +60,7 @@ public class TestApis {
      * Test addRangeWithLag.pt.
      */
     @Test
-    public void testAddRangeWithLag() {
+    void testAddRangeWithLag() {
         test("addRangeWithLag");
     }
 
@@ -79,7 +68,7 @@ public class TestApis {
      * Test alignedMapDistanceTo.pt.
      */
     @Test
-    public void testAlignedMapDistanceTo() {
+    void testAlignedMapDistanceTo() {
         test("alignedMapDistanceTo");
     }
 
@@ -87,7 +76,7 @@ public class TestApis {
      * Test alignedMapIff.pt.
      */
     @Test
-    public void testAlignedMapIff() {
+    void testAlignedMapIff() {
         testProgram("alignedMapIff");
     }
 
@@ -95,7 +84,7 @@ public class TestApis {
      * Test alignedMapMr.pt.
      */
     @Test
-    public void testAlignedMapMr() {
+    void testAlignedMapMr() {
         test("alignedMapMr");
     }
 
@@ -103,7 +92,7 @@ public class TestApis {
      * Test allTime.pt.
      */
     @Test
-    public void testAllTime() {
+    void testAllTime() {
         testProgram("allTime");
     }
 
@@ -111,7 +100,7 @@ public class TestApis {
      * Test anyTime.pt.
      */
     @Test
-    public void testAnyTime() {
+    void testAnyTime() {
         testProgram("anyTime");
     }
 
@@ -119,7 +108,7 @@ public class TestApis {
      * Test applyOnTree.pt.
      */
     @Test
-    public void testApplyOnTree() {
+    void testApplyOnTree() {
         test("applyOnTree");
     }
 
@@ -127,7 +116,7 @@ public class TestApis {
      * Test applyWhile.pt.
      */
     @Test
-    public void testApplyWhile() {
+    void testApplyWhile() {
         testProgram("applyWhile");
     }
 
@@ -135,7 +124,7 @@ public class TestApis {
      * Test ascendBranch.pt.
      */
     @Test
-    public void testAscendBranch() {
+    void testAscendBranch() {
         test("ascendBranch");
     }
 
@@ -143,7 +132,7 @@ public class TestApis {
      * Test average.pt.
      */
     @Test
-    public void testAverage() {
+    void testAverage() {
         test("average");
     }
 
@@ -151,7 +140,7 @@ public class TestApis {
      * Test boundBroadcast.pt.
      */
     @Test
-    public void testBoundBroadcast() {
+    void testBoundBroadcast() {
         test("boundBroadcast");
     }
 
@@ -159,7 +148,7 @@ public class TestApis {
      * Test boundG.pt.
      */
     @Test
-    public void testBoundedElection() {
+    void testBoundedElection() {
         test("boundedElection");
     }
 
@@ -167,7 +156,7 @@ public class TestApis {
      * Test boundG.pt.
      */
     @Test
-    public void testBoundG() {
+    void testBoundG() {
         test("boundG");
     }
 
@@ -175,7 +164,7 @@ public class TestApis {
      * Test boundedSpreading.pt.
      */
     @Test
-    public void testBoundSpreading() {
+    void testBoundSpreading() {
         test("boundSpreading");
     }
 
@@ -183,7 +172,7 @@ public class TestApis {
      * Test broadcast.pt.
      */
     @Test
-    public void testBroadcast() {
+    void testBroadcast() {
         test("broadcast");
     }
 
@@ -191,7 +180,7 @@ public class TestApis {
      * Test broadcast.pt with isolated nodes.
      */
     @Test
-    public void testBroadcast2() {
+    void testBroadcast2() {
         test("broadcast2");
     }
 
@@ -199,7 +188,7 @@ public class TestApis {
      * Test C.pt.
      */
     @Test
-    public void testC() {
+    void testC() {
         test("C");
     }
 
@@ -207,7 +196,7 @@ public class TestApis {
      * Test canSee.pt.
      */
     @Test
-    public void testCanSee() {
+    void testCanSee() {
         test("canSee");
     }
 
@@ -215,7 +204,7 @@ public class TestApis {
      * Test channel.pt.
      */
     @Test
-    public void testChannel() {
+    void testChannel() {
         test("channel");
     }
 
@@ -223,7 +212,7 @@ public class TestApis {
      * Test channel2.pt.
      */
     @Test
-    public void testChannel2() {
+    void testChannel2() {
         test("channel2");
     }
 
@@ -231,7 +220,7 @@ public class TestApis {
      * Test checkChain.pt.
      */
     @Test
-    public void testCheckChain() {
+    void testCheckChain() {
         test("checkChain");
     }
 
@@ -239,7 +228,7 @@ public class TestApis {
      * Test checkChain.pt.
      */
     @Test
-    public void testCheckChain2() {
+    void testCheckChain2() {
         test("checkChain2");
     }
 
@@ -247,7 +236,7 @@ public class TestApis {
      * Test checkChain.pt.
      */
     @Test
-    public void testCheckChain3() {
+    void testCheckChain3() {
         test("checkChain3");
     }
 
@@ -255,7 +244,7 @@ public class TestApis {
      * Test checkChain.pt.
      */
     @Test
-    public void testCheckChain4() {
+    void testCheckChain4() {
         test("checkChain4");
     }
 
@@ -263,7 +252,7 @@ public class TestApis {
      * Test checkChain.pt.
      */
     @Test
-    public void testCheckChain5() {
+    void testCheckChain5() {
         test("checkChain5");
     }
 
@@ -271,7 +260,7 @@ public class TestApis {
      * Test closerThan.pt.
      */
     @Test
-    public void testCloserThan() {
+    void testCloserThan() {
         test("closerThan");
     }
 
@@ -279,7 +268,7 @@ public class TestApis {
      * Test cMultiMax.pt.
      */
     @Test
-    public void testCMultiMax() {
+    void testCMultiMax() {
         test("cMultiMax");
     }
 
@@ -287,7 +276,7 @@ public class TestApis {
      * Test cMultiMin.pt.
      */
     @Test
-    public void testCMultiMin() {
+    void testCMultiMin() {
         test("cMultiMin");
     }
 
@@ -295,7 +284,7 @@ public class TestApis {
      * Test cMultiSum.pt.
      */
     @Test
-    public void testCMultiSum() {
+    void testCMultiSum() {
         test("cMultiSum");
     }
 
@@ -303,7 +292,7 @@ public class TestApis {
      * Test multiRegion.pt.
      */
     @Test
-    public void testMultiRegion() {
+    void testMultiRegion() {
         test("multiRegion");
     }
 
@@ -311,7 +300,7 @@ public class TestApis {
      * Test multiRegion2.pt.
      */
     @Test
-    public void testMultiRegion2() {
+    void testMultiRegion2() {
         test("multiRegion2");
     }
 
@@ -319,7 +308,7 @@ public class TestApis {
      * Test computeMultiRegion3.pt.
      */
     @Test
-    public void testMultiRegion3() {
+    void testMultiRegion3() {
         test("multiRegion3");
     }
 
@@ -327,7 +316,7 @@ public class TestApis {
      * Test countDevices.pt.
      */
     @Test
-    public void testCountDevices() {
+    void testCountDevices() {
         test("countDevices");
     }
 
@@ -335,7 +324,7 @@ public class TestApis {
      * Test countDevicesInRegion.pt.
      */
     @Test
-    public void testCountDevicesInRegion() {
+    void testCountDevicesInRegion() {
         test("countDevicesInRegion");
     }
 
@@ -343,7 +332,7 @@ public class TestApis {
      * Test countDown.pt.
      */
     @Test
-    public void testCountDown() {
+    void testCountDown() {
         testProgram("countDown");
     }
 
@@ -351,7 +340,7 @@ public class TestApis {
      * Test countTrue.pt.
      */
     @Test
-    public void testCountTrue() {
+    void testCountTrue() {
         testProgram("countTrue");
     }
 
@@ -359,7 +348,7 @@ public class TestApis {
      * Test CRFgradient.pt.
      */
     @Test
-    public void testCRFGradient() {
+    void testCRFGradient() {
         test("crfGradient");
     }
 
@@ -367,7 +356,7 @@ public class TestApis {
      * Test CRFgradient2.pt.
      */
     @Test
-    public void testCRFGradient2() {
+    void testCRFGradient2() {
         test("crfGradient2");
     }
 
@@ -375,7 +364,7 @@ public class TestApis {
      * Test bisGradient.pt.
      */
     @Test
-    public void testBISGradient() {
+    void testBISGradient() {
         test("bisGradient");
     }
 
@@ -383,7 +372,7 @@ public class TestApis {
      * Test bisGradient2.pt.
      */
     @Test
-    public void testBISGradient2() {
+    void testBISGradient2() {
         test("bisGradient2");
     }
 
@@ -391,7 +380,7 @@ public class TestApis {
      * Test cyclicFunction.pt.
      */
     @Test
-    public void testCyclicFunction() {
+    void testCyclicFunction() {
         testProgram("cyclicFunction");
     }
 
@@ -399,7 +388,7 @@ public class TestApis {
      * Test cyclicTimer function.
      */
     @Test
-    public void testCyclicTimer() {
+    void testCyclicTimer() {
         testMultirun("cyclicTimer");
     }
 
@@ -407,7 +396,7 @@ public class TestApis {
      * Test cyclicTimer function.
      */
     @Test
-    public void testCyclicTimer2() {
+    void testCyclicTimer2() {
         testProgram("cyclicTimer2");
     }
 
@@ -415,7 +404,7 @@ public class TestApis {
      * Test delta.pt.
      */
     @Test
-    public void testDelta() {
+    void testDelta() {
         testProgram("delta");
     }
 
@@ -423,14 +412,14 @@ public class TestApis {
      * Test descendBranch.pt.
      */
     @Test
-    public void testDescendBranch() {
+    void testDescendBranch() {
     }
 
     /**
      * Test diameter.pt.
      */
     @Test
-    public void testDiameter() {
+    void testDiameter() {
         test("diameter");
     }
 
@@ -438,7 +427,7 @@ public class TestApis {
      * Test diameterInArea.pt.
      */
     @Test
-    public void testDiameterInArea() {
+    void testDiameterInArea() {
         test("diameterInArea");
     }
 
@@ -446,7 +435,7 @@ public class TestApis {
      * Test dilate.pt.
      */
     @Test
-    public void testDilate() {
+    void testDilate() {
         test("dilate");
     }
 
@@ -454,7 +443,7 @@ public class TestApis {
      * Test directProjection.pt.
      */
     @Test
-    public void testDirectProjection() {
+    void testDirectProjection() {
         test("directProjection");
     }
 
@@ -462,7 +451,7 @@ public class TestApis {
      * Test distanceBetween.pt.
      */
     @Test
-    public void testDistanceBetween() {
+    void testDistanceBetween() {
         test("distanceBetween");
     }
 
@@ -470,7 +459,7 @@ public class TestApis {
      * Test distanceTo function.
      */
     @Test
-    public void testDistanceTo() {
+    void testDistanceTo() {
         test("distanceTo");
     }
 
@@ -478,7 +467,7 @@ public class TestApis {
      * Test distanceTo2.pt.
      */
     @Test
-    public void testDistanceTo2() {
+    void testDistanceTo2() {
         test("distanceTo2");
     }
 
@@ -486,7 +475,7 @@ public class TestApis {
      * Test distanceToWithMetric.pt.
      */
     @Test
-    public void testDistanceToWithMetric() {
+    void testDistanceToWithMetric() {
         test("distanceToWithMetric");
     }
 
@@ -494,7 +483,7 @@ public class TestApis {
      * Test boundDistanceTo.pt.
      */
     @Test
-    public void testBoundDistanceTo() {
+    void testBoundDistanceTo() {
         test("boundDistanceTo");
     }
 
@@ -502,7 +491,7 @@ public class TestApis {
      * Test evaporation.pt.
      */
     @Test
-    public void testEvalAlignment() {
+    void testEvalAlignment() {
         test("evalAlignment82");
     }
 
@@ -510,7 +499,7 @@ public class TestApis {
      * Test evaporation.pt.
      */
     @Test
-    public void testEvaporation() {
+    void testEvaporation() {
         testProgram("evaporation");
     }
 
@@ -518,7 +507,7 @@ public class TestApis {
      * Test ebfFilter.pt.
      */
     @Test
-    public void testExponentialBackoffFilter() {
+    void testExponentialBackoffFilter() {
         testProgram("exponentialBackoffFilter");
     }
 
@@ -526,7 +515,7 @@ public class TestApis {
      * Test falseAfterTime.pt.
      */
     @Test
-    public void testFalseAfterTime() {
+    void testFalseAfterTime() {
         testProgram("falseAfterTime");
     }
 
@@ -534,7 +523,7 @@ public class TestApis {
      * Test falseDuringLast.pt.
      */
     @Test
-    public void testFalseDuringLast() {
+    void testFalseDuringLast() {
         testProgram("falseDuringLast");
     }
 
@@ -542,7 +531,7 @@ public class TestApis {
      * Test falseFor.pt.
      */
     @Test
-    public void testFalseFor() {
+    void testFalseFor() {
         testProgram("falseFor");
     }
 
@@ -550,7 +539,7 @@ public class TestApis {
      * Test flexGradient.pt.
      */
     @Test
-    public void testFlexGradient() {
+    void testFlexGradient() {
         test("flexGradient");
     }
 
@@ -558,7 +547,7 @@ public class TestApis {
      * Test flexGradient2.pt.
      */
     @Test
-    public void testFlexGradient2() {
+    void testFlexGradient2() {
         test("flexGradient2");
     }
 
@@ -566,7 +555,7 @@ public class TestApis {
      * Test flexGradient3.pt.
      */
     @Test
-    public void testFlexGradient3() {
+    void testFlexGradient3() {
         test("flexGradient3");
     }
 
@@ -574,7 +563,7 @@ public class TestApis {
      * Test flip.pt.
      */
     @Test
-    public void testFlip() {
+    void testFlip() {
         testProgram("flip");
     }
 
@@ -582,7 +571,7 @@ public class TestApis {
      * Test G.pt.
      */
     @Test
-    public void testG() {
+    void testG() {
         test("G");
     }
 
@@ -590,7 +579,7 @@ public class TestApis {
      * Test getAllChildren.pt.
      */
     @Test
-    public void testGetAllChildren() {
+    void testGetAllChildren() {
         test("getAllChildren");
     }
 
@@ -598,7 +587,7 @@ public class TestApis {
      * Test getAllChildrenIds.pt.
      */
     @Test
-    public void testGetAllChildrenIds() {
+    void testGetAllChildrenIds() {
         test("getAllChildrenIds");
     }
 
@@ -606,7 +595,7 @@ public class TestApis {
      * Test getChildren.pt.
      */
     @Test
-    public void testGetChildren() {
+    void testGetChildren() {
         test("getChildren");
     }
 
@@ -614,7 +603,7 @@ public class TestApis {
      * Test getChildrenIds.pt.
      */
     @Test
-    public void testGetChildrenIds() {
+    void testGetChildrenIds() {
         test("getChildrenIds");
     }
 
@@ -622,7 +611,7 @@ public class TestApis {
      * Test getParent.pt.
      */
     @Test
-    public void testGetParentId() {
+    void testGetParentId() {
         test("getParentId");
     }
 
@@ -630,7 +619,7 @@ public class TestApis {
      * Test getParents.pt.
      */
     @Test
-    public void testGetParentIds() {
+    void testGetParentIds() {
         test("getParentIds");
     }
 
@@ -638,7 +627,7 @@ public class TestApis {
      * Test getParents.pt.
      */
     @Test
-    public void testGetParents() {
+    void testGetParents() {
         test("getParents");
     }
 
@@ -646,7 +635,7 @@ public class TestApis {
      * Test Gnull.pt.
      */
     @Test
-    public void testGnull() {
+    void testGnull() {
         testProgram("Gnull");
     }
 
@@ -654,7 +643,7 @@ public class TestApis {
      * Test gossip.pt.
      */
     @Test
-    public void testGossip() {
+    void testGossip() {
         test("gossip");
     }
 
@@ -662,7 +651,7 @@ public class TestApis {
      * Test gossip3.pt.
      */
     @Test
-    public void testGossip3() {
+    void testGossip3() {
         test("gossip3");
     }
 
@@ -670,7 +659,7 @@ public class TestApis {
      * Test gossipEver.pt.
      */
     @Test
-    public void testGossipEver() {
+    void testGossipEver() {
         test("gossipEver");
     }
 
@@ -678,7 +667,7 @@ public class TestApis {
      * Test gradcast.pt.
      */
     @Test
-    public void testGradcast() {
+    void testGradcast() {
         test("gradcast");
     }
 
@@ -686,7 +675,7 @@ public class TestApis {
      * Test gradcast2.pt.
      */
     @Test
-    public void testGradcast2() {
+    void testGradcast2() {
         test("gradcast2");
     }
 
@@ -694,7 +683,7 @@ public class TestApis {
      * Test gradcast3.pt.
      */
     @Test
-    public void testGradcast3() {
+    void testGradcast3() {
         test("gradcast3");
     }
 
@@ -702,7 +691,7 @@ public class TestApis {
      * Test gradcast4.pt.
      */
     @Test
-    public void testGradcast4() {
+    void testGradcast4() {
         test("gradcast4");
     }
 
@@ -710,7 +699,7 @@ public class TestApis {
      * Test gradcast5.pt.
      */
     @Test
-    public void testGradcast5() {
+    void testGradcast5() {
         test("gradcast5");
     }
 
@@ -718,7 +707,7 @@ public class TestApis {
      * Test gradient.pt.
      */
     @Test
-    public void testGradient() {
+    void testGradient() {
         test("gradient");
     }
 
@@ -726,7 +715,7 @@ public class TestApis {
      * Test hopBroadcast function.
      */
     @Test
-    public void testHopBroadcast() {
+    void testHopBroadcast() {
         test("hopBroadcast");
     }
 
@@ -734,7 +723,7 @@ public class TestApis {
      * Test hopDistanceTo function.
      */
     @Test
-    public void testHopDistanceTo() {
+    void testHopDistanceTo() {
         test("hopDistanceTo");
     }
 
@@ -742,7 +731,7 @@ public class TestApis {
      * Test multiC.pt.
      */
     @Test
-    public void testMeanHood104() {
+    void testMeanHood104() {
         test("meanHood");
     }
 
@@ -750,7 +739,7 @@ public class TestApis {
      * Test multiC.pt.
      */
     @Test
-    public void testMultiC() {
+    void testMultiC() {
         test("multiC");
     }
 
@@ -758,7 +747,7 @@ public class TestApis {
      * Test multiG.pt.
      */
     @Test
-    public void testMultiG() {
+    void testMultiG() {
         test("multiG");
     }
 
@@ -766,7 +755,7 @@ public class TestApis {
      * Test multiGradient.pt.
      */
     @Test
-    public void testMultiGradient() {
+    void testMultiGradient() {
         test("multiGradient");
     }
 
@@ -774,7 +763,7 @@ public class TestApis {
      * Test greatestLowerBound.pt.
      */
     @Test
-    public void testGreatestLowerBound() {
+    void testGreatestLowerBound() {
         test("greatestLowerBound");
     }
 
@@ -782,7 +771,7 @@ public class TestApis {
      * Test greatestLowerBound.pt.
      */
     @Test
-    public void testGreatestLowerBound2() {
+    void testGreatestLowerBound2() {
         test("greatestLowerBound2");
     }
 
@@ -790,7 +779,7 @@ public class TestApis {
      * Test hasNoParent.pt.
      */
     @Test
-    public void testHasNoParent() {
+    void testHasNoParent() {
         testProgram("hasNoParent");
     }
 
@@ -798,7 +787,7 @@ public class TestApis {
      * Test isEdge.pt.
      */
     @Test
-    public void testIsEdge() {
+    void testIsEdge() {
         test("isEdge");
     }
 
@@ -806,7 +795,7 @@ public class TestApis {
      * Test isFallingEdge.pt.
      */
     @Test
-    public void testIsFallingEdge() {
+    void testIsFallingEdge() {
         testProgram("isFallingEdge");
     }
 
@@ -814,7 +803,7 @@ public class TestApis {
      * Test isLeaf.pt.
      */
     @Test
-    public void testIsLeaf() {
+    void testIsLeaf() {
         test("isLeaf");
     }
 
@@ -822,7 +811,7 @@ public class TestApis {
      * Test isRecentEvent.pt.
      */
     @Test
-    public void testIsRecentEvent() {
+    void testIsRecentEvent() {
         testProgram("isRecentEvent");
     }
 
@@ -830,7 +819,7 @@ public class TestApis {
      * Test isRisingEdge.pt.
      */
     @Test
-    public void testIsRisingEdge() {
+    void testIsRisingEdge() {
         testProgram("isRisingEdge");
     }
 
@@ -838,7 +827,7 @@ public class TestApis {
      * Test isRoot.pt.
      */
     @Test
-    public void testIsRoot() {
+    void testIsRoot() {
         test("isRoot");
     }
 
@@ -846,7 +835,7 @@ public class TestApis {
      * Test isSignalStable.pt.
      */
     @Test
-    public void testIsSignalStable() {
+    void testIsSignalStable() {
         testProgram("isSignalStable");
     }
 
@@ -854,7 +843,7 @@ public class TestApis {
      * Test isValueChanged.pt.
      */
     @Test
-    public void testIsValueChanged() {
+    void testIsValueChanged() {
         testProgram("isValueChanged");
     }
 
@@ -862,7 +851,7 @@ public class TestApis {
      * Test laplacianConsensus.pt.
      */
     @Test
-    public void testLaplacianConsensus() {
+    void testLaplacianConsensus() {
         test("laplacianConsensus");
     }
 
@@ -870,7 +859,7 @@ public class TestApis {
      * Test leastUpperBound.pt.
      */
     @Test
-    public void testLeastUpperBound() {
+    void testLeastUpperBound() {
         test("leastUpperBound");
     }
 
@@ -878,7 +867,7 @@ public class TestApis {
      * Test limitedMemory function.
      */
     @Test
-    public void testLimitedMemory() {
+    void testLimitedMemory() {
         testMultirun("limitedMemory");
     }
 
@@ -886,7 +875,7 @@ public class TestApis {
      * Test nbrDelay.pt.
      */
     @Test
-    public void testNbrDelay() {
+    void testNbrDelay() {
         test("nbrDelay");
     }
 
@@ -894,7 +883,7 @@ public class TestApis {
      * Test nbrLag.pt.
      */
     @Test
-    public void testNbrLag() {
+    void testNbrLag() {
         test("nbrLag");
     }
 
@@ -902,7 +891,7 @@ public class TestApis {
      * Test nbrRange.pt.
      */
     @Test
-    public void testNbrRange() {
+    void testNbrRange() {
         test("nbrRange");
     }
 
@@ -910,7 +899,7 @@ public class TestApis {
      * Test nbrRangeHop.pt.
      */
     @Test
-    public void testNbrRangeHop() {
+    void testNbrRangeHop() {
         test("nbrRangeHop");
     }
 
@@ -918,7 +907,7 @@ public class TestApis {
      * Test nbrVector.pt.
      */
     @Test
-    public void testNbrVector() {
+    void testNbrVector() {
         test("nbrVector");
     }
 
@@ -926,7 +915,7 @@ public class TestApis {
      * Test the number of neighbors of each device.
      */
     @Test
-    public void testNeighborhood() {
+    void testNeighborhood() {
         test("neighborhood");
     }
 
@@ -934,7 +923,7 @@ public class TestApis {
      * Test once.pt.
      */
     @Test
-    public void testOnce() {
+    void testOnce() {
         testProgram("once");
     }
 
@@ -942,7 +931,7 @@ public class TestApis {
      * Test postProcessAndApply.pt.
      */
     @Test
-    public void testPostProcessAndApply() {
+    void testPostProcessAndApply() {
         test("postProcessAndApply");
     }
 
@@ -950,7 +939,7 @@ public class TestApis {
      * Test preProcessAndApply.pt.
      */
     @Test
-    public void testPreProcessAndApply() {
+    void testPreProcessAndApply() {
         test("preProcessAndApply");
     }
 
@@ -958,7 +947,7 @@ public class TestApis {
      * Test processAndApply.pt.
      */
     @Test
-    public void testProcessAndApply() {
+    void testProcessAndApply() {
         test("processAndApply");
     }
 
@@ -966,7 +955,7 @@ public class TestApis {
      * Test publishSubscribe.pt.
      */
     @Test
-    public void testPublishSubscribe() {
+    void testPublishSubscribe() {
         test("publishSubscribe");
     }
 
@@ -974,7 +963,7 @@ public class TestApis {
      * Test quorumSensing.pt.
      */
     @Test
-    public void testQuorumSensing() {
+    void testQuorumSensing() {
         test("quorumSensing");
     }
 
@@ -982,7 +971,7 @@ public class TestApis {
      * Test quorumSensingWithCondition.pt.
      */
     @Test
-    public void testQuorumSensingWithCondition() {
+    void testQuorumSensingWithCondition() {
         test("quorumSensingWithCondition");
     }
 
@@ -990,7 +979,7 @@ public class TestApis {
      * Test range.pt.
      */
     @Test
-    public void testRange() {
+    void testRange() {
         testProgram("range");
     }
 
@@ -998,7 +987,7 @@ public class TestApis {
      * Test rendezvous.pt.
      */
     @Test
-    public void testRendezvous() {
+    void testRendezvous() {
         test("rendezvous");
     }
 
@@ -1006,7 +995,7 @@ public class TestApis {
      * Test S function.
      */
     @Test
-    public void testS() {
+    void testS() {
         test("S");
     }
 
@@ -1014,7 +1003,7 @@ public class TestApis {
      * Test sequence.pt.
      */
     @Test
-    public void testSequence() {
+    void testSequence() {
         testProgram("sequence");
     }
 
@@ -1022,7 +1011,7 @@ public class TestApis {
      * Test sequenceIfAll.pt.
      */
     @Test
-    public void testSequenceIfAll() {
+    void testSequenceIfAll() {
         testMultirun("sequenceIfAll");
     }
 
@@ -1030,7 +1019,7 @@ public class TestApis {
      * Test sequenceIfAny.pt.
      */
     @Test
-    public void testSequenceIfAny() {
+    void testSequenceIfAny() {
         testMultirun("sequenceIfAny");
     }
 
@@ -1038,7 +1027,7 @@ public class TestApis {
      * Test spanningTree.pt.
      */
     @Test
-    public void testSpanningTree() {
+    void testSpanningTree() {
         test("spanningTree");
     }
 
@@ -1046,7 +1035,7 @@ public class TestApis {
      * Test summarize.pt.
      */
     @Test
-    public void testSummarize() {
+    void testSummarize() {
         test("summarize");
     }
 
@@ -1054,7 +1043,7 @@ public class TestApis {
      * Test summarizeWithPotential.pt.
      */
     @Test
-    public void testSummarizeWithPotential() {
+    void testSummarizeWithPotential() {
         test("summarizeWithPotential");
     }
 
@@ -1062,7 +1051,7 @@ public class TestApis {
      * Test T function.
      */
     @Test
-    public void testT() {
+    void testT() {
         test("T");
     }
 
@@ -1070,7 +1059,7 @@ public class TestApis {
      * Test timeReplication.pt.
      */
     @Test
-    public void testTimeReplication() {
+    void testTimeReplication() {
         test("timeReplication");
     }
 
@@ -1078,7 +1067,7 @@ public class TestApis {
      * Test timeSinceStart.pt.
      */
     @Test
-    public void testTimeSinceStart() {
+    void testTimeSinceStart() {
         testProgram("timeSinceStart");
     }
 
@@ -1086,7 +1075,7 @@ public class TestApis {
      * Test trueAfterTime.pt.
      */
     @Test
-    public void testTrueAfterTime() {
+    void testTrueAfterTime() {
         testProgram("trueAfterTime");
     }
 
@@ -1094,7 +1083,7 @@ public class TestApis {
      * Test trueDuringLast.pt.
      */
     @Test
-    public void testTrueDuringLast() {
+    void testTrueDuringLast() {
         testProgram("trueDuringLast");
     }
 
@@ -1102,7 +1091,7 @@ public class TestApis {
      * Test trueFor.pt.
      */
     @Test
-    public void testTrueFor() {
+    void testTrueFor() {
         testProgram("trueFor");
     }
 
@@ -1110,7 +1099,7 @@ public class TestApis {
      * Test utils.pt.
      */
     @Test
-    public void testUtils() {
+    void testUtils() {
         testProgram("utils");
     }
 
@@ -1118,7 +1107,7 @@ public class TestApis {
      * Test for bug #104.
      */
     @Test
-    public void testVariableRestriction104() {
+    void testVariableRestriction104() {
         test("variableRestriction104");
     }
 
@@ -1126,7 +1115,7 @@ public class TestApis {
      * Test vm.pt.
      */
     @Test
-    public void testVm() {
+    void testVm() {
         test("vm");
     }
 
@@ -1134,7 +1123,7 @@ public class TestApis {
      * Test voronoiPartitioning.pt.
      */
     @Test
-    public void testVoronoiPartitioning() {
+    void testVoronoiPartitioning() {
         test("voronoiPartitioning");
     }
 
@@ -1142,7 +1131,7 @@ public class TestApis {
      * Test wait.pt.
      */
     @Test
-    public void testWait() {
+    void testWait() {
         testProgram("wait");
     }
 
@@ -1150,8 +1139,18 @@ public class TestApis {
      * Test waitAndApply.pt.
      */
     @Test
-    public void testWaitAndApply() {
+    void testWaitAndApply() {
         testProgram("waitAndApply");
+    }
+
+    /**
+     * Print the current method name.
+     */
+    static final class LoggingExtension implements BeforeTestExecutionCallback {
+        @Override
+        public void beforeTestExecution(final ExtensionContext context) {
+            context.getTestMethod().ifPresent(method -> L.info(method.getName()));
+        }
     }
 
 }

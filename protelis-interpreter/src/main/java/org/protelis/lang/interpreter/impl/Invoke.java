@@ -83,7 +83,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         /*
          * If it is a function pointer, then create a new function call
          */

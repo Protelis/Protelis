@@ -7,26 +7,26 @@
 
 package org.protelis.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.protelis.lang.ProtelisLoader;
 
 /**
  *
  */
-public final class TestParseAnonymousPrograms {
+final class TestParseAnonymousPrograms {
 
     /**
      * Test that cross referencing works, and that a message is created.
      */
     @Test
-    public void testParseAnonymousPrograms() {
+    void testParseAnonymousPrograms() {
         try {
             ProtelisLoader.parse("wrongprogram");
-            Assert.fail();
+            Assertions.fail();
         } catch (final IllegalArgumentException e) {
-            Assert.assertNotNull(e.getMessage());
-            Assert.assertFalse(e.getMessage().isEmpty());
+            Assertions.assertNotNull(e.getMessage());
+            Assertions.assertFalse(e.getMessage().isEmpty());
         }
     }
 

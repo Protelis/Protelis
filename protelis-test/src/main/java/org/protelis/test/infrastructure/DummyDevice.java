@@ -7,7 +7,7 @@
 
 package org.protelis.test.infrastructure;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -62,7 +62,7 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
     @Override
     @SuppressFBWarnings("EI_EXPOSE_REP")
     public DeviceUID getDeviceUID() {
-        assertNotNull("Device id can't be null", node);
+        assertNotNull(node, "Device id can't be null");
         return node;
     }
 

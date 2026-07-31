@@ -7,7 +7,8 @@
 
 package org.protelis.test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -15,7 +16,7 @@ import com.google.common.collect.Multimap;
 /**
  * Testing Protelis core libraries.
  */
-public class TestParseError {
+class TestParseError {
 
     private static final Multimap<String, String> COMMENT_STYLES = ImmutableMultimap.of(
         "//", "\n",
@@ -28,7 +29,7 @@ public class TestParseError {
      * Test that commented out java imports are not considered.
      */
     @Test
-    public void testCommentedJavaImports() {
+    void testCommentedJavaImports() {
         testCommentedImportLine("import java.lang.Byte.parseByte", "parseByte(\"0\")", "parseByte");
     }
 
@@ -36,55 +37,55 @@ public class TestParseError {
      * Test that commented out Protelis imports are not considered.
      */
     @Test
-    public void testCommentedProtelisImports() {
+    void testCommentedProtelisImports() {
         testCommentedImportLine("import protelis:lang:time", "cyclicTimer(10,1)", "cyclicTimer");
     }
 
     /**
      * Test parseError1.
      */
-    @Test(expected = Exception.class)
-    public void testParseError1() {
-        test("parseError1");
+    @Test
+    void testParseError1() {
+        Assertions.assertThrows(Exception.class, () -> test("parseError1"));
     }
 
     /**
      * Test parseError2.
      */
-    @Test(expected = AssertionError.class)
-    public void testParseError2() {
-        test("parseError2");
+    @Test
+    void testParseError2() {
+        Assertions.assertThrows(AssertionError.class, () -> test("parseError2"));
     }
 
     /**
      * Test parseError3.
      */
-    @Test(expected = AssertionError.class)
-    public void testParseError3() {
-        test("parseError3");
+    @Test
+    void testParseError3() {
+        Assertions.assertThrows(AssertionError.class, () -> test("parseError3"));
     }
 
     /**
      * Test parseError4.
      */
-    @Test(expected = AssertionError.class)
-    public void testParseError4() {
-        test("parseError4");
+    @Test
+    void testParseError4() {
+        Assertions.assertThrows(AssertionError.class, () -> test("parseError4"));
     }
 
     /**
      * Test parseError6.
      */
-    @Test(expected = AssertionError.class)
-    public void testParseError6() {
-        test("parseError6");
+    @Test
+    void testParseError6() {
+        Assertions.assertThrows(AssertionError.class, () -> test("parseError6"));
     }
 
     /**
      * Test parseError7.
      */
     @Test
-    public void testParseError7() {
+    void testParseError7() {
         test("parseError7");
     }
 

@@ -63,7 +63,7 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         /*
          * 1. Evaluate all the arguments
          * Inner gamma must hold param values

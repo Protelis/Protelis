@@ -140,7 +140,7 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T evaluate(final ExecutionContext context) {
+    protected T evaluate(final ExecutionContext context) {
         final S initValue = context.runInNewStackFrame(SHARE_INIT.getCode(), init::eval);
         final S localValue = ensureType(loadState(context, () -> initValue));
         final boolean localIsField = localValue instanceof Field;

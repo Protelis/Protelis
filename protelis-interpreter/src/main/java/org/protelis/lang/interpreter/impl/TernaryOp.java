@@ -60,7 +60,7 @@ public final class TernaryOp extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         return op.run(
             evalBranch(context, 0),
             evalBranch(context, 1),

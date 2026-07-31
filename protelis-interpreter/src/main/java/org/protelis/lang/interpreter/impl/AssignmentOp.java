@@ -35,7 +35,7 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         final Object res = getValue().eval(context);
         context.putVariable(reference, res);
         return res;

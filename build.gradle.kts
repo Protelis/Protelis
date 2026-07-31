@@ -52,8 +52,10 @@ allprojects {
     dependencies {
         with(rootProject.libs) {
             compileOnly(spotbugs.annotations)
-            testImplementation(junit)
+            testImplementation(platform(junit.bom))
+            testImplementation(junit.jupiter)
             testImplementation(slf4j)
+            testRuntimeOnly(junit.platform.launcher)
             testRuntimeOnly(logback)
             constraints {
                 implementation(asm) {
@@ -73,11 +75,12 @@ allprojects {
     }
 
     tasks.withType<AbstractCopyTask>().configureEach {
-        duplicatesStrategy = DuplicatesStrategy.WARN
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
     tasks.withType<Test>().configureEach {
         failFast = true
+        useJUnitPlatform()
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
             events("passed", "skipped", "failed", "standardError")
@@ -179,6 +182,9 @@ val globalJavadoc by configurations.registering
 dependencies {
     api(project(":protelis-interpreter"))
     api(project(":protelis-lang"))
+    globalJavadoc(libs.apiguardian)
+    globalJavadoc(platform(libs.junit.bom))
+    globalJavadoc(libs.junit.jupiter)
     subprojects.forEach { globalJavadoc(it) }
 }
 

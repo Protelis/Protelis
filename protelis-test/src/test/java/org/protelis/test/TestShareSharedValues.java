@@ -11,8 +11,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.protelis.lang.ProtelisLoader;
 import org.protelis.lang.datatype.DeviceUID;
 import org.protelis.test.infrastructure.DummyContext;
@@ -25,7 +25,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * Main collection of tests for the Protelis language and VM.
  */
-public class TestShareSharedValues {
+class TestShareSharedValues {
 
     private static final String PROGRAM = "share (x, nx <- 0) { x + 1 }";
 
@@ -36,14 +36,14 @@ public class TestShareSharedValues {
      */
     @Test
     @SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
-    public void testLatestHasBeenShared() {
+    void testLatestHasBeenShared() {
         final MutableInt cycle = new MutableInt(0);
         final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(PROGRAM), new DummyContext(new NetworkManager() {
 
             @Override
             public void shareState(final Map<CodePath, Object> toSend) {
-                Assert.assertEquals(1, toSend.size());
-                Assert.assertEquals(cycle.doubleValue() + 1, toSend.values().iterator().next());
+                Assertions.assertEquals(1, toSend.size());
+                Assertions.assertEquals(cycle.doubleValue() + 1, toSend.values().iterator().next());
             }
 
             @Override

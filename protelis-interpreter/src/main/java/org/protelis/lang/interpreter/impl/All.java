@@ -36,7 +36,7 @@ public final class All extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         for (int b = 0; b < getBranchesNumber() - 1; b++) {
             getBranch(b).eval(context);
             context.newCallStackFrame(b);
