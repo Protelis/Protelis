@@ -1,3 +1,37 @@
+## [19.0.0](https://github.com/Protelis/Protelis/compare/18.8.5...19.0.0) (2026-07-31)
+
+### ⚠ BREAKING CHANGES
+
+* change evaluate method visibility to protected, switch to Junit 6 (#2346)
+
+### Dependency updates
+
+* **deps:** bump tar and npm ([39b67d2](https://github.com/Protelis/Protelis/commit/39b67d2f73a0b09d488f8e7bceb0c982cf31a332))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.0 ([#2340](https://github.com/Protelis/Protelis/issues/2340)) ([7c9e7d0](https://github.com/Protelis/Protelis/commit/7c9e7d006421717c095931f4a053c6ce72a83d8a))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.1 ([#2344](https://github.com/Protelis/Protelis/issues/2344)) ([bd27e3c](https://github.com/Protelis/Protelis/commit/bd27e3cbed4600eb1b90d12f37d6a369c03ba00e))
+* **deps:** update dependency commons-codec:commons-codec to v1.22.1 ([#2345](https://github.com/Protelis/Protelis/issues/2345)) ([cf79671](https://github.com/Protelis/Protelis/commit/cf796718845135764e136a7a97a2390caad1eea0))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.185 ([#2342](https://github.com/Protelis/Protelis/issues/2342)) ([e78bd86](https://github.com/Protelis/Protelis/commit/e78bd868b08caa623f68c479f720f72a67e6b39d))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.186 ([#2343](https://github.com/Protelis/Protelis/issues/2343)) ([e689191](https://github.com/Protelis/Protelis/commit/e68919170aa5a4b9d71e60ee80a841db249e4a12))
+* **deps:** update plugin gitsemver to v7.0.23 ([#2333](https://github.com/Protelis/Protelis/issues/2333)) ([d37892e](https://github.com/Protelis/Protelis/commit/d37892e2e436702c71e1212318d71e4133ef4e2c))
+* **deps:** update plugin kotlin-qa to v1.8.1 ([#2329](https://github.com/Protelis/Protelis/issues/2329)) ([0459436](https://github.com/Protelis/Protelis/commit/0459436e3ecf58c18dffa01d0fc2bc75703d0b83))
+* **deps:** update plugin multijvmtesting to v4.5.4 ([#2330](https://github.com/Protelis/Protelis/issues/2330)) ([deff698](https://github.com/Protelis/Protelis/commit/deff6987510ef6cbf4eda5171ad57b8e6a1f6395))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.21 ([#2331](https://github.com/Protelis/Protelis/issues/2331)) ([bdd987b](https://github.com/Protelis/Protelis/commit/bdd987b3541356214c8be3036d23c317a8197647))
+* **deps:** update plugin protelisdoc to v3.0.142 ([#2341](https://github.com/Protelis/Protelis/issues/2341)) ([b4d9376](https://github.com/Protelis/Protelis/commit/b4d9376cde1ce039c3ad941a109f32b28944883e))
+* **deps:** update plugin publishoncentral to v9.2.8 ([#2332](https://github.com/Protelis/Protelis/issues/2332)) ([e5de2c9](https://github.com/Protelis/Protelis/commit/e5de2c9d30264e70cae4f27ac670acf47387c468))
+* **deps:** update plugin shadowjar to v9.6.0 ([#2334](https://github.com/Protelis/Protelis/issues/2334)) ([9acf1e6](https://github.com/Protelis/Protelis/commit/9acf1e6277b3012771c205a85c208ee39cd75657))
+* **deps:** update plugin shadowjar to v9.6.1 ([#2339](https://github.com/Protelis/Protelis/issues/2339)) ([0937e08](https://github.com/Protelis/Protelis/commit/0937e0857d3daf9328fe5a4b37b75da3bd50726f))
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v7.0.1 ([#2336](https://github.com/Protelis/Protelis/issues/2336)) ([679228d](https://github.com/Protelis/Protelis/commit/679228debc4f8e9a13cdb7ce1c53256c4f025ebc))
+* **deps:** update danysk/action-checkout action to v0.2.31 ([#2337](https://github.com/Protelis/Protelis/issues/2337)) ([e0b652b](https://github.com/Protelis/Protelis/commit/e0b652b09a59db402cdd2d125ed1878e9b184d45))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.41 ([#2335](https://github.com/Protelis/Protelis/issues/2335)) ([217cbfc](https://github.com/Protelis/Protelis/commit/217cbfc29254c9df799106cf7712b6172e0d8634))
+* remove unnecessary suppression for DSL scope violation in build.gradle.kts ([25b813f](https://github.com/Protelis/Protelis/commit/25b813fca99f5c68378e4f33ae3f7afbbfa58918))
+
+### Refactoring
+
+* change evaluate method visibility to protected, switch to Junit 6 ([#2346](https://github.com/Protelis/Protelis/issues/2346)) ([5d092c6](https://github.com/Protelis/Protelis/commit/5d092c6c92695c7437486409ac8b526d0c27e3e4))
+
 ## [18.8.5](https://github.com/Protelis/Protelis/compare/18.8.4...18.8.5) (2026-07-14)
 
 ### Dependency updates
