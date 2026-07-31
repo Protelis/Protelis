@@ -8,34 +8,34 @@
 package org.protelis.test;
 
 import com.google.common.collect.ImmutableList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.protelis.lang.interpreter.util.ProtelisRuntimeException;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests of stack traces.
  */
-public final class TestStacktrace {
+final class TestStacktrace {
     private static final Pattern EXCEPTION_FORMAT_OPENJ9 = Pattern.compile(".*Tuple.*incompatible\\swith.*Field.*");
 
     /**
      * Test error in the main script.
      */
     @Test
-    public void testErrorInMainModule() {
+    void testErrorInMainModule() {
         ProgramTester.runExpectingErrors(
             "/errorTrace01.pt",
             ProtelisRuntimeException.class,
             e ->
                     assertTrue(
-                        "Exception does not include main script identification",
-                        e.toString().contains("main script")
+                        e.toString().contains("main script"),
+                        "Exception does not include main script identification"
                     )
         );
     }
@@ -44,10 +44,10 @@ public final class TestStacktrace {
      * Test stacktrace in a chained call.
      */
     @Test
-    public void testErrorTraceModule() {
+    void testErrorTraceModule() {
         ProgramTester.runExpectingErrors("/errorTrace02.pt", ProtelisRuntimeException.class, e -> {
             final String fullTrace = e.toString();
-            assertTrue("Exception does not identify line numbers\n" + fullTrace, fullTrace.contains("line"));
+            assertTrue(fullTrace.contains("line"), "Exception does not identify line numbers\n" + fullTrace);
             final List<String> functions = ImmutableList.of(
                 "errorTrace02:rootError",
                 "errorTrace02:aCall",
@@ -55,8 +55,8 @@ public final class TestStacktrace {
             );
             for (final String function : functions) {
                 assertTrue(
-                    "Exception does not identify function name " + function + '\n' + fullTrace,
-                        fullTrace.contains(function)
+                    fullTrace.contains(function),
+                    "Exception does not identify function name " + function + '\n' + fullTrace
                 );
             }
         });
@@ -66,14 +66,15 @@ public final class TestStacktrace {
      * Test issue #231.
      */
     @Test
-    public void testRuntimeErrorOnClassCastFailure() {
+    void testRuntimeErrorOnClassCastFailure() {
         ProgramTester.runExpectingErrors("minHood([])", ProtelisRuntimeException.class, e -> {
             final String message = e.getMessage();
             assertNotNull(message);
             final Matcher openJ9Exception = EXCEPTION_FORMAT_OPENJ9.matcher(message);
-            assertTrue("Exception does not include type cast failure indication\n" + message,
-                    message.contains("cannot be cast")
-                    || openJ9Exception.find());
+            assertTrue(
+                message.contains("cannot be cast") || openJ9Exception.find(),
+                "Exception does not include type cast failure indication\n" + message
+            );
         });
     }
 
@@ -81,13 +82,14 @@ public final class TestStacktrace {
      * Test issue #257.
      */
     @Test
-    public void testRuntimeErrorOnNonExistingSelfMethod() {
+    void testRuntimeErrorOnNonExistingSelfMethod() {
         ProgramTester.runExpectingErrors("self.getDcopInfoProvider()", ProtelisRuntimeException.class, e -> {
             assertNotNull(e.getMessage());
             final String fullTrace = e.toString();
-            assertTrue("Exception does not Protelis stacktrace\n" + fullTrace,
-                    fullTrace.contains("Fully detailed interpreter trace"));
+            assertTrue(
+                fullTrace.contains("Fully detailed interpreter trace"),
+                "Exception does not Protelis stacktrace\n" + fullTrace
+            );
         });
     }
 }
-

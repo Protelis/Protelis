@@ -53,7 +53,7 @@ public final class If<T> extends AbstractProtelisAST<T> {
     }
 
     @Override
-    public T evaluate(final ExecutionContext context) {
+    protected T evaluate(final ExecutionContext context) {
         return ensureNotAField(
             conditionExpression.eval(context)
                 ? context.runInNewStackFrame(IF_THEN.getCode(), thenExpression::eval)

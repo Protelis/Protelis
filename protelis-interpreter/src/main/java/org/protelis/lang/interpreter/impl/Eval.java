@@ -37,7 +37,7 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         final String currentProgram = programText().eval(context).toString();
         final Pair<String, ProtelisProgram> previous = loadState(context, () -> createState(currentProgram));
         /*

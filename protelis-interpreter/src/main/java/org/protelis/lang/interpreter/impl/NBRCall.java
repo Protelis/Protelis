@@ -36,7 +36,7 @@ public final class NBRCall<T> extends AbstractProtelisAST<Field<T>> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Field<T> evaluate(final ExecutionContext context) {
+    protected Field<T> evaluate(final ExecutionContext context) {
         return context.buildField(Function.identity(), (T) getBranch(0).eval(context));
     }
 

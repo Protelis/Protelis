@@ -36,7 +36,7 @@ public class Constant<T> extends AbstractProtelisAST<T> {
     }
 
     @Override
-    public final T evaluate(final ExecutionContext context) {
+    protected final T evaluate(final ExecutionContext context) {
         return constantValue;
     }
 

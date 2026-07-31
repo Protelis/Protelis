@@ -43,7 +43,7 @@ public final class UnaryOp extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         return op.run(getBranch(0).eval(context));
     }
 

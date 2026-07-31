@@ -99,7 +99,7 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         /*
          * Evaluate the function, the nullResult, and the argument
          */

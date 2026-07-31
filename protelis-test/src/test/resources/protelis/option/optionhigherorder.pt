@@ -2,7 +2,7 @@
  * EXPECTED_RESULT: 7
  */
 module protelis:option:sideeffects
-import org.protelis.test.TestJavaNull.maybeNull
+import org.protelis.test.TestJavaNullFunctions.maybeNull
 
 optionally(maybeNull())
     .map { it.length() }

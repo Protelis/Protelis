@@ -28,7 +28,7 @@ public final class Env extends AbstractProtelisAST<ExecutionEnvironment> {
     }
 
     @Override
-    public ExecutionEnvironment evaluate(final ExecutionContext context) {
+    protected ExecutionEnvironment evaluate(final ExecutionContext context) {
         return context.getExecutionEnvironment();
     }
 

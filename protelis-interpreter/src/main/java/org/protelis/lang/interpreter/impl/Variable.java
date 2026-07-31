@@ -34,7 +34,7 @@ public final class Variable extends AbstractProtelisAST<Object> {
     }
 
     @Override
-    public Object evaluate(final ExecutionContext context) {
+    protected Object evaluate(final ExecutionContext context) {
         Object val = context.getVariable(name);
         if (val == null) {
             /*

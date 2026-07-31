@@ -495,7 +495,7 @@ public final class Option<E> implements Serializable {
      * @return an empty {@code Option}
      */
     @SuppressWarnings("unchecked")
-    public static synchronized <E> Option<E> empty() {
+    public static <E> Option<E> empty() {
         return (Option<E>) EmptyOption.EMPTY_OPTION.empty;
     }
 

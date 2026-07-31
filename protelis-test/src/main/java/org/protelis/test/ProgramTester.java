@@ -28,11 +28,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test a protelis program.
@@ -142,8 +142,10 @@ public final class ProgramTester {
                     .getMessage().toLowerCase(Locale.ENGLISH);
             assertNotNull(message);
             for (final String messagePart : messageContents) {
-                assertTrue("Message does not contain the expected string: " + messagePart + " (original: " + message + ")",
-                        message.contains(messagePart.toLowerCase(Locale.ENGLISH)));
+                assertTrue(
+                    message.contains(messagePart.toLowerCase(Locale.ENGLISH)),
+                    "Message does not contain the expected string: " + messagePart + " (original: " + message + ")"
+                );
             }
         });
     }
@@ -160,13 +162,16 @@ public final class ProgramTester {
             final String program,
             final Class<E> expectedExceptionType,
             final Consumer<E> analyzer) {
-        final E result = assertThrows("The test does not fail as expected.", expectedExceptionType, () -> {
-            if (program.endsWith("pt")) {
-                runFile(program);
-            } else {
-                runProgram(program, 1);
-            }
-        });
+        final E result = assertThrows(
+            expectedExceptionType, () -> {
+                if (program.endsWith("pt")) {
+                    runFile(program);
+                } else {
+                    runProgram(program, 1);
+                }
+            },
+            "The test does not fail as expected."
+        );
         analyzer.accept(result);
     }
 

@@ -6,7 +6,8 @@
  */
 
 dependencies {
-    api(libs.junit)
+    api(platform(libs.junit.bom))
+    api(libs.junit.jupiter)
     api(project(":protelis-interpreter"))
     implementation(libs.alchemist.interfaces) {
         exclude(module = "asm-debug-all")
