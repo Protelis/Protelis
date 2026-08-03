@@ -1,3 +1,28 @@
+## [20.0.0](https://github.com/Protelis/Protelis/compare/19.0.0...20.0.0) (2026-08-03)
+
+### ⚠ BREAKING CHANGES
+
+* **api-deps:** require Java 21. update protelis.parser to v12.8.0 (#2352)
+
+### Features
+
+* **api-deps:** require Java 21. update protelis.parser to v12.8.0 ([#2352](https://github.com/Protelis/Protelis/issues/2352)) ([4132e09](https://github.com/Protelis/Protelis/commit/4132e094a340f3fea4877781edc6212735d4e935))
+
+### Dependency updates
+
+* **deps:** update dependency org.junit:junit-bom to v6.0.3 ([#2347](https://github.com/Protelis/Protelis/issues/2347)) ([d3e0aaf](https://github.com/Protelis/Protelis/commit/d3e0aaff53cfec6cf617c5a29cf63873c8aab5ea))
+* **deps:** update dependency org.junit:junit-bom to v6.1.2 ([#2348](https://github.com/Protelis/Protelis/issues/2348)) ([b15385a](https://github.com/Protelis/Protelis/commit/b15385ab764fdc11e7396384f8296a36ffe553cd))
+
+### Build and continuous integration
+
+* adhere to Gradle 9.6+ conventions ([#2351](https://github.com/Protelis/Protelis/issues/2351)) ([954c1b9](https://github.com/Protelis/Protelis/commit/954c1b9b57ab6b1b87accec2bed6ad6661a23c2e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.42 ([#2349](https://github.com/Protelis/Protelis/issues/2349)) ([5b48988](https://github.com/Protelis/Protelis/commit/5b489886269afcbd2babe81bbd68fb3bb86f4e0f))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.43 ([#2350](https://github.com/Protelis/Protelis/issues/2350)) ([85ac837](https://github.com/Protelis/Protelis/commit/85ac8379dd8f36560ed21a9870e49c9788d00dd9))
+
+### General maintenance
+
+* fix comment ([29de315](https://github.com/Protelis/Protelis/commit/29de315b690746d3c188e0bde20939da008ef567))
+
 ## [19.0.0](https://github.com/Protelis/Protelis/compare/18.8.5...19.0.0) (2026-07-31)
 
 ### ⚠ BREAKING CHANGES
