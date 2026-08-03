@@ -48,7 +48,7 @@ class TestShareSharedValues {
                 return Collections.emptyMap();
             }
         }));
-        for (; cycle.get().intValue() < 100; cycle.getAndIncrement()) {
+for (; cycle.intValue() < 100; cycle.getAndIncrement()) {
             vm.runCycle();
         }
     }
