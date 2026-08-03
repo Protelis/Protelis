@@ -30,7 +30,7 @@ val scmUrl = "git:git@github.com:Protelis/Protelis"
 
 val Provider<PluginDependency>.id get() = get().pluginId
 
-val minJavaVersion = 17
+val minJavaVersion = 21
 
 allprojects {
 

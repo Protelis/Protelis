@@ -20,8 +20,6 @@ import org.protelis.vm.CodePath;
 import org.protelis.vm.NetworkManager;
 import org.protelis.vm.ProtelisVM;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * Main collection of tests for the Protelis language and VM.
  */
@@ -35,7 +33,6 @@ class TestShareSharedValues {
      * where the shared values are those computed within the nbr call).
      */
     @Test
-    @SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
     void testLatestHasBeenShared() {
         final MutableInt cycle = new MutableInt(0);
         final ProtelisVM vm = new ProtelisVM(ProtelisLoader.parse(PROGRAM), new DummyContext(new NetworkManager() {
@@ -51,7 +48,7 @@ class TestShareSharedValues {
                 return Collections.emptyMap();
             }
         }));
-        for (; cycle.getValue() < 100; cycle.getAndIncrement()) {
+for (; cycle.intValue() < 100; cycle.getAndIncrement()) {
             vm.runCycle();
         }
     }
