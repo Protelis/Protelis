@@ -224,11 +224,10 @@ tasks.withType<ShadowJar>().configureEach {
 
 /*
  * Work around for:
-
-* What went wrong:
-Execution failed for task ':buildDashboard'.
-> Could not create task ':ktlintKotlinScriptCheck'.
-   > Cannot change dependencies of configuration ':ktlint' after it has been resolved.
-
+ *
+ * What went wrong:
+ * Execution failed for task ':buildDashboard'.
+ * > Could not create task ':ktlintKotlinScriptCheck'.
+ *   > Cannot change dependencies of configuration ':ktlint' after it has been resolved.
  */
 tasks.withType<GenerateBuildDashboard>().forEach { it.dependsOn(tasks.ktlintKotlinScriptCheck) }
