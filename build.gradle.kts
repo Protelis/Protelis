@@ -118,8 +118,8 @@ allprojects {
 
     if (System.getenv("CI") == true.toString()) {
         signing {
-            val signingKey: String? by project
-            val signingPassword: String? by project
+            val signingKey = providers.gradleProperty("signingKey").orNull
+            val signingPassword = providers.gradleProperty("signingPassword").orNull
             useInMemoryPgpKeys(signingKey, signingPassword)
         }
     }
@@ -177,7 +177,7 @@ allprojects {
 
 subprojects.forEach { subproject -> rootProject.evaluationDependsOn(subproject.path) }
 
-val globalJavadoc by configurations.registering
+val globalJavadoc = configurations.register("globalJavadoc")
 
 dependencies {
     api(project(":protelis-interpreter"))
@@ -185,7 +185,7 @@ dependencies {
     globalJavadoc(libs.apiguardian)
     globalJavadoc(platform(libs.junit.bom))
     globalJavadoc(libs.junit.jupiter)
-    subprojects.forEach { globalJavadoc(it) }
+    subprojects.forEach { subproject -> globalJavadoc(project(subproject.path)) }
 }
 
 tasks.withType<Javadoc>().configureEach {
