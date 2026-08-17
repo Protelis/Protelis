@@ -1,3 +1,29 @@
+## [20.0.1](https://github.com/Protelis/Protelis/compare/20.0.0...20.0.1) (2026-08-17)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.7.0-jre ([#2370](https://github.com/Protelis/Protelis/issues/2370)) ([5af76d3](https://github.com/Protelis/Protelis/commit/5af76d34e92cabc30e0f266a3de039eeee132268))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.2 ([#2365](https://github.com/Protelis/Protelis/issues/2365)) ([f49717a](https://github.com/Protelis/Protelis/commit/f49717ae6930aee5ccb2d17d6edb1b5f3b9a229a))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.3 ([#2369](https://github.com/Protelis/Protelis/issues/2369)) ([1c0e329](https://github.com/Protelis/Protelis/commit/1c0e329fbdadc3f1227e8fba58235c98c81253b1))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.187 ([#2358](https://github.com/Protelis/Protelis/issues/2358)) ([c6a8044](https://github.com/Protelis/Protelis/commit/c6a8044808d00e262d3f53a66c909f2a03276c94))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.188 ([#2361](https://github.com/Protelis/Protelis/issues/2361)) ([edebe21](https://github.com/Protelis/Protelis/commit/edebe2130e48beed493d90be6b7cf67c38f0c939))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.189 ([#2363](https://github.com/Protelis/Protelis/issues/2363)) ([fe3d76c](https://github.com/Protelis/Protelis/commit/fe3d76c1b40501c44b0e3f1a8bd33fc9fc506fb8))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.190 ([#2366](https://github.com/Protelis/Protelis/issues/2366)) ([011b2c3](https://github.com/Protelis/Protelis/commit/011b2c33cc4ec43a8cb8d2be33d939e5fba80b2b))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.191 ([#2367](https://github.com/Protelis/Protelis/issues/2367)) ([80f1712](https://github.com/Protelis/Protelis/commit/80f17120b92c113398465f2e9a4f823f25dc48b9))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.192 ([#2368](https://github.com/Protelis/Protelis/issues/2368)) ([626cb1e](https://github.com/Protelis/Protelis/commit/626cb1e8c95504be8854104cb265e4d032e5bf9e))
+* **deps:** update dependency org.junit:junit-bom to v6.1.3 ([#2356](https://github.com/Protelis/Protelis/issues/2356)) ([560f994](https://github.com/Protelis/Protelis/commit/560f994bfad39c4b608a030a4fb8248356b4d58d))
+* **deps:** update gradle to v9.7.0 ([#2355](https://github.com/Protelis/Protelis/issues/2355)) ([d7dd2c1](https://github.com/Protelis/Protelis/commit/d7dd2c16ffdabafb1be4e11187c52d400b932c65))
+* **deps:** update node.js to 24.19 ([#2354](https://github.com/Protelis/Protelis/issues/2354)) ([fda6808](https://github.com/Protelis/Protelis/commit/fda68081b6619967b4d81d7ab3267c65406ac390))
+* **deps:** update plugin java-qa to v1.192.0 ([#2353](https://github.com/Protelis/Protelis/issues/2353)) ([c83fa8c](https://github.com/Protelis/Protelis/commit/c83fa8ce974f176c2d8d306a04e9678706be5ecd))
+* **deps:** update plugin multijvmtesting to v4.5.5 ([#2357](https://github.com/Protelis/Protelis/issues/2357)) ([b2334a7](https://github.com/Protelis/Protelis/commit/b2334a72fcf721c131bba4fc975bfbada7c8aea7))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.22 ([#2359](https://github.com/Protelis/Protelis/issues/2359)) ([81c2972](https://github.com/Protelis/Protelis/commit/81c29725509acbda9409ea220189154ac65e6dd6))
+* **deps:** update plugin publishoncentral to v9.2.9 ([#2360](https://github.com/Protelis/Protelis/issues/2360)) ([9d8d146](https://github.com/Protelis/Protelis/commit/9d8d14663477363bfb25910f583ef64fd78af81a))
+* **deps:** update plugin tasktree to v4.0.2 ([#2362](https://github.com/Protelis/Protelis/issues/2362)) ([895b4d5](https://github.com/Protelis/Protelis/commit/895b4d51dd4cb31dcd008c2e0e155081219b7e07))
+
+### General maintenance
+
+* **deps-dev:** bump js-yaml from 4.2.0 to 4.3.1 ([61a7398](https://github.com/Protelis/Protelis/commit/61a7398099350323e39511ceff03d7d01009930a))
+
 ## [20.0.0](https://github.com/Protelis/Protelis/compare/19.0.0...20.0.0) (2026-08-03)
 
 ### ⚠ BREAKING CHANGES
