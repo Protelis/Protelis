@@ -1,3 +1,9 @@
+## [20.0.2](https://github.com/Protelis/Protelis/compare/20.0.1...20.0.2) (2026-08-18)
+
+### Dependency updates
+
+* **core-deps:** update dependency com.google.guava:guava to v33.7.1-jre ([#2371](https://github.com/Protelis/Protelis/issues/2371)) ([6727e16](https://github.com/Protelis/Protelis/commit/6727e163f2d24a2db09b6f2419caacfe5ea73e9a))
+
 ## [20.0.1](https://github.com/Protelis/Protelis/compare/20.0.0...20.0.1) (2026-08-17)
 
 ### Dependency updates
