@@ -17,7 +17,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 logback = "ch.qos.logback:logback-classic:1.6.3"
 protelis-parser = "org.protelis:protelis.parser:12.8.0"
-slf4j = "org.slf4j:slf4j-api:2.0.18"
+slf4j = "org.slf4j:slf4j-api:2.0.19"
 spotbugs-annotations = "com.github.spotbugs:spotbugs-annotations:4.10.4"
 trove4j = "net.sf.trove4j:trove4j:3.0.3"
 
