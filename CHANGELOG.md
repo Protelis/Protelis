@@ -1,3 +1,29 @@
+## [20.0.3](https://github.com/Protelis/Protelis/compare/20.0.2...20.0.3) (2026-09-07)
+
+### Dependency updates
+
+* **core-deps:** update plugin kotlin-jvm to v2.4.20 ([#2387](https://github.com/Protelis/Protelis/issues/2387)) ([9005795](https://github.com/Protelis/Protelis/commit/9005795b05a633f1e7dadfa0c249932c4dc5eb89))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.10.4 ([#2376](https://github.com/Protelis/Protelis/issues/2376)) ([bde1955](https://github.com/Protelis/Protelis/commit/bde195565f43a75461d62250c787926f6528621a))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.193 ([#2379](https://github.com/Protelis/Protelis/issues/2379)) ([2954abe](https://github.com/Protelis/Protelis/commit/2954abe438b34505e8368ca585ca63f1ea8ea320))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.194 ([#2380](https://github.com/Protelis/Protelis/issues/2380)) ([3763705](https://github.com/Protelis/Protelis/commit/37637050c3dad28ddd2a0202ad8ff6436830fcd9))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.19 ([#2386](https://github.com/Protelis/Protelis/issues/2386)) ([e860ef0](https://github.com/Protelis/Protelis/commit/e860ef0c5a6d187ea235b4c7aaf42b6cfc4aa062))
+* **deps:** update gradle to v9.7.1 ([#2372](https://github.com/Protelis/Protelis/issues/2372)) ([00acf9b](https://github.com/Protelis/Protelis/commit/00acf9b0fd84a8732b9e1ccc1d3bf2524eb0b6c1))
+* **deps:** update node.js to 24.20 ([#2385](https://github.com/Protelis/Protelis/issues/2385)) ([45c508d](https://github.com/Protelis/Protelis/commit/45c508df6cc387dc7cb03fe9e98f465bbbea434b))
+* **deps:** update plugin java-qa to v1.193.0 ([#2377](https://github.com/Protelis/Protelis/issues/2377)) ([684d556](https://github.com/Protelis/Protelis/commit/684d556b507adaeda1866817f513c0fbdd8dd9da))
+* **deps:** update plugin java-qa to v1.194.0 ([#2378](https://github.com/Protelis/Protelis/issues/2378)) ([801cef4](https://github.com/Protelis/Protelis/commit/801cef4374e3260a6662276d9e1e0c0ad6212c82))
+* **deps:** update plugin java-qa to v1.195.0 ([#2384](https://github.com/Protelis/Protelis/issues/2384)) ([5758d22](https://github.com/Protelis/Protelis/commit/5758d226a77eeb23e4ba5d6eae690c5d38e74543))
+* **deps:** update plugin kotlin-qa to v1.9.0 ([#2382](https://github.com/Protelis/Protelis/issues/2382)) ([5f88e3f](https://github.com/Protelis/Protelis/commit/5f88e3fdf94b35edf946187425c70d1d94e8dedf))
+* **deps:** update plugin multijvmtesting to v4.5.6 ([#2373](https://github.com/Protelis/Protelis/issues/2373)) ([9fa19ad](https://github.com/Protelis/Protelis/commit/9fa19adda0c9d311f7365f33396308d0fcb954fc))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.1.23 ([#2374](https://github.com/Protelis/Protelis/issues/2374)) ([cf77688](https://github.com/Protelis/Protelis/commit/cf7768876c9f2241f67cfc1bdbb96e0e6f63005d))
+* **deps:** update plugin protelisdoc to v3.0.143 ([#2383](https://github.com/Protelis/Protelis/issues/2383)) ([2ed1247](https://github.com/Protelis/Protelis/commit/2ed1247d0674e0ddc5dcd95725ceb787d4f38281))
+* **deps:** update plugin protelisdoc to v3.0.144 ([#2388](https://github.com/Protelis/Protelis/issues/2388)) ([f612748](https://github.com/Protelis/Protelis/commit/f612748e57c54a7c4719581c0fbd8b215247a7a8))
+* **deps:** update plugin publishoncentral to v9.2.10 ([#2375](https://github.com/Protelis/Protelis/issues/2375)) ([ef600bd](https://github.com/Protelis/Protelis/commit/ef600bd3ed76a9db705d6d593b9068e0808fdd18))
+* **deps:** update plugin publishoncentral to v9.2.11 ([#2389](https://github.com/Protelis/Protelis/issues/2389)) ([b8ed215](https://github.com/Protelis/Protelis/commit/b8ed2158a34ea4000f779755e3dd281c816da235))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.44 ([5c27443](https://github.com/Protelis/Protelis/commit/5c274433d371591b89a09883ec0e6b76c4c8ed84))
+
 ## [20.0.2](https://github.com/Protelis/Protelis/compare/20.0.1...20.0.2) (2026-08-18)
 
 ### Dependency updates
