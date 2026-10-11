@@ -1,3 +1,26 @@
+## [20.0.5](https://github.com/Protelis/Protelis/compare/20.0.4...20.0.5) (2026-10-11)
+
+### Dependency updates
+
+* **core-deps:** update dependency org.ow2.asm:asm to v9.11 ([#2415](https://github.com/Protelis/Protelis/issues/2415)) ([3b18898](https://github.com/Protelis/Protelis/commit/3b1889877f1ced1c021f03d601a779dd91af6571))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.20 ([#2407](https://github.com/Protelis/Protelis/issues/2407)) ([5e27d65](https://github.com/Protelis/Protelis/commit/5e27d65002b2a157e372bb13850c72d9da2c5ea6))
+* **deps:** update gradle to v9.8.1 ([200e3ff](https://github.com/Protelis/Protelis/commit/200e3ffb72c656f4b54c0ecffbf01656d0fb7028))
+* **deps:** update plugin com.gradle.develocity to v4.6.0 ([#2418](https://github.com/Protelis/Protelis/issues/2418)) ([56ffe1f](https://github.com/Protelis/Protelis/commit/56ffe1fe8904128192d3162b333caa5673b3fe85))
+* **deps:** update plugin java-qa to v1.196.0 ([#2419](https://github.com/Protelis/Protelis/issues/2419)) ([d81bcfe](https://github.com/Protelis/Protelis/commit/d81bcfe328023eb7d77805fccb74e85f3eebd86e))
+* **deps:** update plugin kotlin-qa to v1.10.1 ([3fdbf08](https://github.com/Protelis/Protelis/commit/3fdbf08f954c006382aa4ee1775b4c019cb23132))
+* **deps:** update plugin multijvmtesting to v4.5.10 ([#2410](https://github.com/Protelis/Protelis/issues/2410)) ([5eea4ec](https://github.com/Protelis/Protelis/commit/5eea4ece5f29bf55abdca13c89abadc2f3484fd1))
+* **deps:** update plugin protelisdoc to v3.0.150 ([#2412](https://github.com/Protelis/Protelis/issues/2412)) ([0aa24cb](https://github.com/Protelis/Protelis/commit/0aa24cbef28cd1aca6f2e092fd7546db9ed4fdd2))
+* **deps:** update plugin publishoncentral to v9.2.14 ([#2413](https://github.com/Protelis/Protelis/issues/2413)) ([a025ded](https://github.com/Protelis/Protelis/commit/a025dedc10dee39af1fb6a42a1b292f6da4269fa))
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v7.1.0 ([#2422](https://github.com/Protelis/Protelis/issues/2422)) ([f9ceeb9](https://github.com/Protelis/Protelis/commit/f9ceeb954b19b3c1df9be8f47da54d9868295cc2))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.48 ([#2414](https://github.com/Protelis/Protelis/issues/2414)) ([0c8548f](https://github.com/Protelis/Protelis/commit/0c8548f60de95b7df4cab311544ea465404a7343))
+
+### General maintenance
+
+* **deps-dev:** bump handlebars from 4.7.9 to 4.7.10 ([bcfd07a](https://github.com/Protelis/Protelis/commit/bcfd07a6157fdf434cca65b878f34deb4451678e))
+
 ## [20.0.4](https://github.com/Protelis/Protelis/compare/20.0.3...20.0.4) (2026-10-11)
 
 ### Dependency updates
