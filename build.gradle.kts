@@ -49,6 +49,11 @@ allprojects {
         mavenCentral()
     }
 
+    shadow {
+        // The fat jar is attached to GitHub releases only, never published to Maven repositories
+        addShadowVariantIntoJavaComponent.set(false)
+    }
+
     dependencies {
         with(rootProject.libs) {
             compileOnly(spotbugs.annotations)
