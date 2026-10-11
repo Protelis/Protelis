@@ -1,3 +1,19 @@
+## [20.0.6](https://github.com/Protelis/Protelis/compare/20.0.5...20.0.6) (2026-10-11)
+
+### Dependency updates
+
+* **deps:** update dependency commons-codec:commons-codec to v1.23.0 ([#2425](https://github.com/Protelis/Protelis/issues/2425)) ([9481f7d](https://github.com/Protelis/Protelis/commit/9481f7d43f378f8d3e6d0e3e3bbd2945fe77e2a7))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.21.0 ([#2416](https://github.com/Protelis/Protelis/issues/2416)) ([ab733b1](https://github.com/Protelis/Protelis/commit/ab733b1052d71789d9b80297965f691bb49f51a9))
+* **deps:** update plugin java-qa to v1.197.0 ([#2420](https://github.com/Protelis/Protelis/issues/2420)) ([a2dfef5](https://github.com/Protelis/Protelis/commit/a2dfef5b292f92964a634dacfbff9b99be9c7de4))
+
+### Bug Fixes
+
+* **build:** do not publish the shadow jar to Maven repositories ([#2426](https://github.com/Protelis/Protelis/issues/2426)) ([91ff444](https://github.com/Protelis/Protelis/commit/91ff444dfa335fee92e08bbeff3b7d21bed8c340))
+
+### Build and continuous integration
+
+* release only when ASM updates ([a78741c](https://github.com/Protelis/Protelis/commit/a78741cc0da8f623eace306537b42f6852f897a4))
+
 ## [20.0.5](https://github.com/Protelis/Protelis/compare/20.0.4...20.0.5) (2026-10-11)
 
 ### Dependency updates
