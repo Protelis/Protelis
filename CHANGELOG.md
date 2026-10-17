@@ -1,3 +1,19 @@
+## [20.0.7](https://github.com/Protelis/Protelis/compare/20.0.6...20.0.7) (2026-10-17)
+
+### Dependency updates
+
+* **core-deps:** update dependency org.ow2.asm:asm to v9.11.1 ([4d71ff1](https://github.com/Protelis/Protelis/commit/4d71ff134d330e04b22245a2ee3d8e0c69ed632d))
+* **deps:** update dependency com.github.spotbugs:spotbugs-annotations to v4.10.5 ([#2427](https://github.com/Protelis/Protelis/issues/2427)) ([3c959e5](https://github.com/Protelis/Protelis/commit/3c959e5350ee6f3836fca7ff8ae79b6f5302ddd2))
+* **deps:** update dependency io.github.classgraph:classgraph to v4.8.198 ([#2428](https://github.com/Protelis/Protelis/issues/2428)) ([c347851](https://github.com/Protelis/Protelis/commit/c347851c1e0ad696d84291e8fbdf0d47995d6391))
+* **deps:** update dependency io.github.classgraph:classgraph to v5 ([#2432](https://github.com/Protelis/Protelis/issues/2432)) ([532324e](https://github.com/Protelis/Protelis/commit/532324e439dea5eb469de334824c22a487f5fdac))
+* **deps:** update node.js to 24.22 ([a848f2f](https://github.com/Protelis/Protelis/commit/a848f2fb42ec87acbff3aecb75f40501bb6ac48c))
+* **deps:** update plugin java-qa to v1.198.0 ([#2429](https://github.com/Protelis/Protelis/issues/2429)) ([4844ea2](https://github.com/Protelis/Protelis/commit/4844ea2ff2156c867cc2b3b7f6f93042172cf9f2))
+* **deps:** update plugin java-qa to v1.199.0 ([#2431](https://github.com/Protelis/Protelis/issues/2431)) ([37ace1a](https://github.com/Protelis/Protelis/commit/37ace1ab6d7acde8597eb0a517a3c69dca7a9131))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.49 ([#2434](https://github.com/Protelis/Protelis/issues/2434)) ([1cdf91b](https://github.com/Protelis/Protelis/commit/1cdf91b871f2a3ec1119c3355e16f034dd4a2e34))
+
 ## [20.0.6](https://github.com/Protelis/Protelis/compare/20.0.5...20.0.6) (2026-10-11)
 
 ### Dependency updates
