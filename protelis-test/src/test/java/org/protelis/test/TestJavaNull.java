@@ -9,9 +9,13 @@ package org.protelis.test;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ResourceList;
-import io.github.classgraph.ScanResult;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Tests for Option and null.
@@ -22,14 +26,23 @@ final class TestJavaNull {
      * Runs all tests in protelis/option.
      */
     @Test
-    void testProtelisOption() {
-        try (ScanResult scanResult = new ClassGraph().acceptPathsNonRecursive("protelis/option").scan()) {
-            final ResourceList programs = scanResult.getResourcesWithExtension("pt"); // NOPMD
-            final ResourceList exceptions = programs.filter(it -> it.getPath().contains("error")); // NOPMD
-            final ResourceList regular = programs.filter(it -> !exceptions.contains(it)); // NOPMD
-            regular.forEach(it -> ProgramTester.runFile('/' + it.getPath()));
-            exceptions.forEach(it -> ProgramTester.runExpectingErrors('/' + it.getPath(), Throwable.class));
+    void testProtelisOption() throws IOException, URISyntaxException {
+        final String folder = "/protelis/option";
+        final Path root = Path.of(Objects.requireNonNull(TestJavaNull.class.getResource(folder)).toURI());
+        final List<String> programs;
+        try (Stream<Path> files = Files.list(root)) {
+            programs = files
+                .map(it -> root.relativize(it).toString())
+                .filter(it -> it.endsWith(".pt"))
+                .map(it -> folder + '/' + it)
+                .toList();
         }
+        programs.stream()
+            .filter(it -> !it.contains("error"))
+            .forEach(ProgramTester::runFile);
+        programs.stream()
+            .filter(it -> it.contains("error"))
+            .forEach(it -> ProgramTester.runExpectingErrors(it, Throwable.class));
     }
 
 }

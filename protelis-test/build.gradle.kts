@@ -16,7 +16,6 @@ dependencies {
         exclude(module = "asm-debug-all")
     }
     implementation(libs.commons.lang)
-    implementation(libs.classgraph)
 }
 
 javaQA {
