@@ -1,3 +1,12 @@
+## [20.1.0](https://github.com/Protelis/Protelis/compare/20.0.7...20.1.0) (2026-10-19)
+
+### Dependency updates
+
+* **api-deps:** update dependency org.protelis:protelis.parser to v12.9.0 ([#2440](https://github.com/Protelis/Protelis/issues/2440)) ([bf39516](https://github.com/Protelis/Protelis/commit/bf39516be85ab7830aa81e83ef292182f7fe0e32))
+* **deps:** drop classgraph in favor of plain java.nio resource listing ([#2437](https://github.com/Protelis/Protelis/issues/2437)) ([061245f](https://github.com/Protelis/Protelis/commit/061245fc6546003f6fb2c2d70a52e223d6b59cc9))
+* **deps:** update plugin kotlin-qa to v1.10.2 ([#2438](https://github.com/Protelis/Protelis/issues/2438)) ([d027705](https://github.com/Protelis/Protelis/commit/d0277051608993bd98b17e0ac85f8554b94dc892))
+* **deps:** update plugin protelisdoc to v3.0.151 ([#2439](https://github.com/Protelis/Protelis/issues/2439)) ([c57f003](https://github.com/Protelis/Protelis/commit/c57f003549b0f7117e27b14855b4b4b16bc60ee8))
+
 ## [20.0.7](https://github.com/Protelis/Protelis/compare/20.0.6...20.0.7) (2026-10-17)
 
 ### Dependency updates
