@@ -13,6 +13,7 @@ import org.protelis.lang.interpreter.util.WithBytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithBytecode {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final List<ProtelisAST<?>> branches;
     private final Metadata metadata;

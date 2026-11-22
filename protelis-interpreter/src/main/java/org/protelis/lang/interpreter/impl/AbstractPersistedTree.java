@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.impl;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -24,6 +25,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T> {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     /**
