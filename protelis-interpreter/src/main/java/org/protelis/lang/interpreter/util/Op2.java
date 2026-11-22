@@ -306,6 +306,8 @@ public enum Op2 implements WithBytecode {
     }
 
     /**
+     * Returns the function implementing this operator.
+     *
      * @return The function implementing this operator
      */
     public BinaryOperator<Object> getFunction() {

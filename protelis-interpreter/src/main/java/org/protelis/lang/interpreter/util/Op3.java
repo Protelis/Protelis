@@ -40,6 +40,8 @@ public enum Op3 implements WithBytecode {
     }
 
     /**
+     * Returns the {@link Op3} corresponding to the given name.
+     *
      * @param name
      *            the operation name
      * @return the corresponding {@link Op3}
@@ -77,6 +79,8 @@ public enum Op3 implements WithBytecode {
     }
 
     /**
+     * Applies this operation to the three arguments.
+     *
      * @param a
      *            first argument
      * @param b

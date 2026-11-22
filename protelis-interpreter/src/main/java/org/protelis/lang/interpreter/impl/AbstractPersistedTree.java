@@ -27,6 +27,8 @@ public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T>
     private static final long serialVersionUID = 1;
 
     /**
+     * Creates a new {@link AbstractPersistedTree}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches
@@ -37,6 +39,8 @@ public abstract class AbstractPersistedTree<S, T> extends AbstractProtelisAST<T>
     }
 
     /**
+     * Creates a new {@link AbstractPersistedTree}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branches

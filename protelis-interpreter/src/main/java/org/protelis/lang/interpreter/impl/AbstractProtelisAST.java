@@ -34,6 +34,8 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
     private final Metadata metadata;
 
     /**
+     * Creates a new {@link AbstractProtelisAST}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branch
@@ -44,6 +46,8 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
     }
 
     /**
+     * Creates a new {@link AbstractProtelisAST}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param branch
@@ -56,6 +60,8 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
     }
 
     /**
+     * Returns a {@link String} representing the branches of this tree, in the format (b1, b2, ..., bn).
+     *
      * @return a {@link String} representing the branches of this tree, in the
      *         format (b1, b2, ..., bn).
      */
@@ -128,6 +134,8 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
     }
 
     /**
+     * Returns true if this node can get annotated with null values - namely, if it is an interaction with Java.
+     *
      * @return true if this node can get annotated with null values - namely, if it is an interaction with Java
      */
     protected boolean isNullable() {
@@ -157,6 +165,8 @@ public abstract class AbstractProtelisAST<T> implements ProtelisAST<T>, WithByte
     }
 
     /**
+     * Returns the number of branches.
+     *
      * @return the number of branches
      */
     protected final int getBranchesNumber() {

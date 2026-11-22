@@ -131,7 +131,7 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
          */
         final CodePath codePath = codePathFactory.createCodePath(callStack, callFrameSizes);
         /*
-         * If there is a request to build a field, then it means this is an nbr-like operation
+         * If there is a request to build a field, then it means this is a nbr-like operation
          */
         final Field.Builder<R> builder = DatatypeFactory.createFieldBuilder();
         for (final Entry<DeviceUID, Map<CodePath, Object>> e: theta.entrySet()) {
@@ -269,6 +269,8 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     }
 
     /**
+     * Returns a view on the state stored in this context.
+     *
      * @return a view on the state stored in this context.
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is unmodifiable")
