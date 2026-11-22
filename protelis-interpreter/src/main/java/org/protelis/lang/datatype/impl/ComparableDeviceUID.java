@@ -23,6 +23,8 @@ public class ComparableDeviceUID<T extends Comparable<T>>
     private final T uid;
 
     /**
+     * Creates a new {@link ComparableDeviceUID}.
+     *
      * @param uid the string to use as the UID
      */
     public ComparableDeviceUID(final T uid) {
@@ -30,6 +32,8 @@ public class ComparableDeviceUID<T extends Comparable<T>>
     }
 
     /**
+     * Returns the underlying UID.
+     *
      * @return the underlying UID
      */
     public T getUID() {

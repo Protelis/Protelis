@@ -54,6 +54,8 @@ public final class Builtins {
     private Builtins() { }
 
     /**
+     * Checks whether all the elements of the field are true.
+     *
      * @param target the field
      * @return true if all the elements of the field are true
      */
@@ -62,6 +64,8 @@ public final class Builtins {
     }
 
     /**
+     * Checks whether all the elements of the field, except the local one, are true.
+     *
      * @param target the field
      * @return true if all the elements of the field are true. The local element is
      *         not considered.
@@ -71,6 +75,8 @@ public final class Builtins {
     }
 
     /**
+     * Checks whether any of the elements of the field is true.
+     *
      * @param target the field
      * @return true if any of the elements of the field is true
      */
@@ -79,6 +85,8 @@ public final class Builtins {
     }
 
     /**
+     * Checks whether any of the elements of the field, except the local one, is true.
+     *
      * @param target the field
      * @return true if any of the elements of the field are true. The local element
      *         is not considered.

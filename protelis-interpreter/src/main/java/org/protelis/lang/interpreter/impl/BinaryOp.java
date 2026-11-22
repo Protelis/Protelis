@@ -33,6 +33,8 @@ public final class BinaryOp extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * Creates a new {@link BinaryOp}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name

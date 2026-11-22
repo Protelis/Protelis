@@ -78,6 +78,8 @@ public enum Bytecode {
     //CHECKSTYLE: JavadocVariable ON
 
     /**
+     * Returns a unique code.
+     *
      * @return a unique code
      */
     public int getCode() {
