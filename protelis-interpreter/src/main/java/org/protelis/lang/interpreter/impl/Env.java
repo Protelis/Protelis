@@ -13,13 +13,15 @@ import org.protelis.vm.ExecutionContext;
 import org.protelis.vm.ExecutionEnvironment;
 
 /**
- *
+ * Accesses the current execution environment.
  */
 public final class Env extends AbstractProtelisAST<ExecutionEnvironment> {
 
     private static final long serialVersionUID = 636239540800669478L;
 
     /**
+     * Creates a new {@link Env}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      */

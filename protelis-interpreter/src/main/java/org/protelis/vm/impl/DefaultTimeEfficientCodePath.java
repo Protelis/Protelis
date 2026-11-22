@@ -41,6 +41,8 @@ public final class DefaultTimeEfficientCodePath implements CodePath {
     private transient String lazyString;
 
     /**
+     * Creates a new {@link DefaultTimeEfficientCodePath}.
+     *
      * @param source the current stack frames identifiers
      */
     public DefaultTimeEfficientCodePath(final TIntList source) {

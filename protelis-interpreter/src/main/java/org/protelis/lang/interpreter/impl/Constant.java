@@ -26,6 +26,8 @@ public class Constant<T> extends AbstractProtelisAST<T> {
     private final T constantValue;
 
     /**
+     * Creates a new {@link Constant}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param obj
@@ -64,6 +66,8 @@ public class Constant<T> extends AbstractProtelisAST<T> {
     }
 
     /**
+     * Returns the value associated to this constant.
+     *
      * @return the value associated to this constant
      */
     public final T getConstantValue() {

@@ -21,6 +21,8 @@ public final class DatatypeFactory {
     }
 
     /**
+     * Creates a new builder for immutable fields.
+     *
      * @param <T> field type
      * @return a builder for an immutable field
      */
@@ -29,6 +31,8 @@ public final class DatatypeFactory {
     }
 
     /**
+     * Creates a new tuple from a list.
+     *
      * @param l the elements
      * @return a new tuple
      */
@@ -37,6 +41,8 @@ public final class DatatypeFactory {
     }
 
     /**
+     * Creates a new tuple from the given elements.
+     *
      * @param l the elements
      * @return a new tuple
      */

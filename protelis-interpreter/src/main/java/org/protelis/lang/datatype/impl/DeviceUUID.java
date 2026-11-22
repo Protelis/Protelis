@@ -21,6 +21,8 @@ public class DeviceUUID extends ComparableDeviceUID<UUID> {
     }
 
     /**
+     * Creates a new {@link DeviceUUID}.
+     *
      * @param uid
      *            the string to use as the UID
      */

@@ -35,6 +35,8 @@ public final class Either<L, R> implements Serializable {
     }
 
     /**
+     * Returns true if it is a left {@link Either}.
+     *
      * @return true if it is a left {@link Either}
      */
     public boolean isLeft() {
@@ -42,6 +44,8 @@ public final class Either<L, R> implements Serializable {
     }
 
     /**
+     * Returns true if it is a right {@link Either}.
+     *
      * @return true if it is a right {@link Either}
      */
     public boolean isRight() {
@@ -49,6 +53,8 @@ public final class Either<L, R> implements Serializable {
     }
 
     /**
+     * Returns the left value, or an {@link IllegalStateException}.
+     *
      * @return the left value, or an {@link IllegalStateException}
      * @throws IllegalStateException if this is a right either
      */
@@ -60,6 +66,8 @@ public final class Either<L, R> implements Serializable {
     }
 
     /**
+     * Returns the right value, or an {@link IllegalStateException}.
+     *
      * @return the right value, or an {@link IllegalStateException}
      * @throws IllegalStateException if this is a left either
      */

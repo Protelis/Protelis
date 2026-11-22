@@ -26,6 +26,8 @@ public final class Eval extends AbstractPersistedTree<Pair<String, ProtelisProgr
     private static final long serialVersionUID = 8811510896686579514L;
 
     /**
+     * Creates a new {@link Eval}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg

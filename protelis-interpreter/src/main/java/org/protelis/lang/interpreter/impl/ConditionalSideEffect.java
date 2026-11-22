@@ -28,6 +28,8 @@ public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Creates a new {@link ConditionalSideEffect}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param cond

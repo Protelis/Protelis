@@ -29,6 +29,8 @@ public final class CreateTuple extends AbstractProtelisAST<Object> {
     private static final long serialVersionUID = -5018807023306859866L;
 
     /**
+     * Creates a new {@link CreateTuple}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param args

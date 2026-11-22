@@ -40,13 +40,15 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
     private final Random rng = new Random(0);
 
     /**
-     *
+     * Creates a new {@link DummyContext}.
      */
     public DummyContext() {
         this(new SimpleNetworkManager());
     }
 
     /**
+     * Creates a new {@link DummyContext}.
+     *
      * @param networkManager the network manager to be used
      */
     public DummyContext(final NetworkManager networkManager) {

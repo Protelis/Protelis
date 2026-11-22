@@ -120,6 +120,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Builds a simulation that runs indefinitely.
+     *
      * @param <T>
      *            The format of the concentrations
      * @param env
@@ -132,6 +134,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Builds a simulation that runs until the given time.
+     *
      * @param <T>
      *            The format of the concentrations
      * @param env
@@ -146,6 +150,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Builds a simulation that runs for at most the given number of steps.
+     *
      * @param <T>
      *            The format of the concentrations
      * @param env
@@ -160,6 +166,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Builds a simulation that runs for at most the given steps and time.
+     *
      * @param env
      *            The environment to be simulated
      * @param steps
@@ -190,6 +198,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Notifies the simulation that a neighbor has been added.
+     *
      * @param env
      *            the environment
      * @param node
@@ -212,6 +222,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Notifies the simulation that a neighbor has been removed.
+     *
      * @param env
      *            the environment
      * @param node
@@ -231,6 +243,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Notifies the simulation that a node has moved.
+     *
      * @param env
      *            the environment
      * @param node
@@ -297,6 +311,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Notifies the simulation that a reaction has been removed.
+     *
      * @param env
      *            the environment
      * @param r
@@ -449,6 +465,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Returns the dependency graph.
+     *
      * @return the dependency graph
      */
     public DependencyGraph<T> getDependencyGraph() {
@@ -471,6 +489,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Returns the reaction manager.
+     *
      * @return The IPQ
      */
     public ReactionManager<T> getReactionManager() {
@@ -729,6 +749,8 @@ public final class Engine<T> implements Simulation<T> {
     }
 
     /**
+     * Returns the error raised during the simulation, if any.
+     *
      * @return the error or null if there is none
      */
     public Throwable getError() {

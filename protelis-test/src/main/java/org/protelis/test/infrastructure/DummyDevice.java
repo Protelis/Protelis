@@ -38,6 +38,8 @@ public final class DummyDevice extends AbstractExecutionContext<DummyDevice>
     private final NetworkManager networkManager;
 
     /**
+     * Creates a new {@link DummyDevice}.
+     *
      * @param environment
      *            environment
      * @param node
