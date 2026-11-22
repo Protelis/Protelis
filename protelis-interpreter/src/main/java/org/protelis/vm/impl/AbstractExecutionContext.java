@@ -83,13 +83,13 @@ public abstract class AbstractExecutionContext<S extends AbstractExecutionContex
     /**
      * Create a new AbstractExecutionContext with a default, time-efficient code path factory.
      *
-     * @param execenv
+     * @param executionEnvironment
      *            The execution environment
      * @param networkManager
      *            Abstract network interface to be used
      */
-    protected AbstractExecutionContext(final ExecutionEnvironment execenv, final NetworkManager networkManager) {
-        this(execenv, networkManager, (stack, sizes) -> new DefaultTimeEfficientCodePath(stack));
+    protected AbstractExecutionContext(final ExecutionEnvironment executionEnvironment, final NetworkManager networkManager) {
+        this(executionEnvironment, networkManager, (stack, sizes) -> new DefaultTimeEfficientCodePath(stack));
     }
 
     /**
