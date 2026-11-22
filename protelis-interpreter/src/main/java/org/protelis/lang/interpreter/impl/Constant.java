@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.impl;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.util.Bytecode;
@@ -20,6 +21,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public class Constant<T> extends AbstractProtelisAST<T> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final T constantValue;
 

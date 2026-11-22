@@ -14,6 +14,7 @@ import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import javax.annotation.Nonnull;
+import java.io.Serial;
 
 import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
 
@@ -23,6 +24,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
  */
 public final class ConditionalSideEffect extends AbstractProtelisAST<Unit> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

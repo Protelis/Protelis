@@ -17,6 +17,7 @@ import org.protelis.lang.interpreter.util.Bytecode;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ import java.util.List;
  */
 public final class CreateTuple extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = -5018807023306859866L;
 
     /**
