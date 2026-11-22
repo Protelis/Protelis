@@ -7,6 +7,7 @@
 
 package org.protelis.lang.datatype.impl;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import org.protelis.lang.datatype.DeviceUID;
@@ -19,6 +20,7 @@ import org.protelis.lang.datatype.DeviceUID;
 public class ComparableDeviceUID<T extends Comparable<T>>
     implements DeviceUID, Comparable<ComparableDeviceUID<T>> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final T uid;
 
