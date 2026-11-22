@@ -19,6 +19,7 @@ import org.protelis.lang.interpreter.util.HashingFunnel;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.ALIGNED_MAP_GENERATOR;
  */
 public final class AlignedMap extends AbstractProtelisAST<Tuple> {
 
+    @Serial
     private static final long serialVersionUID = 2L;
 
     private final HashingFunnel hasher;
