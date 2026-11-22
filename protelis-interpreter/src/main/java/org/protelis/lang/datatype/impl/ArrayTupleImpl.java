@@ -23,6 +23,7 @@ import org.protelis.lang.interpreter.util.JavaInteroperabilityUtils;
 import org.protelis.vm.ExecutionContext;
 
 import javax.annotation.Nonnull;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -53,6 +54,7 @@ public final class ArrayTupleImpl implements Tuple {
         }
         return compareLexicographically(a, b);
     };
+    @Serial
     private static final long serialVersionUID = 5453783531251313649L;
     private final Object[] arrayContents;
     private int hash;
