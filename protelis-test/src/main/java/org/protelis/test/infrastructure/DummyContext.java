@@ -107,8 +107,13 @@ public final class DummyContext extends AbstractExecutionContext<DummyContext> {
     public static Field<Double> makeTestField(final ExecutionContext self) {
         final Field.Builder<Double> res = DatatypeFactory.createFieldBuilder();
         IntStreams.range(1, 100)
-                .mapToDouble(it -> it)
-                .forEach(n -> res.add(new DeviceUID() { private static final long serialVersionUID = 1L; }, n));
+            .mapToDouble(it -> it)
+            .forEach(n ->
+                res.add(new DeviceUID() {
+                    private static final long serialVersionUID = 1L;
+                },
+                n)
+            );
         return res.build(self.getDeviceUID(), 0.0);
     }
 
