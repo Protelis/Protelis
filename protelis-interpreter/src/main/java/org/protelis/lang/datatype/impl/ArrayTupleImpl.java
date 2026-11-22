@@ -152,16 +152,13 @@ public final class ArrayTupleImpl implements Tuple {
         if (o instanceof ArrayTupleImpl) {
             return Arrays.equals(arrayContents, ((ArrayTupleImpl) o).arrayContents);
         }
-        if (o instanceof Tuple) {
-            final Tuple t = (Tuple) o;
-            if (t.size() == arrayContents.length) {
-                for (int i = 0; i < arrayContents.length; i++) {
-                    if (!arrayContents[i].equals(t.get(i))) {
-                        return false;
-                    }
+        if (o instanceof Tuple t && t.size() == arrayContents.length) {
+            for (int i = 0; i < arrayContents.length; i++) {
+                if (!arrayContents[i].equals(t.get(i))) {
+                    return false;
                 }
-                return true;
             }
+            return true;
         }
         return false;
     }
