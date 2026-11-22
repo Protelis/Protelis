@@ -251,8 +251,10 @@ public final class ArrayTupleImpl implements Tuple {
     @Override
     public int hashCode() {
         if (hash == 0) {
-            hash = Hashing.murmur3_32_fixed().newHasher()
-                .putObject(arrayContents, (array, dest) -> {
+            hash = Hashing.murmur3_32_fixed().newHasher().putObject(
+                arrayContents,
+                (array, dest) -> {
+                    assert array != null;
                     for (final Object it: array) {
                         dest.putInt(it.hashCode());
                     }
