@@ -22,6 +22,8 @@ public final class AssignmentOp extends AbstractProtelisAST<Object> {
     private final Reference reference;
 
     /**
+     * Creates a new {@link AssignmentOp}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name

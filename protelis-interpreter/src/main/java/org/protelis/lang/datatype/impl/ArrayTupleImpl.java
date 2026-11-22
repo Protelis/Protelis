@@ -59,6 +59,8 @@ public final class ArrayTupleImpl implements Tuple {
     private String string;
 
     /**
+     * Creates a new {@link ArrayTupleImpl}.
+     *
      * @param base
      *            the elements
      */
