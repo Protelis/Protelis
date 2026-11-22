@@ -48,6 +48,8 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
     private final ProtelisAST<FunctionDefinition> execute;
 
     /**
+     * Creates a new {@link AlignedMap}.
+     *
      * @param hasher a function producing a valid, reproducible, and unambiguous hash for arbitrary objects
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
