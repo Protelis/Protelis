@@ -103,11 +103,9 @@ public final class AlignedMap extends AbstractProtelisAST<Tuple> {
             /*
              * Mappings are of the form: [[key1, value1][key2, value2]...]
              */
-            if (originalTupleObject instanceof Tuple) {
-                final Tuple originalTuple = (Tuple) originalTupleObject;
+            if (originalTupleObject instanceof Tuple originalTuple) {
                 for (final Object keyToValueObject : originalTuple) {
-                    if (keyToValueObject instanceof Tuple) {
-                        final Tuple keyToValue = (Tuple) keyToValueObject;
+                    if (keyToValueObject instanceof Tuple keyToValue) {
                         if (keyToValue.size() == 2) {
                             final Object key = keyToValue.get(0);
                             final Object value = keyToValue.get(1);
