@@ -13,11 +13,14 @@ import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
+
 /**
  * Declare a variable from a "let" expression.
  */
 public final class AssignmentOp extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = -7298208661255971616L;
     private final Reference reference;
 
