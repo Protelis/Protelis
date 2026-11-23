@@ -15,6 +15,7 @@ import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +33,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
      * left-hand side of the {@link Invoke} is a {@link FunctionDefinition}.
      */
     public static final String APPLY = "apply";
+    @Serial
     private static final long serialVersionUID = 1L;
     private final boolean isApply;
     private final ProtelisAST<?> leftExpression;

@@ -9,11 +9,14 @@ package org.protelis.lang.interpreter.impl;
 
 import org.protelis.lang.loading.Metadata;
 
+import java.io.Serial;
+
 /**
  * A numerical constant.
  */
 public final class NumericConstant extends Constant<Double> {
 
+    @Serial
     private static final long serialVersionUID = 7005881609489257450L;
 
     /**

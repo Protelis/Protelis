@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,6 +40,7 @@ import java.util.stream.StreamSupport;
  */
 public final class LazyField<T> extends AbstractField<T> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     @Nonnull
     private final ImmutableCollection<DeviceUID> origin;
@@ -158,11 +160,13 @@ public final class LazyField<T> extends AbstractField<T> {
         return origin.size();
     }
 
+    @Serial
     private void writeObject(final ObjectOutputStream stream) throws IOException, ExecutionException {
         stream.defaultWriteObject();
         stream.writeObject(neighbors.getAll(origin));
     }
 
+    @Serial
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
         @SuppressWarnings("unchecked")

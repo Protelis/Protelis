@@ -14,6 +14,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -63,6 +64,7 @@ public final class Option<E> implements Serializable {
      * Protelis is null-intolerant.
      */
     public static final Object JAVA_NULL = null;
+    @Serial
     private static final long serialVersionUID = 1L;
     private static final ImmutableMap<String, Boolean> TESTERS = ImmutableMap.of(
             "isPresent", true,

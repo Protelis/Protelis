@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.impl;
 
+import java.io.Serial;
 import java.util.function.Function;
 
 import org.protelis.lang.datatype.Field;
@@ -22,6 +23,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class NBRCall<T> extends AbstractProtelisAST<Field<T>> {
 
+    @Serial
     private static final long serialVersionUID = 5255917527687990281L;
 
     /**
