@@ -23,6 +23,8 @@ public final class Variable extends AbstractProtelisAST<Object> {
     private final Reference name;
 
     /**
+     * Creates a new {@link Variable}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param ref

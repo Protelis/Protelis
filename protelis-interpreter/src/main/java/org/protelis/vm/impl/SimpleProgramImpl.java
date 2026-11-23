@@ -26,6 +26,8 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     private final String name;
 
     /**
+     * Creates a new {@link SimpleProgramImpl}.
+     *
      * @param source
      *            Original {@link ProtelisProgram} parsed by Xtext. Used to get the
      *            module name.
@@ -39,6 +41,8 @@ public final class SimpleProgramImpl implements ProtelisProgram {
     }
 
     /**
+     * Creates a new {@link SimpleProgramImpl}.
+     *
      * @param pName
      *            Program name
      * @param program

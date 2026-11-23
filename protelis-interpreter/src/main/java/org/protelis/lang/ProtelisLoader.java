@@ -342,6 +342,8 @@ public final class ProtelisLoader {
     }
 
     /**
+     * Parses an anonymous Protelis module from its source text.
+     *
      * @param program A valid Protelis program to be prepared for execution.
      *     All the Protelis modules your program relies upon must be included in your Java classpath.
      *     This constructor does the Java classpath scanning automatically,
@@ -356,6 +358,8 @@ public final class ProtelisLoader {
     }
 
     /**
+     * Parses a Protelis program from a URI.
+     *
      * @param programURI
      *            Protelis program file to be prepared for execution. It must be
      *             either a valid {@link URI} string, for instance

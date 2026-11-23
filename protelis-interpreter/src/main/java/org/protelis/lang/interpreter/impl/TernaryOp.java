@@ -24,6 +24,8 @@ public final class TernaryOp extends AbstractProtelisAST<Object> {
     private final Op3 op;
 
     /**
+     * Creates a new {@link TernaryOp}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name

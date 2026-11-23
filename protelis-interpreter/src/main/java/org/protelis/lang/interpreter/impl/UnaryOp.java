@@ -25,6 +25,8 @@ public final class UnaryOp extends AbstractProtelisAST<Object> {
     private final Op1 op;
 
     /**
+     * Creates a new {@link UnaryOp}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name

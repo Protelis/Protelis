@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashFunction;
 
 /**
- *
+ * Tests for {@link HashingCodePathFactory}.
  */
 class TestHashingCodePathFactory {
 

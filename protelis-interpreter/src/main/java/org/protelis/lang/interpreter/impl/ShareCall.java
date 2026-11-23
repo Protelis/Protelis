@@ -77,6 +77,8 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     }
 
     /**
+     * Creates a new {@link ShareCall}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param localName
@@ -227,6 +229,9 @@ public final class ShareCall<S, T> extends AbstractPersistedTree<S, T> {
     }
 
     /**
+     * Returns an {@link Optional} containing the {@link ProtelisAST} representing the yield expression, or an
+     * {@link Optional#absent()} otherwise.
+     *
      * @return an {@link Optional} containing the {@link ProtelisAST} representing the yield expression,
      *     or an {@link Optional#absent()} otherwise.
      */

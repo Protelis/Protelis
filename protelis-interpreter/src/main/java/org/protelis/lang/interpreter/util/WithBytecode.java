@@ -14,6 +14,8 @@ package org.protelis.lang.interpreter.util;
 public interface WithBytecode {
 
     /**
+     * Returns the element {@link Bytecode}.
+     *
      * @return the element {@link Bytecode}
      */
     Bytecode getBytecode();

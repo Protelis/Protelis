@@ -54,6 +54,8 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * Creates a new {@link Invoke}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param name
@@ -129,6 +131,8 @@ public final class Invoke extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * Returns the {@link ProtelisAST} representing the invocation receiver.
+     *
      * @return the {@link ProtelisAST} representing the invocation receiver
      */
     public ProtelisAST<?> getLeftExpression() {

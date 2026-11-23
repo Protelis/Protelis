@@ -121,6 +121,8 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Object get(int i);
 
     /**
+     * Returns the first element of the tuple, if present, throws an exception otherwise.
+     *
      * @return the first element of the tuple, if present, throws an exception otherwise
      * @throws ArrayIndexOutOfBoundsException if there are no elements in the tuple
      */
@@ -152,6 +154,8 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Tuple intersection(Tuple t);
 
     /**
+     * Returns true iff the size of the tuple is zero.
+     *
      * @return Returns true iff the size of the tuple is zero
      */
     boolean isEmpty();
@@ -174,6 +178,8 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Tuple map(Function<Object, Object> fun);
 
     /**
+     * Returns the biggest element of this tuple, or the default value.
+     *
      * @param def the return in case max is not defined
      * @return the biggest element of this tuple, if defined, or default otherwise
      */
@@ -188,6 +194,8 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Tuple mergeAfter(Tuple tuple);
 
     /**
+     * Returns the smallest element of this tuple, or the default value.
+     *
      * @param def the return in case min is not defined
      * @return the smallest element of this tuple, if defined, or default otherwise
      */
@@ -234,11 +242,15 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Tuple set(int i, Object element);
 
     /**
+     * Returns the number of elements in the tuple.
+     *
      * @return Number of elements in the tuple
      */
     int size();
 
     /**
+     * Returns a sorted version of this tuple.
+     *
      * @return a sorted version of this tuple
      */
     Tuple sort();
@@ -281,12 +293,16 @@ public interface Tuple extends Iterable<Object>, Serializable, Comparable<Tuple>
     Tuple subTupleStart(int i);
 
     /**
+     * Returns a tuple with all the element of this tuple except the first.
+     *
      * @return a tuple with all the element of this tuple except the first
      * @throws ArrayIndexOutOfBoundsException if there are no elements in the tuple
      */
     Tuple tail();
 
     /**
+     * Returns an array with a copy of the contents of the tuple.
+     *
      * @return an array with a copy of the contents of the tuple
      */
     Object[] toArray();
