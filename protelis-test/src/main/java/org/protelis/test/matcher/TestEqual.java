@@ -44,27 +44,28 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
                     final Object singleNodeResult = simulationRes.get(pair.getLeft());
                     try {
                         assertNotNull(singleNodeResult);
-                        if (singleNodeResult instanceof Integer) {
-                            final double result = (Integer) singleNodeResult;
-                            assertEquals(
+                        switch (singleNodeResult) {
+                            case Integer result -> assertEquals(
                                 Double.parseDouble(pair.getRight()),
                                 result,
                                 InfrastructureTester.DELTA
                             );
-                        } else if (singleNodeResult instanceof Double) {
-                            assertEquals(
+                            case Double aDouble -> assertEquals(
                                 Double.parseDouble(pair.getRight()),
-                                (Double) singleNodeResult,
+                                aDouble,
                                 InfrastructureTester.DELTA
                             );
-                        } else if (singleNodeResult instanceof Boolean) {
-                            final String v = pair.getRight();
-                            final boolean expected = Boolean.parseBoolean("T".equals(v)
-                                ? "true"
-                                : "F".equals(v) ? "false" : pair.getRight());
-                            assertEquals(expected, singleNodeResult);
-                        } else {
-                            assertEquals(pair.getRight(), singleNodeResult);
+                            // Remove once anonymous pattern variables are supported
+                            // CHECKSTYLE: UnusedLocalVariable OFF
+                            case Boolean b -> { // NOPMD waiting for pattern variables
+                                final String v = pair.getRight();
+                                final boolean expected = Boolean.parseBoolean("T".equals(v)
+                                    ? "true"
+                                    : "F".equals(v) ? "false" : pair.getRight());
+                                assertEquals(expected, singleNodeResult);
+                            }
+                            // CHECKSTYLE: UnusedLocalVariable ON
+                            default -> assertEquals(pair.getRight(), singleNodeResult);
                         }
                         // CHECKSTYLE: IllegalCatch OFF
                     } catch (Exception | AssertionError e) { // NOPMD
