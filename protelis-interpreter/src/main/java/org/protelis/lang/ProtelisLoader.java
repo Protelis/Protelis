@@ -607,7 +607,7 @@ public final class ProtelisLoader {
                                return new FunctionCall(meta, (FunctionDefinition) constant, invocationArguments(invokeArgs));
                            }
                         }
-                        // TODO: Drop "apply", and allow only standard invocations with better system
+                        // TODO "apply" could be dropped in favor of standard invocations, with a better system
                         return new Invoke(meta, "apply", first, invocationArguments(invokeArgs));
                     }
                     if (".".equals(expression.getName()) && second instanceof MethodCall method) {
