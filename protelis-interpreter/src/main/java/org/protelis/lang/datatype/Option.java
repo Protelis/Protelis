@@ -179,14 +179,12 @@ public final class Option<E> implements Serializable {
         final FunctionDefinition fun
     ) {
         runProtelis(ctx, fun, value -> {
-            if (value instanceof Option) {
-                final Option<?> result = (Option<?>) value;
+            if (value instanceof Option<?> result) {
                 if (result.isEmpty()) {
                     return empty();
                 }
                 return (Option<X>) value;
-            } else if (value instanceof Optional) {
-                final Optional<?> result = (Optional<?>) value;
+            } else if (value instanceof Optional<?> result) {
                 if (result.isPresent()) {
                     return new Option<>((X) result.get());
                 }

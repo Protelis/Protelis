@@ -104,8 +104,7 @@ public final class Reference implements Serializable {
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj instanceof Handler) {
-                final Handler<?, ?> other = (Handler<?, ?>) obj;
+            if (obj instanceof Handler<?, ?> other) {
                 return targetClass.equals(other.targetClass)
                     && serializableState.equals(other.serializableState);
             }

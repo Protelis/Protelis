@@ -92,8 +92,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
          * If it is a function pointer, then create a new function call
          */
         final Object target = context.runInNewStackFrame(DOT_OPERATOR_TARGET.getCode(), leftExpression::eval);
-        if (isApply && target instanceof FunctionDefinition) {
-            final FunctionDefinition fd = (FunctionDefinition) target;
+        if (isApply && target instanceof FunctionDefinition fd) {
             /*
              * Currently, there is no change in the code-path when superscript is
              * executed: f.apply(...) is exactly equivalent to f(...).
@@ -112,8 +111,7 @@ public final class Invoke extends AbstractProtelisAST<Object> {
                 args[i] = context.runInNewStackFrame(i, getBranch(i)::eval);
             }
             context.returnFromCallFrame();
-            if (isApply && target instanceof JVMEntity) {
-                final JVMEntity jvmEntity = (JVMEntity) target;
+            if (isApply && target instanceof JVMEntity jvmEntity) {
                 return ReflectionUtils.invokeFieldable(context, jvmEntity.getType(), jvmEntity.getMemberName(), null, args);
             } else {
                 return ReflectionUtils.invokeFieldable(context, target.getClass(), methodName, target, args);

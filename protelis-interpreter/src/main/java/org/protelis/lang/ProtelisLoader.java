@@ -580,9 +580,8 @@ public final class ProtelisLoader {
                 case 2:
                     final ProtelisAST<?> first = expression((Expression) expression.getElements().get(0));
                     final EObject second = expression.getElements().get(1);
-                    if (expression.getName() == null && second instanceof InvocationArguments) {
+                    if (expression.getName() == null && second instanceof InvocationArguments invokeArgs) {
                         // Invoke
-                        final InvocationArguments invokeArgs = (InvocationArguments) second;
                         if (first instanceof Constant) {
                            final Object constant = ((Constant<?>) first).getConstantValue();
                            if (constant instanceof FunctionDefinition) {
@@ -593,9 +592,8 @@ public final class ProtelisLoader {
                         // TODO: Drop "apply", and allow only standard invocations with better system
                         return new Invoke(meta, "apply", first, invocationArguments(invokeArgs));
                     }
-                    if (".".equals(expression.getName()) && second instanceof MethodCall) {
+                    if (".".equals(expression.getName()) && second instanceof MethodCall method) {
                         // Method call
-                        final MethodCall method = (MethodCall) second;
                         return new Invoke(meta, method.getName(), first, invocationArguments(method.getArguments()));
                     }
                     if (expression.getName() != null) {
@@ -721,8 +719,7 @@ public final class ProtelisLoader {
                  */
                 return new JvmConstant(meta, new JVMEntity((JvmFeature) ref));
             }
-            if (ref instanceof FunctionDef) {
-                final FunctionDef functionDefinition = (FunctionDef) ref;
+            if (ref instanceof FunctionDef functionDefinition) {
                 try {
                     final var target = VIRTUAL_METHOD_TABLE.get(
                         functionDefinition,
