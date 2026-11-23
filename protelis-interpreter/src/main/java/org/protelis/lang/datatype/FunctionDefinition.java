@@ -47,6 +47,8 @@ public final class FunctionDefinition implements Serializable {
     private ProtelisAST<?> cleanBody;
 
     /**
+     * Creates a function definition from a named function.
+     *
      * @param functionDefinition original parsed function
      * @param bodySupplier body calculator
      */
@@ -63,6 +65,8 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Creates a function definition from a lambda.
+     *
      * @param lambda lambda expression
      * @param args arguments for this lambda
      * @param body the function body
@@ -110,6 +114,8 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Returns the reference of the argument in the given position.
+     *
      * @param i
      *            argument position
      * @return argument internal name
@@ -119,6 +125,8 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Returns the body of the function as defined. All annotations for the body are cleared. No side effects.
+     *
      * @return the body of the function as defined. All annotations for the body
      *         are cleared. No side effects.
      */
@@ -130,6 +138,8 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Returns the function name.
+     *
      * @return function name
      */
     public String getName() {
@@ -137,6 +147,8 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Returns the number of arguments.
+     *
      * @return number of arguments
      */
     public int getParameterCount() {
@@ -144,6 +156,8 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Returns a special hash code to identify this function in the call stack.
+     *
      * @return a special hash code to identify this function in the call stack
      */
     public byte[] getStackCode() {
@@ -156,6 +170,9 @@ public final class FunctionDefinition implements Serializable {
     }
 
     /**
+     * Returns true if this function definition was originated from a Kotlin-style lambda without explicit
+     * arguments, hence may be invoked with a single parameter 'it'.
+     *
      * @return true if this function definition was originated from a Kotlin-style
      *         lambda without explicit arguments, hence may be invoked with a single
      *         parameter 'it'
