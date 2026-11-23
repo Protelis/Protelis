@@ -106,8 +106,7 @@ public final class FunctionDefinition implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o instanceof FunctionDefinition) {
-            final FunctionDefinition fd = (FunctionDefinition) o;
+        if (o instanceof FunctionDefinition fd) {
             return functionName.equals(fd.functionName) && argNumber == fd.argNumber;
         }
         return false;
