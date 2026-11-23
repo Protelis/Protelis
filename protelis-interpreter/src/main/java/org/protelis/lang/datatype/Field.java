@@ -159,6 +159,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns the value associated with the given device.
+     *
      * @param id the DeviceUID
      * @return the associated value
      * @throws NoSuchElementException if the field does not have the provided id
@@ -170,6 +172,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns the field values type.
+     *
      * @return The field values type
      */
     @SuppressWarnings("unchecked")
@@ -178,6 +182,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns the value associated with the given device, if present.
+     *
      * @param id the DeviceUID
      * @return the associated value wrapped in an {@link Optional},
      *         or an {@link Optional#empty()} if the device is not aligned.
@@ -188,6 +194,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns the local (DeviceUID, value) entry.
+     *
      * @return the local DeviceUID, T entry
      */
     default Map.Entry<DeviceUID, T> getLocal() {
@@ -195,11 +203,15 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns the local Device.
+     *
      * @return the local Device
      */
     DeviceUID getLocalDevice();
 
     /**
+     * Returns the value associated with the local device.
+     *
      * @return the value associated with the local device
      */
     default T getLocalValue() {
@@ -207,6 +219,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns true if there are no neighbors.
+     *
      * @return True if there are no neighbors
      */
     default boolean isEmpty() {
@@ -214,11 +228,15 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns an iterator over the set of neighbor/value pairs.
+     *
      * @return An iterator over the set of neighbor/value pairs
      */
     Iterable<? extends Map.Entry<DeviceUID, T>> iterable();
 
     /**
+     * Returns an {@link Iterable} for the field keys.
+     *
      * @return An {@link Iterable} for the field keys
      */
     default Iterable<DeviceUID> keys() {
@@ -226,6 +244,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns a {@link Stream} for the field keys.
+     *
      * @return A {@link Stream} for the field keys
      */
     default Stream<DeviceUID> keyStream() {
@@ -338,6 +358,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns a {@link Stream} over the set of neighbor/value pairs.
+     *
      * @return A {@link Stream} over the set of neighbor/value pairs
      */
     default Stream<? extends Map.Entry<DeviceUID, T>> stream() {
@@ -345,6 +367,9 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns a map version of the field. The map must not return a mutable view, namely, changes to this map
+     * must not affect the field.
+     *
      * @return a map version of the field. The map must not return a mutable view,
      *         namely, changes to this map must not affect the field.
      */
@@ -353,6 +378,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns an {@link Iterable} set of values.
+     *
      * @return An {@link Iterable} set of values
      */
     default Iterable<T> values() {
@@ -360,6 +387,8 @@ public interface Field<T> extends Serializable {
     }
 
     /**
+     * Returns a {@link Stream} over the set of values.
+     *
      * @return A {@link Stream} over the set of values
      */
     default Stream<T> valueStream() {

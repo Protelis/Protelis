@@ -25,6 +25,8 @@ public final class Fields {
     }
 
     /**
+     * Applies a unary function to the field arguments, point-wise.
+     *
      * @param fun    the {@link UnaryOperator} to apply
      * @param fields an array of integers containing the indexes of the arguments
      *               that are fields
@@ -37,6 +39,8 @@ public final class Fields {
     }
 
     /**
+     * Applies a binary function to the field arguments, point-wise.
+     *
      * @param fun    the 2-ary function to apply, in form of a
      *               {@link BinaryOperator}
      * @param fields an array of integers containing the indexes of the arguments
@@ -51,6 +55,8 @@ public final class Fields {
     }
 
     /**
+     * Applies a ternary function to the field arguments, point-wise.
+     *
      * @param fun    the {@link TriFunction} to apply
      * @param fields an array of integers containing the indexes of the arguments
      *               that are fields
@@ -66,6 +72,8 @@ public final class Fields {
     }
 
     /**
+     * Applies a function to the field arguments, point-wise.
+     *
      * @param fun          the function to apply.
      * @param fieldIndexes the indexes of which among the arguments are fields
      * @param args         the arguments
@@ -78,6 +86,8 @@ public final class Fields {
     }
 
     /**
+     * Applies a function to the field arguments, point-wise.
+     *
      * @param fun          the function to apply.
      * @param fieldTarget  true if the target is a field
      * @param fieldIndexes the indexes of which among the arguments are fields
@@ -93,6 +103,8 @@ public final class Fields {
     }
 
     /**
+     * Applies a function to the field arguments, point-wise.
+     *
      * @param fun          the function to apply. It must accept as a first argument
      *                     the data type carried by the target, and an Object array
      *                     as second argument (namely, it is a vararg)

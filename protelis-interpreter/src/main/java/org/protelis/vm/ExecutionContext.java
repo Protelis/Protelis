@@ -89,22 +89,30 @@ public interface ExecutionContext {
     void commit();
 
     /**
+     * Returns the current device time, absolute.
+     *
      * @return the current device time, absolute
      */
     Number getCurrentTime();
 
     /**
+     * Returns the current time, relative to the last round.
+     *
      * @return the current time, relative to the last round
      */
     Number getDeltaTime();
 
     /**
+     * Returns the unique identifier for the device where execution is taking place.
+     *
      * @return The unique identifier for the device where execution is taking
      *         place.
      */
     DeviceUID getDeviceUID();
 
     /**
+     * Returns the current {@link ExecutionEnvironment}.
+     *
      * @return The current {@link ExecutionEnvironment}
      */
     ExecutionEnvironment getExecutionEnvironment();
@@ -130,18 +138,24 @@ public interface ExecutionContext {
     Object getVariable(Reference reference);
 
     /**
+     * Enters a new call stack frame.
+     *
      * @param id
      *            stack frame type
      */
     void newCallStackFrame(byte... id);
 
     /**
+     * Enters a new call stack frame.
+     *
      * @param id
      *            stack frame type
      */
     void newCallStackFrame(int... id);
 
     /**
+     * Runs an operation in a new call stack frame.
+     *
      * @param id
      *            stack frame type
      * @param operation the operation to run in the new context

@@ -32,6 +32,8 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
     private final byte[] stackCode;
 
     /**
+     * Creates a new {@link FunctionCall}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param functionDefinition
@@ -96,6 +98,8 @@ public final class FunctionCall extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * Returns the {@link FunctionDefinition}.
+     *
      * @return the {@link FunctionDefinition}
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "The field is immutable")

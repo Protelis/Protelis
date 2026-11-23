@@ -23,16 +23,22 @@ public interface ExceptionObserver {
     void exceptionThrown(Exception ex);
 
     /**
+     * Returns the list of all the thrown exceptions.
+     *
      * @return list of all the thrown exception
      */
     List<Exception> getExceptionList();
 
     /**
+     * Returns the last thrown exception.
+     *
      * @return last thrown exception
      */
     Optional<Exception> getLastException();
 
     /**
+     * Returns the first thrown exception.
+     *
      * @return first thrown exception
      */
     Optional<Exception> getFirstException();

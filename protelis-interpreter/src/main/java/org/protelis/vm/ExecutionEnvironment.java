@@ -16,6 +16,8 @@ import java.util.Set;
 public interface ExecutionEnvironment {
 
     /**
+     * Checks whether a variable is present.
+     *
      * @param id
      *            the variable name
      * @return true if the variable is present
@@ -23,6 +25,8 @@ public interface ExecutionEnvironment {
     boolean has(String id);
 
     /**
+     * Returns the value of a variable.
+     *
      * @param id
      *            the variable name
      * @return the value of the variable
@@ -30,6 +34,8 @@ public interface ExecutionEnvironment {
     Object get(String id);
 
     /**
+     * Returns the value of a variable, or a default value if absent.
+     *
      * @param id
      *            the variable name
      * @param defaultValue
@@ -39,6 +45,8 @@ public interface ExecutionEnvironment {
     Object get(String id, Object defaultValue);
 
     /**
+     * Associates a value with a variable.
+     *
      * @param id
      *            the variable name
      * @param v
@@ -49,6 +57,8 @@ public interface ExecutionEnvironment {
     boolean put(String id, Object v);
 
     /**
+     * Removes a variable.
+     *
      * @param id
      *            the variable name
      * @return Returns the value to which this map previously associated the
@@ -57,6 +67,8 @@ public interface ExecutionEnvironment {
     Object remove(String id);
 
     /**
+     * Returns an unmodifiable set of the keys in the ExecutionEnvironment.
+     *
      * @return An unmodifiable set of the keys in the ExecutionEnvironment
      */
     Set<String> keySet();
