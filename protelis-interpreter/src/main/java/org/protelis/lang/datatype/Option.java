@@ -27,7 +27,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static org.protelis.lang.interpreter.util.JavaInteroperabilityUtils.runProtelisFunctionWithJavaArguments;
 
@@ -200,7 +199,7 @@ public final class Option<E> implements Serializable {
                 final List<Method> methods = Arrays.stream(value.getClass().getMethods())
                     .map(MethodUtils::getAccessibleMethod)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                    .toList();
                 final Method tester = methods.stream()
                     .filter(it -> it.getParameterCount() == 0)
                     .filter(it -> it.getReturnType().equals(Boolean.class) || it.getReturnType().equals(boolean.class))
