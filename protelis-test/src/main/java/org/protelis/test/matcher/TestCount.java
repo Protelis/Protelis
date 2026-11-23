@@ -17,6 +17,8 @@ public final class TestCount implements Function<Map<String, Object>, Integer> {
     private final Object expectedValue;
 
     /**
+     * Creates a matcher that counts occurrences of the expected value.
+     *
      * @param expectedValue expected value
      */
     public TestCount(final Object expectedValue) {

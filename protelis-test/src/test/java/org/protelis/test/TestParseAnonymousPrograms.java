@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.protelis.lang.ProtelisLoader;
 
 /**
- *
+ * Tests for parsing anonymous Protelis programs.
  */
 final class TestParseAnonymousPrograms {
 
     /**
-     * Test that cross referencing works, and that a message is created.
+     * Test that cross-referencing works, and that a message is created.
      */
     @Test
     void testParseAnonymousPrograms() {

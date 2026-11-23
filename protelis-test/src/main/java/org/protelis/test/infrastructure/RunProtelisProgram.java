@@ -28,6 +28,7 @@ import it.unibo.alchemist.model.interfaces.Node;
 import it.unibo.alchemist.model.interfaces.Reaction;
 
 /**
+ * An action that runs a Protelis program.
  */
 @SuppressFBWarnings(
         value = { "EQ_DOESNT_OVERRIDE_EQUALS", "SE_BAD_FIELD" },
@@ -50,6 +51,8 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
     private int round;
 
     /**
+     * Creates a new {@link RunProtelisProgram}.
+     *
      * @param env
      *            the environment
      * @param n

@@ -94,6 +94,8 @@ public final class ProtelisNode extends GenericNode<Object> implements DeviceUID
     }
 
     /**
+     * Sets the network manager.
+     *
      * @param networkManager
      *            network manager
      */
@@ -105,6 +107,8 @@ public final class ProtelisNode extends GenericNode<Object> implements DeviceUID
     }
 
     /**
+     * Returns the network manager.
+     *
      * @return network manager
      */
     public NetworkManager getNetworkManager() {

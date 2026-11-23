@@ -16,6 +16,8 @@ public final class TestVoid {
     }
 
     /**
+     * Does nothing.
+     *
      * @param args unused
      */
     public static void main(final String... args) { }

@@ -33,6 +33,7 @@ import it.unibo.alchemist.model.interfaces.Reaction;
 import it.unibo.alchemist.model.interfaces.TimeDistribution;
 
 /**
+ * The incarnation used for testing Protelis programs.
  */
 public final class TestIncarnation implements Incarnation<Object> {
 
@@ -76,6 +77,8 @@ public final class TestIncarnation implements Incarnation<Object> {
     }
 
     /**
+     * Returns an instance of a {@link TestIncarnation}.
+     *
      * @return an instance of a {@link TestIncarnation}
      */
     public static TestIncarnation instance() {

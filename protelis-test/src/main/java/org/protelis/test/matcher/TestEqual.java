@@ -26,6 +26,8 @@ public final class TestEqual implements BiConsumer<Map<String, Object>, List<Pai
     private final ExceptionObserver obs;
 
     /**
+     * Creates a matcher that checks equality.
+     *
      * @param obs
      *            exception observer
      */

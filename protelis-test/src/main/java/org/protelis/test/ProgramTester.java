@@ -55,6 +55,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file and checks its result against the expected one.
+     *
      * @param file
      *            file to be tested
      * @param expectedResult
@@ -65,6 +67,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file.
+     *
      * @param file
      *            file to be tested
      */
@@ -73,6 +77,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file multiple times and checks its result against the expected one.
+     *
      * @param file
      *            file to be tested
      * @param runs
@@ -85,6 +91,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file multiple times.
+     *
      * @param file
      *            file to be tested
      * @param runs
@@ -190,6 +198,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file multiple times.
+     *
      * @param file
      *            file to be tested
      */
@@ -198,6 +208,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file once for each run in the given range.
+     *
      * @param file
      *            file to be tested
      * @param min
@@ -210,6 +222,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a file once for each run in the stream.
+     *
      * @param file
      *            file to be tested
      * @param stream
@@ -220,6 +234,8 @@ public final class ProgramTester {
     }
 
     /**
+     * Runs a program the given number of times.
+     *
      * @param s
      *            program to run
      * @param runs

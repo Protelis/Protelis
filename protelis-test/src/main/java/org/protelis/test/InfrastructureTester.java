@@ -315,6 +315,8 @@ public final class InfrastructureTester {
         }
 
         /**
+         * Runs a program multiple times and collects the results.
+         *
          * @param obs
          *            exception observer
          * @param text
@@ -352,6 +354,8 @@ public final class InfrastructureTester {
         }
 
         /**
+         * Runs a program and collects the results.
+         *
          * @param obs
          *            exception observer
          * @param text
@@ -376,6 +380,8 @@ public final class InfrastructureTester {
         }
 
         /**
+         * Runs a program and collects the results as a list.
+         *
          * @param obs
          *            exception observer
          * @param text

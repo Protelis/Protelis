@@ -18,6 +18,8 @@ public final class TestJavaNullFunctions {
     }
 
     /**
+     * Checks that the argument is null, and returns it.
+     *
      * @param o must be null
      * @return null
      */
@@ -33,6 +35,8 @@ public final class TestJavaNullFunctions {
     }
 
     /**
+     * Returns null.
+     *
      * @return null
      */
     public static String returnsNull() {
@@ -40,6 +44,8 @@ public final class TestJavaNullFunctions {
     }
 
     /**
+     * Returns either null or the "notNull" String, with equal probability.
+     *
      * @return with 50% probability null, with 50% probability the "notNull" String.
      */
     public static String maybeNull() {
