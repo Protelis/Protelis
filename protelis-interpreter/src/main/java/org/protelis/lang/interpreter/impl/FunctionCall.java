@@ -8,6 +8,8 @@
 package org.protelis.lang.interpreter.impl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import java.io.Serial;
 import java.util.Map;
 import org.protelis.lang.ProtelisLoadingUtilities;
 import org.protelis.lang.datatype.FunctionDefinition;
@@ -27,6 +29,7 @@ import static com.google.common.collect.Maps.newLinkedHashMapWithExpectedSize;
  */
 public final class FunctionCall extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = 4143090001260538814L;
     private final FunctionDefinition functionDefinition;
     private final byte[] stackCode;

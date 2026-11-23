@@ -18,6 +18,7 @@ import org.protelis.parser.protelis.ShortLambda;
 import org.protelis.parser.protelis.VarDef;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 justification = "No need to recover the field, as the body is always generated before serialization")
 public final class FunctionDefinition implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
     private final int argNumber;
     private final List<Reference> args;
@@ -167,6 +169,7 @@ public final class FunctionDefinition implements Serializable {
         return functionName + "/" + argNumber;
     }
 
+    @Serial
     private void writeObject(final java.io.ObjectOutputStream stream) throws IOException {
         getBody();
         stream.defaultWriteObject();
