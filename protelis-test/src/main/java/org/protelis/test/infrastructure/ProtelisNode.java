@@ -7,6 +7,7 @@
 
 package org.protelis.test.infrastructure;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -26,9 +27,8 @@ import java8.util.stream.StreamSupport;
  * A node able to execute Protelis programs.
  */
 public final class ProtelisNode extends GenericNode<Object> implements DeviceUID, ExecutionEnvironment {
-    /**
-     *
-     */
+
+    @Serial
     private static final long serialVersionUID = 1L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "This class is not meant to be serialized.")
     private NetworkManager networkManager;

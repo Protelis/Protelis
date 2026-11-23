@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -250,6 +251,7 @@ public final class InfrastructureTester {
     ) {
         final Engine<Object> simulation = new Engine<>(env, totalSimulationSteps + stabilitySteps);
         simulation.addOutputMonitor(new OutputMonitor<>() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

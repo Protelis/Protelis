@@ -7,6 +7,7 @@
 
 package org.protelis.test.infrastructure;
 
+import java.io.Serial;
 import java.util.List;
 
 import org.apache.commons.math3.random.RandomGenerator;
@@ -36,6 +37,7 @@ public final class RunProtelisProgram extends SimpleMolecule implements Action<O
      * RESULT.
      */
     public static final String RESULT = "$$result";
+    @Serial
     private static final long serialVersionUID = 2207914086772704332L;
     private static final Logger L = LoggerFactory.getLogger(RunProtelisProgram.class);
 
