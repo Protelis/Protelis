@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.util;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import com.google.common.collect.ImmutableList;
  */
 public final class Reference implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 8294777860793746504L;
     private final Serializable uid;
     private String strRep;
@@ -92,6 +94,7 @@ public final class Reference implements Serializable {
 
     private static final class Handler<T, S extends Serializable> implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private final S serializableState;

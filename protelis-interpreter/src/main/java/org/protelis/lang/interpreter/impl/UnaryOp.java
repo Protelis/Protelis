@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.impl;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import org.protelis.lang.interpreter.ProtelisAST;
@@ -21,6 +22,7 @@ import org.protelis.vm.ExecutionContext;
  */
 public final class UnaryOp extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = 2803028109250981637L;
     private final Op1 op;
 

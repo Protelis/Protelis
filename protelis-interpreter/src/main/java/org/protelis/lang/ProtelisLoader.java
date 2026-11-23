@@ -104,6 +104,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
@@ -264,6 +265,7 @@ public final class ProtelisLoader {
         final int endLine = grammarElement.getEndLine();
         return new Metadata() {
 
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

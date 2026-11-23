@@ -14,11 +14,14 @@ import org.protelis.lang.interpreter.util.Reference;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
+
 /**
  * Access a variable.
  */
 public final class Variable extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final Reference name;
 

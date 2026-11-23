@@ -7,6 +7,7 @@
 
 package org.protelis.vm.impl;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import org.protelis.vm.ProtelisProgram;
  */
 public final class SimpleProgramImpl implements ProtelisProgram {
 
+    @Serial
     private static final long serialVersionUID = -986976491484860840L;
     private static final String DEFAULT_PROGRAM_NAME = "default_module:default_program";
     private final ProtelisAST<?> prog;
