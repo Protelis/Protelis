@@ -87,10 +87,10 @@ public final class FunctionDefinition implements Serializable {
         }
         functionName = Objects.requireNonNull(name);
         this.args = args;
-        final byte[] asciibytes = functionName.getBytes(StandardCharsets.UTF_8);
-        final ByteBuffer bb = ByteBuffer.allocate(asciibytes.length + 1);
+        final byte[] asciiBytes = functionName.getBytes(StandardCharsets.UTF_8);
+        final ByteBuffer bb = ByteBuffer.allocate(asciiBytes.length + 1);
         bb.put((byte) argNumber);
-        bb.put(asciibytes);
+        bb.put(asciiBytes);
         stackCode = new TByteArrayList(bb.array());
         this.bodySupplier = bodySupplier;
     }
