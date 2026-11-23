@@ -14,6 +14,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.protelis.vm.ExecutionContext;
 
+import javax.annotation.Nonnull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -376,8 +377,8 @@ public final class Option<E> implements Serializable {
      * @return this {@code Optional} if it has a value present; {@code other}
      *         otherwise.
      */
-    public Option<? extends E> or(final Optional<? extends E> other) {
-        return isPresent() ? this : of(other.orNull());
+    public Option<? extends E> or(@Nonnull final Optional<? extends E> other) {
+        return isPresent() ? this : ofNullable(other.orNull());
     }
 
     /**
