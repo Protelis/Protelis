@@ -97,7 +97,7 @@ public final class ProtelisLoadingUtilities {
         }
         if (container instanceof Expression exp) {
             if (exp.getName() == null && exp.getElements().size() == 2) {
-                return qualifiedNameFor(((VarUse) exp.getElements().get(0)).getReference(), "");
+                return qualifiedNameFor(((VarUse) exp.getElements().getFirst()).getReference(), "");
             }
             return exp.getName();
         }

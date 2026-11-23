@@ -158,7 +158,7 @@ public final class ProtelisLoader {
                     Objects.requireNonNull(resource);
                     if (!resource.getErrors().isEmpty()) {
                         final String moduleName = Optional.ofNullable(resource.getContents())
-                            .map(it -> it.get(0))
+                            .map(List::getFirst)
                             .map(it -> (ProtelisModule) it)
                             .map(ProtelisModule::getName)
                             .orElse("without declared module");
@@ -195,7 +195,7 @@ public final class ProtelisLoader {
                         }
                         throw new IllegalArgumentException(sb.toString());
                     }
-                    final ProtelisModule root = (ProtelisModule) resource.getContents().get(0);
+                    final ProtelisModule root = (ProtelisModule) resource.getContents().getFirst();
                     Objects.requireNonNull(Objects.requireNonNull(root).getProgram(),
                         "The provided resource does not contain any main program, and can not be executed.");
                     Diagnostician.INSTANCE.validate(root).getChildren()
@@ -473,7 +473,7 @@ public final class ProtelisLoader {
         private static ProtelisAST<?> block(@Nonnull final Block block) {
             final List<Statement> statements = block.getStatements();
             if (statements.size() == 1) {
-                return statement(statements.get(0));
+                return statement(statements.getFirst());
             }
             return new All(metadataFor(block), statements.stream().map(Dispatch::statement).collect(Collectors.toList()));
         }
@@ -578,7 +578,7 @@ public final class ProtelisLoader {
             final List<EObject> elements = expression.getElements();
             final Metadata meta = metadataFor(expression);
             switch (elements.size()) {
-                case 1: return new UnaryOp(meta, expression.getName(), expression((Expression) elements.get(0)));
+                case 1: return new UnaryOp(meta, expression.getName(), expression((Expression) elements.getFirst()));
                 case 2:
                     final ProtelisAST<?> first = expression((Expression) expression.getElements().get(0));
                     final EObject second = expression.getElements().get(1);
@@ -617,7 +617,7 @@ public final class ProtelisLoader {
                     .map(Dispatch::statement)
                     .collect(Collectors.toList());
             final ProtelisAST<?> thenBranch = then.size() == 1
-                    ? then.get(0)
+                    ? then.getFirst()
                     : new All(meta, then);
             return new ConditionalSideEffect(meta, expression(ifOp.getCond()), thenBranch);
         }
