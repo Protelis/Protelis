@@ -1,3 +1,80 @@
+## [20.1.1](https://github.com/Protelis/Protelis/compare/20.1.0...20.1.1) (2026-11-23)
+
+### Dependency updates
+
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.6 ([#2451](https://github.com/Protelis/Protelis/issues/2451)) ([06d288a](https://github.com/Protelis/Protelis/commit/06d288a01229e44cd3eba001d187801896aedcdb))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.7 ([#2462](https://github.com/Protelis/Protelis/issues/2462)) ([2d293b8](https://github.com/Protelis/Protelis/commit/2d293b87f3cf5d0ecf707bab8b162dd4b0bc55c3))
+* **deps:** update dependency ch.qos.logback:logback-classic to v1.6.8 ([#2464](https://github.com/Protelis/Protelis/issues/2464)) ([e73aba3](https://github.com/Protelis/Protelis/commit/e73aba339a51f6581e65f2d10e49edbacb0c03a1))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.22.0 ([#2460](https://github.com/Protelis/Protelis/issues/2460)) ([f956949](https://github.com/Protelis/Protelis/commit/f9569494c7018371654962ae91fb4dc9598fe612))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.158 ([#2454](https://github.com/Protelis/Protelis/issues/2454)) ([16acf23](https://github.com/Protelis/Protelis/commit/16acf2309ba42d77aaec8fc535ccdaf6d8bdc13d))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.159 ([#2463](https://github.com/Protelis/Protelis/issues/2463)) ([f900412](https://github.com/Protelis/Protelis/commit/f9004127313b0bf4a03cabfd139895fa4babfc80))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.160 ([#2467](https://github.com/Protelis/Protelis/issues/2467)) ([fbd101d](https://github.com/Protelis/Protelis/commit/fbd101d5bcce2b1942fd6e7ddacc3d678fb195cb))
+* **deps:** update gradle to v9.8.2 ([2a480c9](https://github.com/Protelis/Protelis/commit/2a480c94f4ec20276ca45edba5502466d79df553))
+* **deps:** update gradle to v9.9.0 ([#2456](https://github.com/Protelis/Protelis/issues/2456)) ([80a6c13](https://github.com/Protelis/Protelis/commit/80a6c137f5238e1503ef7792156b12b02f72ad73))
+* **deps:** update gradle to v9.9.1 ([096cbe7](https://github.com/Protelis/Protelis/commit/096cbe756daff500320f59affe25602e99a7c3cd))
+* **deps:** update gradle to v9.9.2 ([#2465](https://github.com/Protelis/Protelis/issues/2465)) ([3d4f210](https://github.com/Protelis/Protelis/commit/3d4f210cf19dd16f9d47d9e1f4f957c4f3c278be))
+* **deps:** update node.js to v26 ([4140323](https://github.com/Protelis/Protelis/commit/4140323ee5d199ad8636357a9a9d041455f82675))
+* **deps:** update plugin com.gradle.develocity to v4.6.1 ([5e9e565](https://github.com/Protelis/Protelis/commit/5e9e56596b30580c7f573bc31f55cd2cf6ec16a7))
+* **deps:** update plugin gitsemver to v7.1.0 ([9762b16](https://github.com/Protelis/Protelis/commit/9762b169c3749a80aee49d7d68f059680f80da95))
+* **deps:** update plugin gitsemver to v7.3.0 ([#2450](https://github.com/Protelis/Protelis/issues/2450)) ([eaa79d3](https://github.com/Protelis/Protelis/commit/eaa79d39e6cc5c7642e7f3bd4ee5c574462bd67b))
+* **deps:** update plugin multijvmtesting to v4.5.11 ([#2447](https://github.com/Protelis/Protelis/issues/2447)) ([8d565b6](https://github.com/Protelis/Protelis/commit/8d565b64e6f506cead6cf2612e996f1ba9727474))
+* **deps:** update plugin publishoncentral to v9.2.15 ([#2448](https://github.com/Protelis/Protelis/issues/2448)) ([6fa5ac1](https://github.com/Protelis/Protelis/commit/6fa5ac1f33d5db97e84d6d08231605f47f71b66c))
+* **deps:** update plugin publishoncentral to v9.3.1 ([#2457](https://github.com/Protelis/Protelis/issues/2457)) ([667f3b8](https://github.com/Protelis/Protelis/commit/667f3b8014f3df35d3981635f4284a94d2aed16f))
+* **deps:** update plugin publishoncentral to v9.3.2 ([#2459](https://github.com/Protelis/Protelis/issues/2459)) ([de76369](https://github.com/Protelis/Protelis/commit/de763699ed40f1478e9895061b4af3d3b7c5107d))
+* **deps:** update plugin publishoncentral to v9.3.3 ([#2466](https://github.com/Protelis/Protelis/issues/2466)) ([0777842](https://github.com/Protelis/Protelis/commit/0777842b79c1e00ba3851234faf64291a920ec85))
+
+### Bug Fixes
+
+* **interpreter:** fail-fast on null mapper in LazyField ([cc43bac](https://github.com/Protelis/Protelis/commit/cc43bacf5891dbe80d084a2d192ff76a24a3ce4e))
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.50 ([e952e62](https://github.com/Protelis/Protelis/commit/e952e62d933fc0a42350bd6081a3161a1976dd78))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.51 ([#2455](https://github.com/Protelis/Protelis/issues/2455)) ([05f4427](https://github.com/Protelis/Protelis/commit/05f4427767aae5bac8affbb7d2703b71e22b403a))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v4.0.52 ([f322ed9](https://github.com/Protelis/Protelis/commit/f322ed9b97f7c38515cb65e4d2e607f568be64f2))
+* **deps:** update dependency macos github actions runner to v26 ([7a26152](https://github.com/Protelis/Protelis/commit/7a2615229d7b44837269d716226d37493b4cc25e))
+* **deps:** update dependency ubuntu github actions runner to v26 ([#2446](https://github.com/Protelis/Protelis/issues/2446)) ([abd549e](https://github.com/Protelis/Protelis/commit/abd549e1baaae15dd2428e2921d7e144a9299f3f))
+
+### Style improvements
+
+* **interpreter:** add missing `@Serial` annotations ([701f584](https://github.com/Protelis/Protelis/commit/701f5845520e10b8cf3b12a1c0758900e05aff25))
+* **interpreter:** add missing `@Serial` annotations ([5bb5da9](https://github.com/Protelis/Protelis/commit/5bb5da9d461a8539efca3869cbc832af54e58416))
+* **interpreter:** add missing `@Serial` annotations ([9975596](https://github.com/Protelis/Protelis/commit/99755964d7bd0e2f9da221f0c1f6fa7e06513489))
+* **interpreter:** add missing `@Serial` annotations ([fcafcbf](https://github.com/Protelis/Protelis/commit/fcafcbf1e8fffe2f7220be6c9eb3eaa2d6314c82))
+* **interpreter:** add missing `@Serial` annotations ([c65c41d](https://github.com/Protelis/Protelis/commit/c65c41d28f0359fb63d078cf2f6ac0264ab2009a))
+* **interpreter:** add missing `@Serial` annotations ([0058cc8](https://github.com/Protelis/Protelis/commit/0058cc82e804ec13d6686e659c7590d3ce8e347e))
+* **interpreter:** add missing `@Serial` annotations ([cb5222e](https://github.com/Protelis/Protelis/commit/cb5222ebb015ceb2612ae9a5ac30c57c697e491f))
+* **interpreter:** add missing `@Serial` annotations ([7998e39](https://github.com/Protelis/Protelis/commit/7998e3909a08d9c588df33f6692d5310c05c2bce))
+* **interpreter:** add missing `@Serial` annotations ([f440633](https://github.com/Protelis/Protelis/commit/f440633dd2c6ac2aac8ada539611e00112a95b2d))
+* **interpreter:** add missing `@Serial` annotations ([d8d527c](https://github.com/Protelis/Protelis/commit/d8d527c3a030da8290780e391afb2563f4ce02d3))
+* **interpreter:** add missing `@Serial` annotations ([e5f9ef9](https://github.com/Protelis/Protelis/commit/e5f9ef9db8d08b466bc190953633da9fe7c88d58))
+* **interpreter:** add missing javadoc summaries ([308aa75](https://github.com/Protelis/Protelis/commit/308aa75f6c122c1bdb7df55adb377a1fbd93ca13))
+* **interpreter:** add missing javadoc summaries ([df401c7](https://github.com/Protelis/Protelis/commit/df401c7d2a977265abca5d5ab64af43f653239fa))
+* **interpreter:** add missing javadoc summaries ([5d784e6](https://github.com/Protelis/Protelis/commit/5d784e6a0ef33968172f6f70bd00fa7e24bd1de4))
+* **interpreter:** add missing javadoc summaries ([adeb88e](https://github.com/Protelis/Protelis/commit/adeb88e5fde47f887a9d42141e171933e1eae7eb))
+* **interpreter:** add missing javadoc summaries ([434aa98](https://github.com/Protelis/Protelis/commit/434aa98a1aa50ac1e4184ce5137de81e56f691ad))
+* **interpreter:** add missing javadoc summaries ([b41b708](https://github.com/Protelis/Protelis/commit/b41b70866ba66be7f95893f39d8c8f84c882b4a8))
+* **interpreter:** add missing javadoc summaries ([f5876b9](https://github.com/Protelis/Protelis/commit/f5876b9a7e45b376774c27909cc575800b8b30be))
+* **interpreter:** add missing javadoc summaries ([806b134](https://github.com/Protelis/Protelis/commit/806b134b0e920bdcd587ca6a7031f97b889f8daf))
+* **interpreter:** add missing javadoc summaries ([f9b7564](https://github.com/Protelis/Protelis/commit/f9b7564d22db968cb7ca8d9f1be81372dc4667f8))
+* **interpreter:** add missing javadoc summaries ([b796082](https://github.com/Protelis/Protelis/commit/b7960826084d34a4d25ee3774ac4c29c633deb01))
+* **interpreter:** improve indentation ([e0c372b](https://github.com/Protelis/Protelis/commit/e0c372b5a354e37a38798ed93a918d9fca8f55eb))
+* **interpreter:** mark input as @Nonnull ([f4d6cbb](https://github.com/Protelis/Protelis/commit/f4d6cbbff947d930fcb3519b268c98b1ef964821))
+* **interpreter:** prefer `Duration.of` over explicit usage of `TimeUnit`s ([d0d781a](https://github.com/Protelis/Protelis/commit/d0d781a0f077c35f23e7b5fad262b6c68a4b1b27))
+* **interpreter:** prefer the built-in `toList()` collector ([33477a0](https://github.com/Protelis/Protelis/commit/33477a009a11280698a609b7542159f417178528))
+* **interpreter:** rename parameter ([e28b548](https://github.com/Protelis/Protelis/commit/e28b548ad14a3434a492c80aff97936eaeb07509))
+* **interpreter:** rename variable to `asciiBytes` ([be049af](https://github.com/Protelis/Protelis/commit/be049af0222f336b9c6c42f606c7d088110535a1))
+* **interpreter:** rephrase comment ([94c3e40](https://github.com/Protelis/Protelis/commit/94c3e40c63b53a4810b916834a58686b18b5b77f))
+* **interpreter:** replace `get(0)` with `getFirst()` ([0067c44](https://github.com/Protelis/Protelis/commit/0067c442206100c3b901c9286b4994447456c93e))
+* **interpreter:** replace casts with pattern variables ([3cb30ba](https://github.com/Protelis/Protelis/commit/3cb30ba014b00b55af02bc902d1fd6f81cd3cd00))
+* **interpreter:** replace casts with pattern variables ([df8da7c](https://github.com/Protelis/Protelis/commit/df8da7c29822228b9ec108062f4ceca22d16f372))
+* **interpreter:** replace casts with pattern variables ([778b0c5](https://github.com/Protelis/Protelis/commit/778b0c5bc6dc5b079920cabad9fefdad88a29528))
+* **interpreter:** replace casts with pattern variables ([2a05bb0](https://github.com/Protelis/Protelis/commit/2a05bb000e5416d9c7077b7a3a5b6d3b0407ff1f))
+* **interpreter:** replace if-else chains with modern switch ([bfcd1ac](https://github.com/Protelis/Protelis/commit/bfcd1ac9eca63c9496d69e663094420414294ace))
+* **interpreter:** replace if-else chains with modern switch ([8e77ffa](https://github.com/Protelis/Protelis/commit/8e77ffa0ecd62f78b3f95c473fe63bce04d74ca2))
+* **test:** reformat makeTestField ([ef102f5](https://github.com/Protelis/Protelis/commit/ef102f592e8989e0d5a27e43b4c6fb8e50a4f966))
+* **test:** simplify RegEx ([3a9454f](https://github.com/Protelis/Protelis/commit/3a9454f6ea952819d7296d4c703c92af4bb0aa17))
+
 ## [20.1.0](https://github.com/Protelis/Protelis/compare/20.0.7...20.1.0) (2026-10-19)
 
 ### Dependency updates
