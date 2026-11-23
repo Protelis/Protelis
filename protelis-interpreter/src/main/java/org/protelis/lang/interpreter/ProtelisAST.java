@@ -31,6 +31,8 @@ public interface ProtelisAST<T> extends Serializable {
     T eval(ExecutionContext context);
 
     /**
+     * Returns the i-th branch of the evaluation tree.
+     *
      * @param i
      *            the index
      * @return the i-th branch of the evaluation tree
@@ -38,16 +40,22 @@ public interface ProtelisAST<T> extends Serializable {
     ProtelisAST<?> getBranch(int i);
 
     /**
+     * Returns a view of the branches of the tree.
+     *
      * @return a view of the branches of the tree
      */
     List<ProtelisAST<?>> getBranches();
 
     /**
+     * Returns a {@link Metadata} object containing information about the code that generated this AST node.
+     *
      * @return A {@link Metadata} object containing information about the code that generated this AST node.
      */
     Metadata getMetadata();
 
     /**
+     * Returns the name of the operation.
+     *
      * @return The name of the operation
      */
     String getName();

@@ -57,6 +57,8 @@ public final class LazyField<T> extends AbstractField<T> {
             });
 
     /**
+     * Creates a new {@link LazyField}.
+     *
      * @param origin the field on which this lazy field is mapping
      * @param mapper the mapping function
      */

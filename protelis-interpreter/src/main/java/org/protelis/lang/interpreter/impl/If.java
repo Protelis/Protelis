@@ -34,6 +34,8 @@ public final class If<T> extends AbstractProtelisAST<T> {
     private final ProtelisAST<T> thenExpression;
 
     /**
+     * Creates a new {@link If}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param cond
@@ -76,6 +78,8 @@ public final class If<T> extends AbstractProtelisAST<T> {
     }
 
     /**
+     * Returns the {@link ProtelisAST} of the condition expression.
+     *
      * @return the {@link ProtelisAST} of the condition expression
      */
     public ProtelisAST<Boolean> getConditionExpression() {
@@ -83,6 +87,8 @@ public final class If<T> extends AbstractProtelisAST<T> {
     }
 
     /**
+     * Returns the {@link ProtelisAST} of the else expression.
+     *
      * @return the {@link ProtelisAST} of the else expression
      */
     public ProtelisAST<T> getElseExpression() {
@@ -90,6 +96,8 @@ public final class If<T> extends AbstractProtelisAST<T> {
     }
 
     /**
+     * Returns the {@link ProtelisAST} of the then expression.
+     *
      * @return the {@link ProtelisAST} of the then expression
      */
     public ProtelisAST<T> getThenExpression() {

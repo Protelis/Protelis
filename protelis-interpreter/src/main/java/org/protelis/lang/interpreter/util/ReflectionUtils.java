@@ -96,6 +96,8 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Checks whether the class represents a number.
+     *
      * @param clazz
      *            the class under test
      * @return true if the class is a subclass of {@link Number} or it is a
@@ -434,6 +436,8 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Searches for the method that best matches the given arguments.
+     *
      * @param clazz
      *            the class where to search for suitable methods
      * @param methodName
@@ -487,6 +491,8 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Searches for the method that best matches the given arguments.
+     *
      * @param clazz
      *            the class where to search for suitable methods
      * @param methodName

@@ -48,6 +48,8 @@ public class HashingCodePathFactory implements CodePathFactory {
     private final HasherSupplier algorithm;
 
     /**
+     * Creates a code path factory with the given hasher supplier.
+     *
      * @param hashFunction the hashing algorithm to use
      */
     public HashingCodePathFactory(final HasherSupplier hashFunction) {
@@ -55,6 +57,8 @@ public class HashingCodePathFactory implements CodePathFactory {
     }
 
     /**
+     * Creates a code path factory with the given hash function.
+     *
      * @param hashFunction the hashing algorithm to use
      */
     @SuppressWarnings("UnstableApiUsage")
@@ -112,6 +116,9 @@ public class HashingCodePathFactory implements CodePathFactory {
         }
 
         /**
+         * Returns a byte[] representation of the hash. The returned array does not map on the internal status of
+         * {@link HashingCodePath} and can get modified.
+         *
          * @return a byte[] representation of the hash. The returned array does not map
          *         on the internal status of {@link HashingCodePath} and can get
          *         modified.

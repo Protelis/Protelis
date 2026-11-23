@@ -59,6 +59,8 @@ public final class ProtelisLoadingUtilities {
     private ProtelisLoadingUtilities() { }
 
     /**
+     * Converts invocation arguments into a stream of expressions.
+     *
      * @param args invocation arguments
      * @return a stream of expressions, one element per argument.
      */
@@ -124,6 +126,8 @@ public final class ProtelisLoadingUtilities {
     }
 
     /**
+     * Computes the qualified name of a function definition.
+     *
      * @param functionDefinition the function
      * @return a qualified name
      */
@@ -133,6 +137,8 @@ public final class ProtelisLoadingUtilities {
     }
 
     /**
+     * Computes the qualified name of a lambda.
+     *
      * @param lambda a lambda produced by the parser
      * @return its qualified name
      */
@@ -141,6 +147,8 @@ public final class ProtelisLoadingUtilities {
     }
 
     /**
+     * Computes the qualified name of a module.
+     *
      * @param module the module
      * @return a qualified name
      */
@@ -165,6 +173,8 @@ public final class ProtelisLoadingUtilities {
     }
 
     /**
+     * Creates a {@link Reference} for the given object.
+     *
      * @param o an object
      * @return the corrisponding {@link Reference} inside Protelis
      */
@@ -177,6 +187,8 @@ public final class ProtelisLoadingUtilities {
     }
 
     /**
+     * Creates a list of {@link Reference}s for the given objects.
+     *
      * @param l a list of objects
      * @return a list of the corresponding references inside Protelis
      */

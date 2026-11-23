@@ -84,6 +84,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns a set representation of the Option, for compatibility with {@link Optional}.
+     *
      * @return a set representation of the Option, for compatibility with {@link Optional}
      */
     public Set<E> asSet() {
@@ -116,6 +118,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Filters the value of this {@code Option} using the given predicate.
+     *
      * @param test predicate to test
      * @return an {@code Option} describing the value of this {@code Option} if a
      *         value is present and the value matches the given predicate, otherwise
@@ -237,6 +241,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Applies an {@code Option}-bearing function to the value, if present.
+     *
      * @param <X> The type parameter to the {@code Optional} returned
      * @param fun a mapping function to apply to the value, if present the mapping
      *            function
@@ -253,6 +259,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns the internal value of the {@link Option}, or a {@link RuntimeException} if absent.
+     *
      * @return the internal value of the {@link Option}, or a {@link RuntimeException} if absent.
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -266,6 +274,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns true if the Option has no value.
+     *
      * @return true if the Option has no value
      */
     public boolean isAbsent() {
@@ -273,6 +283,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns true if the Option has no value.
+     *
      * @return true if the Option has no value
      */
     public boolean isEmpty() {
@@ -280,6 +292,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns true if the Option is holding a value.
+     *
      * @return true if the Option is holding a value
      */
     public boolean isPresent() {
@@ -287,6 +301,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Applies a Protelis function to the value, if present.
+     *
      * @param ctx    {@link ExecutionContext}
      * @param mapper a mapping function to apply to the value, if present
      * @return an {@code Option} describing the result of applying a mapping
@@ -298,6 +314,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Applies a function to the value, if present.
+     *
      * @param <X>    The mapping function result type
      * @param mapper a mapping function to apply to the value, if present
      * @return an {@code Option} describing the result of applying a mapping
@@ -435,6 +453,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns a Guava compatible view of this Option.
+     *
      * @return a Guava compatible view of this Option
      */
     public Optional<E> toGuava() {
@@ -442,6 +462,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Returns a {@link java.util.Optional} view of this Option.
+     *
      * @return a {@link java.util.Optional} view of this Option
      */
     public java.util.Optional<E> toJavaUtil() {
@@ -454,6 +476,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Applies a Protelis function to the value, if present.
+     *
      * @param ctx    {@link ExecutionContext}
      * @param mapper a mapping function to apply to the value, if present
      * @return an {@code Option} describing the result of applying a mapping
@@ -465,6 +489,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Applies a function to the value, if present.
+     *
      * @param <X>    The mapping function result type
      * @param mapper a mapping function to apply to the value, if present
      * @return an {@code Option} describing the result of applying a mapping
@@ -500,6 +526,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Creates a Protelis {@code Option} from a Guava {@code Optional}.
+     *
      * @param <E> option type
      * @param origin the guava Optional
      * @return a Protelis view of the Guava Option
@@ -509,6 +537,8 @@ public final class Option<E> implements Serializable {
     }
 
     /**
+     * Creates a Protelis {@code Option} from a Java {@code Optional}.
+     *
      * @param <E> option type
      * @param origin the Java Optional
      * @return a Protelis view of the Java Option

@@ -86,6 +86,8 @@ public enum Op1 implements WithBytecode {
     }
 
     /**
+     * Applies this operation to the argument.
+     *
      * @param a
      *            the object on which the {@link Op1} should be run
      * @return the result of the evaluation

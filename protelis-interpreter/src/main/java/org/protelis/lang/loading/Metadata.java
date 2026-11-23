@@ -16,11 +16,15 @@ import java.io.Serializable;
 public interface Metadata extends Serializable {
 
     /**
+     * Returns the line number at which the entity is defined.
+     *
      * @return the line number at which the entity is defined
      */
     int getStartLine();
 
     /**
+     * Returns the line number at which the entity terminates.
+     *
      * @return the line number at which the entity terminates
      */
     int getEndLine();

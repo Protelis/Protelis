@@ -123,6 +123,8 @@ public enum HoodOp implements WithBytecode {
     private final SerializableBiFunction function;
 
     /**
+     * Creates a new {@link HoodOp}.
+     *
      * @param bytecode code corresponding to the desired hood operation
      * @param fun the reduction function
      * @param suppliers
@@ -174,6 +176,8 @@ public enum HoodOp implements WithBytecode {
     }
 
     /**
+     * Applies this reduction to the field.
+     *
      * @param target
      *            the field
      * @param inclusive
@@ -202,6 +206,8 @@ public enum HoodOp implements WithBytecode {
     }
 
     /**
+     * Returns the {@link HoodOp} corresponding to the given reducer name.
+     *
      * @param reducer
      *            the desired operator
      * @return the corresponding {@link HoodOp}

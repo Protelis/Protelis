@@ -60,6 +60,8 @@ public final class ProtelisRuntimeException extends RuntimeException {
     }
 
     /**
+     * Returns a stringified version of the Protelis stack trace that caused the issue.
+     *
      * @return A stringified version of the Protelis stack trace that caused the issue
      */
     public String getProtelisStacktrace() {

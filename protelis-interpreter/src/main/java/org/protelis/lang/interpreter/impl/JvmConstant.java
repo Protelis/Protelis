@@ -24,6 +24,8 @@ public final class JvmConstant extends AbstractProtelisAST<Object> {
     private final JVMEntity javaFeature;
 
     /**
+     * Creates a new {@link JvmConstant}.
+     *
      * @param metadata    A {@link Metadata} object containing information about the
      *                    code that generated this AST node.
      * @param javaFeature the java entity to refer to

@@ -42,6 +42,8 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
     private final String methodName;
 
     /**
+     * Creates a new {@link GenericHoodCall}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param includeSelf
@@ -69,6 +71,8 @@ public final class GenericHoodCall extends AbstractProtelisAST<Object> {
     }
 
     /**
+     * Creates a new {@link GenericHoodCall}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param includeSelf

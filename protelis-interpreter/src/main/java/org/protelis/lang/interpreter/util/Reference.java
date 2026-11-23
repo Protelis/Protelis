@@ -31,6 +31,8 @@ public final class Reference implements Serializable {
     private String strRep;
 
     /**
+     * Creates a new {@link Reference}.
+     *
      * @param obj the object to refer to
      */
     public Reference(final Object obj) {

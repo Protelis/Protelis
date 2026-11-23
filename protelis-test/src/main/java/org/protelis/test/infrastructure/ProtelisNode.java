@@ -23,6 +23,7 @@ import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 /**
+ * A node able to execute Protelis programs.
  */
 public final class ProtelisNode extends GenericNode<Object> implements DeviceUID, ExecutionEnvironment {
     /**

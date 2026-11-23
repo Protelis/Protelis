@@ -25,6 +25,8 @@ public final class NBRCall<T> extends AbstractProtelisAST<Field<T>> {
     private static final long serialVersionUID = 5255917527687990281L;
 
     /**
+     * Creates a new {@link NBRCall}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param body

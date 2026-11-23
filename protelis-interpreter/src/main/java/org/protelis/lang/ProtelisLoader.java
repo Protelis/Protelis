@@ -279,6 +279,8 @@ public final class ProtelisLoader {
     }
 
     /**
+     * Parses a Protelis program from a {@link Resource}.
+     *
      * @param resource
      *            the {@link Resource} containing the program to execute
      * @return a {@link ProtelisProgram}
@@ -294,6 +296,8 @@ public final class ProtelisLoader {
     }
 
     /**
+     * Parses a Protelis program from either a module name or a program text.
+     *
      * @param program
      *     Protelis module, program file or program to be prepared for execution.
      *     It must be one of:
@@ -384,6 +388,8 @@ public final class ProtelisLoader {
     }
 
     /**
+     * Creates a dummy resource containing the given program text.
+     *
      * @param program
      *            the program in String format
      * @return a dummy:/ resource that can be used to interpret the program

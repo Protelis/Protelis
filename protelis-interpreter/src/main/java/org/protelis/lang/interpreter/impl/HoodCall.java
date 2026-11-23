@@ -33,6 +33,8 @@ public final class HoodCall extends AbstractProtelisAST<Object> {
     private final boolean inclusive;
 
     /**
+     * Creates a new {@link HoodCall}.
+     *
      * @param metadata
      *            A {@link Metadata} object containing information about the code that generated this AST node.
      * @param arg
