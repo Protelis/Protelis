@@ -7,6 +7,7 @@
 
 package org.protelis.vm.impl;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Base64;
@@ -42,6 +43,7 @@ import gnu.trove.stack.TIntStack;
  */
 public class HashingCodePathFactory implements CodePathFactory {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final HasherSupplier algorithm;
 
@@ -82,6 +84,7 @@ public class HashingCodePathFactory implements CodePathFactory {
      * Hash-based {@link CodePath}.
      */
     public static final class HashingCodePath implements CodePath {
+        @Serial
         private static final long serialVersionUID = 1L;
         private final byte[] hash;
 

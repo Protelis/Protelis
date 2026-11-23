@@ -14,6 +14,7 @@ import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
 import javax.annotation.Nonnull;
+import java.io.Serial;
 
 import static org.protelis.lang.interpreter.util.Bytecode.IF_ELSE;
 import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
@@ -26,6 +27,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.IF_THEN;
  */
 public final class If<T> extends AbstractProtelisAST<T> {
 
+    @Serial
     private static final long serialVersionUID = -4830593657731078743L;
     private final ProtelisAST<Boolean> conditionExpression;
     private final ProtelisAST<T> elseExpression;

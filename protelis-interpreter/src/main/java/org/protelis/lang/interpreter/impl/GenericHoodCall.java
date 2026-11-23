@@ -17,6 +17,7 @@ import org.protelis.lang.interpreter.util.ReflectionUtils;
 import org.protelis.lang.loading.Metadata;
 import org.protelis.vm.ExecutionContext;
 
+import java.io.Serial;
 import java.util.function.BinaryOperator;
 
 import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_DEFAULT;
@@ -31,6 +32,7 @@ import static org.protelis.lang.interpreter.util.Bytecode.GENERIC_HOOD_CALL_FUNC
 @Deprecated
 public final class GenericHoodCall extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final ProtelisAST<Field<Object>> body;
     private final Class<?> clazz;

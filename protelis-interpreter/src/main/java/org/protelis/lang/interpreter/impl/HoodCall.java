@@ -7,6 +7,7 @@
 
 package org.protelis.lang.interpreter.impl;
 
+import java.io.Serial;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -25,6 +26,7 @@ import org.protelis.vm.ExecutionContext;
 @Deprecated
 public final class HoodCall extends AbstractProtelisAST<Object> {
 
+    @Serial
     private static final long serialVersionUID = -4925767634715581329L;
     private final ProtelisAST<Field<Object>> body;
     private final HoodOp function;
