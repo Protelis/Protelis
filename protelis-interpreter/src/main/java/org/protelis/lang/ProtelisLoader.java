@@ -483,48 +483,64 @@ public final class ProtelisLoader {
             return (ProtelisAST<T>) block(block);
         }
 
-        @SuppressWarnings("deprecation")
+        /*
+         * UnusedLocalVariable is suppressed (for PMD via @SuppressWarnings, for Checkstyle via comments
+         * around the switch) because some pattern bindings in the switch below (env, it, self) are unused,
+         * but Java 21 offers no standard way to omit them.
+         * Remove both suppressions and use unnamed patterns (e.g., 'case It _ ->')
+         * as soon as the minimum Java version is bumped to 22 or later, where unnamed patterns are standard.
+         */
+        @SuppressWarnings({ "deprecation", "PMD.UnusedLocalVariable" })
         private static ProtelisAST<?> builtin(@Nonnull final Builtin expression) {
             if (expression instanceof org.protelis.parser.protelis.AlignedMap) {
                 return alignedMap((org.protelis.parser.protelis.AlignedMap) expression);
             }
             final Metadata meta = metadataFor(expression);
-            if (expression instanceof org.protelis.parser.protelis.Env) {
-                return new Env(meta);
-            }
-            if (expression instanceof org.protelis.parser.protelis.Eval) {
-                return new Eval(meta, expression(((org.protelis.parser.protelis.Eval) expression).getArg()));
-            }
-            if (expression instanceof BuiltinHoodOp) {
-                final BuiltinHoodOp hood = (BuiltinHoodOp) expression;
-                return new HoodCall(meta, expression(hood.getArg()),
+            // CHECKSTYLE: UnusedLocalVariable OFF
+            switch (expression) {
+                case org.protelis.parser.protelis.Env env -> {
+                    return new Env(meta);
+                }
+                case org.protelis.parser.protelis.Eval eval -> {
+                    return new Eval(meta, expression(eval.getArg()));
+                }
+                case BuiltinHoodOp hood -> {
+                    return new HoodCall(meta, expression(hood.getArg()),
                         HoodOp.get(hood.getName().replace(HOOD_END, "")),
                         hood.isInclusive());
-            }
-            if (expression instanceof GenericHood) {
-                final GenericHood hood = (GenericHood) expression;
-                final boolean inclusive = hood.getName().length() > 4;
-                final ProtelisAST<Object> nullResult = expression(hood.getDefault());
-                final ProtelisAST<Field<Object>> field = expression(hood.getArg());
-                final VarUse ref = hood.getReference();
-                if (ref == null) {
-                    return new GenericHoodCall(meta, inclusive, lambda(hood.getOp()), nullResult, field);
                 }
-                if (ref.getReference() instanceof JvmOperation) {
-                    return new GenericHoodCall(meta, inclusive, (JvmOperation) ref.getReference(), nullResult, field);
+                case GenericHood hood -> {
+                    final boolean inclusive = hood.getName().length() > 4;
+                    final ProtelisAST<Object> nullResult = expression(hood.getDefault());
+                    final ProtelisAST<Field<Object>> field = expression(hood.getArg());
+                    final VarUse ref = hood.getReference();
+                    if (ref == null) {
+                        return new GenericHoodCall(meta, inclusive, lambda(hood.getOp()), nullResult, field);
+                    }
+                    if (ref.getReference() instanceof JvmOperation) {
+                        return new GenericHoodCall(meta, inclusive, (JvmOperation) ref.getReference(), nullResult, field);
+                    }
+                    return new GenericHoodCall(meta, inclusive, variableUnsafe(ref), nullResult, field);
                 }
-                return new GenericHoodCall(meta, inclusive, variableUnsafe(ref), nullResult, field);
+                case It it -> {
+                    return new Variable(meta, IT);
+                }
+                case Mux mux -> {
+                    return new TernaryOp(
+                        meta,
+                        mux.getName(),
+                        expression(mux.getCond()),
+                        block(mux.getThen()),
+                        block(mux.getElse())
+                    );
+                }
+                case org.protelis.parser.protelis.Self self -> {
+                    return new Self(meta);
+                }
+                default -> {
+                }
             }
-            if (expression instanceof It) {
-                return new Variable(meta, IT);
-            }
-            if (expression instanceof Mux) {
-                final Mux mux = (Mux) expression;
-                return new TernaryOp(meta, mux.getName(), expression(mux.getCond()), block(mux.getThen()), block(mux.getElse()));
-            }
-            if (expression instanceof org.protelis.parser.protelis.Self) {
-                return new Self(meta);
-            }
+            // CHECKSTYLE: UnusedLocalVariable ON
             throw new IllegalStateException("Unknown builtin of type " + expression.getClass().getSimpleName());
         }
 
@@ -659,19 +675,14 @@ public final class ProtelisLoader {
 
         private static ProtelisAST<?> scalar(@Nonnull final Scalar expression) {
             final Metadata meta = metadataFor(expression);
-            if (expression instanceof BooleanVal) {
-                return new Constant<>(meta, ((BooleanVal) expression).isVal());
-            }
-            if (expression instanceof DoubleVal) {
-                return new Constant<>(meta, ((DoubleVal) expression).getVal());
-            }
-            if (expression instanceof StringVal) {
-                return new Constant<>(meta, ((StringVal) expression).getVal());
-            }
-            if (expression instanceof TupleVal) {
-                return new CreateTuple(meta, expressionList(((TupleVal) expression).getArgs()));
-            }
-            throw new IllegalStateException("Unknown scalar of type " + expression.getClass().getSimpleName());
+            return switch (expression) {
+                case BooleanVal booleanVal -> new Constant<>(meta, booleanVal.isVal());
+                case DoubleVal doubleVal -> new Constant<>(meta, doubleVal.getVal());
+                case StringVal stringVal -> new Constant<>(meta, stringVal.getVal());
+                case TupleVal tupleVal -> new CreateTuple(meta, expressionList(tupleVal.getArgs()));
+                default ->
+                    throw new IllegalStateException("Unknown scalar of type " + expression.getClass().getSimpleName());
+            };
         }
 
         private static ShareCall<?, ?> share(final Share share) {
@@ -685,19 +696,14 @@ public final class ProtelisLoader {
         }
 
         private static ProtelisAST<?> statement(@Nonnull final Statement statement) {
-            if (statement instanceof Expression) {
-                return expression((Expression) statement);
-            }
-            if (statement instanceof Declaration) {
-                return declaration((Declaration) statement);
-            }
-            if (statement instanceof Assignment) {
-                return assignment((Assignment) statement);
-            }
-            if (statement instanceof IfWithoutElse) {
-                return ifWithoutElse((IfWithoutElse) statement);
-            }
-            throw new IllegalStateException("Unknown statement of type " + statement.getClass().getSimpleName());
+            return switch (statement) {
+                case Expression expression -> expression(expression);
+                case Declaration declaration -> declaration(declaration);
+                case Assignment assignment -> assignment(assignment);
+                case IfWithoutElse ifWithoutElse -> ifWithoutElse(ifWithoutElse);
+                default ->
+                    throw new IllegalStateException("Unknown statement of type " + statement.getClass().getSimpleName());
+            };
         }
 
         private static ProtelisAST<?> variable(@Nonnull final VarUse expression) {

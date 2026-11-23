@@ -37,40 +37,44 @@ public final class Reference implements Serializable {
      *
      * @param obj the object to refer to
      */
+    @SuppressWarnings("PMD.UnusedLocalVariable") // Remove when Protelis switches to Java 25, use anonymous switch variables
     public Reference(final Object obj) {
-        if (obj instanceof String) {
-            strRep = obj.toString();
-            uid = strRep;
-        } else if (obj instanceof VarDef) {
-            final VarDef varDef = (VarDef) obj;
-            final ITextRegionWithLineInformation node = NodeModelUtils.getNode(varDef).getTextRegionWithLineInformation();
-            EObject container = varDef.eContainer();
-            while (!(container.eContainer() == null || container instanceof ProtelisModule)) {
-                container = container.eContainer();
+        switch (obj) {
+            // TODO: Remove once anonymous variables are supported
+            // CHECKSTYLE: UnusedLocalVariable OFF
+            case String s -> {
+                strRep = obj.toString();
+                uid = strRep;
             }
-            final String module = Optional.ofNullable(((ProtelisModule) container).getName()).orElse("$");
-            uid = new Handler<>(obj, ImmutableList.of(
+            case VarDef varDef -> {
+                final ITextRegionWithLineInformation node = NodeModelUtils.getNode(varDef).getTextRegionWithLineInformation();
+                EObject container = varDef.eContainer();
+                while (!(container.eContainer() == null || container instanceof ProtelisModule)) {
+                    container = container.eContainer();
+                }
+                final String module = Optional.ofNullable(((ProtelisModule) container).getName()).orElse("$");
+                uid = new Handler<>(obj, ImmutableList.of(
                     node.getLineNumber(),
                     node.getEndLineNumber(),
                     node.getOffset(),
                     node.getLength(),
                     varDef.getName(),
                     module));
-            strRep = varDef.getName();
-        } else if (obj instanceof JvmIdentifiableElement) {
-            final JvmIdentifiableElement method = (JvmIdentifiableElement) obj;
-            strRep = method.getIdentifier();
-            uid = new Handler<>(obj, strRep);
-        } else if (obj instanceof FunctionDef) {
-            final FunctionDef function = (FunctionDef) obj;
-            final ProtelisModule container = (ProtelisModule) function.eContainer();
-            final String name = Optional.ofNullable(container.getName()).orElse("default-module") + ":";
-            strRep = name + function.getName();
-            uid = new Handler<>(obj, strRep);
-        } else if (obj instanceof Serializable) {
-            uid = (Serializable) Objects.requireNonNull(obj);
-        } else {
-            throw new IllegalArgumentException("Cannot refer to " + obj);
+                strRep = varDef.getName();
+            }
+            case JvmIdentifiableElement method -> {
+                strRep = method.getIdentifier();
+                uid = new Handler<>(obj, strRep);
+            }
+            case FunctionDef function -> {
+                final ProtelisModule container = (ProtelisModule) function.eContainer();
+                final String name = Optional.ofNullable(container.getName()).orElse("default-module") + ":";
+                strRep = name + function.getName();
+                uid = new Handler<>(obj, strRep);
+            }
+            case Serializable serializable -> uid = (Serializable) Objects.requireNonNull(obj);
+            // CHECKSTYLE: UnusedLocalVariable ON
+            case null, default -> throw new IllegalArgumentException("Cannot refer to " + obj);
         }
     }
 

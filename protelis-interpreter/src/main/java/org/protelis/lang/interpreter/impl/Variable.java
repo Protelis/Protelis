@@ -41,24 +41,25 @@ public final class Variable extends AbstractProtelisAST<Object> {
     @Override
     protected Object evaluate(final ExecutionContext context) {
         Object val = context.getVariable(name);
-        if (val == null) {
-            /*
-             * The variable cannot be read. Most probably, it is some node
-             * variable that is not set here. Fail fast!
-             */
-            throw new IllegalStateException("Variable " + name + " cannot be resolved");
-        }
-        if (val instanceof JVMEntity) {
-            val = ((JVMEntity) val).getValue();
-        } else if (val instanceof Field) {
-            /*
-             * Variable restriction. See:
-             * https://doi.org/10.1145/3285956
-             * rule [E-FLD]
-             */
-            final Field<?> unrestricted = (Field<?>) val;
-            final Field<Byte> restricted = context.buildField(it -> it, (byte) 0);
-            val = unrestricted.projectOn(restricted);
+        switch (val) {
+            case null ->
+                /*
+                 * The variable cannot be read. Most probably, it is some node
+                 * variable that is not set here. Fail fast!
+                 */
+                throw new IllegalStateException("Variable " + name + " cannot be resolved");
+            case JVMEntity jvmEntity -> val = jvmEntity.getValue();
+            case Field<?> unrestricted -> {
+                /*
+                 * Variable restriction. See:
+                 * https://doi.org/10.1145/3285956
+                 * rule [E-FLD]
+                 */
+                final Field<Byte> restricted = context.buildField(it -> it, (byte) 0);
+                val = unrestricted.projectOn(restricted);
+            }
+            default -> {
+            }
         }
         return val;
     }
