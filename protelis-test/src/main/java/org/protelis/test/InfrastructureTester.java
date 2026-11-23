@@ -295,7 +295,7 @@ public final class InfrastructureTester {
                 Pattern.DOTALL
         );
         private static final String RESULT_LIST =
-                "\\s*#?\\r?\\n?\\s*([\\d\\w]+)\\s+([\\-$\\w.]+)\\s*,?\\s*\\r?\\n?";
+            "\\s*#?\\r?\\n?\\s*(\\w+)\\s+([\\-$\\w.]+)\\s*,?\\s*\\r?\\n?";
         private static final Pattern RESULT_PATTERN = Pattern.compile(RESULT_LIST);
         private static final String EMPTY_RESULT = "Empty result";
 
