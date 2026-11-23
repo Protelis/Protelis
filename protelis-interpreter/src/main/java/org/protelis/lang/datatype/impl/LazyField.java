@@ -54,7 +54,7 @@ public final class LazyField<T> extends AbstractField<T> {
                 @Nonnull
                 @Override
                 public T load(@Nonnull final DeviceUID key) {
-                    return mapper.apply(key);
+                    return Objects.requireNonNull(mapper).apply(key);
                 }
             });
 
