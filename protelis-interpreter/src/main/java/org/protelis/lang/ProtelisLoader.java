@@ -106,6 +106,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -114,7 +115,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -133,7 +133,7 @@ public final class ProtelisLoader {
     private static final String HOOD_END = "Hood";
     private static final ThreadLocal<Cache<String, Resource>> LOADED_RESOURCES = ThreadLocal.withInitial(() ->
             CacheBuilder.newBuilder()
-                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .expireAfterAccess(Duration.ofMinutes(1))
                 .build()
     );
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtelisLoader.class);

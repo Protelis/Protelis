@@ -10,6 +10,7 @@ package org.protelis.lang.interpreter.util;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,7 +53,7 @@ public final class ReflectionUtils {
 
     private static final int CACHE_MAX_SIZE = 1000;
     private static final LoadingCache<Triple<Class<?>, String, List<Class<?>>>, Method> METHOD_CACHE = CacheBuilder
-            .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(1, TimeUnit.HOURS)
+            .newBuilder().maximumSize(CACHE_MAX_SIZE).expireAfterAccess(Duration.ofHours(1))
             .build(new CacheLoader<>() {
                 @Nonnull
                 @Override

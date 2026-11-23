@@ -28,11 +28,11 @@ import org.protelis.parser.protelis.ProtelisModule;
 import org.protelis.parser.protelis.VarUse;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +47,7 @@ public final class ProtelisLoadingUtilities {
     public static final Reference IT = new Reference("it");
 
     private static final LoadingCache<Object, Reference> REFERENCES = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .expireAfterAccess(Duration.ofMinutes(1))
             .build(new CacheLoader<>() {
                 @Override
                 @Nonnull
